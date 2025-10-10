@@ -57,11 +57,24 @@ const addAccountLedger = async (req, res) => {
 	}
 };
 
+const getDeptAccounts = async (req, res) => {
+	const { companyName, crew } = req.params;
+	try {
+		const accounts = await AccountLedger.find({ companyName, crew }).sort({
+			accCode: 1,
+		});
+
+		return res.status(200).json(accounts);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
 const getAccountLedgers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const accounts = await AccountLedger.find({ companyName }).sort({
-			createdOn: -1,
+			accCode: -1,
 		});
 		const updatedAccounts = await Promise.all(
 			accounts.map(async (account) => {
@@ -113,4 +126,5 @@ module.exports = {
 	getAccountJournalEntries,
 	addAccountLedger,
 	getAccountLedgers,
+	getDeptAccounts,
 };

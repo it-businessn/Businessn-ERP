@@ -5,7 +5,13 @@ import ModalLayout from "components/ui/modal/ModalLayout";
 import { useState } from "react";
 import AccountService from "services/AccountService";
 
-const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh }) => {
+const AddAccountModal = ({
+	company,
+	setShowOnboard,
+	showOnboard,
+	setIsRefresh,
+	selectedBudget,
+}) => {
 	const { onClose } = useDisclosure();
 
 	const handleClose = () => {
@@ -17,6 +23,7 @@ const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh })
 		accountName: "",
 		credit: "",
 		companyName: company,
+		crew: selectedBudget,
 	};
 
 	const [formData, setFormData] = useState(defaultUserInfo);
@@ -35,7 +42,12 @@ const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh })
 	};
 
 	return (
-		<ModalLayout title="Add New Account" size="lg" isOpen={showOnboard} onClose={handleClose}>
+		<ModalLayout
+			title={selectedBudget ? `New Account - ${selectedBudget}` : "New Account"}
+			size="lg"
+			isOpen={showOnboard}
+			onClose={handleClose}
+		>
 			<VStack>
 				<InputFormControl
 					required
@@ -44,6 +56,7 @@ const AddAccountModal = ({ company, setShowOnboard, showOnboard, setIsRefresh })
 					placeholder="Enter Account Code"
 					valueText={formData?.accCode}
 					handleChange={handleChange}
+					maxLength={10}
 				/>
 				<InputFormControl
 					required

@@ -5,6 +5,10 @@ const AccountService = {
 		return apiService.get(`/accounting/${id}`);
 	},
 
+	async getAllAccountsByDept(company, dept) {
+		return apiService.get(`/accounting/dept/${company}/${dept}`);
+	},
+
 	async getAccountJournalEntries(id, accName) {
 		return apiService.get(`/accounting/general-journal/${id}/${accName}`);
 	},

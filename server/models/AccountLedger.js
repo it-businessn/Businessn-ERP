@@ -9,6 +9,7 @@ const accountLedgerSchema = new mongoose.Schema(
 		totalJournalEntries: Number,
 		totalCredit: Number,
 		totalDebit: Number,
+		crew: { type: String, ref: "Crew" },
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );

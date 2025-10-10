@@ -5,6 +5,8 @@ const accountingController = require("../controllers/accountingController");
 
 router.get("/:companyName", accountingController.getAccountLedgers);
 
+router.get("/dept/:companyName/:crew", accountingController.getDeptAccounts);
+
 router.get(
 	"/general-journal/:companyName/:accountName",
 	accountingController.getAccountJournalEntries,

@@ -1,6 +1,6 @@
 import { Editable, EditableInput, EditablePreview } from "@chakra-ui/react";
 
-export const EditableInputControl = ({ value = 0, onSave }) => {
+export const EditableInputControl = ({ value = 0, onSave, width = "90px" }) => {
 	return (
 		<Editable
 			defaultValue={String(value)}
@@ -11,7 +11,7 @@ export const EditableInputControl = ({ value = 0, onSave }) => {
 			}}
 		>
 			<EditablePreview
-				width={"90px"}
+				width={width}
 				cursor="pointer"
 				px={2}
 				py={1}
@@ -22,7 +22,7 @@ export const EditableInputControl = ({ value = 0, onSave }) => {
 				bg={"var(--input_bg)"}
 			/>
 			<EditableInput
-				width={"90px"}
+				width={width}
 				px={2}
 				py={1}
 				border="1px solid"

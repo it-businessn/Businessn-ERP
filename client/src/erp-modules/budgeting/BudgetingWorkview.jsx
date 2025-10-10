@@ -1,27 +1,26 @@
 import {
-	Checkbox,
 	HStack,
 	Input,
 	InputGroup,
 	InputRightElement,
+	Select,
 	SimpleGrid,
-	Stack,
 	VStack,
 } from "@chakra-ui/react";
-import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import TextTitle from "components/ui/text/TextTitle";
 import AccountJournalDetail from "erp-modules/accounting/AccountJournalDetail";
 import AddAccountModal from "erp-modules/accounting/AddAccountModal";
-import LedgerList from "erp-modules/accounting/LedgerList";
-import OtherFilter from "erp-modules/payroll/timesheets/OtherFilter";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
 import useCompany from "hooks/useCompany";
+import useCrews from "hooks/useCrews";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { FaArrowLeft, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FiUserCheck, FiUserPlus, FiUserX } from "react-icons/fi";
 import AccountService from "services/AccountService";
 import LocalStorageService from "services/LocalStorageService";
+import BudgetList from "./BudgetList";
 
 const ACTIONS = [
 	{ key: "add", name: "Add Account", icon: FiUserPlus },
@@ -31,44 +30,27 @@ const ACTIONS = [
 
 const BudgetingWorkview = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
-
-	const [formData, setFormData] = useState({
-		isPayrollActive: true,
-		isPayrollInactive: false,
-	});
+	const { crews, selectedCrew, setSelectedCrew } = useCrews(company);
 
 	const [showAccDetail, setShowAccDetail] = useState(false);
-	const [isRefresh, setIsRefresh] = useState(false);
 	const [accounts, setAccounts] = useState(null);
 	const [filteredAccounts, setFilteredAccounts] = useState(null);
+
+	const [showModal, setShowModal] = useState(false);
+	const [accName, setAccName] = useState("");
 
 	useEffect(() => {
 		const fetchAllAccounts = async () => {
 			try {
-				const { data } = await AccountService.getAllAccounts(company);
+				const { data } = await AccountService.getAllAccountsByDept(company, selectedCrew);
 				setAccounts(data);
 				setFilteredAccounts(data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		fetchAllAccounts();
-	}, [isRefresh]);
-
-	const [showAccFilter, setShowAccFilter] = useState(false);
-	const [showDeptFilter, setShowDeptFilter] = useState(false);
-	const [showCCFilter, setShowCCFilter] = useState(false);
-
-	const toggleEmpFilter = () => setShowAccFilter((prev) => !prev);
-	const toggleDeptFilter = () => setShowDeptFilter((prev) => !prev);
-	const toggleCCFilter = () => setShowCCFilter((prev) => !prev);
-	const handleFilter = () => console.log(filteredAccounts);
-
-	const [filteredDept, setFilteredDept] = useState([]);
-	const [filteredCC, setFilteredCC] = useState([]);
-
-	const [showModal, setShowModal] = useState(false);
-	const [accName, setAccName] = useState("");
+		if (selectedCrew) fetchAllAccounts();
+	}, [selectedCrew]);
 
 	const handleClick = (val) => {
 		if (val === "add") {
@@ -84,11 +66,7 @@ const BudgetingWorkview = () => {
 	};
 
 	return (
-		<PageLayout
-			title={showAccDetail ? "Record of Bucket Movement" : "General Ledger Summary"}
-			selectPlaceholder="Select Paygroup"
-			selectAttr="name"
-		>
+		<PageLayout title={"Budget Summary"}>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
@@ -127,89 +105,11 @@ const BudgetingWorkview = () => {
 						</VStack>
 						<PrimaryButton
 							name={"Add Account"}
+							isDisabled={!selectedCrew}
 							size="xs"
 							px={0}
 							onOpen={() => setShowModal(true)}
 						/>
-					</HStack>
-					<HStack
-						w={"100%"}
-						pt={"5em"}
-						spacing={"3em"}
-						alignItems="self-start"
-						justifyContent={"start"}
-					>
-						<HStack>
-							<Stack alignItems="self-start">
-								<HStack spacing={2}>
-									<Checkbox
-										colorScheme={"facebook"}
-										isChecked={formData?.isPayrollActive}
-										onChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												isPayrollActive: e.target.checked,
-											}))
-										}
-									>
-										Active
-									</Checkbox>
-									<Checkbox
-										colorScheme={"facebook"}
-										isChecked={formData?.isPayrollInactive}
-										onChange={(e) =>
-											setFormData((prevData) => ({
-												...prevData,
-												isPayrollInactive: e.target.checked,
-											}))
-										}
-									>
-										Inactive
-									</Checkbox>
-								</HStack>
-								{showAccDetail && (
-									<LeftIconButton
-										color={"var(--nav_color)"}
-										name={"Go Back"}
-										variant={"ghost"}
-										isFilter
-										size="xs"
-										handleClick={() => setShowAccDetail(false)}
-										icon={<FaArrowLeft />}
-									/>
-								)}
-							</Stack>
-						</HStack>
-						<HStack>
-							<OtherFilter
-								showOtherFilter={showAccFilter}
-								toggleOtherFilter={toggleEmpFilter}
-								handleFilter={handleFilter}
-								data={accounts}
-								filteredData={filteredAccounts}
-								setFilteredData={setFilteredAccounts}
-								helperText="Account Type"
-								type="accountName"
-							/>
-							{/* <OtherFilter
-								showOtherFilter={showDeptFilter}
-								toggleOtherFilter={toggleDeptFilter}
-								handleFilter={handleFilter}
-								data={employees}
-								filteredData={filteredDept}
-								setFilteredData={setFilteredDept}
-								helperText="department"
-							/>
-							<OtherFilter
-								showOtherFilter={showCCFilter}
-								toggleOtherFilter={toggleCCFilter}
-								handleFilter={handleFilter}
-								data={employees}
-								filteredData={filteredCC}
-								setFilteredData={setFilteredCC}
-								helperText="cost center"
-							/> */}
-						</HStack>
 					</HStack>
 				</VStack>
 
@@ -219,10 +119,28 @@ const BudgetingWorkview = () => {
 					actions={ACTIONS}
 				/>
 			</SimpleGrid>
+			<HStack w="30%" alignItems="center" justifyContent="start" mb="2px">
+				<TextTitle width="fit-content" title={"Budget:"} />
+				<Select
+					size={"sm"}
+					w={"200px"}
+					border="1px solid var(--primary_button_bg)"
+					borderRadius="10px"
+					value={selectedCrew}
+					placeholder="Select budget"
+					onChange={(e) => e.target.value && setSelectedCrew(e.target.value)}
+				>
+					{crews?.map(({ name, _id }) => (
+						<option value={name} key={_id}>
+							{`${name} FY 2026`}
+						</option>
+					))}
+				</Select>
+			</HStack>
 			{showAccDetail ? (
 				<AccountJournalDetail accName={accName} company={company} />
 			) : (
-				<LedgerList
+				<BudgetList
 					setShowAccDetail={setShowAccDetail}
 					setAccName={setAccName}
 					accounts={filteredAccounts}
@@ -232,9 +150,9 @@ const BudgetingWorkview = () => {
 			{showModal && (
 				<AddAccountModal
 					company={company}
+					selectedCrew={selectedCrew}
 					showOnboard={showModal}
 					setShowOnboard={setShowModal}
-					setIsRefresh={setIsRefresh}
 				/>
 			)}
 		</PageLayout>
