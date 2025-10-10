@@ -18,6 +18,7 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
 const accountingRoutes = require("./routes/accountingRoutes");
+const budgetingRoutes = require("./routes/budgetingRoutes");
 const activityRoutes = require("./routes/activityRoutes");
 const alertRoutes = require("./routes/alertRoutes");
 const appRoutes = require("./routes/appRoutes");
@@ -137,6 +138,7 @@ app.use("/api/affiliate", affiliateRoutes);
 
 app.use(authenticateToken);
 app.use("/api/accounting", accountingRoutes);
+app.use("/api/budgeting", budgetingRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/alert", alertRoutes);
 app.use("/api/assessment", assessmentRoutes);
