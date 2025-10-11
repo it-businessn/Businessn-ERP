@@ -9,6 +9,7 @@ const DailyTotals = require("../models/DailyTotals");
 const { sendEmail } = require("../services/emailService");
 const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const BudgetAccount = require("../models/BudgetAccount");
 
 const currentYear = new Date().getFullYear();
 
@@ -179,6 +180,58 @@ const getAvgHeadCountTotals = async (req, res) => {
 		// 	},
 		// ]);
 		return res.status(200).json(avgHeadCount);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+const getExpenseOverview = async (req, res) => {
+	const { companyName, crew } = req.params;
+
+	try {
+		const targetedExpense = await BudgetAccount.aggregate([
+			{
+				$match: {
+					companyName,
+					crew,
+				},
+			},
+			{
+				$group: {
+					_id: null,
+					Jan: { $sum: "$monthlyBudget.Jan" },
+					Feb: { $sum: "$monthlyBudget.Feb" },
+					Mar: { $sum: "$monthlyBudget.Mar" },
+					Apr: { $sum: "$monthlyBudget.Apr" },
+					May: { $sum: "$monthlyBudget.May" },
+					Jun: { $sum: "$monthlyBudget.Jun" },
+					Jul: { $sum: "$monthlyBudget.Jul" },
+					Aug: { $sum: "$monthlyBudget.Aug" },
+					Sept: { $sum: "$monthlyBudget.Sept" },
+					Oct: { $sum: "$monthlyBudget.Oct" },
+					Nov: { $sum: "$monthlyBudget.Nov" },
+					Dec: { $sum: "$monthlyBudget.Dec" },
+				},
+			},
+		]);
+
+		const actualExpense = await DailyTotals.aggregate([
+			{
+				$match: {
+					companyName,
+					crew,
+				},
+			},
+			{
+				$group: {
+					_id: { $month: "$date" },
+					total: { $max: "$crewMonthlyRunningTotal" },
+				},
+			},
+			{ $sort: { _id: 1 } },
+		]);
+
+		return res.status(200).json({ actualExpense, targetedExpense });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -980,4 +1033,5 @@ module.exports = {
 	emailWorkShifts,
 	deleteShift,
 	getDailyStatistics,
+	getExpenseOverview,
 };

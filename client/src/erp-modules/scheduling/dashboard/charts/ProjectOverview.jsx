@@ -3,7 +3,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Bar } from "react-chartjs-2";
 
-const ProjectOverview = () => {
+const ProjectOverview = ({ expenseData }) => {
 	const options = {
 		scales: {
 			y: {
@@ -47,29 +47,7 @@ const ProjectOverview = () => {
 			// },
 		},
 	};
-	const data = {
-		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-		datasets: [
-			{
-				label: "Total Expense",
-				backgroundColor: "#537eee",
-				borderColor: "#537eee",
-				borderWidth: 1,
-				hoverBackgroundColor: "#537eee",
-				hoverBorderColor: "#537eee",
-				data: [81, 128, 88, 138, 158, 148, 168, 178, 188, 198, 280, 228],
-			},
-			{
-				label: "Targeted Expense",
-				backgroundColor: "#6299ae",
-				borderColor: "#6299ae",
-				borderWidth: 1,
-				hoverBackgroundColor: "#6299ae",
-				hoverBorderColor: "#6299ae",
-				data: [98, 81, 98, 108, 88, 108, 88, 128, 128, 138, 138, 148],
-			},
-		],
-	};
+
 	return (
 		<Box
 			color={"var(--nav_color)"}
@@ -81,7 +59,7 @@ const ProjectOverview = () => {
 		>
 			<TextTitle title={"Cost Overview"} />
 			<Box w={{ base: "650px" }} mx={"auto"}>
-				<Bar data={data} options={options} />
+				<Bar data={expenseData} options={options} />
 			</Box>
 		</Box>
 	);

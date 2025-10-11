@@ -35,49 +35,13 @@ const SchedulingDashboard = () => {
 	const [avgStats, setAvgStats] = useState(0);
 	const [avgHeadCountTotals, setAvgHeadCountTotals] = useState(null);
 	const [roleMonthlyTotals, setRoleMonthlyTotals] = useState(null);
+	const [expenseData, setExpenseData] = useState(null);
 
 	useEffect(() => {
-		const fetchHeadCount = async () => {
-			try {
-				const { data } = await SchedulerService.getAvgHeadCountTotals(company, selectedCrew);
-
-				const monthlyHeadCount = Array(12).fill(0);
-				data.forEach((item) => {
-					monthlyHeadCount[item._id - 1] = item.avgDailyPeople.toFixed(1);
-				});
-
-				const graphData = {
-					labels: [
-						"Jan",
-						"Feb",
-						"Mar",
-						"Apr",
-						"May",
-						"Jun",
-						"Jul",
-						"Aug",
-						"Sep",
-						"Oct",
-						"Nov",
-						"Dec",
-					],
-					datasets: [
-						{
-							label: "Headcount",
-							data: monthlyHeadCount,
-							backgroundColor: "#537eee",
-							borderColor: "#537eee",
-							borderWidth: 2,
-							fill: false,
-							cubicInterpolationMode: "monotone",
-							pointRadius: 0,
-						},
-					],
-				};
-				setAvgHeadCountTotals(graphData);
-			} catch (error) {}
-		};
-		if (selectedCrew) fetchHeadCount();
+		if (selectedCrew) {
+			fetchHeadCount();
+			fetchProjectOverviewTotals();
+		}
 	}, [selectedCrew]);
 
 	useEffect(() => {
@@ -86,6 +50,97 @@ const SchedulingDashboard = () => {
 			fetchTotals();
 		}
 	}, [selectedCrew, selectedMonth]);
+
+	const fetchHeadCount = async () => {
+		try {
+			const { data } = await SchedulerService.getAvgHeadCountTotals(company, selectedCrew);
+
+			const monthlyHeadCount = Array(12).fill(0);
+			data.forEach((item) => {
+				monthlyHeadCount[item._id - 1] = item.avgDailyPeople.toFixed(1);
+			});
+
+			const graphData = {
+				labels: [
+					"Jan",
+					"Feb",
+					"Mar",
+					"Apr",
+					"May",
+					"Jun",
+					"Jul",
+					"Aug",
+					"Sep",
+					"Oct",
+					"Nov",
+					"Dec",
+				],
+				datasets: [
+					{
+						label: "Headcount",
+						data: monthlyHeadCount,
+						backgroundColor: "#537eee",
+						borderColor: "#537eee",
+						borderWidth: 2,
+						fill: false,
+						cubicInterpolationMode: "monotone",
+						pointRadius: 0,
+					},
+				],
+			};
+			setAvgHeadCountTotals(graphData);
+		} catch (error) {}
+	};
+
+	const fetchProjectOverviewTotals = async () => {
+		try {
+			const { data } = await SchedulerService.getExpenseOverview(company, selectedCrew);
+
+			const actualExpenseByMonth = Array(12).fill(0);
+			data.actualExpense.forEach((item) => {
+				actualExpenseByMonth[item._id - 1] = item.total;
+			});
+			const monthNames = [
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec",
+			];
+
+			const graphData = {
+				labels: monthNames,
+				datasets: [
+					{
+						label: "Total Expense",
+						backgroundColor: "#537eee",
+						borderColor: "#537eee",
+						borderWidth: 1,
+						hoverBackgroundColor: "#537eee",
+						hoverBorderColor: "#537eee",
+						data: actualExpenseByMonth,
+					},
+					{
+						label: "Targeted Expense",
+						backgroundColor: "#6299ae",
+						borderColor: "#6299ae",
+						borderWidth: 1,
+						hoverBackgroundColor: "#6299ae",
+						hoverBorderColor: "#6299ae",
+						data: monthNames.map((month) => data.targetedExpense[0][month] || 0),
+					},
+				],
+			};
+			setExpenseData(graphData);
+		} catch (error) {}
+	};
 
 	const fetchDailyStats = async () => {
 		try {
@@ -179,7 +234,7 @@ const SchedulingDashboard = () => {
 				mr="4"
 				templateColumns={{ lg: "70% 30%" }}
 			>
-				<ProjectOverview />
+				<ProjectOverview expenseData={expenseData} />
 				<LocationGraph roleMonthlyTotals={roleMonthlyTotals} />
 			</SimpleGrid>
 		</PageLayout>

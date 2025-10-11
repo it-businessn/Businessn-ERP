@@ -8,6 +8,8 @@ router.get("/", scheduleController.getShifts);
 
 router.get("/avg-headCount-totals/:companyName/:crew", scheduleController.getAvgHeadCountTotals);
 
+router.get("/expense-overview/:companyName/:crew", scheduleController.getExpenseOverview);
+
 router.get("/daily-stats/:companyName/:month/:crew", scheduleController.getDailyStatistics);
 
 router.get(

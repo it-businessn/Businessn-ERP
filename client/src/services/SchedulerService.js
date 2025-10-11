@@ -9,6 +9,10 @@ const SchedulerService = {
 		return apiService.get(`/schedule/${data.date}/${data.company}`);
 	},
 
+	async getExpenseOverview(company, crew) {
+		return apiService.get(`/schedule/expense-overview/${company}/${crew}`);
+	},
+
 	async getAvgHeadCountTotals(company, crew) {
 		return apiService.get(`/schedule/avg-headCount-totals/${company}/${crew}`);
 	},
