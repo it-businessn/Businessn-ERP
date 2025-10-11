@@ -34,6 +34,8 @@ const SchedulingDashboard = () => {
 	const [selectedMonth, setSelectedMonth] = useState(CURRENT_MONTH);
 	const [avgStats, setAvgStats] = useState(0);
 	const [avgHeadCountTotals, setAvgHeadCountTotals] = useState(null);
+	const [currentCost, setCurrentCost] = useState(null);
+	const [targetedCost, setTargetedCost] = useState(null);
 	const [roleMonthlyTotals, setRoleMonthlyTotals] = useState(null);
 	const [expenseData, setExpenseData] = useState(null);
 
@@ -50,6 +52,13 @@ const SchedulingDashboard = () => {
 			fetchTotals();
 		}
 	}, [selectedCrew, selectedMonth]);
+
+	useEffect(() => {
+		if (expenseData && selectedCrew && selectedMonth) {
+			setCurrentCost(expenseData?.datasets[0]?.data[selectedMonth - 1]);
+			setTargetedCost(expenseData?.datasets[1]?.data[selectedMonth - 1]);
+		}
+	}, [selectedCrew, selectedMonth, expenseData]);
 
 	const fetchHeadCount = async () => {
 		try {
@@ -225,7 +234,7 @@ const SchedulingDashboard = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<StaffOverview avgHeadCountTotals={avgHeadCountTotals} />
-				<StatsCard avgStats={avgStats} />
+				<StatsCard avgStats={avgStats} currentCost={currentCost} targetedCost={targetedCost} />
 			</SimpleGrid>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}

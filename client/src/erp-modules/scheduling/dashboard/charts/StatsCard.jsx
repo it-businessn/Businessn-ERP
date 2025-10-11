@@ -3,7 +3,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { getAmount } from "utils/convertAmt";
 
-const StatsCard = ({ avgStats }) => {
+const StatsCard = ({ avgStats, targetedCost, currentCost }) => {
 	const HEADER_CARDS = [
 		{
 			title: "Daily Average Statistics",
@@ -18,8 +18,8 @@ const StatsCard = ({ avgStats }) => {
 			title: "Monthly Expense",
 			bg: "var(--nav_gradient_orange)",
 			items: [
-				{ title: "Targeted Cost", value: 18 },
-				{ title: "Current Cost", value: 4 },
+				{ title: "Targeted Cost", value: targetedCost },
+				{ title: "Current Cost", value: currentCost },
 			],
 		},
 		{
