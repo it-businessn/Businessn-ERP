@@ -732,6 +732,7 @@ const Timesheet = ({
 															position={colIndex === 0 && "sticky"}
 															left={colIndex === 0 && "0"}
 															zIndex={colIndex === 0 && 1}
+															bg="var(--lead_cards_bg)"
 															py={0}
 														>
 															<TextTitle maxW="130px" size="sm" title={employeeId?.fullName} />
