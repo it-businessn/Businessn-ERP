@@ -151,10 +151,14 @@ const WeeklyCalendarView = ({
 
 	const totalsRow = [
 		{ label: "Total Hours", value: dailyDataWithRunning?.map((d) => d.dayHours), key: "hours" },
-		{ label: "Total Wages", value: dailyDataWithRunning?.map((d) => d.dayWages), key: "wages" },
+		{
+			label: "Total Wages",
+			value: dailyDataWithRunning?.map((d) => d.dayWages || 0),
+			key: "wages",
+		},
 		{
 			label: "Monthly Running Totals",
-			value: dailyDataWithRunning?.map((d) => d.crewMonthlyRunningTotal),
+			value: dailyDataWithRunning?.map((d) => d.crewMonthlyRunningTotal || 0),
 			key: "monthly_running",
 		},
 	];

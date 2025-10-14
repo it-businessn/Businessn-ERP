@@ -18,8 +18,8 @@ const StatsCard = ({ avgStats, targetedCost, currentCost }) => {
 			title: "Monthly Expense",
 			bg: "var(--nav_gradient_orange)",
 			items: [
-				{ title: "Targeted Cost", value: targetedCost },
-				{ title: "Current Cost", value: currentCost },
+				{ title: "Targeted Cost", value: getAmount(targetedCost) },
+				{ title: "Current Cost", value: getAmount(currentCost) },
 			],
 		},
 		{

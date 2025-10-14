@@ -313,7 +313,7 @@ export const SIDEBAR_MENU = [
 			},
 			{
 				path: "settings",
-				name: "Settings",
+				name: "Holidays",
 				children: [],
 				icon: <FiSettings />,
 			},

@@ -107,7 +107,7 @@ const SchedulingDashboard = () => {
 
 			const actualExpenseByMonth = Array(12).fill(0);
 			data.actualExpense.forEach((item) => {
-				actualExpenseByMonth[item._id - 1] = item.total;
+				actualExpenseByMonth[item._id - 1] = item.total?.toFixed(2);
 			});
 			const monthNames = [
 				"Jan",
@@ -143,7 +143,7 @@ const SchedulingDashboard = () => {
 						borderWidth: 1,
 						hoverBackgroundColor: "#6299ae",
 						hoverBorderColor: "#6299ae",
-						data: monthNames.map((month) => data.targetedExpense[0][month] || 0),
+						data: monthNames.map((month) => data.targetedExpense[0][month]?.toFixed(2) || 0),
 					},
 				],
 			};
@@ -178,7 +178,7 @@ const SchedulingDashboard = () => {
 				labels: data.map((item) => item.role),
 				datasets: [
 					{
-						data: data.map((item) => item.maxRunningTotal),
+						data: data.map((item) => item.maxRunningTotal?.toFixed(2) || 0),
 						backgroundColor: data.map((_, i) => getBrightColor(i, data.length)),
 						hoverBackgroundColor: data.map((_, i) => getBrightColor(i, data.length)),
 					},
