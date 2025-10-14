@@ -4,7 +4,7 @@ const budgetAccountSchema = new mongoose.Schema(
 	{
 		accCode: { type: String, ref: "AccountLedger" },
 		accountName: String,
-		crew: { type: String, ref: "Crew" },
+		department: { type: String, ref: "Crew" },
 		description: String,
 		monthlyBudget: {
 			Jan: { type: Number, default: 0 },

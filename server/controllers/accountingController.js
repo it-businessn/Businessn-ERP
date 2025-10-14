@@ -1,4 +1,5 @@
 const AccountLedger = require("../models/AccountLedger");
+const BudgetAccount = require("../models/BudgetAccount");
 const GeneralJournal = require("../models/GeneralJournal");
 
 const addAccountsJournalEntry = async (req, res) => {
@@ -44,27 +45,47 @@ const getAccountJournalEntries = async (req, res) => {
 	}
 };
 
-const addAccountLedger = async (req, res) => {
+const addAccount = async (req, res) => {
 	try {
 		const existingRecord = await AccountLedger.findOne(req.body);
 		if (existingRecord) {
-			return res.status(409).json({ message: "Record already exists" });
+			return res.status(409).json({ message: "Account already exists" });
 		}
 		const newAcc = await AccountLedger.create(req.body);
+		await BudgetAccount.create(req.body);
 		return res.status(201).json(newAcc);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
-const getDeptAccounts = async (req, res) => {
-	const { companyName, crew } = req.params;
+const updateAccount = async (req, res) => {
+	const { id } = req.params;
 	try {
-		const accounts = await AccountLedger.find({ companyName, crew }).sort({
-			accCode: 1,
-		});
+		const existingInfo = await AccountLedger.findById(id);
+		if (existingInfo) {
+			if (req.body?._id) delete req.body._id;
+			const updatedInfo = await AccountLedger.findByIdAndUpdate(
+				id,
+				{ $set: req.body },
+				{
+					new: true,
+				},
+			);
+			const budgetRecord = await BudgetAccount.findOne({ accCode: req.body.accCode });
+			if (budgetRecord) {
+				await BudgetAccount.findByIdAndUpdate(
+					budgetRecord._id,
+					{ $set: req.body },
+					{
+						new: true,
+					},
+				);
+			}
 
-		return res.status(200).json(accounts);
+			return res.status(201).json(updatedInfo);
+		}
+		return res.status(404).json({ message: "Account not found." });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -137,8 +158,8 @@ const getAccountLedgers = async (req, res) => {
 module.exports = {
 	addAccountsJournalEntry,
 	getAccountJournalEntries,
-	addAccountLedger,
+	addAccount,
 	getAccountLedgers,
-	getDeptAccounts,
 	getAccounts,
+	updateAccount,
 };

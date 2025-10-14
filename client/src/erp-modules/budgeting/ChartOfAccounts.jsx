@@ -1,15 +1,33 @@
-import { EditIcon } from "@chakra-ui/icons";
-import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import { ConfigTabLayout } from "components/ConfigTabLayout";
+import useCrews from "hooks/useCrews";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import AccountService from "services/AccountService";
 import LocalStorageService from "services/LocalStorageService";
+import AccountForm from "./AccountForm";
+import AccountsList from "./AccountsList";
 
 const ChartOfAccounts = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
+	const { crews } = useCrews(company);
+
+	const [dept, setDept] = useState(null);
 	const [accounts, setAccounts] = useState(null);
 	const [filteredAccounts, setFilteredAccounts] = useState(null);
+	const [editingId, setEditingId] = useState(null);
+	const defaultFormData = {
+		accCode: "",
+		accountName: "",
+		companyName: company,
+		department: "",
+	};
+	const [formData, setFormData] = useState(defaultFormData);
+
+	useEffect(() => {
+		if (crews) {
+			setDept([...crews, { _id: "NoDept", name: "No department assigned" }]);
+		}
+	}, [crews]);
 
 	useEffect(() => {
 		const fetchAllAccounts = async () => {
@@ -24,57 +42,38 @@ const ChartOfAccounts = () => {
 		fetchAllAccounts();
 	}, []);
 
+	const handleEdit = (acc) => {
+		setEditingId(acc._id);
+		setFormData((prevData) => ({
+			...prevData,
+			accCode: acc?.accCode,
+			accountName: acc?.accountName,
+			department: acc?.department || "",
+		}));
+	};
+
+	const handleClose = () => {
+		setEditingId(null);
+		setFormData(defaultFormData);
+	};
+
 	return (
-		<PageLayout title="Accounts">
-			<Table variant="simple" size="sm">
-				<Thead>
-					<Tr>
-						<Th>Account Code</Th>
-						<Th>Account Name</Th>
-						<Th>Department</Th>
-						<Th>Action</Th>
-					</Tr>
-				</Thead>
-				<Tbody>
-					{(!accounts || accounts?.length === 0) && <EmptyRowRecord data={accounts} colSpan={3} />}
-					{accounts?.map((acc) => (
-						<Tr key={acc?._id}>
-							<Td>{acc?.accCode}</Td>
-							<Td>{acc?.accountName}</Td>
-							<Td>{acc?.department}</Td>
-							<Td>
-								<HStack spacing={2}>
-									<IconButton
-										aria-label="Edit "
-										icon={<EditIcon />}
-										size="sm"
-										// onClick={() => handleEdit(role)}
-										color="var(--banner_bg)"
-										_hover={{
-											bg: "var(--banner_bg)",
-											color: "white",
-										}}
-									/>
-									{/* <IconButton
-											aria-label="Delete "
-											icon={<DeleteIcon />}
-											size="sm"
-											color="var(--banner_bg)"
-											_hover={{
-												bg: "var(--banner_bg)",
-												color: "white",
-											}}
-											onClick={() => {
-												// setShowConfirmationPopUp(true);
-												// setDeleteRecordId(holiday._id);
-											}}
-										/> */}
-								</HStack>
-							</Td>
-						</Tr>
-					))}
-				</Tbody>
-			</Table>
+		<PageLayout>
+			<ConfigTabLayout
+				tableData={accounts}
+				tableTitle="All Accounts"
+				tableContent={<AccountsList accounts={accounts} handleEdit={handleEdit} />}
+				leftContent={
+					<AccountForm
+						editingId={editingId}
+						onClose={handleClose}
+						formData={formData}
+						setAccounts={setAccounts}
+						setFormData={setFormData}
+						dept={dept}
+					/>
+				}
+			/>
 		</PageLayout>
 	);
 };

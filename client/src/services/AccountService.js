@@ -5,10 +5,6 @@ const AccountService = {
 		return apiService.get(`/accounting/${id}`);
 	},
 
-	async getAllAccountsByDept(company, dept) {
-		return apiService.get(`/accounting/dept/${company}/${dept}`);
-	},
-
 	async getAccountJournalEntries(id, accName) {
 		return apiService.get(`/accounting/general-journal/${id}/${accName}`);
 	},
@@ -23,6 +19,10 @@ const AccountService = {
 
 	async addJournalEntry(data) {
 		return apiService.post("/accounting/general-journal", data);
+	},
+
+	async updateAccount(data, id) {
+		return apiService.put(`/accounting/${id}`, data, id);
 	},
 };
 

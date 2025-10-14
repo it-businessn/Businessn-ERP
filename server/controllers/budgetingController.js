@@ -69,13 +69,13 @@ const updateBudgetAccount = async (req, res) => {
 const addBudgetAccount = async (req, res) => {
 	try {
 		const { accCode, accountName, crew, companyName } = req.body;
+		req.body.department = crew;
 		const existingRecord = await BudgetAccount.findOne(req.body);
 		if (existingRecord) {
 			return res.status(409).json({ message: "Record already exists" });
 		}
 
-		const department = crew.includes("No department") ? "" : crew;
-		await AccountLedger.create({ accCode, accountName, department, companyName });
+		await AccountLedger.create(req.body);
 		const newAcc = await BudgetAccount.create(req.body);
 		return res.status(201).json(newAcc);
 	} catch (error) {
@@ -84,12 +84,11 @@ const addBudgetAccount = async (req, res) => {
 };
 
 const getDeptAccounts = async (req, res) => {
-	const { companyName, crew } = req.params;
+	const { companyName, department } = req.params;
 	try {
-		const accounts = await BudgetAccount.find({ companyName, crew }).sort({
+		const accounts = await BudgetAccount.find({ companyName, department }).sort({
 			accCode: 1,
 		});
-
 		return res.status(200).json(accounts);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

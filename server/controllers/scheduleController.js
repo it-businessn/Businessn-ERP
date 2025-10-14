@@ -193,7 +193,7 @@ const getExpenseOverview = async (req, res) => {
 			{
 				$match: {
 					companyName,
-					crew,
+					department: crew,
 				},
 			},
 			{

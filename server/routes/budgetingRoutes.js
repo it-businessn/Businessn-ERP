@@ -5,7 +5,7 @@ const budgetingController = require("../controllers/budgetingController");
 
 router.get("/:companyName", budgetingController.getBudgetAccounts);
 
-router.get("/:companyName/:crew", budgetingController.getDeptAccounts);
+router.get("/:companyName/:department", budgetingController.getDeptAccounts);
 
 router.get(
 	"/general-journal/:companyName/:accountName",

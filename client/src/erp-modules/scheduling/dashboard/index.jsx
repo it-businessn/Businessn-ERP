@@ -131,13 +131,11 @@ const SchedulingDashboard = () => {
 						label: "Targeted Expense",
 						data: monthNames.map((month) => data.targetedExpense[0][month]?.toFixed(2) || 0),
 						backgroundColor: "#6299ae",
-						barPercentage: 0.9,
 					},
 					{
 						label: "Total Expense",
 						data: actualExpenseByMonth,
 						backgroundColor: "#537eee",
-						barPercentage: 0.7,
 					},
 				],
 			};
