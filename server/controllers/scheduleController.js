@@ -207,7 +207,7 @@ const getExpenseOverview = async (req, res) => {
 					Jun: { $sum: "$monthlyBudget.Jun" },
 					Jul: { $sum: "$monthlyBudget.Jul" },
 					Aug: { $sum: "$monthlyBudget.Aug" },
-					Sept: { $sum: "$monthlyBudget.Sept" },
+					Sep: { $sum: "$monthlyBudget.Sep" },
 					Oct: { $sum: "$monthlyBudget.Oct" },
 					Nov: { $sum: "$monthlyBudget.Nov" },
 					Dec: { $sum: "$monthlyBudget.Dec" },

@@ -19,7 +19,7 @@ const ProjectOverview = ({ expenseData }) => {
 						family: "Arial, Helvetica, sans-serif",
 					},
 				},
-				stacked: true,
+				stacked: false,
 			},
 			x: {
 				grid: {
@@ -32,19 +32,11 @@ const ProjectOverview = ({ expenseData }) => {
 					},
 					autoSkip: false,
 				},
-				stacked: true,
+				stacked: false,
 			},
 		},
 		plugins: {
 			legend: { position: "bottom" },
-		},
-		layout: {
-			// padding: {
-			// 	left: 10,
-			// 	right: 10,
-			// 	top: 0,
-			// 	bottom: 0,
-			// },
 		},
 	};
 
