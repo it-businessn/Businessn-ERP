@@ -1,5 +1,5 @@
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import Settings from "erp-modules/payroll/settings/Settings";
+import Holiday from "erp-modules/payroll/holidays/Holiday";
 import CompaniesPanel from "features/configuration/company";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ const Configuration = () => {
 		{
 			id: 5,
 			type: "Setup Stat Holidays",
-			name: <Settings company={company} />,
+			name: <Holiday company={company} />,
 		},
 	];
 

@@ -17,7 +17,7 @@ import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
 import { StatHolidayTable } from "./stat-holiday";
 
-const Settings = ({ company }) => {
+const Holiday = ({ company }) => {
 	const currentCompany = company || LocalStorageService.getItem("selectedCompany");
 
 	const [holidays, setHolidays] = useState([]);
@@ -161,4 +161,4 @@ const Settings = ({ company }) => {
 	);
 };
 
-export default Settings;
+export default Holiday;

@@ -81,7 +81,7 @@ const ROE = lazy(() => import("erp-modules/payroll/roe"));
 const AffiliateListView = lazy(() => import("erp-modules/payroll/affiliate/list-view"));
 const Affiliates = lazy(() => import("erp-modules/payroll/affiliate/page-view"));
 const EmployeeListView = lazy(() => import("erp-modules/payroll/employees/listview"));
-const Settings = lazy(() => import("erp-modules/payroll/settings/Settings"));
+const Holiday = lazy(() => import("erp-modules/payroll/holidays/Holiday"));
 
 // scheduling
 const SchedulingDashboard = lazy(() => import("erp-modules/scheduling/dashboard"));
@@ -386,7 +386,7 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.SETTINGS}`,
-				element: <Settings />,
+				element: <Holiday />,
 			},
 			{
 				path: payrollEmpDashboardPath,
