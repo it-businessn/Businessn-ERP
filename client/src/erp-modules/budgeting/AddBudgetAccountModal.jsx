@@ -7,18 +7,17 @@ import { useState } from "react";
 import BudgetService from "services/BudgetService";
 
 const AddBudgetAccountModal = ({ company, isOpen, setShowModal, setRefresh, crews }) => {
-	const handleClose = () => {
-		setShowModal(false);
-	};
-
 	const defaultUserInfo = {
 		accCode: "",
 		accountName: "",
 		companyName: company,
 		crew: "",
 	};
-
 	const [formData, setFormData] = useState(defaultUserInfo);
+
+	const handleClose = () => {
+		setShowModal(false);
+	};
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -43,7 +42,7 @@ const AddBudgetAccountModal = ({ company, isOpen, setShowModal, setRefresh, crew
 					placeholder={"Select Department"}
 					valueParam="name"
 					name="crew"
-					label=""
+					label="Select department"
 					valueText={formData?.crew}
 					handleChange={handleChange}
 					options={crews}

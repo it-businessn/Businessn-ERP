@@ -13,6 +13,10 @@ const AccountService = {
 		return apiService.get(`/accounting/general-journal/${id}/${accName}`);
 	},
 
+	async getLedgers(id) {
+		return apiService.get(`/accounting/ledgers/${id}`);
+	},
+
 	async addAccount(data) {
 		return apiService.post("/accounting", data);
 	},

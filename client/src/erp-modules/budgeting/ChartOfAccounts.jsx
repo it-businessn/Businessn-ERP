@@ -31,6 +31,7 @@ const ChartOfAccounts = () => {
 					<Tr>
 						<Th>Account Code</Th>
 						<Th>Account Name</Th>
+						<Th>Department</Th>
 						<Th>Action</Th>
 					</Tr>
 				</Thead>
@@ -40,6 +41,7 @@ const ChartOfAccounts = () => {
 						<Tr key={acc?._id}>
 							<Td>{acc?.accCode}</Td>
 							<Td>{acc?.accountName}</Td>
+							<Td>{acc?.department}</Td>
 							<Td>
 								<HStack spacing={2}>
 									<IconButton

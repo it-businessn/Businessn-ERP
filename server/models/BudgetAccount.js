@@ -15,7 +15,7 @@ const budgetAccountSchema = new mongoose.Schema(
 			Jun: { type: Number, default: 0 },
 			Jul: { type: Number, default: 0 },
 			Aug: { type: Number, default: 0 },
-			Sept: { type: Number, default: 0 },
+			Sep: { type: Number, default: 0 },
 			Oct: { type: Number, default: 0 },
 			Nov: { type: Number, default: 0 },
 			Dec: { type: Number, default: 0 },

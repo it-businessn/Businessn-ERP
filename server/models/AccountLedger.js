@@ -5,6 +5,7 @@ const accountLedgerSchema = new mongoose.Schema(
 		accCode: String,
 		accountName: String,
 		description: String,
+		department: String,
 		companyName: { type: String, ref: "Company" },
 		totalJournalEntries: Number,
 		totalCredit: Number,

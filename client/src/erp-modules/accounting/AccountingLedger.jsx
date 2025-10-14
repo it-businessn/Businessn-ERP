@@ -45,7 +45,7 @@ const AccountingLedger = () => {
 	useEffect(() => {
 		const fetchAllAccounts = async () => {
 			try {
-				const { data } = await AccountService.getAllAccounts(company);
+				const { data } = await AccountService.getLedgers(company);
 				setAccounts(data);
 				setFilteredAccounts(data);
 			} catch (error) {

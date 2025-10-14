@@ -1,3 +1,4 @@
+const AccountLedger = require("../models/AccountLedger");
 const BudgetAccount = require("../models/BudgetAccount");
 const GeneralJournal = require("../models/GeneralJournal");
 
@@ -67,10 +68,14 @@ const updateBudgetAccount = async (req, res) => {
 
 const addBudgetAccount = async (req, res) => {
 	try {
+		const { accCode, accountName, crew, companyName } = req.body;
 		const existingRecord = await BudgetAccount.findOne(req.body);
 		if (existingRecord) {
 			return res.status(409).json({ message: "Record already exists" });
 		}
+
+		const department = crew.includes("No department") ? "" : crew;
+		await AccountLedger.create({ accCode, accountName, department, companyName });
 		const newAcc = await BudgetAccount.create(req.body);
 		return res.status(201).json(newAcc);
 	} catch (error) {

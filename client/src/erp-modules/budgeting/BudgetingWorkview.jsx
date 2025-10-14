@@ -13,6 +13,7 @@ import BudgetQuickActions from "./BudgetQuickActions";
 const BudgetingWorkview = () => {
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const { crews, selectedCrew, setSelectedCrew } = useCrews(company);
+	const [dept, setDept] = useState(null);
 
 	const [refresh, setRefresh] = useState(false);
 	const [accounts, setAccounts] = useState(null);
@@ -20,6 +21,12 @@ const BudgetingWorkview = () => {
 
 	const [showModal, setShowModal] = useState(false);
 	const [accName, setAccName] = useState("");
+
+	useEffect(() => {
+		if (crews) {
+			setDept([...crews, { _id: "NoDept", name: "No department assigned" }]);
+		}
+	}, [crews]);
 
 	useEffect(() => {
 		const fetchDeptBudgetAccounts = async () => {
@@ -31,7 +38,9 @@ const BudgetingWorkview = () => {
 				console.error(error);
 			}
 		};
-		if (selectedCrew) fetchDeptBudgetAccounts();
+		if (selectedCrew) {
+			fetchDeptBudgetAccounts();
+		}
 	}, [selectedCrew, refresh]);
 
 	const handleInputChange = (value) => {
@@ -56,11 +65,11 @@ const BudgetingWorkview = () => {
 					w={"200px"}
 					border="1px solid var(--primary_button_bg)"
 					borderRadius="10px"
-					value={selectedCrew}
+					value={selectedCrew || ""}
 					placeholder="Select budget"
 					onChange={(e) => e.target.value && setSelectedCrew(e.target.value)}
 				>
-					{crews?.map(({ name, _id }) => (
+					{dept?.map(({ name, _id }) => (
 						<option value={name} key={_id}>
 							{`${name} FY 2026`}
 						</option>
@@ -73,7 +82,7 @@ const BudgetingWorkview = () => {
 					company={company}
 					isOpen={showModal}
 					setShowModal={setShowModal}
-					crews={crews}
+					crews={dept}
 					setRefresh={setRefresh}
 				/>
 			)}

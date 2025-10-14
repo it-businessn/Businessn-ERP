@@ -3,7 +3,9 @@ const router = express.Router();
 
 const accountingController = require("../controllers/accountingController");
 
-router.get("/:companyName", accountingController.getAccountLedgers);
+router.get("/:companyName", accountingController.getAccounts);
+
+router.get("/ledgers/:companyName", accountingController.getAccountLedgers);
 
 router.get("/dept/:companyName/:crew", accountingController.getDeptAccounts);
 

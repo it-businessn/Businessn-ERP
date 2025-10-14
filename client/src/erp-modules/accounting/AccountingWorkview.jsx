@@ -49,7 +49,7 @@ const AccountingWorkview = () => {
 	useEffect(() => {
 		const fetchAllAccounts = async () => {
 			try {
-				const { data } = await AccountService.getAllAccounts(company);
+				const { data } = await AccountService.getLedgers(company);
 				setAccounts(data);
 			} catch (error) {
 				console.error(error);

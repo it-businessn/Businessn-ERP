@@ -70,6 +70,19 @@ const getDeptAccounts = async (req, res) => {
 	}
 };
 
+const getAccounts = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const accounts = await AccountLedger.find({ companyName }).sort({
+			accCode: -1,
+		});
+
+		return res.status(200).json(accounts);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
 const getAccountLedgers = async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -127,4 +140,5 @@ module.exports = {
 	addAccountLedger,
 	getAccountLedgers,
 	getDeptAccounts,
+	getAccounts,
 };
