@@ -62,6 +62,7 @@ const timecardRoutes = require("./routes/timecardRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const userRoutes = require("./routes/userRoutes");
 const t4SlipRoutes = require("./routes/t4SlipRoutes");
+const vopayRoutes = require("./routes/vopayRoutes");
 
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
@@ -177,7 +178,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/timesheet", timesheetRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/generate-t4", t4SlipRoutes);
-// app.use("/api/payslips", payslipRoutes);
+app.use("/api/vopay", vopayRoutes);
 // app.use("/api/tasks", taskRoutes);
 // app.use("/api/tasks/:taskId/subtask", subTaskRoutes);
 // app.use("/api/tax", taxRoutes);

@@ -17,7 +17,7 @@ export const RolesList = ({ roleList, handleEdit }) => {
 				{roleList?.map((role) => (
 					<Tr key={role?._id}>
 						<Td>{role?.name}</Td>
-						<Td>{role?.description}</Td>
+						<Td whiteSpace="pre-wrap">{role?.description}</Td>
 						<Td>
 							<HStack spacing={2}>
 								<IconButton

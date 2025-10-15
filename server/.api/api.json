@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "vopay-api",
+      "source": "@vopay-api/v2.0#89a1jmg9kythe",
+      "integrity": "sha512-Ic0IJhKH24e0g7DFJ3or1hOCgqHauT6JcDBDkqkXdM9aNcBSJDJOCZZT8T3bcWNPK3zDwDtA47WJRfGNaoHS/w==",
+      "installerVersion": "6.1.3"
+    }
+  ]
+}

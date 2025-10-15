@@ -10,6 +10,7 @@ import CostCenterPanel from "./cost-center";
 import ModulePanel from "./modules";
 import PaygroupPanel from "./paygroup";
 import RolePanel from "./system-access-level";
+import VoPayPanel from "./vopay";
 
 const Configuration = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -33,6 +34,11 @@ const Configuration = () => {
 	useEffect(() => {
 		if (isBusinessN(company) || isShadowUser(user?.role)) {
 			setSetupList((prev) => [
+				{
+					id: 6,
+					type: "Setup Vopay",
+					name: <VoPayPanel company={company} />,
+				},
 				{
 					id: 0,
 					type: "Manage Companies",
