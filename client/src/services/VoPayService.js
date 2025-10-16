@@ -5,6 +5,10 @@ const VoPayService = {
 		return apiService.get("/vopay");
 	},
 
+	async getOnboardingLink(accountId) {
+		return apiService.get(`/vopay/${accountId}`);
+	},
+
 	async addPartner(data) {
 		return apiService.post("/vopay", data);
 	},

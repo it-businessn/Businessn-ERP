@@ -5,6 +5,10 @@ const vopayController = require("../controllers/vopayController");
 
 router.get("/", vopayController.getPartnerAccount);
 
-router.post("/", vopayController.createVoPayAccountPartner);
+router.get("/:accountId", vopayController.getAccountOnboardingUrl);
+
+router.post("/", vopayController.createVoPayAccountEmployer);
+
+router.post("/client", vopayController.createClientAccountEmployee);
 
 module.exports = router;

@@ -17,6 +17,7 @@ const getPartnerAccount = async (req, res) => {
 			Key,
 			Signature,
 		});
+
 		res.status(200).json(JSON.parse(data));
 	} catch (error) {
 		res
@@ -25,7 +26,26 @@ const getPartnerAccount = async (req, res) => {
 	}
 };
 
-const createVoPayAccountPartner = async (req, res) => {
+const getAccountOnboardingUrl = async (req, res) => {
+	try {
+		const { accountId } = req.params;
+
+		const { data } = await vopayApi.partnerAccountOnboardingURLGET({
+			AccountID,
+			Key,
+			Signature,
+			VopayAccountID: accountId,
+		});
+		// console.log(accountId, AccountID, Key, Signature);
+		res.status(200).json(JSON.parse(data));
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
+const createVoPayAccountEmployer = async (req, res) => {
 	try {
 		const { name, email, country } = req.body;
 
@@ -45,7 +65,54 @@ const createVoPayAccountPartner = async (req, res) => {
 	}
 };
 
+const createClientAccountEmployee = async (req, res) => {
+	try {
+		const {
+			ClientAccountID,
+			FirstName,
+			LastName,
+			EmailAddress,
+			Address1,
+			City,
+			Province,
+			Country,
+			Nationality,
+			PostalCode,
+			Currency,
+			PhoneNumber,
+			DOB,
+			SINLastDigits,
+		} = req.body;
+
+		const { data } = await vopayApi.clientAccountIndividualPOST({
+			AccountID,
+			Key,
+			Signature,
+			ClientAccountID,
+			FirstName,
+			LastName,
+			EmailAddress,
+			Address1,
+			City,
+			Province,
+			Country,
+			Nationality,
+			PostalCode,
+			Currency,
+			PhoneNumber,
+			DOB,
+			SINLastDigits,
+		});
+		res.status(200).json(JSON.parse(data));
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
 module.exports = {
-	createVoPayAccountPartner,
+	createVoPayAccountEmployer,
+	createClientAccountEmployee,
 	getPartnerAccount,
+	getAccountOnboardingUrl,
 };

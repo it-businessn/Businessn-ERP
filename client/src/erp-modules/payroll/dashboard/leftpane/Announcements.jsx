@@ -33,10 +33,14 @@ const Announcements = ({ company }) => {
 	const sendMessage = async () => {
 		try {
 			await CommunicationService.addAnnouncement({
-				title: "Minimum Wage Increase Effective June 1, 2025",
-				message: `As per the recent update from the Government of British Columbia, the general minimum wage increased from $17.40 to $17.85 per hour, effective June 1, 2025. To ensure compliance with the Employment Standards Act, please follow the steps below: Wage Adjustment Requirements
-•	Effective Date: The new rate of $17.85/hour applies to all hours worked on or after June 1, 2025, regardless of the pay period or pay date.
-•	Do Not Pro-rate: If an employee works a shift that begins in May and ends in June, only the June hours must be paid at the new rate.Please ask your representative if you have any questions and they will be happy to help you!`,
+				title: "Can Statutory Holidays Be Moved to Another Day?",
+				message: `Yes! Employers and employees may agree in writing to observe a statutory holiday on a different day — for example, moving a mid-week holiday to Monday for convenience.
+				Key Points
+•	Agreement: Both parties must consent in writing.
+•	Entitlements: The substituted day must offer the same pay and benefits as the original holiday.
+•	Records: Keep a copy of the agreement for at least four years.
+Reference: Section 48, Employment Standards Act (British Columbia).
+Please contact your representative if you have any questions — they’ll be happy to help!`,
 				senderId: "bot",
 				companyName: company,
 			});
@@ -47,7 +51,7 @@ const Announcements = ({ company }) => {
 	return (
 		<BoxCard bg={"white"} pb={0} h={"93%"} css={tabScrollCss}>
 			<VStack w={"100%"} h={"100%"} justifyContent="space-between" alignItems="start">
-				{announcements?.map(({ title, message, createdOn, _id }) => (
+				{announcements?.map(({ title, message, createdOn, _id }, index) => (
 					<Box key={_id} w={"70%"}>
 						<Box
 							borderRadius="lg"
@@ -71,38 +75,78 @@ const Announcements = ({ company }) => {
 											/>
 										);
 									})} */}
-								<NormalTextTitle
-									whiteSpace="pre-wrap"
-									title="As per the recent update from the Government of British Columbia, the general minimum wage increased from $17.40 to $17.85 per hour, effective June 1, 2025."
-									size="xs"
-								/>
-								<NormalTextTitle
-									whiteSpace="pre-wrap"
-									title="To ensure compliance with the Employment Standards Act, please follow the steps below: "
-									size="xs"
-								/>
-								<NormalTextTitle
-									whiteSpace="pre-wrap"
-									title="Wage Adjustment Requirements"
-									size="xs"
-								/>
-								<NormalTextTitle
-									whiteSpace="pre-wrap"
-									title="•	Effective Date: The new rate of $17.85/hour applies to all hours worked on or
-											after June 1, 2025, regardless of the pay period or pay date. "
-									size="xs"
-								/>
-								<NormalTextTitle
-									whiteSpace="pre-wrap"
-									title="•	Do Not Pro-rate: If an employee works a shift that begins in May and ends in June, only the June hours must be paid at the new rate."
-									size="xs"
-								/>
+								{index == 0 && (
+									<>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="Yes! Employers and employees may agree in writing to observe a statutory holiday on a different day — for example, moving a mid-week holiday to Monday for convenience."
+											size="xs"
+										/>
 
-								<NormalTextTitle
-									whiteSpace="pre-wrap"
-									title="Please ask your representative if you have any questions and they will be happy to help you!"
-									size="xs"
-								/>
+										<NormalTextTitle whiteSpace="pre-wrap" title="Key Points" size="xs" />
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="•	Agreement: Both parties must consent in writing."
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="•	Entitlements: The substituted day must offer the same pay and benefits as the original holiday."
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="•	Records: Keep a copy of the agreement for at least four years."
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="Reference: Section 48, Employment Standards Act (British Columbia)."
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="Please contact your representative if you have any questions — they’ll be happy to help!"
+											size="xs"
+										/>
+									</>
+								)}
+								{index == 1 && (
+									<>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="As per the recent update from the Government of British Columbia, the general minimum wage increased from $17.40 to $17.85 per hour, effective June 1, 2025."
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="To ensure compliance with the Employment Standards Act, please follow the steps below: "
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="Wage Adjustment Requirements"
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="•	Effective Date: The new rate of $17.85/hour applies to all hours worked on or
+											after June 1, 2025, regardless of the pay period or pay date. "
+											size="xs"
+										/>
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="•	Do Not Pro-rate: If an employee works a shift that begins in May and ends in June, only the June hours must be paid at the new rate."
+											size="xs"
+										/>
+
+										<NormalTextTitle
+											whiteSpace="pre-wrap"
+											title="Please ask your representative if you have any questions and they will be happy to help you!"
+											size="xs"
+										/>
+									</>
+								)}
 							</VStack>
 						</Box>
 
@@ -135,7 +179,7 @@ const Announcements = ({ company }) => {
 
 					<Button
 						onClick={sendMessage}
-						isDisabled={true}
+						// isDisabled={true}
 						variant={"ghost"}
 						size={"sm"}
 						rightIcon={<BsFillSendFill />}
