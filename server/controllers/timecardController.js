@@ -32,7 +32,7 @@ const getTADUsers = async (req, res) => {
 		const result = await EmployeeTADProfileInfo.find({
 			companyName: COMPANIES.NW,
 		}).select(
-			"companyName firstName middleName lastName cardNum timeManagementBadgeID employmentDepartment createdOn isNewUser",
+			"companyName firstName middleName lastName cardNum timeManagementBadgeID tadDevice createdOn isNewUser",
 		);
 		return res.status(200).json(result);
 	} catch (error) {
@@ -58,7 +58,7 @@ const getFilteredTADUsers = async (req, res) => {
 			companyName: COMPANIES.NW,
 			timeManagementBadgeID: { $nin: timecardBadges },
 		}).select(
-			"companyName firstName middleName lastName cardNum timeManagementBadgeID employmentDepartment createdOn isNewUser",
+			"companyName firstName middleName lastName cardNum timeManagementBadgeID tadDevice createdOn isNewUser",
 		);
 		return res.status(200).json(result);
 	} catch (error) {
@@ -457,11 +457,14 @@ const updateTADEmployee = async (empId, companyName, positionData) => {
 
 	const { firstName, middleName, lastName } = empProfileInfo;
 
+	const dept = positionData?.employmentDepartment?.toLowerCase();
+	const tadDevice = dept.includes("restaurant") ? "kitchen" : "maintenance";
+
 	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId, companyName });
 	if (tadUserExists) {
 		tadUserExists.cardNum = positionData?.employeeCardNumber;
 		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
-		tadUserExists.employmentDepartment = positionData?.employmentDepartment;
+		tadUserExists.tadDevice = tadDevice;
 		return await tadUserExists.save();
 	}
 	if (!tadUserExists && positionData?.timeManagementBadgeID) {
@@ -473,7 +476,7 @@ const updateTADEmployee = async (empId, companyName, positionData) => {
 			lastName,
 			cardNum: positionData?.employeeCardNumber,
 			timeManagementBadgeID: positionData?.timeManagementBadgeID,
-			employmentDepartment: positionData?.employmentDepartment,
+			tadDevice,
 		});
 	}
 };
