@@ -179,7 +179,7 @@ Please contact your representative if you have any questions — they’ll be ha
 
 					<Button
 						onClick={sendMessage}
-						// isDisabled={true}
+						isDisabled={true}
 						variant={"ghost"}
 						size={"sm"}
 						rightIcon={<BsFillSendFill />}

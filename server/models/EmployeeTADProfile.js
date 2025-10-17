@@ -9,6 +9,7 @@ const employeeTADProfileInfoSchema = new mongoose.Schema(
 		lastName: String,
 		cardNum: String,
 		timeManagementBadgeID: String,
+		employmentDepartment: String,
 		isNewUser: { type: Boolean, default: true },
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
