@@ -53,7 +53,7 @@ const Tickets = () => {
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 	return (
-		<PageLayout width="full" title={"Tickets"} showDate isTimesheet bg="#f9f9fb">
+		<PageLayout width="full" title={"Tickets"} showDate isTimesheet>
 			<HStack spacing={3} justify={"flex-end"} mt={-8}>
 				<LeftIconButton
 					name="New Ticket"

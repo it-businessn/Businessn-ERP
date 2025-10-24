@@ -1,10 +1,11 @@
 import { Avatar, HStack, VStack } from "@chakra-ui/react";
+import BoxCard from "./card";
 import NormalTextTitle from "./NormalTextTitle";
 import TextTitle from "./text/TextTitle";
 
 const UserStatInfo = ({ name, email, stats }) => {
 	return (
-		<>
+		<BoxCard>
 			<VStack justify="center" align="center" mb="1" w={{ base: "auto", md: "106%" }} spacing={0}>
 				<Avatar borderRadius="10%" name={name} src={name} />
 				<TextTitle title={name} />
@@ -18,7 +19,7 @@ const UserStatInfo = ({ name, email, stats }) => {
 					</VStack>
 				))}
 			</HStack>
-		</>
+		</BoxCard>
 	);
 };
 

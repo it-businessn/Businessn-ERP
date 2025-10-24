@@ -247,22 +247,22 @@ const Timesheet = ({
 
 	useEffect(() => {
 		if (formData?.approve !== undefined) {
-			if (formData?.approve) {
-				const currentRecord = timesheetData.find((record) => record._id === formData?.recordId);
-				const hasOverlap = checkOverlaps(currentRecord);
-				if (hasOverlap) {
-					toast({
-						title: "Time overlaps with another entry.",
-						description:
-							"Please adjust your timesheet. Records cannot overlap for the same employee on the same date.",
-						status: "error",
-						duration: 3000,
-						isClosable: true,
-						position: "top-right",
-					});
-					return;
-				}
-			}
+			// if (formData?.approve) {
+			// 	const currentRecord = timesheetData.find((record) => record._id === formData?.recordId);
+			// 	const hasOverlap = checkOverlaps(currentRecord);
+			// 	if (hasOverlap) {
+			// 		toast({
+			// 			title: "Time overlaps with another entry.",
+			// 			description:
+			// 				"Please adjust your timesheet. Records cannot overlap for the same employee on the same date.",
+			// 			status: "error",
+			// 			duration: 3000,
+			// 			isClosable: true,
+			// 			position: "top-right",
+			// 		});
+			// 		return;
+			// 	}
+			// }
 			handleSubmit();
 		}
 	}, [formData?.approve, formData?.recordId]);

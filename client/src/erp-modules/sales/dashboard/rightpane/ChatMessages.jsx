@@ -78,7 +78,7 @@ const ChatMessages = ({ userId, company }) => {
 	const NoMessage = ({ title }) => <TextTitle color="var(--banner_bg)" p="10px" title={title} />;
 
 	return (
-		<Box mt={2} fontWeight="bold">
+		<Box fontWeight="bold" borderTop={"1.5px solid var(--main_color_black)"}>
 			{userConversation ? (
 				<>
 					<HStack>

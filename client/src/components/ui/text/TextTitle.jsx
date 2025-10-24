@@ -27,13 +27,20 @@ const TextTitle = ({
 	h,
 	borderTop,
 	ml,
+	my,
+	pb,
+	borderBottom,
+	zIndex,
 }) => (
 	<Text
+		zIndex={zIndex}
 		borderTop={borderTop}
+		borderBottom={borderBottom}
 		textTransform={textTransform}
 		cursor={cursor}
 		mr={mr}
 		ml={ml}
+		pb={pb}
 		onClick={onClick}
 		borderRadius={borderRadius}
 		bg={bg}

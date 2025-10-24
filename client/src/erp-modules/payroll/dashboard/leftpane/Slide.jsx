@@ -17,7 +17,7 @@ function Slide({ content, animationConfig, moveSlide }) {
 			width="100%"
 			p="0.5em 0.8em"
 			// backgroundImage={currentImg}
-			bg="#faf9f5"
+			bg="var(--primary_bg)"
 			backgroundSize="cover"
 			color="var(--main_color)"
 			boxShadow="md"

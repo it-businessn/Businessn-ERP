@@ -95,13 +95,7 @@ const MiniCalendar = ({ user, company, isPayrollDashboard }) => {
 	};
 	return (
 		events && (
-			<Box
-				p={3}
-				bg={"var(--primary_bg)"}
-				border="3px solid var(--main_color)"
-				borderRadius="10px"
-				fontWeight="bold"
-			>
+			<Box px="1em" pb={5} borderBottom={"1.5px solid var(--main_color_black)"}>
 				<Calendar
 					className="mini_cal"
 					localizer={localizer}

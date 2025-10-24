@@ -18,7 +18,7 @@ API.interceptors.request.use(
 	(error) => {
 		if (error.response?.status === 429) {
 			alert("Too many requests — you have been logged out for security.");
-			redirectLogin();
+			// redirectLogin();
 		}
 		Promise.reject(error);
 	},

@@ -7,7 +7,7 @@ import LocalStorageService from "services/LocalStorageService";
 import LeftPane from "./leftpane";
 import RightPane from "./rightpane";
 
-const Dashboard = () => {
+const PayrollDashboard = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
 	const {
@@ -29,21 +29,19 @@ const Dashboard = () => {
 
 	return (
 		<PageLayout
-			hasMultiPaygroups={hasMultiPaygroups}
-			width={"35%"}
-			title="Dashboard"
-			showPayGroup={true}
+			title=""
+			showPayGroup={false}
 			data={payGroups}
 			selectAttr="name"
 			selectPlaceholder="Select Paygroup"
 			selectedValue={selectedPayGroupOption}
 			handleChange={handleChange}
+			p={"2em 8em"}
 		>
 			<SimpleGrid
 				h={"100%"}
 				columns={{ base: 1, md: 1, lg: 2 }}
-				spacing="4"
-				mt="4"
+				spacing="10"
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<LeftPane
@@ -65,4 +63,5 @@ const Dashboard = () => {
 		</PageLayout>
 	);
 };
-export default Dashboard;
+
+export default PayrollDashboard;

@@ -22,7 +22,7 @@ const PageLayout = ({
 	pb = 0,
 	isMobile,
 	mobileTitlePadding,
-	bg = "var(--primary_bg)",
+	bg = "var(--page_layout_bg)",
 	showPayGroup,
 	hasMultiPaygroups,
 	overflow = "hidden",
@@ -33,7 +33,7 @@ const PageLayout = ({
 	<Box
 		p={p}
 		pr={pr}
-		mt={isMobile && "1em"}
+		mt={isMobile ? "1em" : "6em"}
 		overflow={overflow}
 		zIndex={zIndex}
 		position={position}

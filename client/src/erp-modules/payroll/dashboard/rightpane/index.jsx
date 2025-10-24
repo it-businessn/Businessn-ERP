@@ -1,4 +1,4 @@
-import { Box, VStack } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
@@ -44,23 +44,13 @@ const RightPane = ({
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<BoxCard borderWidth="0" bg="var(--primary_bg)" p={0}>
-			<VStack spacing={3} align="stretch">
-				<Box bg="white" borderRadius="lg" p={4} boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)">
-					<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
-				</Box>
+		<BoxCard p={0} title={"Activity Manager"}>
+			<Stack spacing={3}>
+				<MiniCalendar user={selectedUser} company={company} isPayrollDashboard />
 
-				<Box bg="white" py={2} px={4} borderRadius="lg" boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)">
-					<TabsButtonGroup
-						mb={1}
-						mt={1}
-						tabs={TABS}
-						setViewMode={setViewMode}
-						viewMode={viewMode}
-					/>
-					{showComponent(viewMode)}
-				</Box>
-			</VStack>
+				<TabsButtonGroup mb={0} tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
+				{showComponent(viewMode)}
+			</Stack>
 		</BoxCard>
 	);
 };

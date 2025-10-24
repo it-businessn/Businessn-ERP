@@ -1,5 +1,4 @@
-import { Box, Button, HStack, Input, VStack } from "@chakra-ui/react";
-import BoxCard from "components/ui/card";
+import { Box, Button, HStack, Input, Stack, VStack } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -49,8 +48,56 @@ Please contact your representative if you have any questions — they’ll be ha
 		}
 	};
 	return (
-		<BoxCard bg={"white"} pb={0} h={"93%"} css={tabScrollCss}>
-			<VStack w={"100%"} h={"100%"} justifyContent="space-between" alignItems="start">
+		<Stack
+			spacing={"3em"}
+			alignItems="start"
+			justifyContent="start"
+			position="relative"
+			zIndex={1}
+			justify="space-between"
+			align="center"
+			p={"4em"}
+			color="white"
+			height={"calc(95vh - 145px)"}
+			overflowY={"auto"}
+			css={tabScrollCss}
+		>
+			<HStack
+				w={"100%"}
+				spacing={0}
+				alignItems={"center"}
+				borderRadius={"20px"}
+				bg={"var(--primary_bg)"}
+			>
+				<Input
+					size="sm"
+					placeholder="Type your message..."
+					border={"none"}
+					bg={"var(--primary_bg)"}
+					_focusVisible={{
+						border: "none",
+						outline: "none",
+						boxShadow: "none",
+					}}
+					_focus={{ border: "none", outline: "none", boxShadow: "none" }}
+					value={message}
+					onChange={(e) => setMessage(e.target.value)}
+					// onKeyPress={handleKeyPress}
+					readOnly
+				/>
+
+				<Button
+					onClick={sendMessage}
+					isDisabled={true}
+					variant={"ghost"}
+					size={"sm"}
+					rightIcon={<BsFillSendFill />}
+					color={"var(--primary_button_bg)"}
+				>
+					Send
+				</Button>
+			</HStack>
+			<Box css={tabScrollCss}>
 				{announcements?.map(({ title, message, createdOn, _id }, index) => (
 					<Box key={_id} w={"70%"}>
 						<Box
@@ -153,44 +200,8 @@ Please contact your representative if you have any questions — they’ll be ha
 						<NormalTextTitle title={moment(createdOn).fromNow()} size="xs" />
 					</Box>
 				))}
-				<HStack
-					w={"100%"}
-					spacing={2}
-					alignItems={"center"}
-					borderRadius={"20px"}
-					border={"2px solid #eee"}
-				>
-					<Input
-						size="sm"
-						placeholder="Type your message..."
-						bg={"transparent"}
-						border={"none"}
-						_focusVisible={{
-							border: "none",
-							outline: "none",
-							boxShadow: "none",
-						}}
-						_focus={{ border: "none", outline: "none", boxShadow: "none" }}
-						value={message}
-						onChange={(e) => setMessage(e.target.value)}
-						// onKeyPress={handleKeyPress}
-						readOnly
-					/>
-
-					<Button
-						onClick={sendMessage}
-						isDisabled={true}
-						variant={"ghost"}
-						size={"sm"}
-						rightIcon={<BsFillSendFill />}
-						bg={"var(--primary_bg)"}
-						color={"var(--primary_button_bg)"}
-					>
-						Send
-					</Button>
-				</HStack>
-			</VStack>
-		</BoxCard>
+			</Box>
+		</Stack>
 	);
 };
 

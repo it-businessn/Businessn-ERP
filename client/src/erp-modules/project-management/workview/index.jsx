@@ -10,7 +10,7 @@ const WorkView = ({ isDashboard = false }) => {
 	const managers = useManager(company);
 
 	return (
-		<PageLayout pr={0} title={"File Overview"} showBgLayer overflowY="hidden">
+		<PageLayout pr={0} p={"4em 8em"} title={"File Overview"} showBgLayer overflowY="hidden">
 			<Box
 				p={0}
 				bg={"var(--primary_bg)"}

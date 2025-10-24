@@ -63,7 +63,7 @@ const PayrollUserStatInfo = ({
 				<TextTitle title={name} />
 				<NormalTextTitle size="sm" title={email} color="gray.500" />
 			</VStack> */}
-			<HStack justify="space-between">
+			<HStack justify="space-between" p="1em" mt={-2}>
 				{stats.approvalDate &&
 					Object.values(stats)?.map(({ name, value, icon: Icon, iconColor }) => (
 						<Box

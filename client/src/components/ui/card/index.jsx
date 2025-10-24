@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import TextTitle from "../text/TextTitle";
 
 const BoxCard = ({
 	children,
@@ -25,6 +26,8 @@ const BoxCard = ({
 	css,
 	pt,
 	flex,
+	title,
+	borderBottomWidth,
 }) => (
 	<Box
 		flex={flex}
@@ -33,8 +36,11 @@ const BoxCard = ({
 		flexWrap={flexWrap}
 		boxShadow={boxShadow}
 		bg={bg}
-		border={`${borderWidth} solid ${borderColor}`}
-		borderRadius={borderRadius}
+		border={`${borderWidth} solid var(--main_color_black)`}
+		borderLeft={"none"}
+		borderRight={"none"}
+		borderBottomWidth={borderBottomWidth}
+		borderRadius={0}
 		color={"var(--nav_color)"}
 		display={display}
 		flexDir={flexDir}
@@ -52,6 +58,16 @@ const BoxCard = ({
 		minH={minH}
 		w={width}
 	>
+		{title && (
+			<TextTitle
+				p="1em"
+				mb={3}
+				size="lg"
+				color="var(--banner_bg)"
+				title={title}
+				borderBottom={`1.5px solid var(--main_color_black)`}
+			/>
+		)}
 		{children}
 	</Box>
 );

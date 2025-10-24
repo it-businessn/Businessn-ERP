@@ -46,6 +46,7 @@
 	--lead_cards_border: #e3e5f1;
 	--main_color: #ffffff;
 	--primary_bg: #f9f9fb;
+	--page_layout_bg: #e1d7e0;
 	--shift_row: ##f0f2f8;
 	--primary_bg_1: #f4f8fa;
 	--nav_color: #485763;
@@ -284,13 +285,12 @@ button:active {
 } */
 .main_content {
 	min-width: 88vw;
-	margin-top: 6em;
-	max-height: calc(var(--base));
 	overflow: auto;
 	width: 100vw;
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
+	background-color: var(--page_layout_bg);
 }
 .ticket_container {
 	max-height: calc(100vh - 475px);

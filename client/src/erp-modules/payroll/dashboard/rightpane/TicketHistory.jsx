@@ -1,8 +1,6 @@
 import { Box, HStack, List, ListItem, VStack } from "@chakra-ui/react";
 import SkeletonLoader from "components/SkeletonLoader";
 import LinkButton from "components/ui/button/LinkButton";
-import BoxCard from "components/ui/card";
-import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import NoteDetails from "erp-modules/project-management/tickets/NoteDetails";
@@ -32,7 +30,13 @@ const TicketHistory = ({ userId, company, setCount, height = "calc(100vh - 528px
 	}, [userId]);
 
 	return (
-		<Box maxH={height} mt={3} overflowY={"auto"} css={tabScrollCss}>
+		<Box
+			fontWeight="bold"
+			borderTop={"1.5px solid var(--main_color_black)"}
+			maxH={height}
+			overflowY={"auto"}
+			css={tabScrollCss}
+		>
 			<List spacing={2}>
 				{isLoading ? (
 					<SkeletonLoader />
@@ -40,32 +44,35 @@ const TicketHistory = ({ userId, company, setCount, height = "calc(100vh - 528px
 					ticketData?.map(
 						({ _id, ticketNumber, category, priority, topic, issue, file, originalname }) => (
 							<ListItem key={_id}>
-								<BoxCard p={" 0.5em 1em"} boxShadow="sm">
-									<HStack justifyContent="space-between" alignItems="end" spacing={0}>
-										<VStack spacing={0}>
-											<TextTitle size="xs" title={`Ticket#: ${ticketNumber}`} />
-											<TextTitle size="xs" title={`Category: ${category}`} />
-											<TextTitle size="xs" title={`Priority: ${priority}`} />
-											<TextTitle size="xs" whiteSpace="wrap" title={`Topic: ${topic}`} />
-										</VStack>
-										<LinkButton
-											onClick={() => {
-												setOpenNote(true);
-												ticketDetails.current = { issue, topic, ticketNumber, file, originalname };
-											}}
-											textDecor="underline"
-											fontSize="xs"
-											name="More details"
-										/>
-									</HStack>
-								</BoxCard>
+								<HStack
+									justifyContent="space-between"
+									alignItems="end"
+									spacing={0}
+									p={"1em"}
+									pb={0}
+									borderTop={"1.5px solid var(--main_color_black)"}
+								>
+									<VStack spacing={0}>
+										<TextTitle size="xs" title={`Ticket#: ${ticketNumber}`} />
+										<TextTitle size="xs" title={`Category: ${category}`} />
+										<TextTitle size="xs" title={`Priority: ${priority}`} />
+										<TextTitle size="xs" whiteSpace="wrap" title={`Topic: ${topic}`} />
+									</VStack>
+									<LinkButton
+										onClick={() => {
+											setOpenNote(true);
+											ticketDetails.current = { issue, topic, ticketNumber, file, originalname };
+										}}
+										textDecor="underline"
+										fontSize="xs"
+										name="More details"
+									/>
+								</HStack>
 							</ListItem>
 						),
 					)
 				) : (
-					<BoxCard p="0.5em">
-						<NormalTextTitle size="sm" title="No record found" />
-					</BoxCard>
+					<TextTitle color="var(--banner_bg)" p="10px" title={"No record found"} />
 				)}
 			</List>
 			{openNote && (

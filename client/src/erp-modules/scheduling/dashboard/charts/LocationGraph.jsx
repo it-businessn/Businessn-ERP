@@ -5,18 +5,7 @@ import { Doughnut } from "react-chartjs-2";
 
 const LocationGraph = ({ roleMonthlyTotals }) => {
 	const options = {
-		plugins: {
-			legend: {
-				position: "bottom",
-			},
-		},
-		tooltips: {
-			callbacks: {
-				label(tooltipItem, data) {
-					return `Total Cost: $${data["datasets"][0].data[tooltipItem["index"]]}`;
-				},
-			},
-		},
+		plugins: { legend: { position: "bottom" } },
 	};
 
 	return (

@@ -1,10 +1,9 @@
-import { Box } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
 import UserStatInfo from "components/ui/UserStatInfo";
 import AppointmentHistory from "erp-modules/payroll/dashboard/rightpane/AppointmentHistory";
 import TasksHistory from "erp-modules/payroll/dashboard/rightpane/TasksHistory";
 import TicketHistory from "erp-modules/payroll/dashboard/rightpane/TicketHistory";
-import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ChatMessages from "./ChatMessages";
@@ -40,20 +39,12 @@ const RightPane = ({ selectedUser, stats, company }) => {
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;
 
 	return (
-		<Box
-			overflow={"hidden"}
-			overflowY={"auto"}
-			p="1em"
-			bg={"var(--primary_bg)"}
-			border="3px solid var(--main_color)"
-			borderRadius="10px"
-			css={tabScrollCss}
-		>
+		<Stack spacing={2}>
 			<UserStatInfo name={selectedUser?.fullName} email={selectedUser?.email} stats={stats} />
 			<MiniCalendar user={selectedUser} company={company} />
-			<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
+			<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} mb={0} />
 			{showComponent(viewMode)}
-		</Box>
+		</Stack>
 	);
 };
 

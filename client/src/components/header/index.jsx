@@ -32,7 +32,7 @@ const Navbar = ({
 
 	return (
 		<Box position="fixed" width="100%" zIndex={1} bg="var(--banner_bg)">
-			<HStack spacing={0} alignItems="center" pr={{ base: "0em", md: "1em" }}>
+			<HStack spacing={0} alignItems="center" px={{ base: "0em", md: "1em" }}>
 				<Logo />
 				<Flex
 					w="100%"

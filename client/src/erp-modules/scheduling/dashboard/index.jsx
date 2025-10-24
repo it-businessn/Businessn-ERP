@@ -181,7 +181,7 @@ const SchedulingDashboard = () => {
 	};
 
 	return (
-		<PageLayout title={""}>
+		<PageLayout title={""} p={"4em 8em"}>
 			<HStack pb={3} alignItems={"center"} justifyContent={"space-between"} spacing={4}>
 				<HStack flex={0.7} alignItems={"center"} justifyContent={"space-between"}>
 					<TextTitle ml={3} title={"Dashboard"} />

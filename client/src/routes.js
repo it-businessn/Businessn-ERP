@@ -75,7 +75,7 @@ const ReportListView = lazy(() =>
 );
 const Reports = lazy(() => import("./erp-modules/payroll/reports/individual"));
 const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
-const Dashboard = lazy(() => import("erp-modules/payroll/dashboard"));
+const PayrollDashboard = lazy(() => import("erp-modules/payroll/dashboard"));
 const Employees = lazy(() => import("erp-modules/payroll/employees/pageview"));
 const ROE = lazy(() => import("erp-modules/payroll/roe"));
 const AffiliateListView = lazy(() => import("erp-modules/payroll/affiliate/list-view"));
@@ -310,7 +310,7 @@ export const router = createBrowserRouter([
 			/* Payroll */
 			{
 				path: ROUTE_PATH.PAYROLL,
-				element: <Dashboard />,
+				element: <PayrollDashboard />,
 			},
 			{
 				path: workViewPath,

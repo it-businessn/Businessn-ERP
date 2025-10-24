@@ -1,10 +1,10 @@
-import BoxCard from "components/ui/card";
-import NormalTextTitle from "components/ui/NormalTextTitle";
+import { Box } from "@chakra-ui/react";
+import TextTitle from "components/ui/text/TextTitle";
 
 const TasksHistory = () => {
 	return (
-		<BoxCard p="0.5em">
-			<NormalTextTitle size="sm" title="Coming soon" />
+		<Box borderTop={"1.5px solid var(--main_color_black)"}>
+			<TextTitle color="var(--banner_bg)" p="10px" title={"Coming soon"} />;
 			{/* <List spacing={2}>
 				<ListItem>
 					<BoxCard>
@@ -12,7 +12,7 @@ const TasksHistory = () => {
 					</BoxCard>
 				</ListItem>
 			</List> */}
-		</BoxCard>
+		</Box>
 	);
 };
 

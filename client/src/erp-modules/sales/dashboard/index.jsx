@@ -37,6 +37,7 @@ const CRMDashboard = () => {
 			title={`CRM ${isManagerRole ? "Manager " : ""}Dashboard`}
 			data={employees}
 			selectedValue={selectedUser?.fullName || ""}
+			p={"4em 8em"}
 		>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}

@@ -12,11 +12,11 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb 
 			? isOutlineTab
 				? "var(--main_color)"
 				: highlightColor || "var(--banner_bg)"
-			: "var(--main_color)";
+			: "var(--primary_bg)";
 	const border = (type) => isOutlineTab && viewMode === type && "2px solid var(--banner_bg)";
 
 	return (
-		<Box mb={mb} mt={mt} bg={"var(--main_color)"} borderRadius={"1em"} px="5px" w={w}>
+		<Box mb={mb} mt={mt} bg={"var(--primary_bg)"} borderRadius={"1em"} px="5px" w={w}>
 			<ButtonGroup variant="solid" p={0} m={0}>
 				{tabs?.map(({ type, count, icon, highlightColor }) =>
 					type === "Tickets" ? (
