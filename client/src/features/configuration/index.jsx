@@ -10,7 +10,7 @@ import CostCenterPanel from "./cost-center";
 import ModulePanel from "./modules";
 import PaygroupPanel from "./paygroup";
 import RolePanel from "./system-access-level";
-// import VoPayPanel from "./vopay";
+import VoPayPanel from "./vopay";
 
 const Configuration = () => {
 	const company = LocalStorageService.getItem("selectedCompany");

@@ -6,11 +6,23 @@ import { COUNTRIES } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import VoPayService from "services/VoPayService";
 
-const PartnerForm = ({ setRefresh }) => {
+const EmployerWalletFundForm = ({ setRefresh }) => {
 	const toast = useToast();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const defaultFormData = { name: "", email: "", country: "" };
+	const defaultFormData = {
+		CompanyName: "TechCorp Ltd",
+		Address1: "123 Bay Street",
+		City: "Toronto",
+		Province: "ON",
+		Country: "CA",
+		PostalCode: "M5J2N1",
+		AccountNumber: "987654321",
+		FinancialInstitutionNumber: "001",
+		BranchTransitNumber: "12345",
+		Amount: 0.01,
+		Currency: "CAD",
+	};
 	const [formData, setFormData] = useState(defaultFormData);
 
 	const handleChange = (e) => {
@@ -21,7 +33,7 @@ const PartnerForm = ({ setRefresh }) => {
 	const submitClicked = async () => {
 		setIsSubmitting(true);
 		try {
-			const { data } = await VoPayService.addPartnerEmployer(formData);
+			const { data } = await VoPayService.fundEmployerWallet(formData);
 			if (data.Success === true) {
 				setRefresh((prev) => !prev);
 				setFormData(defaultFormData);
@@ -55,7 +67,7 @@ const PartnerForm = ({ setRefresh }) => {
 
 	return (
 		<>
-			<TextTitle size="lg" title={`Add New Account`} />
+			<TextTitle size="lg" title={`Employer Wallet Fund`} />
 			<InputFormControl
 				label={"Name"}
 				size={"sm"}
@@ -92,7 +104,6 @@ const PartnerForm = ({ setRefresh }) => {
 			</FormControl>
 
 			<ActionButtonGroup
-				isDisabled={!formData?.name || !formData.email || !formData.country}
 				submitBtnName="Add"
 				onOpen={submitClicked}
 				size="sm"
@@ -103,4 +114,4 @@ const PartnerForm = ({ setRefresh }) => {
 	);
 };
 
-export default PartnerForm;
+export default EmployerWalletFundForm;

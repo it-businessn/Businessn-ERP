@@ -1,0 +1,41 @@
+import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import VoPayService from "services/VoPayService";
+
+export const ClientEmployeeList = ({ clientEmployees }) => {
+	const getBankEmbedUrl = async (id) => {
+		try {
+			const { data } = await VoPayService.getEmployeeBankEmbedUrl(id);
+			if (data.EmbedURL) window.open(data.EmbedURL, "_blank");
+		} catch (error) {}
+	};
+
+	return (
+		<Table variant="simple" size="sm">
+			<Thead>
+				<Tr>
+					<Th>Name</Th>
+					<Th>Email</Th>
+					<Th>Phone</Th>
+					<Th>Address</Th>
+					<Th>ClientType</Th>
+					<Th>SINLastDigits</Th>
+				</Tr>
+			</Thead>
+			<Tbody>
+				{(!clientEmployees || clientEmployees?.length === 0) && (
+					<EmptyRowRecord data={clientEmployees} colSpan={3} />
+				)}
+				{clientEmployees?.map((user) => (
+					<Tr key={user?.ClientName} onClick={() => getBankEmbedUrl(user?.ClientAccountID)}>
+						<Td>{user?.ClientName}</Td>
+						<Td whiteSpace="pre-wrap">{user?.EmailAddress}</Td>
+						<Td>{user?.PhoneNumber}</Td>
+						<Td whiteSpace="pre-wrap">{`${user?.Address1}, ${user?.City} ${user?.Province} ${user?.Country} ${user?.PostalCode}`}</Td>
+						<Td>{user?.ClientType}</Td> <Td>{user?.SINLastDigits}</Td>
+					</Tr>
+				))}
+			</Tbody>
+		</Table>
+	);
+};

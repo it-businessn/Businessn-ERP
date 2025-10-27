@@ -3,12 +3,20 @@ const router = express.Router();
 
 const vopayController = require("../controllers/vopayController");
 
-router.get("/", vopayController.getPartnerAccount);
+router.post("/partner/account", vopayController.createPartnerEmployerAccount);
 
-router.get("/:accountId", vopayController.getAccountOnboardingUrl);
+router.get("/partner/account", vopayController.getPartnerEmployerAccounts);
 
-router.post("/", vopayController.createVoPayAccountEmployer);
+router.get("/account/submit-extended-info", vopayController.submitEmployerInfo);
 
-router.post("/client", vopayController.createClientAccountEmployee);
+router.get("/:vopayAccountId", vopayController.getAccountOnboardingUrl);
+
+router.get("/account/client-accounts", vopayController.getClientAccountEmployees);
+
+router.post("/account/client-accounts/individual", vopayController.createClientAccountEmployee);
+
+router.get("/iq11/generate-embed-url/:clientAccountId", vopayController.getEmployeeBankEmbedUrl);
+
+router.post("/eft/fund", vopayController.fundEmployerWallet);
 
 module.exports = router;

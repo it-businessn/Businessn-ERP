@@ -6,6 +6,7 @@ export const PartnerList = ({ partners }) => {
 	const getOnboardingLink = async (id) => {
 		try {
 			const { data } = await VoPayService.getOnboardingLink(id);
+			if (data.OnboardingURL) window.open(data.OnboardingURL, "_blank");
 		} catch (error) {}
 	};
 
