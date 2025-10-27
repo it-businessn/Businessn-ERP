@@ -10,6 +10,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import ActiveBadge from "components/ActiveBadge";
+import BoxCard from "components/ui/card";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -182,7 +183,9 @@ const Employees = () => {
 
 				<TabPanels flex="1" overflow="hidden">
 					{EMP_INFO_TABS.map(({ name, content }, i) => (
-						<TabPanel key={`${name}_content_${i}`}>{content}</TabPanel>
+						<TabPanel key={`${name}_content_${i}`}>
+							<BoxCard> {content}</BoxCard>
+						</TabPanel>
 					))}
 				</TabPanels>
 			</Tabs>

@@ -6,13 +6,13 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb 
 			? isOutlineTab
 				? "var(--banner_bg)"
 				: "var(--main_color)"
-			: "var(--nav_color)";
+			: "var(--main_color)";
 	const getBgColor = (type, highlightColor = null) =>
 		viewMode === type
 			? isOutlineTab
 				? "var(--main_color)"
-				: highlightColor || "var(--banner_bg)"
-			: "var(--primary_bg)";
+				: highlightColor || "#6b596b"
+			: "var(--nav_menu)";
 	const border = (type) => isOutlineTab && viewMode === type && "2px solid var(--banner_bg)";
 
 	return (

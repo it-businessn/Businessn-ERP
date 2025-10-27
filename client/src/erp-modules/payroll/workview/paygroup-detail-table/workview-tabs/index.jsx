@@ -6,7 +6,7 @@ import AmountAllocation from "./amount/AmountAllocation";
 // import EmployeeContribution fr om "./EmployeeContribution";
 import EmployeeDetails from "./EmployeeDetails";
 // import EmployerContribution from "./EmployerContribution";
-import { HStack } from "@chakra-ui/react";
+import { Box, HStack, Stack } from "@chakra-ui/react";
 import PopupMessage from "components/ui/PopupMessage";
 import TextTitle from "components/ui/text/TextTitle";
 import EmployeeContribution from "./ee-contribution/EmployeeContribution";
@@ -123,25 +123,27 @@ const PaygroupDetailTable = ({
 
 	return (
 		<BoxCard pb={0}>
-			<HStack w="30%" alignItems="center" justifyContent="start" mb="2px">
-				<TextTitle mb={2} width="200px" title={`Pay Number: ${payNum}`} />
-				<PopupMessage
-					isOpen={isOpen}
-					setIsOpen={setIsOpen}
-					handleClick={handleClick}
-					loggedInUser={loggedInUser}
-					setHighlightColor={setHighlightColor}
-					payrunOption={payrunOption}
-					setPayrunOption={setPayrunOption}
-					highlightColor={highlightColor}
-				/>
-			</HStack>
-			{company && (
-				<>
-					<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
-					{showComponent(viewMode)}
-				</>
-			)}
+			<Stack>
+				<HStack w="30%" alignItems="center" justifyContent="start" mb="2px">
+					<TextTitle mb={2} width="200px" title={`Pay Number: ${payNum}`} />
+					<PopupMessage
+						isOpen={isOpen}
+						setIsOpen={setIsOpen}
+						handleClick={handleClick}
+						loggedInUser={loggedInUser}
+						setHighlightColor={setHighlightColor}
+						payrunOption={payrunOption}
+						setPayrunOption={setPayrunOption}
+						highlightColor={highlightColor}
+					/>
+				</HStack>
+				{company && (
+					<>
+						<TabsButtonGroup tabs={TABS} setViewMode={setViewMode} viewMode={viewMode} />
+						<Box py="1em">{showComponent(viewMode)} </Box>
+					</>
+				)}
+			</Stack>
 		</BoxCard>
 	);
 };

@@ -109,7 +109,7 @@ const LeftPane = ({
 						transition: "all 0.3s ease",
 					}}
 					p={0}
-					title={"Payroll"}
+					title={"All Payroll Periods"}
 				>
 					<PayrollCard
 						payGroupSchedule={payGroupSchedule}

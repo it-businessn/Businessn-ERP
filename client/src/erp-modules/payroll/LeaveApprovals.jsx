@@ -1,4 +1,5 @@
-import { Badge, Box, Checkbox, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import { Badge, Checkbox, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
@@ -123,7 +124,7 @@ const LeaveApprovals = () => {
 	};
 	return (
 		<PageLayout title={"Leave Requests"}>
-			<Box overflow="auto" height="calc(100vh - 230px)" w={"100%"} css={tabScrollCss}>
+			<BoxCard px={0} overflow="auto" h="calc(100vh - 230px)" w={"100%"} css={tabScrollCss}>
 				<Table bg="var(--lead_cards_bg)" variant="simple">
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
@@ -218,7 +219,7 @@ const LeaveApprovals = () => {
 						)}
 					</Tbody>
 				</Table>
-			</Box>
+			</BoxCard>
 		</PageLayout>
 	);
 };

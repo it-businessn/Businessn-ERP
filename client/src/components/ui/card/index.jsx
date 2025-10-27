@@ -28,15 +28,17 @@ const BoxCard = ({
 	flex,
 	title,
 	borderBottomWidth,
+	border,
 }) => (
 	<Box
+		px={px}
 		flex={flex}
 		css={css}
 		minW={minW}
 		flexWrap={flexWrap}
 		boxShadow={boxShadow}
 		bg={bg}
-		border={`${borderWidth} solid var(--main_color_black)`}
+		border={borderWidth ? `${borderWidth} solid var(--main_color_black)` : border}
 		borderLeft={"none"}
 		borderRight={"none"}
 		borderBottomWidth={borderBottomWidth}
@@ -53,7 +55,6 @@ const BoxCard = ({
 		overflowY={overflowY}
 		p={p}
 		pb={pb}
-		px={px}
 		pt={pt}
 		minH={minH}
 		w={width}

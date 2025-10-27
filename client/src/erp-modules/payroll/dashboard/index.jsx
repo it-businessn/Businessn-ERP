@@ -42,7 +42,7 @@ const PayrollDashboard = () => {
 				h={"100%"}
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="10"
-				templateColumns={{ lg: "70% 30%" }}
+				templateColumns={{ lg: "70% 28%" }}
 			>
 				<LeftPane
 					company={company}

@@ -34,9 +34,9 @@ const Sidebar = ({
 	) : (
 		<Flex
 			boxShadow="md"
-			maxW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "12vw" }}
+			maxW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "14vw" }}
 			p={0}
-			minW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "12vw" }}
+			minW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "14vw" }}
 			mt="6.5em"
 			maxHeight={`calc(var(--custom_height))`}
 			overflowY="auto"

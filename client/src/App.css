@@ -84,6 +84,7 @@
 	--product4: #cadc52;
 	--product5: #adebc6;
 	--product6: #eea462;
+	--active_menu: rgba(255, 255, 255, 0.3);
 	--highlight_border: 2px solid #e8ebf4;
 	--highlight_gradient: linear-gradient(
 		58deg,
@@ -258,7 +259,7 @@ body {
 .navbarMenu.active button {
 	color: white;
 	font-weight: bold;
-	background-color: rgba(255, 255, 255, 0.3);
+	background-color: var(--active_menu);
 	border: none;
 	font-size: 0.95em;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -284,7 +285,7 @@ button:active {
   top: 3px;
 } */
 .main_content {
-	min-width: 88vw;
+	min-width: 86vw;
 	overflow: auto;
 	width: 100vw;
 	display: flex;
