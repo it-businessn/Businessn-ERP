@@ -23,6 +23,7 @@ const EmployerWalletFundForm = ({ setRefresh }) => {
 		Amount: 0.01,
 		Currency: "CAD",
 	};
+
 	const [formData, setFormData] = useState(defaultFormData);
 
 	const handleChange = (e) => {

@@ -3,10 +3,11 @@ import VoPayService from "services/VoPayService";
 import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
 import EmployerWalletFundForm from "./EmployerWalletFundForm";
 import { PartnerList } from "./PartnerList";
+import { ClientEmployeeList } from "./ClientEmployeeList";
 
 const VoPayPanel = ({ companyName }) => {
 	const [partners, setPartners] = useState(null);
-	const [clientEmployees, setClientEmployees] = useState(null);
+	const [wallets, setWallets] = useState(null);
 	const [refresh, setRefresh] = useState(null);
 
 	useEffect(() => {
@@ -18,16 +19,16 @@ const VoPayPanel = ({ companyName }) => {
 				console.error(error);
 			}
 		};
-		const fetchClientEmployees = async () => {
+		const fetchClientAccountWallets = async () => {
 			try {
-				const { data } = await VoPayService.getClientEmployees();
-				setClientEmployees(Object.values(data.ClientAccounts));
+				const { data } = await VoPayService.getClientAccountWallets();
+				setWallets(Object.values(data.ClientAccounts));
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchPartnerAccounts();
-		fetchClientEmployees();
+		fetchClientAccountWallets();
 	}, [refresh]);
 
 	return (
@@ -41,7 +42,7 @@ const VoPayPanel = ({ companyName }) => {
 			{/* <ConfigTabLayout
 				tableData={partners}
 				tableTitle="TechCorp Ltd"
-				tableContent={<ClientEmployeeList clientEmployees={clientEmployees} />}
+				tableContent={<ClientEmployeeList clientEmployees={wallets} />}
 				leftContent={<EmployerWalletFundForm setRefresh={setRefresh} />}
 			/> */}
 		</>

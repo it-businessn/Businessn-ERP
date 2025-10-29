@@ -124,7 +124,7 @@ const getPartnerEmployerAccounts = async (req, res) => {
 	}
 };
 
-const getAccountOnboardingUrl = async (req, res) => {
+const getBusinessAccountOnboardingUrl = async (req, res) => {
 	try {
 		const { vopayAccountId } = req.params;
 		const Signature = generateSignature();
@@ -142,7 +142,60 @@ const getAccountOnboardingUrl = async (req, res) => {
 	}
 };
 
-const getClientAccountEmployees = async (req, res) => {
+const getLinkedBankAccounts = async (req, res) => {
+	try {
+		const { accountId } = req.params;
+		const options = {
+			method: "GET",
+			headers: { accept: "application/json" },
+		};
+		const url = `${VOPAY_BASE_URL}bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const response = await fetch(url, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
+const getClientDefaultBankAccount = async (req, res) => {
+	try {
+		const { accountId } = req.params;
+		const options = {
+			method: "GET",
+			headers: { accept: "application/json" },
+		};
+		const url = `${VOPAY_BASE_URL}bank-account/default-bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const response = await fetch(url, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+const getClientAccountWallet = async (req, res) => {
+	try {
+		const { clientAccountId } = req.params;
+		const options = {
+			method: "GET",
+			headers: { accept: "application/json" },
+		};
+		const url = `${VOPAY_BASE_URL}account/client-accounts/wallets?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}&ClientAccountID=${clientAccountId}`;
+		const response = await fetch(url, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
+const getClientAccountWallets = async (req, res) => {
 	try {
 		const options = { method: "GET", headers: { accept: "application/json" } };
 		const url = `${VOPAY_BASE_URL}account/client-accounts?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
@@ -152,6 +205,94 @@ const getClientAccountEmployees = async (req, res) => {
 		res.status(200).json(data);
 	} catch (error) {
 		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
+const setBankAccount = async (req, res) => {
+	try {
+		const { Token } = req.body;
+
+		const options = {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				"content-type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				AccountID: TECHCORP_CREDS.AccountID,
+				Key: TECHCORP_CREDS.KEY,
+				Signature: TECHCORP_CREDS.Signature,
+				Token,
+				SetAsDefault: true,
+			}),
+		};
+
+		const response = await fetch(`${VOPAY_BASE_URL}bank-account/set-my-bank-account`, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+const fundBankAccount = async (req, res) => {
+	try {
+		const { ClientAccountID, Amount } = req.body;
+		const options = {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				"content-type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				AccountID: TECHCORP_CREDS.AccountID,
+				Key: TECHCORP_CREDS.KEY,
+				Signature: TECHCORP_CREDS.Signature,
+				ClientAccountID,
+				Amount,
+			}),
+		};
+		const response = await fetch(`${VOPAY_BASE_URL}account/fund-my-account`, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
+const createClientAccountWallet = async (req, res) => {
+	try {
+		const { ClientAccountID, WalletName, Currency } = req.body;
+
+		const options = {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				"content-type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				AccountID: TECHCORP_CREDS.AccountID,
+				Key: TECHCORP_CREDS.KEY,
+				Signature: TECHCORP_CREDS.Signature,
+				ClientAccountID: "individual_jane_d",
+				Currency: "CAD",
+				WalletName: "Jane_wallet",
+			}),
+		};
+
+		const response = await fetch(
+			`${VOPAY_BASE_URL}account/client-accounts/wallets/create`,
+			options,
+		);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		return res
 			.status(500)
 			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
 	}
@@ -330,10 +471,16 @@ const fundEmployerWallet = async (req, res) => {
 module.exports = {
 	createPartnerEmployerAccount,
 	createClientAccountEmployee,
-	getClientAccountEmployees,
+	getClientAccountWallets,
 	getPartnerEmployerAccounts,
-	getAccountOnboardingUrl,
+	getBusinessAccountOnboardingUrl,
 	submitEmployerInfo,
 	getEmployeeBankEmbedUrl,
 	fundEmployerWallet,
+	createClientAccountWallet,
+	getClientAccountWallet,
+	getClientDefaultBankAccount,
+	fundBankAccount,
+	setBankAccount,
+	getLinkedBankAccounts,
 };
