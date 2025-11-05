@@ -13,7 +13,6 @@ import {
 	StepTitle,
 	useToast,
 } from "@chakra-ui/react";
-import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import {
 	EARNING_TYPE,
@@ -21,7 +20,7 @@ import {
 	tabPanelStyleCss,
 	tabScrollCss,
 } from "erp-modules/payroll/onboard-user/customInfo";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import EarningInfo from "./EarningInfo";
 
@@ -155,11 +154,7 @@ const PayInfo = ({ company, userId }) => {
 				<Stack spacing={3} p={5}>
 					<TextTitle size="xl" title="Compensation Information" />
 					{formData.payInfo.roles?.map((role, index) => (
-						<BoxCard
-							p={2}
-							key={`${role?.title}_${index}`}
-							border="1px solid var(--lead_cards_border)"
-						>
+						<React.Fragment key={`${role?.title}_${index}`}>
 							{formData.payInfo.roles?.length > 1 && <TextTitle title={role.title} />}
 							<EarningInfo
 								role={role}
@@ -168,7 +163,7 @@ const PayInfo = ({ company, userId }) => {
 								setEditedIndices={setEditedIndices}
 								editedIndices={editedIndices}
 							/>
-						</BoxCard>
+						</React.Fragment>
 					))}
 				</Stack>
 			</Box>

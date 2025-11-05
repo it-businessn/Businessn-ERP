@@ -9,6 +9,7 @@ import {
 	Tr,
 	useColorModeValue,
 } from "@chakra-ui/react";
+import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import { COLS } from "constant";
@@ -63,108 +64,112 @@ const EmployeeList = ({ employees }) => {
 	};
 
 	return (
-		<TableLayout
-			cols={cols}
-			css={tabScrollCss}
-			height="calc(100vh - 470px)"
-			position="sticky"
-			top={-1}
-			zIndex={1}
-			textAlign="left"
-		>
-			<Tbody>
-				{(!employees || employees?.length === 0) && (
-					<EmptyRowRecord
-						data={employees}
-						colSpan={cols?.length}
-						title="No employees found"
-						description="Add employees to see them listed here"
-					/>
-				)}
+		<BoxCard p={0}>
+			<TableLayout
+				cols={cols}
+				css={tabScrollCss}
+				height="calc(100vh - 470px)"
+				position="sticky"
+				top={-1}
+				zIndex={1}
+				textAlign="left"
+			>
+				<Tbody>
+					{(!employees || employees?.length === 0) && (
+						<EmptyRowRecord
+							data={employees}
+							colSpan={cols?.length}
+							title="No employees found"
+							description="Add employees to see them listed here"
+						/>
+					)}
 
-				{employees?.map(({ _id, empId, payrollStatus, employmentRole, employeeNo, positions }) => {
-					return (
-						<Tr
-							key={empId?._id || _id}
-							_hover={{ bg: hoverBg }}
-							transition="all 0.2s"
-							cursor="pointer"
-							onClick={() => handleClick(empId._id)}
-						>
-							<Td py={0} borderBottomColor={borderColor}>
-								<HStack spacing={4}>
-									<Avatar
-										name={empId?.fullName}
-										size={"sm"}
-										src={null}
-										borderRadius="lg"
-										bg={nameBoxBg}
-										color={nameColor}
-									/>
-									<Box>
-										<Text fontWeight="medium" fontSize="sm" color={nameColor}>
-											{empId?.fullName}
-										</Text>
-										<Text fontSize="xs" color="gray.500">
+					{employees?.map(
+						({ _id, empId, payrollStatus, employmentRole, employeeNo, positions }) => {
+							return (
+								<Tr
+									key={empId?._id || _id}
+									_hover={{ bg: hoverBg }}
+									transition="all 0.2s"
+									cursor="pointer"
+									onClick={() => handleClick(empId._id)}
+								>
+									<Td py={0} borderBottomColor={borderColor}>
+										<HStack spacing={4}>
+											<Avatar
+												name={empId?.fullName}
+												size={"sm"}
+												src={null}
+												borderRadius="lg"
+												bg={nameBoxBg}
+												color={nameColor}
+											/>
+											<Box>
+												<Text fontWeight="medium" fontSize="sm" color={nameColor}>
+													{empId?.fullName}
+												</Text>
+												<Text fontSize="xs" color="gray.500">
+													{positions?.[0]?.employmentDepartment || ""}
+												</Text>
+											</Box>
+										</HStack>
+									</Td>
+									<Td w={"200px"} py={0} borderBottomColor={borderColor}>
+										<Text whiteSpace={"wrap"} fontSize="sm">
 											{positions?.[0]?.employmentDepartment || ""}
 										</Text>
-									</Box>
-								</HStack>
-							</Td>
-							<Td w={"200px"} py={0} borderBottomColor={borderColor}>
-								<Text whiteSpace={"wrap"} fontSize="sm">
-									{positions?.[0]?.employmentDepartment || ""}
-								</Text>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text whiteSpace={"wrap"} fontSize="sm">
-									{employmentRole}
-								</Text>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm" fontFamily="mono">
-									{positions?.[0]?.cardNum || positions?.[0]?.employeeCardNumber || employeeNo}
-								</Text>
-							</Td>
-							<Td py={0} borderBottomColor={borderColor}>
-								<Text fontSize="sm" fontFamily="mono">
-									{positions?.[0]?.timeManagementBadgeID || "-"}
-								</Text>
-							</Td>
-							<Td w={"200px"} py={0} borderBottomColor={borderColor}>
-								<StatusBadge status={payrollStatus} />
-							</Td>
-							<Td borderBottomColor={borderColor}>
-								<HStack spacing={2}>
-									<IconButton
-										size="sm"
-										icon={<HiEye />}
-										variant="ghost"
-										colorScheme="blue"
-										aria-label="View details"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleClick(empId._id);
-										}}
-									/>
-									<IconButton
-										size="sm"
-										icon={<HiPencil />}
-										variant="ghost"
-										colorScheme="blue"
-										aria-label="Edit employee"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleClick(empId._id);
-										}}
-									/>
-								</HStack>
-							</Td>
-						</Tr>
-					);
-				})}
-			</Tbody>
-		</TableLayout>
+									</Td>
+									<Td py={0} borderBottomColor={borderColor}>
+										<Text whiteSpace={"wrap"} fontSize="sm">
+											{employmentRole}
+										</Text>
+									</Td>
+									<Td py={0} borderBottomColor={borderColor}>
+										<Text fontSize="sm" fontFamily="mono">
+											{positions?.[0]?.cardNum || positions?.[0]?.employeeCardNumber || employeeNo}
+										</Text>
+									</Td>
+									<Td py={0} borderBottomColor={borderColor}>
+										<Text fontSize="sm" fontFamily="mono">
+											{positions?.[0]?.timeManagementBadgeID || "-"}
+										</Text>
+									</Td>
+									<Td w={"200px"} py={0} borderBottomColor={borderColor}>
+										<StatusBadge status={payrollStatus} />
+									</Td>
+									<Td borderBottomColor={borderColor}>
+										<HStack spacing={2}>
+											<IconButton
+												size="sm"
+												icon={<HiEye />}
+												variant="ghost"
+												colorScheme="blue"
+												aria-label="View details"
+												onClick={(e) => {
+													e.stopPropagation();
+													handleClick(empId._id);
+												}}
+											/>
+											<IconButton
+												size="sm"
+												icon={<HiPencil />}
+												variant="ghost"
+												colorScheme="blue"
+												aria-label="Edit employee"
+												onClick={(e) => {
+													e.stopPropagation();
+													handleClick(empId._id);
+												}}
+											/>
+										</HStack>
+									</Td>
+								</Tr>
+							);
+						},
+					)}
+				</Tbody>
+			</TableLayout>
+		</BoxCard>
 	);
 };
 

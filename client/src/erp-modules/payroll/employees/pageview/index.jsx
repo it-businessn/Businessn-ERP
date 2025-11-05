@@ -131,7 +131,7 @@ const Employees = () => {
 
 	return (
 		<PageLayout title="Employee Info">
-			<HStack spacing="1em" mt="1em" justifyContent={"space-between"}>
+			<HStack spacing="1em" my="1em" justifyContent={"space-between"}>
 				<HStack spacing="1em" justifyContent={"space-between"}>
 					<Avatar
 						borderRadius="10%"
@@ -155,40 +155,40 @@ const Employees = () => {
 					employees={employees}
 				/>
 			</HStack>
-			<Tabs
-				index={tabIndex}
-				onChange={setTabIndex}
-				variant="enclosed"
-				colorScheme="purple"
-				display="flex"
-				flexDirection="column"
-				height="100%"
-				sx={tabStyleCss}
-				isLazy
-				lazyBehavior="unmount"
-			>
-				<TabList bg="gray.50" px={6} pt={5} pb={2} justifyContent="space-between">
-					{EMP_INFO_TABS.map(({ name }) => (
-						<Tab
-							w="100%"
-							key={name}
-							fontWeight="semibold"
-							px={8}
-							_selected={{ color: "white", bg: "var(--banner_bg)" }}
-						>
-							{name}
-						</Tab>
-					))}
-				</TabList>
+			<BoxCard p={0} pb={3}>
+				<Tabs
+					index={tabIndex}
+					onChange={setTabIndex}
+					variant="enclosed"
+					colorScheme="purple"
+					display="flex"
+					flexDirection="column"
+					height="100%"
+					sx={tabStyleCss}
+					isLazy
+					lazyBehavior="unmount"
+				>
+					<TabList bg="gray.50" justifyContent="space-between">
+						{EMP_INFO_TABS.map(({ name }) => (
+							<Tab
+								w="100%"
+								key={name}
+								fontWeight="semibold"
+								px={8}
+								_selected={{ color: "white", bg: "var(--banner_bg)", borderRadius: 0 }}
+							>
+								{name}
+							</Tab>
+						))}
+					</TabList>
 
-				<TabPanels flex="1" overflow="hidden">
-					{EMP_INFO_TABS.map(({ name, content }, i) => (
-						<TabPanel key={`${name}_content_${i}`}>
-							<BoxCard> {content}</BoxCard>
-						</TabPanel>
-					))}
-				</TabPanels>
-			</Tabs>
+					<TabPanels flex="1" overflow="hidden">
+						{EMP_INFO_TABS.map(({ name, content }, i) => (
+							<TabPanel key={`${name}_content_${i}`}>{content}</TabPanel>
+						))}
+					</TabPanels>
+				</Tabs>
+			</BoxCard>
 		</PageLayout>
 	);
 };
