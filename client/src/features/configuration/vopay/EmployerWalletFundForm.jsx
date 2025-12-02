@@ -17,10 +17,10 @@ const EmployerWalletFundForm = ({ setRefresh }) => {
 		Province: "ON",
 		Country: "CA",
 		PostalCode: "M5J2N1",
-		AccountNumber: "987654321",
-		FinancialInstitutionNumber: "001",
-		BranchTransitNumber: "12345",
-		Amount: 0.01,
+		// AccountNumber: "987654321",
+		// FinancialInstitutionNumber: "001",
+		// BranchTransitNumber: "12345",
+		Amount: 1,
 		Currency: "CAD",
 	};
 

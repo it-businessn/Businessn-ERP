@@ -57,16 +57,16 @@ const Configuration = () => {
 				...prev,
 			]);
 		}
-		// if (isBusinessN(company)) {
-		// 	setSetupList((prev) => [
-		// 		{
-		// 			id: 6,
-		// 			type: "Setup Vopay",
-		// 			name: <VoPayPanel company={company} />,
-		// 		},
-		// 		...prev,
-		// 	]);
-		// }
+		if (isBusinessN(company)) {
+			setSetupList((prev) => [
+				{
+					id: 6,
+					type: "Setup Vopay",
+					name: <VoPayPanel company={company} />,
+				},
+				...prev,
+			]);
+		}
 	}, []);
 
 	useEffect(() => {

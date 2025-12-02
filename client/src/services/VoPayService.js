@@ -1,12 +1,16 @@
 import apiService from "services";
 
 const VoPayService = {
+	async getPartnerEmployerAccounts() {
+		return apiService.get("/vopay/partner/account");
+	},
+
 	async addPartnerEmployer(data) {
 		return apiService.post("/vopay/partner/account", data);
 	},
 
-	async getPartnerEmployerAccounts() {
-		return apiService.get("/vopay/partner/account");
+	async getAccountOnboardingLink(accountId) {
+		return apiService.get(`/vopay/${accountId}`);
 	},
 
 	async getClientAccountWallets() {
@@ -41,9 +45,6 @@ const VoPayService = {
 		return apiService.get(`/vopay/bank-account/default-bank-account/${accountId}`);
 	},
 
-	async getBusinessAccountOnboardingLink(accountId) {
-		return apiService.get(`/vopay/${accountId}`);
-	},
 	async getEmployeeBankEmbedUrl(clientAccountId) {
 		return apiService.get(`/vopay/iq11/generate-embed-url/${clientAccountId}`);
 	},

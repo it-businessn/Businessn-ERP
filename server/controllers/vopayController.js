@@ -1,14 +1,22 @@
 const crypto = require("crypto");
-const vopayApi = require("@api/vopay-api");
 
-const { VOPAY_API_KEY, VOPAY_BASE_URL, VOPAY_PARTNER_ACCOUNT_ID, VOPAY_SHARED_SECRET } =
-	process.env;
+const {
+	VOPAY_API_KEY,
+	VOPAY_BASE_URL,
+	VOPAY_PARTNER_ACCOUNT_ID,
+	VOPAY_SHARED_SECRET,
+	VOPAY_API_KEY_PROD,
+	VOPAY_BASE_URL_PROD,
+	VOPAY_PARTNER_ACCOUNT_ID_PROD,
+	VOPAY_SHARED_SECRET_PROD,
+} = process.env;
 
-const Key = VOPAY_API_KEY;
-const SECRET_KEY = VOPAY_SHARED_SECRET;
-const AccountID = VOPAY_PARTNER_ACCOUNT_ID;
+const Key = VOPAY_API_KEY_PROD;
+const SECRET_KEY = VOPAY_SHARED_SECRET_PROD;
+const AccountID = VOPAY_PARTNER_ACCOUNT_ID_PROD;
 
-const PARTNER_URL = `${VOPAY_BASE_URL}partner/account`;
+const BASE_URL = VOPAY_BASE_URL_PROD;
+const PARTNER_URL = `${VOPAY_BASE_URL_PROD}partner/account`;
 
 const generateSignature = (key = Key, secret_key = SECRET_KEY) => {
 	const date = new Date().toISOString().split("T")[0];
@@ -124,7 +132,7 @@ const getPartnerEmployerAccounts = async (req, res) => {
 	}
 };
 
-const getBusinessAccountOnboardingUrl = async (req, res) => {
+const getVopayAccountOnboardingUrl = async (req, res) => {
 	try {
 		const { vopayAccountId } = req.params;
 		const Signature = generateSignature();
@@ -149,7 +157,7 @@ const getLinkedBankAccounts = async (req, res) => {
 			method: "GET",
 			headers: { accept: "application/json" },
 		};
-		const url = `${VOPAY_BASE_URL}bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const url = `${BASE_URL}bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
 		const response = await fetch(url, options);
 		const data = await response.json();
 		res.status(200).json(data);
@@ -167,7 +175,7 @@ const getClientDefaultBankAccount = async (req, res) => {
 			method: "GET",
 			headers: { accept: "application/json" },
 		};
-		const url = `${VOPAY_BASE_URL}bank-account/default-bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const url = `${BASE_URL}bank-account/default-bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
 		const response = await fetch(url, options);
 		const data = await response.json();
 		res.status(200).json(data);
@@ -184,7 +192,7 @@ const getClientAccountWallet = async (req, res) => {
 			method: "GET",
 			headers: { accept: "application/json" },
 		};
-		const url = `${VOPAY_BASE_URL}account/client-accounts/wallets?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}&ClientAccountID=${clientAccountId}`;
+		const url = `${BASE_URL}account/client-accounts/wallets?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}&ClientAccountID=${clientAccountId}`;
 		const response = await fetch(url, options);
 		const data = await response.json();
 		res.status(200).json(data);
@@ -198,7 +206,7 @@ const getClientAccountWallet = async (req, res) => {
 const getClientAccountWallets = async (req, res) => {
 	try {
 		const options = { method: "GET", headers: { accept: "application/json" } };
-		const url = `${VOPAY_BASE_URL}account/client-accounts?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const url = `${BASE_URL}account/client-accounts?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
 
 		const response = await fetch(url, options);
 		const data = await response.json();
@@ -212,7 +220,7 @@ const getClientAccountWallets = async (req, res) => {
 
 const setBankAccount = async (req, res) => {
 	try {
-		const { Token } = req.body;
+		const { ClientAccountID, Token } = req.body;
 
 		const options = {
 			method: "POST",
@@ -226,10 +234,11 @@ const setBankAccount = async (req, res) => {
 				Signature: TECHCORP_CREDS.Signature,
 				Token,
 				SetAsDefault: true,
+				ClientAccountID,
 			}),
 		};
 
-		const response = await fetch(`${VOPAY_BASE_URL}bank-account/set-my-bank-account`, options);
+		const response = await fetch(`${BASE_URL}bank-account/set-my-bank-account`, options);
 		const data = await response.json();
 		res.status(200).json(data);
 	} catch (error) {
@@ -255,7 +264,7 @@ const fundBankAccount = async (req, res) => {
 				Amount,
 			}),
 		};
-		const response = await fetch(`${VOPAY_BASE_URL}account/fund-my-account`, options);
+		const response = await fetch(`${BASE_URL}account/fund-my-account`, options);
 		const data = await response.json();
 		res.status(200).json(data);
 	} catch (error) {
@@ -285,10 +294,7 @@ const createClientAccountWallet = async (req, res) => {
 			}),
 		};
 
-		const response = await fetch(
-			`${VOPAY_BASE_URL}account/client-accounts/wallets/create`,
-			options,
-		);
+		const response = await fetch(`${BASE_URL}account/client-accounts/wallets/create`, options);
 		const data = await response.json();
 		res.status(200).json(data);
 	} catch (error) {
@@ -344,7 +350,7 @@ const createClientAccountEmployee = async (req, res) => {
 			}),
 		};
 
-		const response = await fetch(`${VOPAY_BASE_URL}account/client-accounts/individual`, options);
+		const response = await fetch(`${BASE_URL}account/client-accounts/individual`, options);
 		const data = await response.json();
 		res.status(200).json(data);
 	} catch (error) {
@@ -373,7 +379,7 @@ const getEmployeeBankEmbedUrl = async (req, res) => {
 			}),
 		};
 
-		const response = await fetch(`${VOPAY_BASE_URL}iq11/generate-embed-url`, options);
+		const response = await fetch(`${BASE_URL}iq11/generate-embed-url`, options);
 		const data = await response.json();
 		res.status(200).json(data);
 	} catch (error) {
@@ -398,22 +404,8 @@ const fundEmployerWallet = async (req, res) => {
 			Amount,
 			Currency,
 		} = req.body;
-		// 		fundEmployerWallet() {
-		//   const res = await vopayPost("/eft/fund", {
-		//     CompanyName: "TechCorp Ltd.",
-		//     Address1: "123 Bay Street",
-		//     City: "Toronto",
-		//     Province: "ON",
-		//     Country: "CA",
-		//     PostalCode: "M5J2N1",
-		//     AccountNumber: "987654321",
-		//     FinancialInstitutionNumber: "001",
-		//     BranchTransitNumber: "12345",
-		//     Amount: 50000,
-		//     Currency: "CAD",
-		//   }
 		// checkTransactionStatus(transactionID) { /eft/fund/status
-		//   const res = await axios.get(`${process.env.VOPAY_BASE_URL}/eft/fund/status`, {
+		//   const res = await axios.get(`${process.env.BASE_URL}/eft/fund/status`, {
 		//     params: {
 		//       AccountID: process.env.VOPAY_ACCOUNT_ID,
 		//       Key: process.env.VOPAY_API_KEY,
@@ -443,7 +435,7 @@ const fundEmployerWallet = async (req, res) => {
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
 				Signature: TECHCORP_CREDS.Signature,
-				ClientAccountID: "individual_jane_d",
+				ClientAccountID: "business_techcorp_ltd_primary",
 				CompanyName,
 				Address1,
 				City,
@@ -458,9 +450,37 @@ const fundEmployerWallet = async (req, res) => {
 			}),
 		};
 
-		const response = await fetch(`${VOPAY_BASE_URL}eft/fund`, options);
-		const data = await response.json();
-		res.status(200).json(data);
+		const eftResponse = await fetch(`${BASE_URL}eft/fund`, options);
+
+		const fundRes = await eftResponse.json();
+		const transactionOptions = {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				"content-type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				AccountID: TECHCORP_CREDS.AccountID,
+				Key: TECHCORP_CREDS.KEY,
+				Signature: TECHCORP_CREDS.Signature,
+				WebHookUrl: "https://businessn-erp.com/payroll/timesheets",
+				// Type: "transaction",
+				// Disabled: true,
+			}),
+		};
+
+		const transactionResponse = await fetch(`${BASE_URL}account/webhook-url`, transactionOptions);
+		const transactiongwtResponse = await fetch(
+			`${BASE_URL}account/webhook-url/info?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`,
+			{
+				method: "GET",
+				headers: {
+					accept: "application/json",
+				},
+			},
+		);
+		const transactionRes = await transactiongwtResponse.json();
+		res.status(200).json({ fundRes, transactionRes });
 	} catch (error) {
 		res
 			.status(500)
@@ -473,7 +493,7 @@ module.exports = {
 	createClientAccountEmployee,
 	getClientAccountWallets,
 	getPartnerEmployerAccounts,
-	getBusinessAccountOnboardingUrl,
+	getVopayAccountOnboardingUrl,
 	submitEmployerInfo,
 	getEmployeeBankEmbedUrl,
 	fundEmployerWallet,

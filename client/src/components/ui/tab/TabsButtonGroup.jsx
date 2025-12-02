@@ -1,18 +1,13 @@
 import { Badge, Box, Button, ButtonGroup, Icon } from "@chakra-ui/react";
 
 const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb = 4 }) => {
-	const getColor = (type) =>
-		viewMode === type
-			? isOutlineTab
-				? "var(--banner_bg)"
-				: "var(--main_color)"
-			: "var(--main_color)";
+	const getColor = (type) => (viewMode === type ? "var(--main_color)" : "var(--nav_menu)");
 	const getBgColor = (type, highlightColor = null) =>
 		viewMode === type
 			? isOutlineTab
-				? "var(--main_color)"
+				? "var(--nav_menu)"
 				: highlightColor || "#6b596b"
-			: "var(--nav_menu)";
+			: "var(--main_color)";
 	const border = (type) => isOutlineTab && viewMode === type && "2px solid var(--banner_bg)";
 
 	return (
@@ -53,7 +48,7 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb 
 							color={getColor(type)}
 							bg={getBgColor(type, highlightColor)}
 							borderBottom={border(type)}
-							borderRadius={!isOutlineTab && "1em"}
+							borderRadius={"1em"}
 							variant={isOutlineTab ? "ghost" : "solid"}
 							fontWeight={isOutlineTab || viewMode === type ? "bold" : "normal"}
 							_hover={{ bg: getBgColor(type, highlightColor) }}

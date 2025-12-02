@@ -8,9 +8,10 @@ export const ClientEmployeeList = ({ clientEmployees }) => {
 			const { data } = await VoPayService.getEmployeeBankEmbedUrl(id);
 			// const { data } = await VoPayService.getDefaultBankAccount(id);
 			// const { data } = await VoPayService.setDefaultBankAccount({
+			// 	ClientAccountID: id,
 			// 	Token: "5vigt5lbw79013c2ro3ooupguhcwbiiu9mdse3s4h0qgwpuv132mm9w7pks2s01e",
 			// });
-			// const { data } = await VoPayService.fundBankAccount({ ClientAccountID: id, Amount: 1 });
+			// const { data } = await VoPayService.fundBankAccount({ ClientAccountID: id, Amount: 0.1 });
 			if (data?.EmbedURL) window.open(data.EmbedURL, "_blank");
 		} catch (error) {}
 	};
