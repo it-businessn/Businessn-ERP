@@ -1,28 +1,40 @@
 const crypto = require("crypto");
 
 const {
-	VOPAY_API_KEY,
-	VOPAY_BASE_URL,
 	VOPAY_PARTNER_ACCOUNT_ID,
-	VOPAY_SHARED_SECRET,
+	VOPAY_API_KEY_STAGING,
+	VOPAY_BASE_URL_STAGING,
+	VOPAY_SHARED_SECRET_STAGING,
 	VOPAY_API_KEY_PROD,
 	VOPAY_BASE_URL_PROD,
-	VOPAY_PARTNER_ACCOUNT_ID_PROD,
 	VOPAY_SHARED_SECRET_PROD,
 } = process.env;
 
-const Key = VOPAY_API_KEY_PROD;
-const SECRET_KEY = VOPAY_SHARED_SECRET_PROD;
-const AccountID = VOPAY_PARTNER_ACCOUNT_ID_PROD;
+const CONFIG = {
+	STAGING: {
+		ACCOUNT_ID: VOPAY_PARTNER_ACCOUNT_ID,
+		SHARED_KEY: VOPAY_API_KEY_STAGING,
+		SHARED_SECRET: VOPAY_SHARED_SECRET_STAGING,
+		BASE_URL: VOPAY_BASE_URL_STAGING,
+	},
+	PROD: {
+		ACCOUNT_ID: VOPAY_PARTNER_ACCOUNT_ID,
+		SHARED_KEY: VOPAY_API_KEY_PROD,
+		SHARED_SECRET: VOPAY_SHARED_SECRET_PROD,
+		BASE_URL: VOPAY_BASE_URL_PROD,
+	},
+};
+const currentEnv = CONFIG.STAGING;
+const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 
-const BASE_URL = VOPAY_BASE_URL_PROD;
-const PARTNER_URL = `${VOPAY_BASE_URL_PROD}partner/account`;
+const PARTNER_URL = `${BASE_URL}partner/account`;
 
-const generateSignature = (key = Key, secret_key = SECRET_KEY) => {
+const generateSignature = (key = SHARED_KEY, secret_key = SHARED_SECRET) => {
 	const date = new Date().toISOString().split("T")[0];
 	const shasum = crypto.createHash("sha1");
 	shasum.update(key + secret_key + date);
 	const signature = shasum.digest("hex");
+	console.log(signature);
 	return signature;
 };
 
@@ -42,8 +54,8 @@ const createPartnerEmployerAccount = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID,
-				Key,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
 				Signature: generateSignature(),
 				Name: name,
 				Country: country,
@@ -87,8 +99,8 @@ const submitEmployerInfo = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID,
-				Key,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
 				Signature: generateSignature(),
 				Address: address,
 				City: city,
@@ -119,7 +131,7 @@ const submitEmployerInfo = async (req, res) => {
 const getPartnerEmployerAccounts = async (req, res) => {
 	try {
 		const options = { method: "GET", headers: { accept: "application/json" } };
-		const url = `${PARTNER_URL}?AccountID=${AccountID}&Key=${Key}&Signature=${generateSignature()}`;
+		const url = `${PARTNER_URL}?AccountID=${ACCOUNT_ID}&Key=${SHARED_KEY}&Signature=${generateSignature()}`;
 
 		const response = await fetch(url, options);
 		const data = await response.json();
@@ -136,7 +148,7 @@ const getVopayAccountOnboardingUrl = async (req, res) => {
 	try {
 		const { vopayAccountId } = req.params;
 		const Signature = generateSignature();
-		const url = `${PARTNER_URL}/onboarding-url?AccountID=${AccountID}&Key=${Key}&Signature=${Signature}&VopayAccountID=${vopayAccountId}`;
+		const url = `${PARTNER_URL}/onboarding-url?AccountID=${ACCOUNT_ID}&Key=${SHARED_KEY}&Signature=${Signature}&VopayAccountID=${vopayAccountId}`;
 		const options = { method: "GET", headers: { accept: "application/json" } };
 
 		const response = await fetch(url, options);
@@ -488,6 +500,22 @@ const fundEmployerWallet = async (req, res) => {
 	}
 };
 
+const receiveWebhook = (io) => (req, res) => {
+	const signature = req.headers["x-vopay-signature"];
+	const expected = generateSignature();
+
+	if (signature !== expected) {
+		return res.status(401).send("Invalid signature");
+	}
+
+	const event = req.body;
+	console.log("Webhook Received:", event);
+
+	io.emit("vopay-event", event); // Emit real-time update to React
+
+	res.status(200).send("OK");
+};
+
 module.exports = {
 	createPartnerEmployerAccount,
 	createClientAccountEmployee,
@@ -503,4 +531,6 @@ module.exports = {
 	fundBankAccount,
 	setBankAccount,
 	getLinkedBankAccounts,
+	generateSignature,
+	receiveWebhook,
 };

@@ -9,6 +9,7 @@ if (process.env.NODE_ENV === "development") {
 
 const express = require("express");
 const crypto = require("crypto");
+const http = require("http");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -16,6 +17,15 @@ const cron = require("node-cron");
 const moment = require("moment");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
+const socketio = require("socket.io");
+const expressLayouts = require("express-ejs-layouts");
+const rateLimit = require("express-rate-limit");
+const path = require("path");
+
+const { authenticateToken } = require("./middleware/auth");
+const corsOptions = require("./config");
+const { getAllCompanies } = require("./controllers/companyController");
+const { getHolidays, addStatHolidayTimesheet } = require("./controllers/statHolidayController");
 
 const accountingRoutes = require("./routes/accountingRoutes");
 const budgetingRoutes = require("./routes/budgetingRoutes");
@@ -63,17 +73,19 @@ const ticketRoutes = require("./routes/ticketRoutes");
 const userRoutes = require("./routes/userRoutes");
 const t4SlipRoutes = require("./routes/t4SlipRoutes");
 const vopayRoutes = require("./routes/vopayRoutes");
+const vopayWebHookRoutes = require("./routes/vopayWebHookRoutes");
 
 const app = express();
-const expressLayouts = require("express-ejs-layouts");
-const rateLimit = require("express-rate-limit");
-const path = require("path");
-const { authenticateToken } = require("./middleware/auth");
-const corsOptions = require("./config");
-const { getAllCompanies } = require("./controllers/companyController");
-const { getHolidays, addStatHolidayTimesheet } = require("./controllers/statHolidayController");
+const httpServer = http.createServer(app);
+
+const io = socketio(httpServer, {
+	cors: {
+		origin: "*",
+	},
+});
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.DB_CONNECTION_URL_STAGING_CRM;
+
 const limiter = rateLimit({
 	windowMs: 60 * 1000, // 1 minutes
 	max: 100, // Limit each IP to 100 requests per windowMs
@@ -88,7 +100,13 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
-app.use(bodyParser.json());
+app.use(
+	bodyParser.json({
+		verify: (req, res, buf) => {
+			req.rawBody = buf.toString();
+		},
+	}),
+);
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
 app.use(cookieParser());
 app.use(cors(corsOptions));
@@ -179,15 +197,7 @@ app.use("/api/timesheet", timesheetRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/generate-t4", t4SlipRoutes);
 app.use("/api/vopay", vopayRoutes);
-// app.use("/api/tasks", taskRoutes);
-// app.use("/api/tasks/:taskId/subtask", subTaskRoutes);
-// app.use("/api/tax", taxRoutes);
-// app.use("/api/user-roles", rolesRoutes);
-// app.use("/api/attendance", attendanceRoutes);
-// app.use("/api/benefits", benefitsRoutes);
-// app.use("/api/configuration", configurationRoutes);
-// app.use("/api/dashboard", dashboardRoutes);
-// app.use("/api/leave-balances", leaveBalanceRoutes);
+app.use("/api/vopay-webhook", vopayWebHookRoutes(io));
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI, {

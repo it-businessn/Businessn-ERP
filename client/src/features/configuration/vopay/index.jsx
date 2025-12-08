@@ -8,6 +8,7 @@ const VoPayPanel = ({ companyName }) => {
 	const [partners, setPartners] = useState(null);
 	const [wallets, setWallets] = useState(null);
 	const [refresh, setRefresh] = useState(null);
+	// const webhookEvent = useVoPayEvents();
 
 	useEffect(() => {
 		const fetchPartnerAccounts = async () => {
@@ -23,6 +24,14 @@ const VoPayPanel = ({ companyName }) => {
 
 	return (
 		<>
+			{/* <div>
+				<h2>Webhook Status</h2>
+				{webhookEvent ? (
+					<pre>{JSON.stringify(webhookEvent, null, 2)}</pre>
+				) : (
+					<p>No events received yet...</p>
+				)}
+			</div> */}
 			<ConfigTabLayout
 				tableData={partners}
 				tableTitle="Vopay Accounts"
