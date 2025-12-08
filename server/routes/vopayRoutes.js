@@ -34,6 +34,8 @@ router.get("/iq11/generate-embed-url/:clientAccountId", vopayController.getEmplo
 
 router.post("/eft/fund", vopayController.fundEmployerWallet);
 
+router.post("/transfer-withdraw", vopayController.transferWithdraw);
+
 router.get("/:vopayAccountId", vopayController.getVopayAccountOnboardingUrl);
 
 module.exports = router;

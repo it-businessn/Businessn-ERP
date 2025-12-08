@@ -41,8 +41,10 @@ const generateSignature = (key = SHARED_KEY, secret_key = SHARED_SECRET) => {
 const TECHCORP_CREDS = {
 	AccountID: "techcorpltd",
 	KEY: "UezsdpfRSEbmu6HkNGJo1yV4vc9CXg8PrnhBtQL3",
-	Signature: generateSignature("UezsdpfRSEbmu6HkNGJo1yV4vc9CXg8PrnhBtQL3", "sL8iMY96vUkNHLVMc6=="),
+	SHARED_KEY: "sL8iMY96vUkNHLVMc6==",
+	ClientAccountID: "business_techcorp_ltd_primary",
 };
+const TECHCORP_CREDS_Signature = generateSignature(TECHCORP_CREDS.KEY, TECHCORP_CREDS.SHARED_KEY);
 
 const createPartnerEmployerAccount = async (req, res) => {
 	try {
@@ -169,7 +171,7 @@ const getLinkedBankAccounts = async (req, res) => {
 			method: "GET",
 			headers: { accept: "application/json" },
 		};
-		const url = `${BASE_URL}bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const url = `${BASE_URL}bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`;
 		const response = await fetch(url, options);
 		const data = await response.json();
 		res.status(200).json(data);
@@ -187,7 +189,7 @@ const getClientDefaultBankAccount = async (req, res) => {
 			method: "GET",
 			headers: { accept: "application/json" },
 		};
-		const url = `${BASE_URL}bank-account/default-bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const url = `${BASE_URL}bank-account/default-bank-account?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`;
 		const response = await fetch(url, options);
 		const data = await response.json();
 		res.status(200).json(data);
@@ -197,6 +199,7 @@ const getClientDefaultBankAccount = async (req, res) => {
 			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
 	}
 };
+
 const getClientAccountWallet = async (req, res) => {
 	try {
 		const { clientAccountId } = req.params;
@@ -204,7 +207,7 @@ const getClientAccountWallet = async (req, res) => {
 			method: "GET",
 			headers: { accept: "application/json" },
 		};
-		const url = `${BASE_URL}account/client-accounts/wallets?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}&ClientAccountID=${clientAccountId}`;
+		const url = `${BASE_URL}account/client-accounts/wallets?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}&ClientAccountID=${clientAccountId}`;
 		const response = await fetch(url, options);
 		const data = await response.json();
 		res.status(200).json(data);
@@ -218,7 +221,7 @@ const getClientAccountWallet = async (req, res) => {
 const getClientAccountWallets = async (req, res) => {
 	try {
 		const options = { method: "GET", headers: { accept: "application/json" } };
-		const url = `${BASE_URL}account/client-accounts?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`;
+		const url = `${BASE_URL}account/client-accounts?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`;
 
 		const response = await fetch(url, options);
 		const data = await response.json();
@@ -243,7 +246,7 @@ const setBankAccount = async (req, res) => {
 			body: new URLSearchParams({
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS.Signature,
+				Signature: TECHCORP_CREDS_Signature,
 				Token,
 				SetAsDefault: true,
 				ClientAccountID,
@@ -259,6 +262,35 @@ const setBankAccount = async (req, res) => {
 			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
 	}
 };
+
+const transferWithdraw = async (req, res) => {
+	try {
+		const { RecipientClientAccountID, Amount } = req.body;
+		const options = {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				"content-type": "application/x-www-form-urlencoded",
+			},
+			body: new URLSearchParams({
+				AccountID: TECHCORP_CREDS.AccountID,
+				Key: TECHCORP_CREDS.KEY,
+				Signature: TECHCORP_CREDS_Signature,
+				DebitorClientAccountID: TECHCORP_CREDS.ClientAccountID,
+				RecipientClientAccountID,
+				Amount,
+			}),
+		};
+		const response = await fetch(`${BASE_URL}account/client-accounts/transfer-withdraw`, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
 const fundBankAccount = async (req, res) => {
 	try {
 		const { ClientAccountID, Amount } = req.body;
@@ -271,9 +303,9 @@ const fundBankAccount = async (req, res) => {
 			body: new URLSearchParams({
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS.Signature,
-				ClientAccountID,
-				Amount,
+				Signature: TECHCORP_CREDS_Signature,
+				ClientAccountID: TECHCORP_CREDS.ClientAccountID,
+				Amount: 1,
 			}),
 		};
 		const response = await fetch(`${BASE_URL}account/fund-my-account`, options);
@@ -299,7 +331,7 @@ const createClientAccountWallet = async (req, res) => {
 			body: new URLSearchParams({
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS.Signature,
+				Signature: TECHCORP_CREDS_Signature,
 				ClientAccountID: "individual_jane_d",
 				Currency: "CAD",
 				WalletName: "Jane_wallet",
@@ -344,7 +376,7 @@ const createClientAccountEmployee = async (req, res) => {
 			body: new URLSearchParams({
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS.Signature,
+				Signature: TECHCORP_CREDS_Signature,
 				ClientAccountID,
 				FirstName,
 				LastName,
@@ -385,7 +417,7 @@ const getEmployeeBankEmbedUrl = async (req, res) => {
 			body: new URLSearchParams({
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS.Signature,
+				Signature: TECHCORP_CREDS_Signature,
 				ClientAccountID: clientAccountId,
 				RedirectURL: "https://businessn.com/",
 			}),
@@ -446,7 +478,7 @@ const fundEmployerWallet = async (req, res) => {
 			body: new URLSearchParams({
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS.Signature,
+				Signature: TECHCORP_CREDS_Signature,
 				ClientAccountID: "business_techcorp_ltd_primary",
 				CompanyName,
 				Address1,
@@ -474,7 +506,7 @@ const fundEmployerWallet = async (req, res) => {
 			body: new URLSearchParams({
 				AccountID: TECHCORP_CREDS.AccountID,
 				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS.Signature,
+				Signature: TECHCORP_CREDS_Signature,
 				WebHookUrl: "https://businessn-erp.com/payroll/timesheets",
 				// Type: "transaction",
 				// Disabled: true,
@@ -483,7 +515,7 @@ const fundEmployerWallet = async (req, res) => {
 
 		const transactionResponse = await fetch(`${BASE_URL}account/webhook-url`, transactionOptions);
 		const transactiongwtResponse = await fetch(
-			`${BASE_URL}account/webhook-url/info?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS.Signature}`,
+			`${BASE_URL}account/webhook-url/info?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`,
 			{
 				method: "GET",
 				headers: {
@@ -533,4 +565,5 @@ module.exports = {
 	getLinkedBankAccounts,
 	generateSignature,
 	receiveWebhook,
+	transferWithdraw,
 };
