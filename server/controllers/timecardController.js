@@ -174,7 +174,7 @@ const mapTimecardRawToTimecard = async () => {
 			},
 		}).sort({ timestamp: 1 });
 
-		for (const record of entries || []) {
+		entries?.forEach(async (record) => {
 			const { user_id, timestamp, punch } = record;
 			const date = new Date(timestamp);
 			const targetDate = date.toISOString().split("T")[0];
@@ -212,7 +212,7 @@ const mapTimecardRawToTimecard = async () => {
 					notDevice: record?.notDevice,
 				});
 			}
-		}
+		});
 	} catch (error) {}
 };
 
