@@ -52,6 +52,9 @@ const VoPayService = {
 	async fundEmployerWallet(data) {
 		return apiService.post("/vopay/eft/fund", data);
 	},
+	async requestTransferWithdraw(data) {
+		return apiService.post("/vopay/transfer-withdraw", data);
+	},
 };
 
 export default VoPayService;

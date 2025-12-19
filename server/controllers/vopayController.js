@@ -1,3 +1,4 @@
+const { Console } = require("console");
 const crypto = require("crypto");
 
 const {
@@ -8,6 +9,9 @@ const {
 	VOPAY_API_KEY_PROD,
 	VOPAY_BASE_URL_PROD,
 	VOPAY_SHARED_SECRET_PROD,
+	VOPAY_PARTNER_ACCOUNT_ID_PROD_TEST,
+	VOPAY_API_KEY_PROD_TEST,
+	VOPAY_SHARED_SECRET_PROD_TEST,
 } = process.env;
 
 const CONFIG = {
@@ -23,8 +27,14 @@ const CONFIG = {
 		SHARED_SECRET: VOPAY_SHARED_SECRET_PROD,
 		BASE_URL: VOPAY_BASE_URL_PROD,
 	},
+	PROD_TEST: {
+		ACCOUNT_ID: VOPAY_PARTNER_ACCOUNT_ID_PROD_TEST,
+		SHARED_KEY: VOPAY_API_KEY_PROD_TEST,
+		SHARED_SECRET: VOPAY_SHARED_SECRET_PROD_TEST,
+		BASE_URL: VOPAY_BASE_URL_PROD,
+	},
 };
-const currentEnv = CONFIG.STAGING;
+const currentEnv = CONFIG.PROD_TEST;
 const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 
 const PARTNER_URL = `${BASE_URL}partner/account`;
@@ -221,7 +231,7 @@ const getClientAccountWallet = async (req, res) => {
 const getClientAccountWallets = async (req, res) => {
 	try {
 		const options = { method: "GET", headers: { accept: "application/json" } };
-		const url = `${BASE_URL}account/client-accounts?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`;
+		const url = `${BASE_URL}account/client-accounts?AccountID=${ACCOUNT_ID}&Key=${SHARED_KEY}&Signature=${generateSignature()}`;
 
 		const response = await fetch(url, options);
 		const data = await response.json();
@@ -244,9 +254,9 @@ const setBankAccount = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID: TECHCORP_CREDS.AccountID,
-				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS_Signature,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: generateSignature(),
 				Token,
 				SetAsDefault: true,
 				ClientAccountID,
@@ -273,12 +283,12 @@ const transferWithdraw = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID: TECHCORP_CREDS.AccountID,
-				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS_Signature,
-				DebitorClientAccountID: TECHCORP_CREDS.ClientAccountID,
-				RecipientClientAccountID,
-				Amount,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: generateSignature(),
+				DebitorClientAccountID: "business_businessn_production_test_primary",
+				RecipientClientAccountID: "business_businessn_production_test_primary1",
+				Amount: 0.5,
 			}),
 		};
 		const response = await fetch(`${BASE_URL}account/client-accounts/transfer-withdraw`, options);
@@ -301,11 +311,11 @@ const fundBankAccount = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID: TECHCORP_CREDS.AccountID,
-				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS_Signature,
-				ClientAccountID: TECHCORP_CREDS.ClientAccountID,
-				Amount: 1,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: generateSignature(),
+				ClientAccountID,
+				Amount,
 			}),
 		};
 		const response = await fetch(`${BASE_URL}account/fund-my-account`, options);
@@ -374,10 +384,10 @@ const createClientAccountEmployee = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID: TECHCORP_CREDS.AccountID,
-				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS_Signature,
-				ClientAccountID,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: generateSignature(),
+				ClientAccountID: "business_businessn_production_test_primary",
 				FirstName,
 				LastName,
 				EmailAddress,
@@ -415,9 +425,9 @@ const getEmployeeBankEmbedUrl = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID: TECHCORP_CREDS.AccountID,
-				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS_Signature,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: generateSignature(),
 				ClientAccountID: clientAccountId,
 				RedirectURL: "https://businessn.com/",
 			}),
@@ -469,6 +479,7 @@ const fundEmployerWallet = async (req, res) => {
 		//     Amount: 2500,
 		//     Currency: "CAD",
 		//   };
+
 		const options = {
 			method: "POST",
 			headers: {
@@ -476,9 +487,9 @@ const fundEmployerWallet = async (req, res) => {
 				"content-type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams({
-				AccountID: TECHCORP_CREDS.AccountID,
-				Key: TECHCORP_CREDS.KEY,
-				Signature: TECHCORP_CREDS_Signature,
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: generateSignature(),
 				ClientAccountID: "business_techcorp_ltd_primary",
 				CompanyName,
 				Address1,
@@ -497,6 +508,7 @@ const fundEmployerWallet = async (req, res) => {
 		const eftResponse = await fetch(`${BASE_URL}eft/fund`, options);
 
 		const fundRes = await eftResponse.json();
+
 		const transactionOptions = {
 			method: "POST",
 			headers: {
