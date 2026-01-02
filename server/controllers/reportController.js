@@ -47,7 +47,10 @@ const buildFundingTotalsReport = async (
 		companyName: fundingTotal.companyName,
 		payPeriodNum: fundingTotal.payPeriodNum,
 		isExtraRun,
+		payPeriodPayDate: moment.utc(fundingTotal.payPeriodPayDate).startOf("day").toDate(),
 		scheduleFrequency,
+	}).sort({
+		createdOn: -1,
 	});
 	if (existsFundDetails) {
 		await FundingTotalsPay.findByIdAndUpdate(
@@ -290,7 +293,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 };
 
 const getFundingReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
+	const { companyName, payPeriodNum, payPeriodPayDate, isExtraRun, scheduleFrequency } = req.params;
 
 	try {
 		const isExtraPayRun = checkExtraRun(isExtraRun);
@@ -298,10 +301,7 @@ const getFundingReportInfo = async (req, res) => {
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-			payPeriodPayDate: {
-				$gte: moment().startOf("year").toDate(),
-				$lt: moment().endOf("year").toDate(),
-			},
+			payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
 			scheduleFrequency,
 		});
 		if (totals) return res.status(200).json(totals);

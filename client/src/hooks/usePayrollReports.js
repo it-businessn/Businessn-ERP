@@ -32,6 +32,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				const { data } = await PayrollService.getTotalsPayReportDetails(
 					company,
 					payNumber,
+					payPeriodPayDate,
 					extraRun,
 					scheduleFrequency,
 				);

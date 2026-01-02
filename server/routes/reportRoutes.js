@@ -4,7 +4,7 @@ const router = express.Router();
 const reportController = require("../controllers/reportController");
 
 router.get(
-	"/funds/totals/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
+	"/funds/totals/:companyName/:payPeriodNum/:payPeriodPayDate/:isExtraRun/:scheduleFrequency",
 	reportController.getFundingReportInfo,
 );
 

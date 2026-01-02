@@ -169,9 +169,9 @@ const PayrollService = {
 		);
 	},
 
-	async getTotalsPayReportDetails(company, payNum, isExtraRun, frequency) {
+	async getTotalsPayReportDetails(company, payNum, payPeriodPayDate, isExtraRun, frequency) {
 		return apiService.get(
-			`/payroll/report/funds/totals/${company}/${payNum}/${isExtraRun}/${frequency}`,
+			`/payroll/report/funds/totals/${company}/${payNum}/${payPeriodPayDate}/${isExtraRun}/${frequency}`,
 		);
 	},
 
