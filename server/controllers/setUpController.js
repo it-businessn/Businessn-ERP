@@ -464,10 +464,11 @@ const addGroup = async (req, res) => {
 const START_DATES = {
 	2024: "2023-12-18",
 	2025: "2024-12-16",
-	2026: "2025-12-08",
+	2026: "2025-12-15",
+	2027: "2026-12-08",
 };
 
-const getStartDate = (year) => new Date(START_DATES[year] || "2023-12-18");
+const getStartDate = (year) => new Date(START_DATES[year] || START_DATES[2024]);
 
 function addDays(date, days) {
 	const result = new Date(date);
@@ -619,6 +620,14 @@ const updatePayGroup = async (id, data) =>
 		},
 	);
 
+const updateGroupPaySchedule = async (req, res) => {
+	const { id } = req.params;
+	let { scheduleFrequency } = req.body;
+	scheduleFrequency = scheduleFrequency === "bi-weekly" ? "Biweekly" : scheduleFrequency;
+	await addPaygroupSchedules(id, scheduleFrequency);
+	return res.status(201).json("Added schedules");
+};
+
 const updateGroup = async (req, res) => {
 	const { id } = req.params;
 	const {
@@ -754,4 +763,5 @@ module.exports = {
 	removeCCDept,
 	deleteCC,
 	deleteModule,
+	updateGroupPaySchedule,
 };

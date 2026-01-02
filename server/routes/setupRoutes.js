@@ -57,6 +57,8 @@ router.post("/groups", setUpController.addGroup);
 
 router.put("/groups/:id", setUpController.updateGroup);
 
+router.put("/groups/paycycle/:id", setUpController.updateGroupPaySchedule);
+
 router.get("/empTypes/:companyName", setUpController.getEmpTypes);
 
 router.post("/empTypes", setUpController.addEmpType);
