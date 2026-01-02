@@ -5,7 +5,7 @@ const { getSumTotal } = require("../services/payrollService");
 const findEmployeePayStub = async (empId, payPeriodPayDate, companyName) =>
 	await EmployeePayStub.findOne({
 		empId,
-		payPeriodPayDate: { $lt: new Date(payPeriodPayDate) },
+		payPeriodPayDate,
 		companyName,
 	}).sort({
 		payPeriodProcessingDate: -1,
