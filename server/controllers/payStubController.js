@@ -406,7 +406,7 @@ const buildPayStubDetails = async (
 
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
 	let prevPayPayInfo = await findPayStub(
-		prevPayPeriodNum,
+		prevPayPeriodNum == 0 ? 26 : prevPayPeriodNum,
 		companyName,
 		empId,
 		false,

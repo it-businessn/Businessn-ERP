@@ -103,7 +103,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				} else {
 					const closestYrSchedules =
 						selectedPayGroup?.yearSchedules[
-							selectedPayGroup?.yearSchedules?.findIndex(({ year }) => year === 2025)
+							selectedPayGroup?.yearSchedules?.findIndex(({ year }) => year === CURRENT_YEAR)
 						]?.payPeriods;
 
 					getClosestScheduleByProcessingDate(closestYrSchedules);

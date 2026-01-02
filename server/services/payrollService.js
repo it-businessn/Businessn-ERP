@@ -34,10 +34,10 @@ const TAX_CONFIG = {
 const applyFederalTaxRate = (annualIncome, taxCredit) => {
 	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
 	const taxBrackets = [
-		{ upperLimit: 57375, rate: 0.15 },
-		{ upperLimit: 114750, rate: 0.205 },
-		{ upperLimit: 177882, rate: 0.26 },
-		{ upperLimit: 253414, rate: 0.29 },
+		{ upperLimit: 58523, rate: 0.14 },
+		{ upperLimit: 117045, rate: 0.205 },
+		{ upperLimit: 181440, rate: 0.26 },
+		{ upperLimit: 258482, rate: 0.29 },
 		{ upperLimit: Infinity, rate: 0.33 },
 	];
 	const projectedTaxes = [];
@@ -78,12 +78,12 @@ const applyFederalTaxRate = (annualIncome, taxCredit) => {
 const applyProvincialTaxRate = (annualIncome, taxCredit) => {
 	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
 	const taxBrackets = [
-		{ upperLimit: 49279, rate: 0.0506 },
-		{ upperLimit: 98560, rate: 0.077 },
-		{ upperLimit: 113158, rate: 0.105 },
-		{ upperLimit: 137407, rate: 0.1229 },
-		{ upperLimit: 186306, rate: 0.147 },
-		{ upperLimit: 259829, rate: 0.168 },
+		{ upperLimit: 50363, rate: 0.0506 },
+		{ upperLimit: 100728, rate: 0.077 },
+		{ upperLimit: 115648, rate: 0.105 },
+		{ upperLimit: 140430, rate: 0.1229 },
+		{ upperLimit: 190405, rate: 0.147 },
+		{ upperLimit: 265545, rate: 0.168 },
 		{ upperLimit: Infinity, rate: 0.205 },
 	];
 	const projectedTaxes = [];

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
+import { CURRENT_YEAR } from "utils/convertDate";
 
-const useEmployeePayReport = (company, payPeriodNum, isOpen, year = "2025") => {
+const useEmployeePayReport = (company, payPeriodNum, isOpen, year = CURRENT_YEAR) => {
 	const [report, setReport] = useState(null);
 
 	useEffect(() => {

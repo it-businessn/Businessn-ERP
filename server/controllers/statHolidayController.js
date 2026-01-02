@@ -124,6 +124,7 @@ const addStatHoliday = async (req, res) => {
 		const data = {
 			name,
 			companyName: company,
+			year: moment().format("YYYY"),
 		};
 		const existingRecord = await Holiday.findOne(data);
 		if (existingRecord) {
