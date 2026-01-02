@@ -126,6 +126,10 @@ const SettingService = {
 		return apiService.post("/setup/groups", data);
 	},
 
+	async updatePayGroup(data, id) {
+		return apiService.put(`/setup/groups/paycycle/${id}`, data, id);
+	},
+
 	async updateGroup(data, id) {
 		return apiService.put(`/setup/groups/${id}`, data, id);
 	},

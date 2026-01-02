@@ -14,20 +14,25 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList, editingId }) => 
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [schedules, setSchedules] = useState([]);
 
-	const currentScheduleIndex = selectedGroup?.yearSchedules.findIndex(
-		({ year }) => year === CURRENT_YEAR,
-	);
-	const [currentYearScheduleIndex, setCurrentYearScheduleIndex] = useState(currentScheduleIndex);
+	const [currentYearScheduleIndex, setCurrentYearScheduleIndex] = useState(null);
 
 	useEffect(() => {
 		const parsedYear = parseInt(selectedYear);
 
-		setSchedules(selectedGroup?.yearSchedules?.find(({ year }) => year === parsedYear)?.payPeriods);
-		setCurrentYearScheduleIndex(
-			selectedGroup?.yearSchedules?.findIndex(({ year }) => year === parsedYear),
+		const currentScheduleIndex = selectedGroup?.yearSchedules?.findIndex(
+			({ year }) => year === parsedYear,
 		);
+		if (currentScheduleIndex > -1) {
+			setSchedules(selectedGroup?.yearSchedules[currentScheduleIndex]?.payPeriods);
+			setCurrentYearScheduleIndex(currentScheduleIndex);
+		} else {
+			updateCurrentYearSchedule();
+		}
 	}, [selectedYear]);
 
+	const updateCurrentYearSchedule = async () => {
+		await SettingService.updatePayGroup(selectedGroup, selectedGroup._id);
+	};
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (currentYearScheduleIndex < 0) {
@@ -86,8 +91,7 @@ const EditGroup = ({ isOpen, onClose, selectedGroup, yearsList, editingId }) => 
 					borderRadius="10px"
 					value={selectedYear}
 					placeholder="Select Year"
-					// onChange={(e) => setSelectedYear(e.target.value)}
-					onChange={(e) => console.log(e.target.value)}
+					onChange={(e) => setSelectedYear(e.target.value)}
 				>
 					{yearsList?.map((year) => (
 						<option value={year} key={year}>
