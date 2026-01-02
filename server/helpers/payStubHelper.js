@@ -2,8 +2,14 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 
 const { getSumTotal } = require("../services/payrollService");
 
-const findEmployeePayStub = async (empId, companyName) =>
-	await EmployeePayStub.findOne({ empId, companyName }).sort({ payPeriodProcessingDate: -1 });
+const findEmployeePayStub = async (empId, payPeriodPayDate, companyName) =>
+	await EmployeePayStub.findOne({
+		empId,
+		payPeriodPayDate: { $lt: new Date(payPeriodPayDate) },
+		companyName,
+	}).sort({
+		payPeriodProcessingDate: -1,
+	});
 
 const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>
 	await EmployeePayStub.findOne({

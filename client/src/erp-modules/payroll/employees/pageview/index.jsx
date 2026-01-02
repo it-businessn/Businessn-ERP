@@ -43,7 +43,7 @@ const Employees = () => {
 	const [tabIndex, setTabIndex] = useState(parseInt(stepNo) || 0);
 	const [lastBadgeId, setLastBadgeId] = useState(null);
 
-	const { payGroups, selectedPayGroupOption } = usePaygroup(company, false);
+	const { payGroups, selectedPayGroupOption, closestRecord } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, defaultDept, selectedPayGroupOption);
 	const notShadowUser = !isShadowUser(loggedInUser.role);
 
@@ -117,7 +117,13 @@ const Employees = () => {
 		},
 		{
 			name: "Benefits",
-			content: <BenefitInfo company={company} userId={userId} />,
+			content: (
+				<BenefitInfo
+					company={company}
+					userId={userId}
+					payPeriodPayDate={closestRecord?.payPeriodPayDate}
+				/>
+			),
 		},
 		{
 			name: "Government",

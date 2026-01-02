@@ -57,10 +57,10 @@ const defaultBenefitInfo = {
 		unionDuesContribution: "",
 	},
 };
-const BenefitInfo = ({ company, userId }) => {
+const BenefitInfo = ({ company, userId, payPeriodPayDate }) => {
 	const toast = useToast();
 	const [benefitsSubStep, setBenefitsSubStep] = useState(0);
-	const balanceInfo = useEmployeeBalanceInfo(company, userId);
+	const balanceInfo = useEmployeeBalanceInfo(company, userId, payPeriodPayDate);
 	const [moreDetails, setMoreDetails] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(false);

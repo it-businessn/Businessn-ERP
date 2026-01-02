@@ -129,8 +129,8 @@ const PayrollService = {
 		return apiService.put(`/payroll/bankingInfo/${id}`, data, id);
 	},
 
-	async getEmployeeBalanceInfo(company, empId) {
-		return apiService.get(`/payroll/balanceInfo/${company}/${empId}`);
+	async getEmployeeBalanceInfo(company, empId, payPeriodPayDate) {
+		return apiService.get(`/payroll/balanceInfo/${company}/${empId}/${payPeriodPayDate}`);
 	},
 
 	async addEmployeeBalanceInfo(data) {

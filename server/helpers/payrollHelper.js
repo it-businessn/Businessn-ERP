@@ -242,7 +242,7 @@ const calcSalaryByEarningType = (newEmpData, amtAllocated) => {
 };
 
 const calcEmpBenefits = (newEmpData, empBenefitInfoResult) => {
-	// const empPayStubResult = await findEmployeePayStub(empId, payPeriod);
+	// const empPayStubResult = await findEmployeePayStub(empId, payPeriodPayDate, payPeriod);
 	// newEmpData.payInLieuPay = empPayStubResult?.payInLieuPay ?? 0;
 	// newEmpData.pILBenefitPay = empPayStubResult?.pILBenefitPay ?? 0;
 	// newEmpData.bankedTimePay = empPayStubResult?.bankedTimePay ?? 0;

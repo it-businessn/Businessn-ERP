@@ -5,10 +5,7 @@ const balanceInfoController = require("../controllers/balanceInfoController");
 
 router.get("/:companyName", balanceInfoController.getAllBalanceInfo);
 
-router.get(
-	"/:companyName/:empId",
-	balanceInfoController.getEmployeeBalanceInfo,
-);
+router.get("/:companyName/:empId/:payPeriodPayDate", balanceInfoController.getEmployeeBalanceInfo);
 
 router.post("/", balanceInfoController.addEmployeeBalanceInfo);
 

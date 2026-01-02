@@ -11,7 +11,6 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 	if (isUpdate) {
 		return empBalanceInfo;
 	}
-	const empPayStub = await findEmployeePayStub(empId, companyName);
 
 	return {
 		_id: empBalanceInfo?._id,
@@ -33,7 +32,6 @@ const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 		dentalERContribution: empBalanceInfo?.dentalERContribution,
 		typeOfPensionERTreatment: empBalanceInfo?.typeOfPensionERTreatment,
 		pensionERContribution: empBalanceInfo?.pensionERContribution,
-		empPayStub,
 	};
 };
 
@@ -53,9 +51,11 @@ const getAllBalanceInfo = async (req, res) => {
 };
 
 const getEmployeeBalanceInfo = async (req, res) => {
-	const { companyName, empId } = req.params;
+	const { companyName, empId, payPeriodPayDate } = req.params;
 	try {
 		const result = await findEmployeeBalanceInfo(empId, companyName);
+		const empPayStub = await findEmployeePayStub(empId, payPeriodPayDate, companyName);
+
 		result.vacationPayPercent = showPercent(result?.vacationPayPercent);
 
 		if (result?.typeOfUnionDuesTreatment?.includes("%")) {
@@ -79,7 +79,7 @@ const getEmployeeBalanceInfo = async (req, res) => {
 		if (result?.typeOfPensionERTreatment?.includes("%")) {
 			result.pensionERContribution = showPercent(result.pensionERContribution);
 		}
-
+		result.empPayStub = empPayStub;
 		return res.status(200).json(result);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
