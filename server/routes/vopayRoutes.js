@@ -20,6 +20,8 @@ router.post("/account/client-accounts/wallets/create", vopayController.createCli
 
 router.post("/account/client-accounts/individual", vopayController.createClientAccountEmployee);
 router.post("/account/fund-my-account", vopayController.fundBankAccount);
+router.get("/account/transactions/:clientAccountId", vopayController.getTransactions);
+router.get("/account/balance", vopayController.getAccountBalance);
 
 router.get("/bank-account/:accountId", vopayController.getLinkedBankAccounts);
 

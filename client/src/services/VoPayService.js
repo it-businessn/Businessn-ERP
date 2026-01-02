@@ -13,6 +13,10 @@ const VoPayService = {
 		return apiService.get(`/vopay/${accountId}`);
 	},
 
+	async getAccountBalance() {
+		return apiService.get(`/vopay/account/balance`);
+	},
+
 	async getClientAccountWallets() {
 		return apiService.get("/vopay/account/client-accounts");
 	},
@@ -31,6 +35,10 @@ const VoPayService = {
 
 	async fundBankAccount(data) {
 		return apiService.post("/vopay/account/fund-my-account", data);
+	},
+
+	async getTransactions(clientAccountId) {
+		return apiService.get(`/vopay/account/transactions/${clientAccountId}`);
 	},
 
 	async getLinkedBankAccounts(accountId) {
@@ -52,6 +60,7 @@ const VoPayService = {
 	async fundEmployerWallet(data) {
 		return apiService.post("/vopay/eft/fund", data);
 	},
+
 	async requestTransferWithdraw(data) {
 		return apiService.post("/vopay/transfer-withdraw", data);
 	},

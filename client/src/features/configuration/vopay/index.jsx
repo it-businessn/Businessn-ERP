@@ -3,6 +3,8 @@ import VoPayService from "services/VoPayService";
 import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
 import PartnerForm from "./PartnerForm";
 import { PartnerList } from "./PartnerList";
+import { ClientEmployeeList } from "./ClientEmployeeList";
+import ClientEmployeeForm from "./ClientEmployeeForm";
 
 const VoPayPanel = ({ companyName }) => {
 	const [partners, setPartners] = useState(null);
@@ -19,7 +21,16 @@ const VoPayPanel = ({ companyName }) => {
 				console.error(error);
 			}
 		};
+		const fetchClientAccounts = async () => {
+			try {
+				const { data } = await VoPayService.getClientAccountWallets();
+				setWallets(Object.values(data.ClientAccounts));
+			} catch (error) {
+				console.error(error);
+			}
+		};
 		fetchPartnerAccounts();
+		// fetchClientAccounts();
 	}, [refresh]);
 
 	return (
@@ -39,10 +50,10 @@ const VoPayPanel = ({ companyName }) => {
 				leftContent={<PartnerForm setRefresh={setRefresh} />}
 			/>
 			{/* <ConfigTabLayout
-				tableData={partners}
-				tableTitle="TechCorp Ltd"
+				tableData={wallets}
+				tableTitle="Client Accounts"
 				tableContent={<ClientEmployeeList clientEmployees={wallets} />}
-				leftContent={<EmployerWalletFundForm setRefresh={setRefresh} />}
+				leftContent={<ClientEmployeeForm setRefresh={setRefresh} />}
 			/> */}
 		</>
 	);

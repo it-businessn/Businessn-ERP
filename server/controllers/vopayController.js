@@ -34,7 +34,7 @@ const CONFIG = {
 		BASE_URL: VOPAY_BASE_URL_PROD,
 	},
 };
-const currentEnv = CONFIG.PROD_TEST;
+const currentEnv = CONFIG.STAGING;
 const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 
 const PARTNER_URL = `${BASE_URL}partner/account`;
@@ -414,6 +414,41 @@ const createClientAccountEmployee = async (req, res) => {
 	}
 };
 
+const getAccountBalance = async (req, res) => {
+	try {
+		const options = {
+			method: "GET",
+			headers: { accept: "application/json" },
+		};
+		const url = `${BASE_URL}account/balance?AccountID=${ACCOUNT_ID}&Key=${SHARED_KEY}&Signature=${generateSignature()}&Currency=CAD`;
+		const response = await fetch(url, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
+const getTransactions = async (req, res) => {
+	try {
+		const { clientAccountId } = req.params;
+		const options = {
+			method: "GET",
+			headers: { accept: "application/json" },
+		};
+		// const url = `${BASE_URL}account/transactions?AccountID=${ACCOUNT_ID}&Key=${SHARED_KEY}&Signature=${generateSignature()}&ClientAccountID=${clientAccountId}&StartDateTime=${YYYY-MM-DD HH:MM:SS or YYYY-MM-DD}`;
+		const response = await fetch(url, options);
+		const data = await response.json();
+		res.status(200).json(data);
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
 const getEmployeeBankEmbedUrl = async (req, res) => {
 	try {
 		const { clientAccountId } = req.params;
@@ -578,4 +613,6 @@ module.exports = {
 	generateSignature,
 	receiveWebhook,
 	transferWithdraw,
+	getTransactions,
+	getAccountBalance,
 };
