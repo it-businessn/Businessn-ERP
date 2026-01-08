@@ -168,39 +168,54 @@ const buildPayStub = (
 		totalFirstAidHoursWorked,
 		totalHoursWorked,
 
-		YTDRegHoursWorked: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
-		YTDRegHoursWorked2: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked2, totalRegHoursWorked2),
-		YTDOvertimeHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDOvertimeHoursWorked,
-			totalOvertimeHoursWorked,
-		),
-		YTDDblOvertimeHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDDblOvertimeHoursWorked,
-			totalDblOvertimeHoursWorked,
-		),
-		YTDStatDayHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDStatDayHoursWorked,
-			totalStatDayHoursWorked,
-		),
-		YTDStatHoursWorked: getSumTotal(prevPayPayInfo?.YTDStatHoursWorked, totalStatHours),
-		YTDSickHoursWorked: getSumTotal(prevPayPayInfo?.YTDSickHoursWorked, totalSickHoursWorked),
-		YTDVacationHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDVacationHoursWorked,
-			totalVacationHoursWorked,
-		),
-		YTDPersonalDayHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDPersonalDayHoursWorked,
-			totalPersonalDayHoursWorked,
-		),
-		YTDBereavementHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDBereavementHoursWorked,
-			totalBereavementHoursWorked,
-		),
-		YTDSprayHoursWorked: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, totalSprayHoursWorked),
-		YTDFirstAidHoursWorked: getSumTotal(
-			prevPayPayInfo?.YTDFirstAidHoursWorked,
-			totalFirstAidHoursWorked,
-		),
+		YTDRegHoursWorked:
+			payPeriod == 1
+				? totalRegHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
+		YTDRegHoursWorked2:
+			payPeriod == 1
+				? totalRegHoursWorked2
+				: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked2, totalRegHoursWorked2),
+		YTDOvertimeHoursWorked:
+			payPeriod == 1
+				? totalOvertimeHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDOvertimeHoursWorked, totalOvertimeHoursWorked),
+		YTDDblOvertimeHoursWorked:
+			payPeriod == 1
+				? totalDblOvertimeHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDDblOvertimeHoursWorked, totalDblOvertimeHoursWorked),
+		YTDStatDayHoursWorked:
+			payPeriod == 1
+				? totalStatDayHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDStatDayHoursWorked, totalStatDayHoursWorked),
+		YTDStatHoursWorked:
+			payPeriod == 1
+				? totalStatHours
+				: getSumTotal(prevPayPayInfo?.YTDStatHoursWorked, totalStatHours),
+		YTDSickHoursWorked:
+			payPeriod == 1
+				? totalSickHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDSickHoursWorked, totalSickHoursWorked),
+		YTDVacationHoursWorked:
+			payPeriod == 1
+				? totalVacationHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDVacationHoursWorked, totalVacationHoursWorked),
+		YTDPersonalDayHoursWorked:
+			payPeriod == 1
+				? totalPersonalDayHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDPersonalDayHoursWorked, totalPersonalDayHoursWorked),
+		YTDBereavementHoursWorked:
+			payPeriod == 1
+				? totalBereavementHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDBereavementHoursWorked, totalBereavementHoursWorked),
+		YTDSprayHoursWorked:
+			payPeriod == 1
+				? totalSprayHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, totalSprayHoursWorked),
+		YTDFirstAidHoursWorked:
+			payPeriod == 1
+				? totalFirstAidHoursWorked
+				: getSumTotal(prevPayPayInfo?.YTDFirstAidHoursWorked, totalFirstAidHoursWorked),
 
 		currentRegPayTotal,
 		currentRegPayTotal2,
@@ -239,101 +254,177 @@ const buildPayStub = (
 		currentSickUsed,
 		sickBalance,
 
-		YTDRegPayTotal: getSumTotal(prevPayPayInfo?.YTDRegPayTotal, currentRegPayTotal),
-		YTDRegPayTotal2: getSumTotal(prevPayPayInfo?.YTDRegPayTotal2, currentRegPayTotal2),
-		YTDOverTimePayTotal: getSumTotal(prevPayPayInfo?.YTDOverTimePayTotal, currentOverTimePayTotal),
-		YTDDblOverTimePayTotal: getSumTotal(
-			prevPayPayInfo?.YTDDblOverTimePayTotal,
-			currentDblOverTimePayTotal,
-		),
-		YTDStatWorkPayTotal: getSumTotal(prevPayPayInfo?.YTDStatWorkPayTotal, currentStatWorkPayTotal),
-		YTDStatPayTotal: getSumTotal(prevPayPayInfo?.YTDStatPayTotal, currentStatPayTotal),
-		YTDSickPayTotal: getSumTotal(prevPayPayInfo?.YTDSickPayTotal, currentSickPayTotal),
-		YTDVacationPayTotal: getSumTotal(prevPayPayInfo?.YTDVacationPayTotal, currentVacationPayTotal),
-		YTDBereavementPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDBereavementPayTotal,
-			currentBereavementPayTotal,
-		),
-		YTDPersonalDayPayTotal: getSumTotal(
-			prevPayPayInfo?.YTDPersonalDayPayTotal,
-			currentPersonalDayPayTotal,
-		),
-		YTDSprayPayTotal: getSumTotal(prevPayPayInfo?.YTDSprayPayTotal, currentSprayPayTotal),
-		YTDFirstAidPayTotal: getSumTotal(prevPayPayInfo?.YTDFirstAidPayTotal, currentFirstAidPayTotal),
-		YTDPayInLieuPay: getSumTotal(prevPayPayInfo?.YTDPayInLieuPay, payInLieuPay),
-		YTDBenefitPay: getSumTotal(prevPayPayInfo?.YTDBenefitPay, pILBenefitPay),
-		YTDBankedTimePay: getSumTotal(prevPayPayInfo?.YTDBankedTimePay, bankedTimePay),
-		YTDRegularByAmount: getSumTotal(prevPayPayInfo?.YTDRegularByAmount, regularByAmount),
-		YTDCommission: getSumTotal(prevPayPayInfo?.YTDCommission, commission),
-		YTDRetroactive: getSumTotal(prevPayPayInfo?.YTDRetroactive, retroactive),
-		YTDVacationPayout: getSumTotal(prevPayPayInfo?.YTDVacationPayout, vacationPayout),
-		YTDBonus: getSumTotal(prevPayPayInfo?.YTDBonus, bonus),
-		YTDTerminationPayout: getSumTotal(prevPayPayInfo?.YTDTerminationPayout, terminationPayout),
-		YTD_FDTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_FDTaxDeductions || 0,
-			currentFDTaxDeductions || 0,
-		),
-		YTDStateTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTDStateTaxDeductions || 0,
-			currentStateTaxDeductions || 0,
-		),
-		YTD_IncomeTaxDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_IncomeTaxDeductions || 0,
-			currentIncomeTaxDeductions || 0,
-		),
-		YTD_EmployeeEIDeductions: getSumTotal(
-			prevPayPayInfo?.YTD_EmployeeEIDeductions || 0,
-			currentEmployeeEIDeductions || 0,
-		),
+		YTDRegPayTotal:
+			payPeriod == 1
+				? currentRegPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDRegPayTotal, currentRegPayTotal),
+		YTDRegPayTotal2:
+			payPeriod == 1
+				? currentRegPayTotal2
+				: getSumTotal(prevPayPayInfo?.YTDRegPayTotal2, currentRegPayTotal2),
+		YTDOverTimePayTotal:
+			payPeriod == 1
+				? currentOverTimePayTotal
+				: getSumTotal(prevPayPayInfo?.YTDOverTimePayTotal, currentOverTimePayTotal),
+		YTDDblOverTimePayTotal:
+			payPeriod == 1
+				? currentDblOverTimePayTotal
+				: getSumTotal(prevPayPayInfo?.YTDDblOverTimePayTotal, currentDblOverTimePayTotal),
+		YTDStatWorkPayTotal:
+			payPeriod == 1
+				? currentStatWorkPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDStatWorkPayTotal, currentStatWorkPayTotal),
+		YTDStatPayTotal:
+			payPeriod == 1
+				? currentStatPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDStatPayTotal, currentStatPayTotal),
+		YTDSickPayTotal:
+			payPeriod == 1
+				? currentSickPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDSickPayTotal, currentSickPayTotal),
+		YTDVacationPayTotal:
+			payPeriod == 1
+				? currentVacationPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDVacationPayTotal, currentVacationPayTotal),
+		YTDBereavementPayTotal:
+			payPeriod == 1
+				? currentBereavementPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDBereavementPayTotal, currentBereavementPayTotal),
+		YTDPersonalDayPayTotal:
+			payPeriod == 1
+				? currentPersonalDayPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDPersonalDayPayTotal, currentPersonalDayPayTotal),
+		YTDSprayPayTotal:
+			payPeriod == 1
+				? currentSprayPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDSprayPayTotal, currentSprayPayTotal),
+		YTDFirstAidPayTotal:
+			payPeriod == 1
+				? currentFirstAidPayTotal
+				: getSumTotal(prevPayPayInfo?.YTDFirstAidPayTotal, currentFirstAidPayTotal),
+		YTDPayInLieuPay:
+			payPeriod == 1 ? payInLieuPay : getSumTotal(prevPayPayInfo?.YTDPayInLieuPay, payInLieuPay),
+		YTDBenefitPay:
+			payPeriod == 1 ? pILBenefitPay : getSumTotal(prevPayPayInfo?.YTDBenefitPay, pILBenefitPay),
+		YTDBankedTimePay:
+			payPeriod == 1 ? bankedTimePay : getSumTotal(prevPayPayInfo?.YTDBankedTimePay, bankedTimePay),
+		YTDRegularByAmount:
+			payPeriod == 1
+				? regularByAmount
+				: getSumTotal(prevPayPayInfo?.YTDRegularByAmount, regularByAmount),
+		YTDCommission:
+			payPeriod == 1 ? commission : getSumTotal(prevPayPayInfo?.YTDCommission, commission),
+		YTDRetroactive:
+			payPeriod == 1 ? retroactive : getSumTotal(prevPayPayInfo?.YTDRetroactive, retroactive),
+		YTDVacationPayout:
+			payPeriod == 1
+				? vacationPayout
+				: getSumTotal(prevPayPayInfo?.YTDVacationPayout, vacationPayout),
+		YTDBonus: payPeriod == 1 ? bonus : getSumTotal(prevPayPayInfo?.YTDBonus, bonus),
+		YTDTerminationPayout:
+			payPeriod == 1
+				? terminationPayout
+				: getSumTotal(prevPayPayInfo?.YTDTerminationPayout, terminationPayout),
+		YTD_FDTaxDeductions:
+			payPeriod == 1
+				? currentFDTaxDeductions
+				: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions || 0, currentFDTaxDeductions || 0),
+		YTDStateTaxDeductions:
+			payPeriod == 1
+				? currentStateTaxDeductions
+				: getSumTotal(prevPayPayInfo?.YTDStateTaxDeductions || 0, currentStateTaxDeductions || 0),
+		YTD_IncomeTaxDeductions:
+			payPeriod == 1
+				? currentIncomeTaxDeductions
+				: getSumTotal(
+						prevPayPayInfo?.YTD_IncomeTaxDeductions || 0,
+						currentIncomeTaxDeductions || 0,
+				  ),
+		YTD_EmployeeEIDeductions:
+			payPeriod == 1
+				? currentEmployeeEIDeductions
+				: getSumTotal(
+						prevPayPayInfo?.YTD_EmployeeEIDeductions || 0,
+						currentEmployeeEIDeductions || 0,
+				  ),
 		YTD_EmployerEIDeductions:
-			getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions || 0, currentEmployerEIDeductions || 0) <
-			0
+			payPeriod == 1
+				? currentEmployerEIDeductions
+				: getSumTotal(
+						prevPayPayInfo?.YTD_EmployerEIDeductions || 0,
+						currentEmployerEIDeductions || 0,
+				  ) < 0
 				? 0
 				: getSumTotal(
 						prevPayPayInfo?.YTD_EmployerEIDeductions || 0,
 						currentEmployerEIDeductions || 0,
 				  ),
 		YTD_CPPDeductions:
-			getSumTotal(prevPayPayInfo?.YTD_CPPDeductions || 0, currentCPPDeductions || 0) < 0
+			payPeriod == 1
+				? currentCPPDeductions
+				: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions || 0, currentCPPDeductions || 0) < 0
 				? 0
 				: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions || 0, currentCPPDeductions || 0),
-		YTDUnionDuesDeductions: getSumTotal(
-			prevPayPayInfo?.YTDUnionDuesDeductions || 0,
-			currentUnionDuesDeductions || 0,
-		),
-		YTDEmployeeHealthContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployeeHealthContributions || 0,
-			currentEmployeeHealthContributions || 0,
-		),
+		YTDUnionDuesDeductions:
+			payPeriod == 1
+				? currentUnionDuesDeductions
+				: getSumTotal(prevPayPayInfo?.YTDUnionDuesDeductions || 0, currentUnionDuesDeductions || 0),
+		YTDEmployeeHealthContributions:
+			payPeriod == 1
+				? currentEmployeeHealthContributions
+				: getSumTotal(
+						prevPayPayInfo?.YTDEmployeeHealthContributions || 0,
+						currentEmployeeHealthContributions || 0,
+				  ),
 		YTDPrimaryDeposit: getSumTotal(prevPayPayInfo?.YTDPrimaryDeposit, currentPrimaryDeposit),
-		YTDEmployeePensionContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployeePensionContributions,
-			currentEmployeePensionContributions || 0,
-		),
-		YTDOtherDeductions: getSumTotal(
-			prevPayPayInfo?.YTDOtherDeductions || 0,
-			currentOtherDeductions,
-		),
+		YTDEmployeePensionContributions:
+			payPeriod == 1
+				? currentEmployeePensionContributions
+				: getSumTotal(
+						prevPayPayInfo?.YTDEmployeePensionContributions,
+						currentEmployeePensionContributions || 0,
+				  ),
+		YTDOtherDeductions:
+			payPeriod == 1
+				? currentOtherDeductions
+				: getSumTotal(prevPayPayInfo?.YTDOtherDeductions || 0, currentOtherDeductions),
 
-		YTDGrossPay: getSumTotal(prevPayPayInfo?.YTDGrossPay || 0, currentGrossPay || 0),
+		YTDGrossPay:
+			payPeriod == 1
+				? currentGrossPay
+				: getSumTotal(prevPayPayInfo?.YTDGrossPay || 0, currentGrossPay || 0),
 
-		YTDEmployerPensionContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployerPensionContributions,
-			currentEmployerPensionContributions,
-		),
-		YTDEmployerHealthContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployerHealthContributions,
-			currentEmployerHealthContributions,
-		),
-		YTDEmployerContributions: getSumTotal(
-			prevPayPayInfo?.YTDEmployerContributions,
-			currentEmployerContributions,
-		),
-		YTDVacationAccrued: getSumTotal(prevPayPayInfo?.YTDVacationAccrued, currentVacationAccrued),
-		YTDVacationBalanceFwd: currentVacationBalanceFwd,
-		YTDSickAccrued: getSumTotal(prevPayPayInfo?.YTDSickAccrued, currentSickAccrued),
-		YTDSickUsed: getSumTotal(prevPayPayInfo?.YTDSickUsed, currentSickUsed),
-		YTDSickBalance: getSumTotal(prevPayPayInfo?.YTDSickBalance, sickBalance),
+		YTDEmployerPensionContributions:
+			payPeriod == 1
+				? currentEmployerPensionContributions
+				: getSumTotal(
+						prevPayPayInfo?.YTDEmployerPensionContributions,
+						currentEmployerPensionContributions,
+				  ),
+		YTDEmployerHealthContributions:
+			payPeriod == 1
+				? currentEmployerHealthContributions
+				: getSumTotal(
+						prevPayPayInfo?.YTDEmployerHealthContributions,
+						currentEmployerHealthContributions,
+				  ),
+		YTDEmployerContributions:
+			payPeriod == 1
+				? currentEmployerContributions
+				: getSumTotal(prevPayPayInfo?.YTDEmployerContributions, currentEmployerContributions),
+		YTDVacationAccrued:
+			payPeriod == 1 ? currentVacationAccrued : getSumTotal(prevPayPayInfo?.YTDVacationAccrued),
+		YTDVacationBalanceFwd:
+			payPeriod == 1 ? prevPayPayInfo?.YTDVacationAccrued : currentVacationBalanceFwd,
+
+		YTDSickAccrued:
+			payPeriod == 1
+				? currentSickAccrued
+				: getSumTotal(prevPayPayInfo?.YTDSickAccrued, currentSickAccrued),
+		YTDSickUsed:
+			payPeriod == 1 ? currentSickUsed : getSumTotal(prevPayPayInfo?.YTDSickUsed, currentSickUsed),
+		YTDSickBalance:
+			payPeriod == 1 ? sickBalance : getSumTotal(prevPayPayInfo?.YTDSickBalance, sickBalance),
 	};
 	const {
 		YTDEmployeePensionContributions,
@@ -347,22 +438,26 @@ const buildPayStub = (
 		YTDVacationPayout,
 		YTDVacationPayTotal,
 		YTDVacationAccrued,
+		YTDVacationBalanceFwd,
 	} = newPayStub;
 
 	// YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, currentVacationUsed),
 	// YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacationBalance),
 	newPayStub.YTDVacationUsed = YTDVacationPayout + YTDVacationPayTotal;
-	newPayStub.YTDVacationBalance = YTDVacationAccrued - newPayStub.YTDVacationUsed;
+	newPayStub.YTDVacationBalance =
+		payPeriod == 1
+			? YTDVacationBalanceFwd + YTDVacationAccrued - newPayStub.YTDVacationUsed
+			: YTDVacationAccrued - newPayStub.YTDVacationUsed;
 
 	newPayStub.YTDDeductionsTotal =
 		YTDEmployeePensionContributions +
-		YTDPrimaryDeposit +
-		YTDEmployeeHealthContributions +
-		YTDUnionDuesDeductions +
-		YTD_CPPDeductions +
-		YTD_EmployeeEIDeductions +
-		YTD_IncomeTaxDeductions;
-	newPayStub.YTDNetPay = YTDGrossPay - newPayStub.YTDDeductionsTotal;
+			YTDPrimaryDeposit +
+			YTDEmployeeHealthContributions +
+			YTDUnionDuesDeductions +
+			YTD_CPPDeductions +
+			YTD_EmployeeEIDeductions +
+			YTD_IncomeTaxDeductions || 0;
+	newPayStub.YTDNetPay = YTDGrossPay - newPayStub.YTDDeductionsTotal || 0;
 
 	return newPayStub;
 };

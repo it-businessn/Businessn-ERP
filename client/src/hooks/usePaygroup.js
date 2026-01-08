@@ -58,7 +58,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 			setAllPayGroupSchedule(sortedResult);
 			const schedules = selectedPayGroup?.yearSchedules[yearIndex]?.payPeriods;
 			let closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
-			const allProcessed = schedules?.every((s) => s.isProcessed) ?? false;
+			const allProcessed = schedules?.every((s) => s.isProcessed) || false;
 			if (allProcessed) {
 				closestPayPeriod = schedules[schedules.length - 1];
 			}
