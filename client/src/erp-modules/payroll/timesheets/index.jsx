@@ -2,7 +2,6 @@ import { Flex, HStack, IconButton, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import useCompany from "hooks/useCompany";
 import useCostCenter from "hooks/useCostCenter";
 import useDepartment from "hooks/useDepartment";
 import useEmployees from "hooks/useEmployees";
@@ -28,7 +27,7 @@ const Timesheets = () => {
 	const deptName = getDeptName(loggedInUser);
 	const { id } = useParams();
 	const toast = useToast();
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const {
 		hasMultiPaygroups,
 		selectedPayGroupOption,

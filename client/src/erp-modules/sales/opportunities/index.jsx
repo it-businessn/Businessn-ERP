@@ -20,7 +20,6 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import Pagination from "components/ui/Pagination";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
-import useCompany from "hooks/useCompany";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
@@ -41,7 +40,7 @@ import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
 const Opportunities = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [isAdded, setIsAdded] = useState(false);

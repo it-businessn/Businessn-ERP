@@ -1,6 +1,5 @@
 import { HStack, Select } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import useCrews from "hooks/useCrews";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -11,7 +10,7 @@ import BudgetList from "./BudgetList";
 import BudgetQuickActions from "./BudgetQuickActions";
 
 const BudgetingWorkview = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { crews, selectedCrew, setSelectedCrew } = useCrews(company);
 	const [dept, setDept] = useState(null);
 

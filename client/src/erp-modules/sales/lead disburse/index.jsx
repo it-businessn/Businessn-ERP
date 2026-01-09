@@ -20,7 +20,6 @@ import {
 	PRODUCTS_SERVICES,
 	WEIGHTING,
 } from "erp-modules/project-management/workview/project/data";
-import useCompany from "hooks/useCompany";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -37,7 +36,7 @@ import Disburse from "./Disburse";
 import { caption, columns, showFilterSearchOption, showRegion } from "./data";
 
 const LeadsDisbursed = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [activity, setActivity] = useState(null);

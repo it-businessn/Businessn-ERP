@@ -14,7 +14,6 @@ import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
 import { useState } from "react";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
@@ -36,7 +35,7 @@ const InputsReview = ({
 }) => {
 	const { payNo } = useParams();
 	const isExtra = payNo?.includes("E");
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
 

@@ -2,7 +2,6 @@ import { Box, Button, Flex, HStack, Spacer } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
 
-import useCompany from "hooks/useCompany";
 import useGroup from "hooks/useGroup";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment-timezone";
@@ -13,12 +12,12 @@ import { FaCaretLeft, FaCaretRight, FaClock } from "react-icons/fa";
 import { useBreakpointValue } from "services/Breakpoint";
 import CalendarService from "services/CalendarService";
 import LocalStorageService from "services/LocalStorageService";
-import { getDefaultDateTime, getTimezone } from "utils/convertDate";
+import { getDefaultDateTime } from "utils/convertDate";
 import AddEvent from "./AddEvent";
 import EventDetails from "./EventDetails";
 
 const Calendar = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
 	const localizer = momentLocalizer(moment);

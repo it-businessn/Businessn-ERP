@@ -6,7 +6,6 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -22,7 +21,7 @@ import PreviewReportsModal from "../PreviewReportsModal";
 
 const Reports = () => {
 	const { isMobile } = useBreakpointValue();
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const [showReport, setShowReport] = useState(undefined);
 	const REPORT_COLS = ["Pay number", "Pay date", "Pay period", "Status", "Action"];
 	const [payStub, setPayStub] = useState(null);

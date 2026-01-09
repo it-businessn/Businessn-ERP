@@ -1,7 +1,6 @@
 import { Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
-import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -9,7 +8,7 @@ import LocalStorageService from "services/LocalStorageService";
 import { getDeptName } from "utils";
 
 const Approvals = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { selectedPayGroup } = usePaygroup(company, false);
 	const { employees } = useEmployees(

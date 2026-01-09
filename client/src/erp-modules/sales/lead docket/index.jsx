@@ -25,7 +25,6 @@ import {
 	PRODUCTS_SERVICES,
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -44,7 +43,7 @@ import SearchFilter from "./SearchFilter";
 import { LEAD_DOCKET_COLUMNS } from "./data";
 
 const LeadsDocket = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [leads, setLeads] = useState(null);
 	const [allLeadIDs, setAllLeadIDs] = useState([]);

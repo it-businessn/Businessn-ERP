@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
-import useCompany from "hooks/useCompany";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AssessmentService from "services/AssessmentService";
@@ -18,7 +17,7 @@ import LocalStorageService from "services/LocalStorageService";
 import QuestionnaireService from "services/QuestionnaireService";
 
 const Assessment = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const userId = LocalStorageService.getItem("user")?._id;
 	const { category } = useParams();
 	const [questionnaires, setQuestionnaires] = useState(null);

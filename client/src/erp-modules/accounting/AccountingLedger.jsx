@@ -12,7 +12,6 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import OtherFilter from "erp-modules/payroll/timesheets/OtherFilter";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaSearch } from "react-icons/fa";
@@ -30,7 +29,7 @@ const ACTIONS = [
 ];
 
 const AccountingLedger = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	const [formData, setFormData] = useState({
 		isPayrollActive: true,

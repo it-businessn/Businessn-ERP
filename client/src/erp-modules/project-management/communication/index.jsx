@@ -12,7 +12,6 @@ import {
 import TextTitle from "components/ui/text/TextTitle";
 
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
@@ -21,7 +20,7 @@ import UserService from "services/UserService";
 import Conversation from "./Conversation";
 
 const Communications = ({ isDashboard }) => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [conversations, setConversations] = useState([]);
 	const [groups, setGroups] = useState(null);

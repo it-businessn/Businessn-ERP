@@ -1,7 +1,6 @@
 import { HStack } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -13,7 +12,7 @@ import ClosedTicket from "./ClosedTicket";
 import OpenTicket from "./OpenTicket";
 
 const Tickets = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const userId = loggedInUser.fullName;
 

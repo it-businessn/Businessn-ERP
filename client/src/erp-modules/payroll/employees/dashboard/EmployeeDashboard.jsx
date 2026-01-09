@@ -1,6 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
-import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -11,7 +10,7 @@ import RightPane from "./rightpane";
 const EmployeeDashboard = () => {
 	const selectedUser = LocalStorageService.getItem("user");
 	const { isMobile } = useBreakpointValue();
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { selectedPayGroup, closestRecord, payGroupSchedule, closestRecordIndex } = usePaygroup(
 		company,
 		false,

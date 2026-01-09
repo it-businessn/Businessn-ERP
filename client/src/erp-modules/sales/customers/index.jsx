@@ -1,13 +1,12 @@
 import { AddIcon, CalendarIcon, ChatIcon, TimeIcon } from "@chakra-ui/icons";
 
-import useCompany from "hooks/useCompany";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import CustomersList from "./CustomersList";
 import Contacts from "./contacts";
 
 const Customers = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const [viewProfile, setViewProfile] = useState(false);
 	const [selectedContact, setSelectedContact] = useState(null);
 	const loggedInUser = LocalStorageService.getItem("user");

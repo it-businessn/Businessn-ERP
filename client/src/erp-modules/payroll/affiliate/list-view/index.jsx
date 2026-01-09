@@ -12,7 +12,6 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import SendEmailList from "erp-modules/payroll/employees/listview/SendEmailList";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
-import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -32,7 +31,7 @@ const PAYGROUP_ACTIONS = [
 
 const AffiliateListView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { isOpen: showOnboard, onOpen: openOnboard, onClose: closeOnboard } = useDisclosure();
 
 	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =

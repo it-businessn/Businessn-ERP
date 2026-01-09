@@ -6,7 +6,6 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { ALERTS_TYPE } from "constant";
-import useCompany from "hooks/useCompany";
 import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
 import { MdCheckCircle } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,7 +25,7 @@ const AlertsViolation = ({
 	const { payNo } = useParams();
 	const isExtra = payNo?.includes("E");
 
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
 

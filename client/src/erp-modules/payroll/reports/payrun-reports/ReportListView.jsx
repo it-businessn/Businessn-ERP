@@ -1,5 +1,4 @@
 import { Box, Select } from "@chakra-ui/react";
-import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -15,7 +14,7 @@ import { ReportModals } from "../components/ReportModals";
 const ReportListView = () => {
 	const { year } = useParams();
 	const companyDetails = LocalStorageService.getItem("user")?.companyId;
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);
 	const [selectedYear, setSelectedYear] = useState(year || CURRENT_YEAR);

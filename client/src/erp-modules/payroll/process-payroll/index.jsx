@@ -4,7 +4,6 @@ import BoxCard from "components/ui/card";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import ModalLayout from "components/ui/modal/ModalLayout";
 import NormalTextTitle from "components/ui/NormalTextTitle";
-import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
@@ -35,7 +34,7 @@ const ProcessPayroll = () => {
 	];
 	const loggedInUser = LocalStorageService.getItem("user");
 	const deptName = getDeptName(loggedInUser);
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { payNo, year, stepNum } = useParams();
 	const activeStep = stepNum ? parseInt(stepNum) : 0;
 	const [currentStep, setCurrentStep] = useState(activeStep);

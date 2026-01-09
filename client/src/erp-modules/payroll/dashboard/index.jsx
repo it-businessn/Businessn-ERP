@@ -1,6 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
-import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import LocalStorageService from "services/LocalStorageService";
@@ -9,7 +8,7 @@ import RightPane from "./rightpane";
 
 const PayrollDashboard = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const {
 		hasMultiPaygroups,
 		payGroups,

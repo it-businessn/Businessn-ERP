@@ -163,7 +163,7 @@ const SignInForm = ({ title, isMobile }) => {
 								</InputRightElement>
 							</InputGroup>
 						</FormControl>
-						{/* //checkbox rememberme */}
+						{/* //checkbox remember me */}
 						<Button isLoading={isLoading} type="submit" bg="var(--banner_bg)">
 							Login
 						</Button>

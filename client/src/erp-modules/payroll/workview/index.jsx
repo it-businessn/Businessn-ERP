@@ -1,4 +1,3 @@
-import useCompany from "hooks/useCompany";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -10,7 +9,7 @@ import PaygroupTable from "./paygroup-header-table";
 
 const PayrollWorkview = () => {
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`;
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const [refresh, setRefresh] = useState(false);
 	const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
 	const [yearsList, setYearsList] = useState([CURRENT_YEAR]);

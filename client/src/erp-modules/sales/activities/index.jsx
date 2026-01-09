@@ -1,6 +1,5 @@
 import { SimpleGrid } from "@chakra-ui/react";
 
-import useCompany from "hooks/useCompany";
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
@@ -15,7 +14,7 @@ import RightPane from "./RightPane";
 import SelectCustomer from "./SelectCustomer";
 
 const Activities = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const isManagerRole = isNotEnrollerOrEmployee(loggedInUser?.role);
 	const [contacts, setContacts] = useState(null);

@@ -3,7 +3,6 @@ import { redirectLogin } from "api";
 import { Menu, UserProfile } from "components";
 import Logo from "components/logo";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import LoginService from "services/LoginService";
 
 const Navbar = ({
@@ -16,8 +15,6 @@ const Navbar = ({
 	menuList,
 	consoleAccess,
 }) => {
-	const { company } = useCompany(companyName);
-
 	const handleLogout = async () => {
 		try {
 			await LoginService.signOut(user._id);
@@ -50,7 +47,7 @@ const Navbar = ({
 						color="var(--main_color)"
 					>
 						<Stack minW={isMobile ? "auto" : "320px"}>
-							<TextTitle size={isMobile ? "sm" : "lg"} title={company} />
+							<TextTitle size={isMobile ? "sm" : "lg"} title={companyName} />
 							<TextTitle size={"lg"} title={companyId} />
 						</Stack>
 						<HStack w="100%" h={"30"}>

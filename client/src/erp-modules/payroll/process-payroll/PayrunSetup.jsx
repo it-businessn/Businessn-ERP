@@ -3,7 +3,6 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
-import useCompany from "hooks/useCompany";
 import { useState } from "react";
 import { MdCheckCircle } from "react-icons/md";
 import LocalStorageService from "services/LocalStorageService";
@@ -21,7 +20,7 @@ const PayrunSetup = ({
 	deptName,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	const handleConfirm = async () => {
 		try {

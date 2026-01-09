@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import SelectFormControl from "components/ui/form/SelectFormControl";
 import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
-import useCompany from "hooks/useCompany";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -28,7 +27,7 @@ import ReviewInfo from "./review/ReviewInfo";
 
 const ROE = () => {
 	const toast = useToast();
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
 	const { closestRecord, payGroupSchedule, selectedPayGroupOption } = usePaygroup(company, false);
 	const employees = useCompanyEmployees(company, null, selectedPayGroupOption);

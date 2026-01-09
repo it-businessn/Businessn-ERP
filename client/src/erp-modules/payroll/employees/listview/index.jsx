@@ -12,7 +12,6 @@ import LeftIconButton from "components/ui/button/LeftIconButton";
 import RadioFormControl from "components/ui/form/RadioFormControl";
 import NewEmployeeOnboardingModal from "erp-modules/payroll/onboard-user/NewEmployeeOnboardingModal";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
-import useCompany from "hooks/useCompany";
 import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
@@ -36,7 +35,7 @@ const PAYGROUP_ACTIONS = [
 
 const EmployeeListView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 	const { isOpen: showOnboard, onOpen: openOnboard, onClose: closeOnboard } = useDisclosure();
 
 	const [payrollState, setPayrollState] = useState({

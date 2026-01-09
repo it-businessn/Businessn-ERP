@@ -21,7 +21,6 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import PayrollActions from "erp-modules/payroll/workview/paygroup-header-table/PayrollActions";
-import useCompany from "hooks/useCompany";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
@@ -41,7 +40,7 @@ const ACTIONS = [
 ];
 
 const AccountingWorkview = () => {
-	const { company } = useCompany(LocalStorageService.getItem("selectedCompany"));
+	const company = LocalStorageService.getItem("selectedCompany");
 
 	const [accounts, setAccounts] = useState(null);
 	const [totalCredit, setTotalCredit] = useState(0);

@@ -1,9 +1,10 @@
 import { Box, Button, Flex, FormControl, Image, Input, Stack } from "@chakra-ui/react";
+import LinkButton from "components/ui/button/LinkButton";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import CenterBoxLayout from "layouts/CenterBoxLayout";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isMobileView } from "services/Breakpoint";
 import PasswordService from "services/PasswordService";
 import logoImgSrc from "../../assets/logos/logo1.png";
@@ -12,6 +13,7 @@ import Logo from "../../components/logo";
 const ForgotPassword = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [captionTitle, setCaptionTitle] = useState("");
+	const navigate = useNavigate();
 
 	const [email, setEmail] = useState("");
 	const handleSubmit = async (e) => {
@@ -22,6 +24,9 @@ const ForgotPassword = () => {
 		} catch (error) {
 			setErrorMessage(error?.response?.data?.message);
 		}
+	};
+	const goBack = () => {
+		navigate(-1);
 	};
 	const LogoContent = () =>
 		isMobileView ? (
@@ -58,7 +63,7 @@ const ForgotPassword = () => {
 					md: "3",
 				}}
 			>
-				<Flex h="24" m={"0 auto"}>
+				<Flex h="3em" m={"0 auto"}>
 					<LogoContent />
 				</Flex>
 				<TextTitle
@@ -93,6 +98,8 @@ const ForgotPassword = () => {
 						</Stack>
 					</form>
 				</Stack>
+				<LinkButton name="Go Back" onClick={goBack} />
+
 				{/* <HStack>
 					<Divider />
 					<Text textStyle="sm" color="fg.muted">
