@@ -17,7 +17,8 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 		}
 
 		setHasLoaded(false);
-		const { isExtra, payNum, payPeriodPayDate } = selectedPayPeriodDetails?.current;
+		const { isExtra, payNum, payPeriodPayDate, payPeriodProcessingDate } =
+			selectedPayPeriodDetails?.current;
 		const extraRun = isExtra || false;
 		const payNumber = payNum?.payPeriod || payNum;
 
@@ -67,6 +68,7 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				const { data } = await PayrollService.getJournalEntryReportDetails(
 					company,
 					payNumber,
+					payPeriodProcessingDate,
 					extraRun,
 					scheduleFrequency,
 				);
@@ -115,9 +117,14 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 		setShowJournalsReport(false);
 	};
 
-	const handleJournalsReport = (payNo, isExtra, payPeriodPayDate) => {
+	const handleJournalsReport = (payNo, isExtra, payPeriodPayDate, payPeriodProcessingDate) => {
 		const payNum = getPayNum(payNo, isExtra);
-		selectedPayPeriodDetails.current = { payNum, isExtra, payPeriodPayDate };
+		selectedPayPeriodDetails.current = {
+			payNum,
+			isExtra,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+		};
 		setShowTotalsReport(false);
 		setShowReport(false);
 		setShowJournalsReport(true);

@@ -43,6 +43,7 @@ const buildFundingTotalsReport = async (
 			fundingTotal.totalServiceCharges || 0;
 	if (isExtraRun) fundingTotal.isExtraRun = isExtraRun;
 
+	const { companyName } = fundingTotal;
 	const existsFundDetails = await FundingTotalsPay.findOne({
 		companyName: fundingTotal.companyName,
 		payPeriodNum: fundingTotal.payPeriodNum,
@@ -60,11 +61,11 @@ const buildFundingTotalsReport = async (
 				new: true,
 			},
 		);
+		createJournalEntry(existsFundDetails._id, companyName, scheduleFrequency);
 		return;
 	}
 	const newTotals = await FundingTotalsPay.create(fundingTotal);
 	if (newTotals) {
-		const { companyName } = fundingTotal;
 		createNewOrder(newTotals._id, companyName, totalEmployees);
 		createJournalEntry(newTotals._id, companyName, scheduleFrequency);
 	}
@@ -166,7 +167,7 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			}),
 		);
 
-		const allDepartmentBreakDown = await Promise.all(deptPromises);
+		const allDepartmentBreakDown = await Promise.all(deptPromises.filter((dept) => dept));
 		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { records, departments }) => {
 			records.forEach((record, idx) => {
 				const department = departments[idx] || "Unknown";
@@ -229,17 +230,14 @@ const EMP_INFO = {
 };
 
 const getFundReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
+	const { companyName, payPeriodNum, payPeriodPayDate, isExtraRun, scheduleFrequency } = req.params;
 	try {
 		const isExtraPayRun = checkExtraRun(isExtraRun);
 		const payStubs = await FundingTotalsPay.findOne({
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-			payPeriodPayDate: {
-				$gte: moment().startOf("year").toDate(),
-				$lt: moment().endOf("year").toDate(),
-			},
+			payPeriodPayDate: moment.utc(payPeriodPayDate).startOf("day").toDate(),
 			scheduleFrequency,
 		}).sort({
 			createdOn: -1,
@@ -251,7 +249,8 @@ const getFundReportInfo = async (req, res) => {
 };
 
 const getJournalEntryReportInfo = async (req, res) => {
-	const { companyName, payPeriodNum, isExtraRun, scheduleFrequency } = req.params;
+	const { companyName, payPeriodNum, payPeriodProcessingDate, isExtraRun, scheduleFrequency } =
+		req.params;
 
 	try {
 		const isExtraPayRun = checkExtraRun(isExtraRun);
@@ -259,10 +258,7 @@ const getJournalEntryReportInfo = async (req, res) => {
 			companyName,
 			payPeriodNum,
 			isExtraRun: isExtraPayRun,
-			payPeriodProcessingDate: {
-				$gte: moment().startOf("year").toDate(),
-				$lt: moment().endOf("year").toDate(),
-			},
+			payPeriodProcessingDate: moment.utc(payPeriodProcessingDate).startOf("day").toDate(),
 			scheduleFrequency,
 		});
 		// if (entries)

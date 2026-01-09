@@ -16,6 +16,7 @@ const useFundingTotalsReport = (company, closestRecord, isOpen) => {
 				const { data } = await PayrollService.getTotalFundingPayReportDetails(
 					company,
 					payNum,
+					closestRecord?.payPeriodPayDate,
 					extraRun,
 					scheduleFrequency,
 				);

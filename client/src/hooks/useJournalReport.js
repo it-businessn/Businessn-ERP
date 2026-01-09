@@ -15,6 +15,7 @@ const useJournalReport = (company, payPeriodNum, isOpen) => {
 				const { data } = await PayrollService.getJournalEntryReportDetails(
 					company,
 					payNum,
+					payPeriodNum?.payPeriodProcessingDate,
 					extraRun,
 					scheduleFrequency,
 				);

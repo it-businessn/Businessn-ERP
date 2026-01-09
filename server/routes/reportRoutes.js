@@ -9,12 +9,12 @@ router.get(
 );
 
 router.get(
-	"/funds/report/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
+	"/funds/report/:companyName/:payPeriodNum/:payPeriodPayDate/:isExtraRun/:scheduleFrequency",
 	reportController.getFundReportInfo,
 );
 
 router.get(
-	"/funds/journals/:companyName/:payPeriodNum/:isExtraRun/:scheduleFrequency",
+	"/funds/journals/:companyName/:payPeriodNum/:payPeriodProcessingDate/:isExtraRun/:scheduleFrequency",
 	reportController.getJournalEntryReportInfo,
 );
 

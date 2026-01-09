@@ -70,6 +70,7 @@ const WorkviewTable = ({
 		isViewAction,
 		isDisabledAction,
 		payPeriodPayDate,
+		payPeriodProcessingDate,
 	) => {
 		const mainAction =
 			isViewAction || isEarningTable ? (
@@ -141,6 +142,7 @@ const WorkviewTable = ({
 										isExtraPay(payPeriod, isExtraRun),
 										isExtraRun,
 										payPeriodPayDate,
+										payPeriodProcessingDate,
 									)
 								}
 							>
@@ -267,6 +269,7 @@ const WorkviewTable = ({
 										isViewAction,
 										isDisabledAction,
 										payPeriodPayDate,
+										payPeriodProcessingDate,
 									)
 								)}
 							</Td>
