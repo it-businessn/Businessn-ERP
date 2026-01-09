@@ -80,12 +80,12 @@ const AffiliateListView = () => {
 			selectPlaceholder="Select Paygroup"
 			selectAttr="name"
 			handleChange={handleChange}
-			hasMultiPaygroups={hasMultiPaygroups}
-			showPayGroup={true}
-			selectedValue={selectedPayGroupOption}
-			data={payGroups}
+			// hasMultiPaygroups={hasMultiPaygroups}
+			// showPayGroup={true}
+			// selectedValue={selectedPayGroupOption}
+			// data={payGroups}
 		>
-			<SimpleGrid
+			{/* <SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
 				mt="4"
@@ -93,7 +93,6 @@ const AffiliateListView = () => {
 				templateColumns={{ lg: "70% 30%" }}
 			>
 				<Flex direction="column" gap={6}>
-					{/* Search Section */}
 					<InputGroup
 						maxW="300px"
 						borderRadius={"10px"}
@@ -119,10 +118,9 @@ const AffiliateListView = () => {
 						<InputRightElement children={<FaSearch />} />
 					</InputGroup>
 				</Flex>
-
-				{/* Actions Section */}
+			 
 				<PayrollActions handleClick={handleClick} actions={PAYGROUP_ACTIONS} />
-			</SimpleGrid>
+			</SimpleGrid> */}
 			<Box>
 				<Flex mb={1} gap={6} align="center">
 					<LeftIconButton

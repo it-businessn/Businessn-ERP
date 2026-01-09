@@ -61,6 +61,7 @@ const buildFundingTotalsReport = async (
 				new: true,
 			},
 		);
+		createNewOrder(existsFundDetails._id, companyName, totalEmployees);
 		createJournalEntry(existsFundDetails._id, companyName, scheduleFrequency);
 		return;
 	}

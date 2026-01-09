@@ -87,7 +87,7 @@ const EmploymentInfo = ({
 	useEffect(() => {
 		function getAccessibleRoles() {
 			const accessibleTitles = ROLE_ACCESS[userRole];
-			return roles.filter((role) => accessibleTitles.includes(role.name));
+			return roles.filter((role) => accessibleTitles?.includes(role.name));
 		}
 		if (roles) {
 			const allRoles = getAccessibleRoles();

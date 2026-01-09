@@ -325,7 +325,7 @@ export default function AffiliateSignup() {
 						</Box>
 						<PrimaryButton
 							isLoading={isSubmitting}
-							w="full"
+							w={{ base: "full", md: "fit-content" }}
 							name={"Submit"}
 							bg="var(--banner_bg)"
 							hover="none"
