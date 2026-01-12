@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import VoPayService from "services/VoPayService";
 import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
+import ClientEmployeeForm from "./ClientEmployeeForm";
+import { ClientEmployeeList } from "./ClientEmployeeList";
 import PartnerForm from "./PartnerForm";
 import { PartnerList } from "./PartnerList";
-import { ClientEmployeeList } from "./ClientEmployeeList";
-import ClientEmployeeForm from "./ClientEmployeeForm";
+import { Divider, Stack } from "@chakra-ui/react";
 
 const VoPayPanel = ({ companyName }) => {
 	const [partners, setPartners] = useState(null);
 	const [wallets, setWallets] = useState(null);
 	const [refresh, setRefresh] = useState(null);
+	const [clientAccountID, setClientAccountID] = useState(null);
 	// const webhookEvent = useVoPayEvents();
 
 	useEffect(() => {
@@ -30,11 +32,11 @@ const VoPayPanel = ({ companyName }) => {
 			}
 		};
 		fetchPartnerAccounts();
-		// fetchClientAccounts();
+		fetchClientAccounts();
 	}, [refresh]);
 
 	return (
-		<>
+		<Stack>
 			{/* <div>
 				<h2>Webhook Status</h2>
 				{webhookEvent ? (
@@ -46,16 +48,19 @@ const VoPayPanel = ({ companyName }) => {
 			<ConfigTabLayout
 				tableData={partners}
 				tableTitle="Vopay Accounts"
-				tableContent={<PartnerList partners={partners} />}
+				tableContent={<PartnerList partners={partners} setClientAccountID={setClientAccountID} />}
 				leftContent={<PartnerForm setRefresh={setRefresh} />}
 			/>
-			{/* <ConfigTabLayout
+			<Divider />
+			<ConfigTabLayout
 				tableData={wallets}
 				tableTitle="Client Accounts"
 				tableContent={<ClientEmployeeList clientEmployees={wallets} />}
-				leftContent={<ClientEmployeeForm setRefresh={setRefresh} />}
-			/> */}
-		</>
+				leftContent={
+					<ClientEmployeeForm setRefresh={setRefresh} ClientAccountID={clientAccountID} />
+				}
+			/>
+		</Stack>
 	);
 };
 

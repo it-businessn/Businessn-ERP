@@ -11,7 +11,7 @@ import { MdOutlineChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { workViewPath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
-import SettingService from "services/SettingService";
+import PayrollService from "services/PayrollService";
 import { getDeptName, hasPayrollSubmitAccess } from "utils";
 import VerticalStepper from "../../../components/ui/VerticalStepper";
 import { getClosestRecord } from "../workview/data";
@@ -79,7 +79,7 @@ const ProcessPayroll = () => {
 		// selectedPayGroup?.yearSchedules[0].payPeriods.map((_) => (_.isProcessed = false));
 		// console.log(selectedPayGroup?.yearSchedules[0].payPeriods, selectedPayGroup?.yearSchedules);
 		try {
-			const payrollProcessed = await SettingService.updateGroup(
+			const payrollProcessed = await PayrollService.updatePayrollProcess(
 				{
 					yearSchedules: selectedPayGroup?.yearSchedules,
 				},

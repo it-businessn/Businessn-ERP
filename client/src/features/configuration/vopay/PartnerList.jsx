@@ -2,7 +2,7 @@ import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import VoPayService from "services/VoPayService";
 
-export const PartnerList = ({ partners }) => {
+export const PartnerList = ({ partners, setClientAccountID }) => {
 	const getOnboardingLink = async (id) => {
 		try {
 			const { data } = await VoPayService.getAccountOnboardingLink(id);

@@ -41,7 +41,7 @@ const getEmployeeProfileInfo = async (req, res) => {
 			if (!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))) {
 				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv);
 			}
-			result.SIN = result.SIN?.replace(/.(?=.{3})/g, "*") || "";
+			result.SIN = result.SIN?.replace(/.(?=.{4})/g, "*") || "";
 			return res.status(200).json(result);
 		}
 

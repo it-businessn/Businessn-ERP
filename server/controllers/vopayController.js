@@ -22,9 +22,9 @@ const CONFIG = {
 		BASE_URL: VOPAY_BASE_URL_STAGING,
 	},
 	PROD: {
-		ACCOUNT_ID: VOPAY_PARTNER_ACCOUNT_ID,
-		SHARED_KEY: VOPAY_API_KEY_PROD,
-		SHARED_SECRET: VOPAY_SHARED_SECRET_PROD,
+		ACCOUNT_ID: "cornerstonemaintenancegroupltd",
+		SHARED_KEY: "xKup5dZh9coUIqrsgLTaNn3R2PF7zEXW1tvbweyC",
+		SHARED_SECRET: "uw3V49wvDRSBwkZH0G==",
 		BASE_URL: VOPAY_BASE_URL_PROD,
 	},
 	PROD_TEST: {
@@ -34,7 +34,7 @@ const CONFIG = {
 		BASE_URL: VOPAY_BASE_URL_PROD,
 	},
 };
-const currentEnv = CONFIG.STAGING;
+const currentEnv = CONFIG.PROD;
 const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 
 const PARTNER_URL = `${BASE_URL}partner/account`;
@@ -376,7 +376,7 @@ const createClientAccountEmployee = async (req, res) => {
 			DOB,
 			SINLastDigits,
 		} = req.body;
-
+		// https://businessn.com/?Token=uwrrfhzljl4c2ky06buelta883v8zea1zha0w0kv2xqswcclne16wolbiv1vi435&PaymentMethod=bank
 		const options = {
 			method: "POST",
 			headers: {
@@ -387,7 +387,7 @@ const createClientAccountEmployee = async (req, res) => {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
 				Signature: generateSignature(),
-				ClientAccountID: "business_businessn_production_test_primary",
+				ClientAccountID: "business_cornerstone_maintenance_group_ltd_primary",
 				FirstName,
 				LastName,
 				EmailAddress,

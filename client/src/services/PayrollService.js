@@ -187,6 +187,10 @@ const PayrollService = {
 		);
 	},
 
+	async updatePayrollProcess(data, id) {
+		return apiService.put(`/payroll/report/submit/${id}`, data, id);
+	},
+
 	async addPayPeriodPayStub(data) {
 		return apiService.post("/payroll/process", data);
 	},

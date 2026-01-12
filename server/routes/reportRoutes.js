@@ -25,4 +25,6 @@ router.get(
 	reportController.getReportInfo,
 );
 
+router.put("/submit/:id", reportController.updatePayrollProcess);
+
 module.exports = router;
