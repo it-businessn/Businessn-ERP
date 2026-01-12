@@ -124,7 +124,7 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 
 			timesheet.isEditable = isEditable;
 			timesheet.showBreak = showBreak;
-			timesheet.isDisabled = !timesheet?.clockIn || !timesheet?.clockOut || !timesheet.isEditable;
+			timesheet.isDisabled = !timesheet?.clockIn || !timesheet?.clockOut;
 
 			return timesheet;
 		});
