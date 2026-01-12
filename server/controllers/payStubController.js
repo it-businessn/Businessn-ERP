@@ -413,7 +413,9 @@ const buildPayStub = (
 				? currentEmployerContributions
 				: getSumTotal(prevPayPayInfo?.YTDEmployerContributions, currentEmployerContributions),
 		YTDVacationAccrued:
-			payPeriod == 1 ? currentVacationAccrued : getSumTotal(prevPayPayInfo?.YTDVacationAccrued),
+			payPeriod == 1
+				? currentVacationAccrued
+				: getSumTotal(prevPayPayInfo?.YTDVacationAccrued) || 0,
 		YTDVacationBalanceFwd:
 			payPeriod == 1 ? prevPayPayInfo?.YTDVacationAccrued : currentVacationBalanceFwd,
 
