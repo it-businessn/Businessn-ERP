@@ -771,4 +771,4 @@ const addEmployeePayStubInfo = async (req, res) => {
 	}
 };
 
-module.exports = { addPayStub, addEmployeePayStubInfo, getRecordId };
+module.exports = { addPayStub, addEmployeePayStubInfo, getRecordId, findPayStub };

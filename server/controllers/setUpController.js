@@ -764,4 +764,5 @@ module.exports = {
 	deleteCC,
 	deleteModule,
 	updateGroupPaySchedule,
+	updatePayGroup,
 };

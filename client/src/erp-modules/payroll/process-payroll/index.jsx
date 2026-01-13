@@ -81,6 +81,8 @@ const ProcessPayroll = () => {
 		try {
 			const payrollProcessed = await PayrollService.updatePayrollProcess(
 				{
+					companyName: company,
+					currentPayPeriod: closestRecord,
 					yearSchedules: selectedPayGroup?.yearSchedules,
 				},
 				selectedPayGroup?._id,

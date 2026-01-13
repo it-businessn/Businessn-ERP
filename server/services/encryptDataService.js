@@ -20,4 +20,12 @@ const decryptData = (encryptedData, encryption_key, iv) => {
 	return decrypted;
 };
 
-module.exports = { encryptData, decryptData, newEncryptionKey };
+const generateVopaySignature = (key, secret_key) => {
+	const date = new Date().toISOString().split("T")[0];
+	const shasum = crypto.createHash("sha1");
+	shasum.update(key + secret_key + date);
+	const signature = shasum.digest("hex");
+	return signature;
+};
+
+module.exports = { encryptData, decryptData, newEncryptionKey, generateVopaySignature };

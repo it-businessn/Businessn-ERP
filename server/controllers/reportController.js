@@ -8,7 +8,11 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
 const { PAYRUN_TYPE, COMPANIES } = require("../services/data");
 const { checkExtraRun } = require("../services/util");
-const { sortByEmpFullName } = require("../helpers/userHelper");
+const { sortByEmpFullName, getPayrollActiveEmployees } = require("../helpers/userHelper");
+const { updatePayGroup } = require("./setUpController");
+const { vopayFundTransfer } = require("./vopayController");
+const { getEmployeeId } = require("./userController");
+const { findPayStub } = require("./payStubController");
 
 const buildFundingTotalsReport = async (
 	fundingTotal,
@@ -43,6 +47,7 @@ const buildFundingTotalsReport = async (
 			fundingTotal.totalServiceCharges || 0;
 	if (isExtraRun) fundingTotal.isExtraRun = isExtraRun;
 
+	const { companyName } = fundingTotal;
 	const existsFundDetails = await FundingTotalsPay.findOne({
 		companyName: fundingTotal.companyName,
 		payPeriodNum: fundingTotal.payPeriodNum,
@@ -61,7 +66,8 @@ const buildFundingTotalsReport = async (
 			},
 		);
 	} else {
-		await FundingTotalsPay.create(fundingTotal);
+		const newTotals = await FundingTotalsPay.create(fundingTotal);
+		createJournalEntry(newTotals._id, companyName, scheduleFrequency);
 	}
 };
 
@@ -219,37 +225,46 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 
 const updatePayrollProcess = async (req, res) => {
 	const { id } = req.params;
-	const { yearSchedules, companyName, payPeriod, scheduleFrequency } = req.body;
+	const { yearSchedules, companyName, currentPayPeriod } = req.body;
 	try {
 		if (req.body?._id) delete req.body._id;
-		console.log("updatePayrollProcess");
-		// const setup = await updatePayGroup(id, {
-		// 	yearSchedules,
-		// });
-		// const currentPayStubs = await EmployeePayStub.find({
-		// 	companyName,
-		// 	payPeriodNum,
-		// 	isExtraRun,
-		// 	scheduleFrequency,
-		// }).select(
-		// 	"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
-		// );
-		// const existsFundDetails = await FundingTotalsPay.findOne({
-		// 	companyName: companyName,
-		// 	payPeriodNum: payPeriod.payPeriodNum,
-		// 	isExtraRun: payPeriod?.isExtraRun,
-		// 	payPeriodPayDate: moment.utc(payPeriod.payPeriodPayDate).startOf("day").toDate(),
-		// 	scheduleFrequency,
-		// }).sort({
-		// 	createdOn: -1,
-		// });
+		const updatedPaygroup = await updatePayGroup(id, {
+			yearSchedules,
+		});
+		const {
+			payPeriodStartDate,
+			payPeriodEndDate,
+			isExtraRun,
+			selectedEmp,
+			payPeriod,
+			payPeriodPayDate,
+			payPeriodProcessingDate,
+			frequency,
+		} = currentPayPeriod;
+		const scheduleFrequency = frequency === "bi-weekly" ? "Biweekly" : frequency;
+		const searchObj = {
+			payPeriodPayDate,
+			payPeriodNum: payPeriod,
+			companyName,
+			isExtraRun: isExtraRun || false,
+			scheduleFrequency,
+		};
 
-		// if (existsFundDetails) {
-		// 	await vopayFundTransfer();
-		// 	createNewOrder(existsFundDetails._id, companyName, currentPayInfo?.employees.length);
-		// 	createJournalEntry(existsFundDetails._id, companyName, scheduleFrequency);
-		// }
-		return res.status(200).json("setup");
+		const fundTotalsReport = await FundingTotalsPay.findOne(searchObj).select(
+			"totalFundingWithDrawals totalEmpPaymentRemitCost totalGovtContr totalServiceCharges",
+		);
+
+		searchObj.isProcessed = true;
+
+		const employeePayStubs = await EmployeePayStub.find(searchObj).select("empId currentNetPay");
+		const employeesToReceivePayment = employeePayStubs.filter((rec) => rec.currentNetPay > 0);
+
+		if (fundTotalsReport) {
+			await vopayFundTransfer(companyName, fundTotalsReport, employeesToReceivePayment);
+			// createNewOrder(fundTotalsReport._id, companyName, employeesToReceivePayment?.length);
+		}
+
+		return res.status(200).json({ employeePayStubs, fundTotalsReport });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
