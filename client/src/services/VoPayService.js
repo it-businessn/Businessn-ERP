@@ -17,6 +17,10 @@ const VoPayService = {
 		return apiService.get(`/vopay/account/balance`);
 	},
 
+	async getWebHooks() {
+		return apiService.get(`/vopay/account/webhooks`);
+	},
+
 	async getClientAccountWallets() {
 		return apiService.get("/vopay/account/client-accounts");
 	},

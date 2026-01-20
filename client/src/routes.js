@@ -38,8 +38,8 @@ const Orders = lazy(() => import("./erp-modules/operations/orders"));
 
 // sales
 const Activities = lazy(() => import("./erp-modules/sales/activities"));
-const AddQuestionForm = lazy(() =>
-	import("./erp-modules/sales/resources/add-paper/AddQuestionForm"),
+const AddQuestionForm = lazy(
+	() => import("./erp-modules/sales/resources/add-paper/AddQuestionForm"),
 );
 const Assessment = lazy(() => import("./erp-modules/sales/resources/attempt-test/Assessment"));
 const Calendar = lazy(() => import("./erp-modules/sales/calendar"));
@@ -62,16 +62,17 @@ const SalesReport = lazy(() => import("./erp-modules/sales/reports"));
 // payroll
 const Attendance = lazy(() => import("./erp-modules/payroll/Attendance"));
 const LeaveApprovals = lazy(() => import("./erp-modules/payroll/LeaveApprovals"));
-const EmployeeDashboard = lazy(() =>
-	import("./erp-modules/payroll/employees/dashboard/EmployeeDashboard"),
+const EmployeeDashboard = lazy(
+	() => import("./erp-modules/payroll/employees/dashboard/EmployeeDashboard"),
 );
-const EmployeeRecord = lazy(() =>
-	import("./erp-modules/payroll/employees/dashboard/EmployeeRecord"),
+const EmployeeRecord = lazy(
+	() => import("./erp-modules/payroll/employees/dashboard/EmployeeRecord"),
 );
+const WebHooks = lazy(() => import("./erp-modules/payroll/WebHooks"));
 const PayrollWorkview = lazy(() => import("./erp-modules/payroll/workview"));
 const ProcessPayroll = lazy(() => import("./erp-modules/payroll/process-payroll"));
-const ReportListView = lazy(() =>
-	import("./erp-modules/payroll/reports/payrun-reports/ReportListView"),
+const ReportListView = lazy(
+	() => import("./erp-modules/payroll/reports/payrun-reports/ReportListView"),
 );
 const Reports = lazy(() => import("./erp-modules/payroll/reports/individual"));
 const Timesheets = lazy(() => import("./erp-modules/payroll/timesheets"));
@@ -157,6 +158,7 @@ export const ROUTE_PATH = {
 
 	// reports
 	REPORT: "/reports",
+	WEBHOOKS: "/webhooks",
 
 	//admin console
 	ADMIN_CONSOLE: "/admin-console",
@@ -395,6 +397,10 @@ export const router = createBrowserRouter([
 			{
 				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMP_RECORD}`,
 				element: <EmployeeRecord />,
+			},
+			{
+				path: `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.WEBHOOKS}`,
+				element: <WebHooks />,
 			},
 
 			/* Scheduling */

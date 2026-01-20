@@ -98,6 +98,53 @@ const getVopayAccountOnboardingUrl = async (req, res) => {
 	}
 };
 
+const getAccountWebHooks = async (req, res) => {
+	try {
+		// all events
+		const webhookUrlInfo = await apiFetch(`${BASE_URL}account/webhook-url/info`, {
+			data: {
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: SIGNATURE,
+			},
+		});
+
+		// all events
+		const allWebHooks = await apiFetch(`${BASE_URL}account/webhooks`, {
+			data: {
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: SIGNATURE,
+			},
+		});
+
+		// all partner webhooks - needs businessn creds
+		// const partner = await apiFetch(`${BASE_URL}partner/webhooks`, {
+		// 	data: {
+		// 		AccountID: ACCOUNT_ID,
+		// 		Key: SHARED_KEY,
+		// 		Signature: SIGNATURE,
+		// 	},
+		// });
+		if (!allWebHooks.Success) {
+			await apiFetch(`${BASE_URL}account/webhook-url`, {
+				method: "POST",
+				data: {
+					AccountID: ACCOUNT_ID,
+					Key: SHARED_KEY,
+					Signature: SIGNATURE,
+					WebHookUrl: "https://businessn-erp.com/payroll/webhooks",
+				},
+			});
+		}
+		res.status(200).json({ webhookUrlInfo, allWebHooks });
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
 const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 	const isCornerStone = companyName === COMPANIES.CORNERSTONE;
 	if (isCornerStone) {
@@ -105,25 +152,28 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 
 		const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 		const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
-		const ClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
+		const DebitorClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
+
+		const ClientAmount = employeePayStubs.find((emp) => emp.empId === "67c1360568f8bcf1d10d240b");
 
 		if (fundTotals?.totalFundingWithDrawals > 0) {
 			try {
-				await apiFetch(`${BASE_URL}eft/fund`, {
+				await apiFetch(`${BASE_URL}account/client-accounts/fund-transfer-withdraw`, {
 					method: "POST",
 					data: {
 						AccountID: ACCOUNT_ID,
 						Key: SHARED_KEY,
 						Signature: SIGNATURE,
-						ClientAccountID,
-						// CompanyName,
-						// Address1,
-						// City,
-						// Province,
-						// Country,
-						// PostalCode,
+						DebitorClientAccountID,
+						RecipientClientAccountIDSplit: [
+							{
+								ClientAccountID: "business_cornerstone_maintenance_group_ltd_primary1",
+								Amount: ClientAmount.currentNetPay.toFixed(2),
+							},
+						],
 						Amount: fundTotals?.totalFundingWithDrawals.toFixed(2),
 						Currency: "CAD",
+						Notes: "Processed Payroll Transfer",
 					},
 				});
 			} catch (error) {
@@ -263,23 +313,6 @@ const receiveWebhook = (io) => (req, res) => {
 	// 			RedirectURL: "https://businessn.com/",
 	// 		},
 	// 	});
-	//  const transactionOptions = {
-	// 		method: "POST",
-	// 		headers: {
-	// 			accept: "application/json",
-	// 			"content-type": "application/x-www-form-urlencoded",
-	// 		},
-	// 		body: new URLSearchParams({
-	// 			AccountID: TECHCORP_CREDS.AccountID,
-	// 			Key: TECHCORP_CREDS.KEY,
-	// 			Signature: TECHCORP_CREDS_Signature,
-	// 			WebHookUrl: "https://businessn-erp.com/payroll/timesheets",
-	// 			// Type: "transaction",
-	// 			// Disabled: true,
-	// 		}),
-	// 	};
-
-	// 	const transactionResponse = await fetch(`${BASE_URL}account/webhook-url`, transactionOptions);
 
 	// const data = await apiFetch(`${BASE_URL}partner/account/onboarding-url`, {
 	// 	data: {
@@ -631,4 +664,5 @@ module.exports = {
 	getTransactions,
 	getAccountBalance,
 	vopayFundTransfer,
+	getAccountWebHooks,
 };

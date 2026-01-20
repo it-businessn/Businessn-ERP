@@ -1,3 +1,4 @@
+import { Divider, Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import VoPayService from "services/VoPayService";
 import { ConfigTabLayout } from "../../../components/ConfigTabLayout";
@@ -5,7 +6,6 @@ import ClientEmployeeForm from "./ClientEmployeeForm";
 import { ClientEmployeeList } from "./ClientEmployeeList";
 import PartnerForm from "./PartnerForm";
 import { PartnerList } from "./PartnerList";
-import { Divider, Stack } from "@chakra-ui/react";
 
 const VoPayPanel = ({ companyName }) => {
 	const [partners, setPartners] = useState(null);
@@ -31,6 +31,12 @@ const VoPayPanel = ({ companyName }) => {
 				console.error(error);
 			}
 		};
+		const getWebHooks = async (id) => {
+			try {
+				const { data } = await VoPayService.getWebHooks();
+			} catch (error) {}
+		};
+		getWebHooks();
 		fetchPartnerAccounts();
 		fetchClientAccounts();
 	}, [refresh]);
