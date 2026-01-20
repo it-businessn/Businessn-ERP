@@ -1,6 +1,7 @@
 const { generateVopaySignature } = require("../services/encryptDataService");
 const { apiFetch } = require("../helpers/apiFetch");
 const { COMPANIES } = require("../services/data");
+const moment = require("moment");
 
 const {
 	VOPAY_PARTNER_ACCOUNT_ID,
@@ -100,6 +101,13 @@ const getVopayAccountOnboardingUrl = async (req, res) => {
 
 const getAccountWebHooks = async (req, res) => {
 	try {
+		// const isCornerStone = companyName === COMPANIES.CORNERSTONE;
+		// if (isCornerStone) {
+		// 	currentEnv = CONFIG.CORNERSTONE;
+
+		// 	const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
+		// 	const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
+		// }
 		// all events
 		const webhookUrlInfo = await apiFetch(`${BASE_URL}account/webhook-url/info`, {
 			data: {
@@ -185,25 +193,27 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 
 const transferWithdraw = async (req, res) => {
 	try {
-		const { RecipientClientAccountID, Amount } = req.body;
+		const { RecipientClientAccountID, Amount, company } = req.body;
 
-		//if conrn
-		currentEnv = CONFIG.CORNERSTONE;
-		const DebitorClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
-		// const RecipientClientAccountID = 'emp clicentaccid';//employee ClientAccountID
-		const data = await apiFetch(`${BASE_URL}account/client-accounts/transfer-withdraw`, {
-			method: "POST",
-			data: {
-				AccountID: ACCOUNT_ID,
-				Key: SHARED_KEY,
-				Signature: SIGNATURE,
-				DebitorClientAccountID,
-				RecipientClientAccountID,
-				Amount,
-			},
-		});
+		const isCornerStone = company === COMPANIES.CORNERSTONE;
+		if (isCornerStone) {
+			currentEnv = CONFIG.CORNERSTONE;
+			const DebitorClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
 
-		res.status(200).json(data);
+			const data = await apiFetch(`${BASE_URL}account/client-accounts/transfer-withdraw`, {
+				method: "POST",
+				data: {
+					AccountID: ACCOUNT_ID,
+					Key: SHARED_KEY,
+					Signature: SIGNATURE,
+					DebitorClientAccountID,
+					RecipientClientAccountID,
+					Amount,
+				},
+			});
+
+			res.status(200).json(data);
+		}
 	} catch (error) {
 		return res
 			.status(500)
@@ -396,7 +406,8 @@ const getTransactions = async (req, res) => {
 				Key: SHARED_KEY,
 				Signature: SIGNATURE,
 				ClientAccountID: clientAccountId,
-				// StartDateTime:`${YYYY-MM-DD HH:MM:SS or YYYY-MM-DD}`
+				StartDateTime: moment().subtract(1, "month").format("YYYY-MM-DD"),
+				EndDateTime: moment().format("YYYY-MM-DD"),
 			},
 		});
 		res.status(200).json(data);

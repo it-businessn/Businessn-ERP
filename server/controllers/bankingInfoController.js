@@ -49,14 +49,20 @@ const getEmployeeBankingInfo = async (req, res) => {
 				newData.transitNum = "";
 				return res.status(200).json(newData);
 			}
+			// const accountNumber =
+			// 	result?.accountNum &&
+			// 	!result?.accountNum?.includes("*") &&
+			// 	isNaN(Number(result?.accountNum))
+			// 		? decryptData(result?.accountNum, banking_key, result?.accountIv).replace(
+			// 				/.(?=.{3})/g,
+			// 				"*",
+			// 			)
+			// 		: "";
 			const accountNumber =
 				result?.accountNum &&
 				!result?.accountNum?.includes("*") &&
 				isNaN(Number(result?.accountNum))
-					? decryptData(result?.accountNum, banking_key, result?.accountIv).replace(
-							/.(?=.{3})/g,
-							"*",
-					  )
+					? `*****${decryptData(result?.accountNum, banking_key, result?.accountIv).slice(-3)}`
 					: "";
 
 			const bankNumber =

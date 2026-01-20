@@ -7,7 +7,7 @@ import { ClientEmployeeList } from "./ClientEmployeeList";
 import PartnerForm from "./PartnerForm";
 import { PartnerList } from "./PartnerList";
 
-const VoPayPanel = ({ companyName }) => {
+const VoPayPanel = ({ company }) => {
 	const [partners, setPartners] = useState(null);
 	const [wallets, setWallets] = useState(null);
 	const [refresh, setRefresh] = useState(null);
@@ -37,7 +37,7 @@ const VoPayPanel = ({ companyName }) => {
 			} catch (error) {}
 		};
 		getWebHooks();
-		fetchPartnerAccounts();
+		// fetchPartnerAccounts();
 		fetchClientAccounts();
 	}, [refresh]);
 
@@ -61,7 +61,7 @@ const VoPayPanel = ({ companyName }) => {
 			<ConfigTabLayout
 				tableData={wallets}
 				tableTitle="Client Accounts"
-				tableContent={<ClientEmployeeList clientEmployees={wallets} />}
+				tableContent={<ClientEmployeeList clientEmployees={wallets} company={company} />}
 				leftContent={
 					<ClientEmployeeForm setRefresh={setRefresh} ClientAccountID={clientAccountID} />
 				}

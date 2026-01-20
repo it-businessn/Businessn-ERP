@@ -2,7 +2,7 @@ import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import VoPayService from "services/VoPayService";
 
-export const ClientEmployeeList = ({ clientEmployees }) => {
+export const ClientEmployeeList = ({ clientEmployees, company }) => {
 	const getBankEmbedUrl = async (id) => {
 		try {
 			const { data } = await VoPayService.getEmployeeBankEmbedUrl(id);
@@ -18,8 +18,9 @@ export const ClientEmployeeList = ({ clientEmployees }) => {
 			// const { data } = await VoPayService.getAccountBalance();
 			// const transactions = await VoPayService.getTransactions(id);
 			// const { data } = await VoPayService.requestTransferWithdraw({
-			// 	ClientAccountID: id,
-			// 	Amount: 1,
+			// 	RecipientClientAccountID: id,
+			// 	Amount: 0,
+			// 	company,
 			// });
 			if (data?.EmbedURL) window.open(data.EmbedURL, "_blank");
 		} catch (error) {}
