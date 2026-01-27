@@ -155,6 +155,7 @@ const getAccountWebHooks = async (req, res) => {
 
 const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 	const isCornerStone = companyName === COMPANIES.CORNERSTONE;
+
 	if (isCornerStone) {
 		currentEnv = CONFIG.CORNERSTONE;
 
@@ -173,12 +174,12 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 						Key: SHARED_KEY,
 						Signature: SIGNATURE,
 						DebitorClientAccountID,
-						RecipientClientAccountIDSplit: [
+						RecipientClientAccountIDSplit: JSON.stringify([
 							{
 								ClientAccountID: "business_cornerstone_maintenance_group_ltd_primary1",
 								Amount: ClientAmount.currentNetPay.toFixed(2),
 							},
-						],
+						]),
 						Amount: fundTotals?.totalFundingWithDrawals.toFixed(2),
 						Currency: "CAD",
 						Notes: "Processed Payroll Transfer",

@@ -57,6 +57,7 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 			);
 			setAllPayGroupSchedule(sortedResult);
 			const schedules = selectedPayGroup?.yearSchedules[yearIndex]?.payPeriods;
+			// const closestPayPeriod = schedules[2];
 			let closestPayPeriod = schedules?.find(({ isProcessed }) => !isProcessed);
 			const allProcessed = schedules?.every((s) => s.isProcessed) || false;
 			if (allProcessed) {
@@ -82,8 +83,6 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 					// 			? record
 					// 			: closest;
 					// 	}, schedules[0]);
-
-					// const closestPayPeriod = schedules[22];
 
 					const closestPayPeriodIndex = schedules?.findIndex(
 						({ payPeriod, isExtraRun }) =>
