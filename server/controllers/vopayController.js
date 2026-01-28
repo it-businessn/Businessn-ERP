@@ -55,7 +55,7 @@ const CONFIG = {
 	},
 };
 
-let currentEnv = CONFIG.CORNERSTONE;
+let currentEnv = CONFIG.STAGING;
 const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 
 const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
