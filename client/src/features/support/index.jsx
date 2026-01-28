@@ -1,19 +1,20 @@
-import { Center, HStack, Stack } from "@chakra-ui/react";
+import { Box, Center, HStack, Image, Stack } from "@chakra-ui/react";
 
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
-import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
-import PageLayout from "layouts/PageLayout";
+import { tabScrollCss, tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import CompanyInfo from "./CompanyInfo";
 import ContactInfo from "./ContactInfo";
 import QueryInfo from "./QueryInfo";
 
-import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { FaChevronLeft, FaChevronRight, FaSave } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import TicketService from "services/TicketService";
+import logoImgSrc from "../../assets/logos/logoCover.png";
 
 const Support = () => {
+	const WEB = process.env.WEBSITE;
 	const toast = useToast();
 	const ticketBasicInfo = {
 		companyInfo: {
@@ -48,8 +49,8 @@ const Support = () => {
 	];
 	const isLastStep = tabIndex === SUPPORT_TABS.length - 1;
 
-	const WEB = "https://www.businessn.com";
 	const handleRedirect = () => window.history.back() || WEB;
+
 	const handleSubmit = async () => {
 		try {
 			const { data } = await TicketService.addSupportTicket(formData);
@@ -88,20 +89,32 @@ const Support = () => {
 	};
 
 	return (
-		<Stack w={{ base: "100%", lg: "60%" }} m="auto" spacing={10} height="100vh">
-			<Center pos="sticky" top={30} zIndex={1}>
-				<a href={WEB} aria-current="page" className="main-logo w-inline-block w--current">
-					<img
-						src="https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo.png"
-						loading="lazy"
-						sizes="(max-width: 479px) 50vw, (max-width: 767px) 180px, (max-width: 991px) 23vw, 213px"
-						srcSet="https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo-p-500.png 500w, https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo-p-800.png 800w, https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo.png 852w"
-						alt="main-logo"
-					/>
-				</a>
-			</Center>
-			<PageLayout title="">
-				<BoxCard>
+		<Box
+			padding={"1em"}
+			backgroundColor="var(--logo_bg)"
+			h={"100vh"}
+			overflow={"auto"}
+			css={tabScrollCss}
+		>
+			<Stack w={{ base: "100%", lg: "60%" }} m="0 auto" spacing={10} borderRadius={"lg"}>
+				<Center>
+					<Link to="/">
+						<Image
+							width={200}
+							m={"0 auto"}
+							objectFit="contain"
+							src={logoImgSrc}
+							alt="Company logo"
+						/>
+					</Link>
+				</Center>
+				<Box
+					borderRadius={"lg"}
+					w={"100%"}
+					backgroundColor="var(--main_color)"
+					p="2em"
+					m="1em auto"
+				>
 					<TextTitle size={"lg"} title="Need Support? Let Us Help" />
 					<Tabs
 						index={tabIndex}
@@ -168,9 +181,9 @@ const Support = () => {
 							Cancel
 						</Button>
 					</HStack>
-				</BoxCard>
-			</PageLayout>
-		</Stack>
+				</Box>
+			</Stack>
+		</Box>
 	);
 };
 

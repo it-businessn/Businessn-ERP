@@ -6,6 +6,7 @@ import {
 	FormControl,
 	FormLabel,
 	HStack,
+	Image,
 	Select,
 	Stack,
 	useToast,
@@ -18,14 +19,15 @@ import TextTitle from "components/ui/text/TextTitle";
 import { COUNTRIES, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import TicketService from "services/TicketService";
+import logoImgSrc from "../../assets/logos/logoCover.png";
 
 export default function CustomerInfo() {
 	const INTERESTS = {
 		set1: ["Payroll", "Time management", "Scheduling", "Accounting"],
 		set2: ["Project Management", "CRM", "HR"],
 	};
-	const WEB = "https://www.businessn.com";
 
 	const toast = useToast();
 	const [formData, setFormData] = useState({
@@ -63,7 +65,7 @@ export default function CustomerInfo() {
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
-	const handleRedirect = () => (window.location.href = WEB);
+	const handleRedirect = () => (window.location.href = process.env.WEBSITE);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -99,24 +101,31 @@ export default function CustomerInfo() {
 
 	return (
 		<Box
-			padding={"24px"}
-			backgroundColor="var(--main_color)"
+			padding={"1em"}
+			backgroundColor="var(--logo_bg)"
 			h={"100vh"}
 			overflow={"auto"}
 			css={tabScrollCss}
 		>
 			<Center>
-				<a href="/" aria-current="page" className="main-logo w-inline-block w--current">
-					<img
-						src="https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo.png"
-						loading="lazy"
-						sizes="(max-width: 479px) 50vw, (max-width: 767px) 180px, (max-width: 991px) 23vw, 213px"
-						srcSet="https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo-p-500.png 500w, https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo-p-800.png 800w, https://cdn.prod.website-files.com/66d2b99c721c32f423762484/66dade9174eaeb438087f3ff_logo.png 852w"
-						alt="main-logo"
+				<Link to="/">
+					<Image
+						height={"40px"}
+						width={200}
+						m={"0 auto"}
+						objectFit="contain"
+						src={logoImgSrc}
+						alt="Company logo"
 					/>
-				</a>
+				</Link>
 			</Center>
-			<Box w={{ base: "100%", md: "80%", lg: "70%" }} py="2em" m="0 auto">
+			<Box
+				borderRadius={"lg"}
+				backgroundColor="var(--main_color)"
+				w={{ base: "100%", md: "80%", lg: "70%" }}
+				py="2em"
+				m="1em auto"
+			>
 				{showPopup ? (
 					<Flex
 						alignItems="center"
@@ -305,7 +314,7 @@ export default function CustomerInfo() {
 								</FormControl>
 								<ActionButtonGroup
 									submitBtnName={"Submit"}
-									isDisabled={formData?.fullName === ""}
+									isDisabled={!formData?.country || !formData.province}
 									isLoading={isSubmitting}
 									onOpen={handleSubmit}
 									justifyContent="center"

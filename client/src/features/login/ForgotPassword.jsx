@@ -43,6 +43,7 @@ const ForgotPassword = () => {
 		) : (
 			<Logo isCover isForgotPassword />
 		);
+
 	return captionTitle ? (
 		<CenterBoxLayout spacing="0">
 			<Flex h="24" m={"0 auto"}>

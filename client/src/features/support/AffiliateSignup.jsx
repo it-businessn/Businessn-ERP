@@ -28,7 +28,6 @@ import PayrollService from "services/PayrollService";
 import MotionCover from "./MotionCover";
 
 export default function AffiliateSignup() {
-	const WEB = "https://www.businessn.com";
 	const toast = useToast();
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -54,7 +53,7 @@ export default function AffiliateSignup() {
 	};
 
 	const goToHome = () => {
-		window.location.href = WEB;
+		window.location.href = process.env.WEBSITE;
 	};
 
 	const handleSubmit = async (e) => {
