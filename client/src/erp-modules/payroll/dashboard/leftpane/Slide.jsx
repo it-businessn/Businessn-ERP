@@ -1,7 +1,7 @@
 import { VStack } from "@chakra-ui/react";
 import { BsCalendarCheck, BsCalendarWeek, BsCashCoin } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import { workViewPath } from "routes";
+import { payrollReportPath, workViewPath } from "routes";
 import { isExtraPay } from "utils";
 // import currentImg from "../../../../assets/card_bg.png";
 import { formatDateBar } from "../../../../utils/convertDate";
@@ -57,6 +57,7 @@ function Slide({ content, animationConfig, moveSlide }) {
 				iconSize="2em"
 				borderBottomLeftRadius={"10px"}
 				borderBottomRightRadius={"10px"}
+				handleClick={() => navigate(payrollReportPath)}
 			/>
 		</VStack>
 	);

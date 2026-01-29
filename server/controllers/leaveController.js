@@ -51,7 +51,7 @@ const updateLeaveRequest = async (req, res) => {
 		const { status } = req.body;
 		const updatedRequest = await EmployeeLeave.findByIdAndUpdate(
 			id,
-			{ $set: { status: status === "Approve" } },
+			{ $set: { status } },
 			{
 				new: true,
 			},

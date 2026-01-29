@@ -20,10 +20,12 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				const { data } = await PayrollService.getAllPaygroups(company);
 				setPayGroups(data);
 				if (data.length) {
-					setHasMultiPaygroups(data?.length > 1);
-					const payGroup = isBusinessN(company)
-						? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
-						: data[0];
+					// setHasMultiPaygroups(data?.length > 1);
+					// const payGroup = isBusinessN(company)
+					// 	? data.find(({ scheduleFrequency }) => scheduleFrequency === "Monthly")
+					// 	: data[0];
+
+					const payGroup = data[0];
 					setSelectedPayGroup(payGroup);
 				}
 			} catch (error) {

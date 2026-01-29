@@ -62,7 +62,7 @@ Please contact your representative if you have any questions — they’ll be ha
 			overflowY={"auto"}
 			css={tabScrollCss}
 		>
-			<HStack
+			{/* <HStack
 				w={"100%"}
 				spacing={0}
 				alignItems={"center"}
@@ -96,7 +96,7 @@ Please contact your representative if you have any questions — they’ll be ha
 				>
 					Send
 				</Button>
-			</HStack>
+			</HStack> */}
 			<Box css={tabScrollCss}>
 				{announcements?.map(({ title, message, createdOn, _id }, index) => (
 					<Box key={_id} w={"70%"}>

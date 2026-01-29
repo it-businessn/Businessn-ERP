@@ -24,21 +24,21 @@ const RightPane = ({
 			count,
 			name: <TicketHistory setCount={setCount} userId={selectedUser?.fullName} company={company} />,
 		},
-		{
-			id: 1,
-			type: "Messages",
-			name: <ChatMessages userId={selectedUser?._id} company={company} />,
-		},
-		{
-			id: 2,
-			type: "Tasks",
-			name: <TasksHistory userId={selectedUser?._id} company={company} />,
-		},
-		{
-			id: 3,
-			type: "Appointments",
-			name: <AppointmentHistory userId={selectedUser?._id} company={company} />,
-		},
+		// {
+		// 	id: 1,
+		// 	type: "Messages",
+		// 	name: <ChatMessages userId={selectedUser?._id} company={company} />,
+		// },
+		// {
+		// 	id: 2,
+		// 	type: "Tasks",
+		// 	name: <TasksHistory userId={selectedUser?._id} company={company} />,
+		// },
+		// {
+		// 	id: 3,
+		// 	type: "Appointments",
+		// 	name: <AppointmentHistory userId={selectedUser?._id} company={company} />,
+		// },
 	];
 	const [viewMode, setViewMode] = useState(TABS[0].type);
 	const showComponent = (viewMode) => TABS.find(({ type }) => type === viewMode)?.name;

@@ -51,11 +51,12 @@ const Login = () => {
 							<Button alignItems={"end"} onClick={() => navigate("/support")}>
 								Contact us
 							</Button>
-							<Button alignItems={"end"}>English</Button>
+							{/* <Button alignItems={"end"}>English</Button> */}
 						</HStack>
 					</Flex>
 				</Box>
 			)}
+
 			<Box
 				// as="video"
 				// loop

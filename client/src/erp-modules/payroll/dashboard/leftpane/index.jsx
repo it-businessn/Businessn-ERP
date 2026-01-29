@@ -49,7 +49,7 @@ const LeftPane = ({
 	}, []);
 
 	return (
-		<HStack w="100%" spacing={"10"} justifyContent="space-between" alignItems="center">
+		<HStack w="100%" spacing={"10"} justifyContent="space-between" alignItems="flex-start">
 			<Stack spacing={0}>
 				<BoxCard borderBottomWidth="1.5px">
 					<TextTitle size="lg" color="var(--banner_bg)" title="Support" />

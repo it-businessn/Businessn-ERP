@@ -8,7 +8,7 @@ const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const UserActivity = require("../models/UserActivity");
 
-const { ROLES } = require("../services/data");
+const { ROLES, COMPANIES } = require("../services/data");
 const { sendEmail } = require("../services/emailService");
 const { getResetPasswordLink } = require("../services/tokenService");
 const {
@@ -221,7 +221,7 @@ const getCompanyEmployees = async (req, res) => {
 			}),
 		);
 
-		if (shadowEmpIds?.length > 0 && payGroup) {
+		if (companyName !== COMPANIES.BUSINESSN_ORG && shadowEmpIds?.length > 0 && payGroup) {
 			updatedResult = filterResultByPaygroupOption(updatedResult, payGroup);
 		}
 

@@ -10,7 +10,7 @@ const Finalize = ({ handleClick, isPayPeriodInactive }) => {
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
 				<Tbody>
-					<Tr>
+					{/* <Tr>
 						<Td>
 							<TextTitle title={"Lock Timesheets for Other Users"} />
 						</Td>
@@ -21,7 +21,7 @@ const Finalize = ({ handleClick, isPayPeriodInactive }) => {
 								onChange={() => setHasChecklist(!hasChecklist)}
 							/>
 						</Td>
-					</Tr>
+					</Tr> */}
 					<Tr>
 						<Td>
 							<TextTitle title={"Do Not Lock Timesheets for Other Users"} />

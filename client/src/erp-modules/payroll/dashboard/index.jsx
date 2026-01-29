@@ -35,7 +35,7 @@ const PayrollDashboard = () => {
 			selectPlaceholder="Select Paygroup"
 			selectedValue={selectedPayGroupOption}
 			handleChange={handleChange}
-			p={"2em 8em"}
+			p={"1rem 7rem"}
 		>
 			<SimpleGrid
 				h={"100%"}

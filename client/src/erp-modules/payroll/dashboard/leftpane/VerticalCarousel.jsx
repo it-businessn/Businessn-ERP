@@ -22,10 +22,15 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
 	const getSurroundingSlides = useCallback(() => {
 		const surroundingSlides = [];
 
-		for (let offset = -5; offset <= 5; offset++) {
+		for (let offset = 0; offset < slides.length; offset++) {
 			const i = modBySlidesLength(closestRecordIndex + offset);
 			surroundingSlides.push(slides[i]);
 		}
+
+		// for (let offset = -5; offset <= 5; offset++) {
+		// 	const i = modBySlidesLength(closestRecordIndex + offset);
+		// 	surroundingSlides.push(slides[i]);
+		// }
 
 		return surroundingSlides;
 	}, [closestRecordIndex, slides, modBySlidesLength]);

@@ -16,11 +16,11 @@ import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
 
 const PAYGROUP_ACTIONS = [
-	{ key: "roe", name: "Issue Roes", icon: FaWpforms },
-	{ key: "form", name: "Issue Forms", icon: AiOutlineFileDone },
+	// { key: "roe", name: "Issue Roes", icon: FaWpforms },
+	// { key: "form", name: "Issue Forms", icon: AiOutlineFileDone },
 	{ key: "extra", name: "Extra Pay Run", icon: FaMoneyCheckAlt },
-	{ key: "terminate", name: "Terminate", icon: RiUserUnfollowLine },
-	{ key: "empUpdate", name: "Update Employees", icon: MdUpdate },
+	// { key: "terminate", name: "Terminate", icon: RiUserUnfollowLine },
+	{ key: "empUpdate", name: "All Employees", icon: MdUpdate },
 	{ key: "onboard", name: "Onboard Employee", icon: RiUserAddLine },
 ];
 
@@ -99,12 +99,12 @@ const PaygroupTable = ({
 							))}
 						</Select>
 
-						<PrimaryButton
+						{/* <PrimaryButton
 							name={"Add extra payrun"}
 							size="xs"
 							px={"3em"}
 							onOpen={() => setShowExtraPayrun(true)}
-						/>
+						/> */}
 					</HStack>
 					{showExtraPayrun && (
 						<ExtraPayrunModal
