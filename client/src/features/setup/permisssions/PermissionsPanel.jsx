@@ -31,42 +31,40 @@ const PermissionsPanel = ({ employees, setFilteredEmployees, filteredEmployees, 
 					userId,
 					company,
 				});
-				if (data) {
-					const newPermissions = [];
-					SIDEBAR_MENU?.map((menu, index) => {
-						const foundMenu = data?.permissionType?.find((item) => item.name === menu.name);
-						if (foundMenu) {
-							SIDEBAR_MENU[index].permissions = foundMenu;
-						}
-						const updatedChildren = menu.children?.map((child) => {
-							const foundChild = data?.permissionType?.find(
-								(item) => item.name === `${menu.name} ${child.name}`,
-							);
-							return {
-								...child,
-								permissions: foundChild,
-							};
-						});
-						newPermissions.push({
-							...menu,
-							permissions: foundMenu,
-							children: updatedChildren,
-						});
+
+				const newPermissions = [];
+
+				SIDEBAR_MENU?.map((menu, index) => {
+					const foundMenu = data?.permissionType?.find((item) => item.name === menu.name);
+					if (foundMenu) {
+						SIDEBAR_MENU[index].permissions = foundMenu;
+					}
+					const updatedChildren = menu.children?.map((child) => {
+						const foundChild = data?.permissionType?.find(
+							(item) => item.name === `${menu.name} ${child.name}`,
+						);
 						return {
-							...menu,
-							permissions: foundMenu,
-							children: updatedChildren,
+							...child,
+							permissions: foundChild,
 						};
 					});
-					setMenuList(newPermissions);
-					setUserPermission(data);
-				} else {
-					setUserPermission(null);
-				}
-				setShowLoader(false);
+					newPermissions.push({
+						...menu,
+						permissions: foundMenu,
+						children: updatedChildren,
+					});
+					return {
+						...menu,
+						permissions: foundMenu,
+						children: updatedChildren,
+					};
+				});
+				setMenuList(newPermissions);
+				setUserPermission(data);
 			} catch (error) {
-				setShowLoader(false);
 				console.error(error);
+			} finally {
+				setShowLoader(false);
 			}
 		};
 

@@ -34,7 +34,7 @@ const getPermission = async (req, res) => {
 		// // const updatedIDs = await UserPermissions.deleteMany({ _id: { $in: deletePermissions } });
 		// console.log(deletePermissions);
 
-		if (userPermission) return res.status(200).json(userPermission);
+		return res.status(200).json(userPermission);
 
 		// const userPermissions = await UserPermissions.find({
 		// 	empId,
@@ -97,10 +97,10 @@ const getPermissionsList = (role) => {
 	const permissionName = isEmployee
 		? CLIENT_ORG_EMP_PERMISSION
 		: isShadowAdmin
-		? BUSINESSN_ADMIN_PERMISSION
-		: isManager
-		? CLIENT_ORG_MANAGER_PERMISSION
-		: CLIENT_ORG_ADMIN_PERMISSION;
+			? BUSINESSN_ADMIN_PERMISSION
+			: isManager
+				? CLIENT_ORG_MANAGER_PERMISSION
+				: CLIENT_ORG_ADMIN_PERMISSION;
 
 	const permissionType = [];
 
