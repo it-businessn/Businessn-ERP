@@ -16,9 +16,8 @@ import useEmployees from "hooks/useEmployees";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
-import { AiOutlineFileDone, AiOutlineSend } from "react-icons/ai";
+import { AiOutlineSend } from "react-icons/ai";
 import { FaFileInvoiceDollar, FaPlus, FaSearch } from "react-icons/fa";
-import { RiUserUnfollowLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { payrollEmployeePath } from "routes";
 import LocalStorageService from "services/LocalStorageService";
@@ -27,8 +26,8 @@ import EmployeeList from "./EmployeeList";
 import SendEmailList from "./SendEmailList";
 
 const PAYGROUP_ACTIONS = [
-	{ key: "form", name: "Issue Forms", icon: AiOutlineFileDone },
-	{ key: "terminate", name: "Terminate", icon: RiUserUnfollowLine },
+	// { key: "form", name: "Issue Forms", icon: AiOutlineFileDone },
+	// { key: "terminate", name: "Terminate", icon: RiUserUnfollowLine },
 	{ key: "send-login", name: "Send Login", icon: AiOutlineSend },
 	{ key: "send-paystub", name: "Send Paystub", icon: FaFileInvoiceDollar },
 ];

@@ -125,7 +125,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 				<SimpleGrid
 					mb={"1em"}
 					mr={"1em"}
-					columns={{ base: 1, md: 1, lg: 2 }}
+					columns={{ base: 1, md: 1, lg: 1 }}
 					spacing="1em"
 					color={"var(--menu_item_color)"}
 					templateColumns={{ lg: "60% 40%" }}
@@ -143,9 +143,9 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 							textAlign={"center"}
 						/>
 					</BoxCard>
-					<BoxCard>
+					{/* <BoxCard>
 						<TextTitle size={"sm"} title="Year End Forms" />
-					</BoxCard>
+					</BoxCard> */}
 				</SimpleGrid>
 			)}
 			{showReport && (

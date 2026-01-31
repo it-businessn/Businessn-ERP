@@ -1,9 +1,6 @@
 import BoxCard from "components/ui/card";
 import TabsButtonGroup from "components/ui/tab/TabsButtonGroup";
-import AppointmentHistory from "erp-modules/payroll/dashboard/rightpane/AppointmentHistory";
-import TasksHistory from "erp-modules/payroll/dashboard/rightpane/TasksHistory";
 import TicketHistory from "erp-modules/payroll/dashboard/rightpane/TicketHistory";
-import ChatMessages from "erp-modules/sales/dashboard/rightpane/ChatMessages";
 import MiniCalendar from "erp-modules/sales/dashboard/rightpane/MiniCalendar";
 import { useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -30,21 +27,21 @@ const RightPane = ({
 				/>
 			),
 		},
-		{
-			id: 1,
-			type: "Messages",
-			name: <ChatMessages userId={selectedUser?._id} company={company} />,
-		},
-		{
-			id: 2,
-			type: "Tasks",
-			name: <TasksHistory userId={selectedUser?._id} company={company} />,
-		},
-		{
-			id: 3,
-			type: "Appointments",
-			name: <AppointmentHistory userId={selectedUser?._id} company={company} />,
-		},
+		// {
+		// 	id: 1,
+		// 	type: "Messages",
+		// 	name: <ChatMessages userId={selectedUser?._id} company={company} />,
+		// },
+		// {
+		// 	id: 2,
+		// 	type: "Tasks",
+		// 	name: <TasksHistory userId={selectedUser?._id} company={company} />,
+		// },
+		// {
+		// 	id: 3,
+		// 	type: "Appointments",
+		// 	name: <AppointmentHistory userId={selectedUser?._id} company={company} />,
+		// },
 	];
 
 	const [viewMode, setViewMode] = useState(TABS[0].type);
