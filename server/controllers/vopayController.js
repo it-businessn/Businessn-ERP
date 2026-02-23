@@ -165,7 +165,7 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 
 		const ClientAmount = employeePayStubs.find((emp) => emp.empId === "67c1360568f8bcf1d10d240b");
 
-		if (fundTotals?.totalFundingWithDrawals > 0) {
+		if (fundTotals?.totalEmpPaymentRemitCost > 0) {
 			try {
 				await apiFetch(`${BASE_URL}account/client-accounts/fund-transfer-withdraw`, {
 					method: "POST",
@@ -180,7 +180,7 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 								Amount: ClientAmount.currentNetPay.toFixed(2),
 							},
 						]),
-						Amount: fundTotals?.totalFundingWithDrawals.toFixed(2),
+						Amount: fundTotals?.totalEmpPaymentRemitCost.toFixed(2),
 						Currency: "CAD",
 						Notes: "Processed Payroll Transfer",
 					},
