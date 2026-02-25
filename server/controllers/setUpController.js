@@ -605,7 +605,7 @@ const addPaygroupSchedules = async (groupID, frequency) => {
 
 const findGroupEmployees = async (groupID, payDate) => {
 	const groupSchedules = await groupPaySchedules(groupID);
-	const schedule = groupSchedules.yearSchedules[0]?.payPeriods.find(
+	const schedule = groupSchedules.yearSchedules[1]?.payPeriods.find(
 		(schedule) => schedule.payPeriodPayDate === payDate,
 	);
 	return schedule?.selectedEmp;
@@ -648,6 +648,11 @@ const updateGroup = async (req, res) => {
 		// 		return res.status(201).json("Added schedules");
 		// 	}
 
+		// await updatePayGroup(id, {
+		// 	scheduleSettings: yearSchedules[1]?.payPeriods,
+		// 	yearSchedules,
+		// });
+		// return;
 		if (req.body?._id) delete req.body._id;
 		const setup = await updatePayGroup(id, {
 			modules: baseModule,
