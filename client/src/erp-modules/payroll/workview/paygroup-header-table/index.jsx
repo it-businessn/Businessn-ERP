@@ -11,6 +11,7 @@ import { isManager } from "utils";
 import ExtraPayrunModal from "./ExtraPayrunModal";
 import PayrollActions from "./PayrollActions";
 import WorkviewTable from "./WorkviewTable";
+import PrimaryButton from "components/ui/button/PrimaryButton";
 
 const PAYGROUP_ACTIONS = [
 	// { key: "roe", name: "Issue Roes", icon: FaWpforms },

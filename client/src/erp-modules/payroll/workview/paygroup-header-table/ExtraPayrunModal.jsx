@@ -100,7 +100,7 @@ const ExtraPayrunModal = ({
 			? closestRecord.payPeriod
 			: closestRecord.payPeriod - 1;
 		try {
-			selectedPayGroup?.yearSchedules[0]?.payPeriods.push({
+			selectedPayGroup?.yearSchedules[1]?.payPeriods.push({
 				payPeriod: payPeriodNum,
 				selectedEmp,
 				payPeriodPayDate,

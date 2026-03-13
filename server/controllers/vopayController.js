@@ -192,6 +192,34 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 	}
 };
 
+const partnerAccountTransfer = async (req, res) => {
+	try {
+		// env = >BUSINESSN
+		console.log("partnerAccountTransfer ");
+		return;
+		const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
+		const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
+
+		const data = await apiFetch(`${BASE_URL}partner/account/transfer`, {
+			method: "POST",
+			data: {
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: SIGNATURE,
+				DebitorAccountID: "cornerstonemaintenancegroupltd",
+				RecipientAccountID: "businessn1",
+				Amount: 5998,
+				Currency: "CAD",
+			},
+		});
+		return res.status(200).json(data);
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.response?.data || error.message });
+	}
+};
+
 const transferWithdraw = async (req, res) => {
 	try {
 		const { RecipientClientAccountID, Amount, company } = req.body;
@@ -677,4 +705,5 @@ module.exports = {
 	getAccountBalance,
 	vopayFundTransfer,
 	getAccountWebHooks,
+	partnerAccountTransfer,
 };

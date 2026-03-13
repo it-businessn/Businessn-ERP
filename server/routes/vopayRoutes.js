@@ -7,6 +7,8 @@ router.get("/partner/account", vopayController.getPartnerEmployerAccounts);
 
 router.post("/partner/account", vopayController.createPartnerEmployerAccount);
 
+router.post("/partner/account/transfer", vopayController.partnerAccountTransfer);
+
 router.get("/account/submit-extended-info", vopayController.submitEmployerInfo);
 
 router.get("/account/client-accounts", vopayController.getClientAccountWallets);

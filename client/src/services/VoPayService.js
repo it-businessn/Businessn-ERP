@@ -9,6 +9,10 @@ const VoPayService = {
 		return apiService.post("/vopay/partner/account", data);
 	},
 
+	async partnerAccountTransfer(data) {
+		return apiService.post("/vopay/partner/account/transfer", data);
+	},
+
 	async getAccountOnboardingLink(accountId) {
 		return apiService.get(`/vopay/${accountId}`);
 	},

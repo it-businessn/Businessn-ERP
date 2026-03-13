@@ -72,7 +72,7 @@ const AddEmployeeModal = ({
 		setIsSubmitting(true);
 
 		try {
-			selectedPayGroup.yearSchedules[0].payPeriods[selectedEmployeeIndex].selectedEmp = selectedEmp;
+			selectedPayGroup.yearSchedules[1].payPeriods[selectedEmployeeIndex].selectedEmp = selectedEmp;
 			await SettingService.updateGroup(
 				{ yearSchedules: selectedPayGroup?.yearSchedules },
 				selectedPayGroupId,

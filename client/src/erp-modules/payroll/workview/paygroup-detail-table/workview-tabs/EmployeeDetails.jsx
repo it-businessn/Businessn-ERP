@@ -33,16 +33,16 @@ const EmployeeDetails = ({
 	const [deletedEmp, setDeletedEmp] = useState(null);
 
 	const [showAddEmp, setShowAddEmp] = useState(false);
-	const selectedEmployeeIndex = selectedPayGroup?.yearSchedules[0]?.payPeriods?.findIndex(
+	const selectedEmployeeIndex = selectedPayGroup?.yearSchedules[1]?.payPeriods?.findIndex(
 		(_) => _?.payPeriod === closestRecord?.payPeriod && _.isExtraRun === true,
 	);
 
 	const selectedEmployee =
-		selectedPayGroup?.yearSchedules[0]?.payPeriods[selectedEmployeeIndex]?.selectedEmp;
+		selectedPayGroup?.yearSchedules[1]?.payPeriods[selectedEmployeeIndex]?.selectedEmp;
 
 	const handleDelete = () => {
 		handleClose();
-		selectedPayGroup.yearSchedules[0].payPeriods[selectedEmployeeIndex].selectedEmp =
+		selectedPayGroup.yearSchedules[1].payPeriods[selectedEmployeeIndex].selectedEmp =
 			selectedEmployee?.filter((_) => _ !== deletedEmp);
 	};
 

@@ -18,6 +18,8 @@ const VoPayPanel = ({ company }) => {
 		const fetchPartnerAccounts = async () => {
 			try {
 				const { data } = await VoPayService.getPartnerEmployerAccounts();
+				// const res = await VoPayService.partnerAccountTransfer({});
+				// console.log(res);
 				setPartners(Object.values(data.Accounts));
 			} catch (error) {
 				console.error(error);
