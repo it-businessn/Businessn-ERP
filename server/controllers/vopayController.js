@@ -208,7 +208,7 @@ const partnerAccountTransfer = async (req, res) => {
 				Signature: SIGNATURE,
 				DebitorAccountID: "cornerstonemaintenancegroupltd",
 				RecipientAccountID: "businessn1",
-				Amount: 5998,
+				Amount: 0,
 				Currency: "CAD",
 			},
 		});
@@ -223,7 +223,7 @@ const partnerAccountTransfer = async (req, res) => {
 const transferWithdraw = async (req, res) => {
 	try {
 		const { RecipientClientAccountID, Amount, company } = req.body;
-
+		return;
 		const isCornerStone = company === COMPANIES.CORNERSTONE;
 		if (isCornerStone) {
 			currentEnv = CONFIG.CORNERSTONE;
@@ -520,13 +520,14 @@ const getLinkedBankAccounts = async (req, res) => {
 	try {
 		const { accountId } = req.params;
 
-		// const url = `${BASE_URL}?AccountID=${accountId}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`;
+		// currentEnv = CONFIG.CORNERSTONE;
 
 		const data = await apiFetch(`${BASE_URL}bank-account`, {
 			data: {
-				AccountID: accountId,
+				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
 				Signature: SIGNATURE,
+				ClientAccountID: accountId,
 			},
 		});
 

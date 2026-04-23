@@ -5,8 +5,8 @@ import VoPayService from "services/VoPayService";
 export const ClientEmployeeList = ({ clientEmployees, company }) => {
 	const getBankEmbedUrl = async (id) => {
 		try {
-			const { data } = await VoPayService.getEmployeeBankEmbedUrl(id);
-			// const { data } = await VoPayService.getDefaultBankAccount(id);
+			// const { data } = await VoPayService.getEmployeeBankEmbedUrl(id);
+			// const { data } = await VoPayService.getLinkedBankAccounts(id);
 			// const { data } = await VoPayService.setDefaultBankAccount({
 			// 	ClientAccountID: id,
 			// 	Token: "5vigt5lbw79013c2ro3ooupguhcwbiiu9mdse3s4h0qgwpuv132mm9w7pks2s01e",
@@ -22,7 +22,7 @@ export const ClientEmployeeList = ({ clientEmployees, company }) => {
 			// 	Amount: 0,
 			// 	company,
 			// });
-			if (data?.EmbedURL) window.open(data.EmbedURL, "_blank");
+			// if (data?.EmbedURL) window.open(data.EmbedURL, "_blank");
 		} catch (error) {}
 	};
 
