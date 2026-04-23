@@ -5,8 +5,8 @@ const { deleteAlerts } = require("./alertsController");
 // const { saveKeyToEnv } = require("../services/fileService");
 
 const getAllBankingInfo = async (req, res) => {
-	const { companyName } = req.params;
 	try {
+		const { companyName } = req.params;
 		const result = await EmployeeBankingInfo.find({
 			companyName,
 		}).sort({
@@ -20,7 +20,6 @@ const getAllBankingInfo = async (req, res) => {
 };
 
 const getEmployeeBankingInfo = async (req, res) => {
-	const { company, employeeId } = req.params;
 	try {
 		// const updatedData = {
 		// 	bankNum: null,
@@ -29,62 +28,74 @@ const getEmployeeBankingInfo = async (req, res) => {
 		// };
 		// const updatedLeads = await EmployeeBankingInfo.updateMany({}, { $set: updatedData });
 
+		const { company, employeeId } = req.params;
 		const result = await findEmployeeBankingInfo(employeeId, company);
 
-		if (result) {
-			const newData = {
-				_id: result?._id,
-				empId: result?.empId,
-				companyName: result?.companyName,
-				directDeposit: result?.directDeposit,
-				payStubSendByEmail: result?.payStubSendByEmail,
-				paymentEmail: result?.paymentEmail,
-			};
+		if (!result) {
+			return res.status(404).json({ message: "Record not found!" });
+		}
 
-			const banking_key = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+		const newData = {
+			_id: result._id,
+			empId: result.empId,
+			companyName: result.companyName,
+			directDeposit: result.directDeposit,
+			payStubSendByEmail: result.payStubSendByEmail,
+			paymentEmail: result.paymentEmail,
+		};
 
-			if (!banking_key) {
-				newData.accountNum = "";
-				newData.bankNum = "";
-				newData.transitNum = "";
-				return res.status(200).json(newData);
-			}
-			// const accountNumber =
-			// 	result?.accountNum &&
-			// 	!result?.accountNum?.includes("*") &&
-			// 	isNaN(Number(result?.accountNum))
-			// 		? decryptData(result?.accountNum, banking_key, result?.accountIv).replace(
-			// 				/.(?=.{3})/g,
-			// 				"*",
-			// 			)
-			// 		: "";
-			const accountNumber =
-				result?.accountNum &&
-				!result?.accountNum?.includes("*") &&
-				isNaN(Number(result?.accountNum))
-					? `${decryptData(result?.accountNum, banking_key, result?.accountIv)}`
-					: "";
+		if (!process.env.BANKING_ENCRYPTION_KEY) {
+			console.error("❌ Missing BANKING_ENCRYPTION_KEY");
 
-			const bankNumber =
-				result?.bankNum && !result?.bankNum?.includes("*") && isNaN(Number(result?.bankNum))
-					? `${decryptData(result?.bankNum, banking_key, result?.bankIv)}`
-					: "";
-
-			const transitNumber =
-				result?.transitNum &&
-				!result?.transitNum?.includes("*") &&
-				isNaN(Number(result?.transitNum))
-					? `${decryptData(result?.transitNum, banking_key, result?.transitIv)}`
-					: "";
-
-			newData.accountNum = accountNumber;
-			newData.bankNum = bankNumber;
-			newData.transitNum = transitNumber;
+			newData.accountNum = "";
+			newData.bankNum = "";
+			newData.transitNum = "";
 			return res.status(200).json(newData);
 		}
-		return res.status(404).json({ message: "Record not found!" });
+		const banking_key = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+
+		// SAFE DECRYPT FUNCTION
+		const safeDecrypt = (value, iv, label) => {
+			try {
+				if (!value || !iv) return "";
+
+				// don't try decrypt masked values
+				if (typeof value === "string" && value.includes("*")) return "";
+
+				return decryptData(value, banking_key, iv);
+			} catch (err) {
+				console.error(`❌ Decryption failed for ${label}`, {
+					message: err.message,
+					value,
+					iv,
+				});
+				return "";
+			}
+		};
+		console.log("RAW DB DATA", {
+			accountNum: result.accountNum,
+		});
+		newData.accountNum = safeDecrypt(result.accountNum, result.accountIv, "accountNum");
+		newData.bankNum = safeDecrypt(result.bankNum, result.bankIv, "bankNum");
+		newData.transitNum = safeDecrypt(result.transitNum, result.transitIv, "transitNum");
+
+		console.log("✅ Banking info fetched", {
+			employeeId,
+			company,
+		});
+
+		return res.status(200).json(newData);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getEmployeeBankingInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
 	}
 };
 
@@ -104,50 +115,85 @@ const updateBankingInfo = async (id, data) =>
 	);
 
 const addEmployeeBankingInfo = async (req, res) => {
-	const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail, bankDetails } =
-		req.body;
-	// const ENCRYPTION_KEY = newEncryptionKey;
-	// saveKeyToEnv("BANKING_ENCRYPTION_KEY", ENCRYPTION_KEY);
-	const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
-
-	const updatedData = {
-		empId,
-		companyName,
-		directDeposit,
-		payStubSendByEmail,
-		paymentEmail,
-	};
+	const start = Date.now();
 	try {
+		const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail, bankDetails } =
+			req.body;
+		// const ENCRYPTION_KEY = newEncryptionKey;
+		// saveKeyToEnv("BANKING_ENCRYPTION_KEY", ENCRYPTION_KEY);
+		if (!process.env.BANKING_ENCRYPTION_KEY) {
+			throw new Error("Missing BANKING_ENCRYPTION_KEY");
+		}
+		const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+
+		const updatedData = {
+			empId,
+			companyName,
+			directDeposit,
+			payStubSendByEmail,
+			paymentEmail,
+		};
+
 		const existingBankingInfo = await findEmployeeBankingInfo(empId, companyName);
 		if (bankDetails) {
-			const { bankNum, transitNum, accountNum } = bankDetails;
-
-			if (!bankNum?.includes("*") && !transitNum?.includes("*") && !accountNum?.includes("*")) {
+			let { bankNum, transitNum, accountNum } = bankDetails;
+			// normalize to string (VERY important)
+			bankNum = bankNum?.toString();
+			transitNum = transitNum?.toString();
+			accountNum = accountNum?.toString();
+			if (
+				bankNum &&
+				transitNum &&
+				accountNum &&
+				!bankNum.includes("*") &&
+				!transitNum.includes("*") &&
+				!accountNum.includes("*")
+			) {
 				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
 				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
 				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
-				updatedData.bankNum = bankEncrypted.encryptedData;
-				updatedData.bankIv = bankEncrypted.iv;
-				updatedData.transitNum = transitEncrypted.encryptedData;
-				updatedData.transitIv = transitEncrypted.iv;
-				updatedData.accountNum = accountEncrypted.encryptedData;
-				updatedData.accountIv = accountEncrypted.iv;
+				Object.assign(updatedData, {
+					bankNum: bankEncrypted.encryptedData,
+					bankIv: bankEncrypted.iv,
+					transitNum: transitEncrypted.encryptedData,
+					transitIv: transitEncrypted.iv,
+					accountNum: accountEncrypted.encryptedData,
+					accountIv: accountEncrypted.iv,
+				});
 			}
 		}
+		let result;
+
 		if (existingBankingInfo) {
-			const updatedBankingInfo = await updateBankingInfo(existingBankingInfo._id, updatedData);
-			return res.status(201).json(updatedBankingInfo);
+			result = await updateBankingInfo(existingBankingInfo._id, updatedData);
+		} else {
+			result = await EmployeeBankingInfo.create(updatedData);
 		}
-		const newBankingInfo = await EmployeeBankingInfo.create(updatedData);
-		return res.status(201).json(newBankingInfo);
+		console.log("✅ Banking info saved", {
+			empId,
+			companyName,
+			timeMs: Date.now() - start,
+		});
+		return res.status(201).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addEmployeeBankingInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+			time: new Date().toISOString(),
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
 	}
 };
 
 const updateEmployeeBankingInfo = async (req, res) => {
-	const { id } = req.params;
+	const start = Date.now();
 	try {
+		const { id } = req.params;
 		const {
 			empId,
 			bankNum,
@@ -159,44 +205,60 @@ const updateEmployeeBankingInfo = async (req, res) => {
 		} = req.body;
 
 		const existingInfo = await EmployeeBankingInfo.findById(id);
-		const updatedData = {
+		if (!existingInfo) {
+			return res.status(404).json({ message: "Record does not exist" });
+		}
+		let updatedData = {
 			directDeposit,
 			payStubSendByEmail,
 			paymentEmail,
 		};
-		if (existingInfo) {
-			if (
-				bankNum &&
-				transitNum &&
-				accountNum &&
-				bankNum !== "" &&
-				transitNum !== "" &&
-				accountNum !== ""
-			) {
-				await deleteAlerts(empId, ALERTS_TYPE.BANK);
-			}
-			if (!bankNum?.includes("*") && !transitNum?.includes("*") && !accountNum?.includes("*")) {
-				const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
-				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
-				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
-				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
-
-				updatedData.bankNum = bankEncrypted.encryptedData;
-				updatedData.bankIv = bankEncrypted.iv;
-
-				updatedData.transitNum = transitEncrypted.encryptedData;
-				updatedData.transitIv = transitEncrypted.iv;
-
-				updatedData.accountNum = accountEncrypted.encryptedData;
-				updatedData.accountIv = accountEncrypted.iv;
-			}
-
-			const updatedInfo = await updateBankingInfo(id, updatedData);
-			return res.status(201).json(updatedInfo);
+		let b = bankNum?.toString();
+		let t = transitNum?.toString();
+		let a = accountNum?.toString();
+		if (b && t && a && b !== "" && t !== "" && a !== "") {
+			await deleteAlerts(empId, ALERTS_TYPE.BANK);
 		}
-		return res.status(404).json({ message: "Record does not exist" });
+		if (b && t && a && !b.includes("*") && !t.includes("*") && !a.includes("*")) {
+			if (!process.env.BANKING_ENCRYPTION_KEY) {
+				throw new Error("Missing BANKING_ENCRYPTION_KEY");
+			}
+
+			const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
+
+			const bankEncrypted = encryptData(b, ENCRYPTION_KEY);
+			const transitEncrypted = encryptData(t, ENCRYPTION_KEY);
+			const accountEncrypted = encryptData(a, ENCRYPTION_KEY);
+			Object.assign(updatedData, {
+				bankNum: bankEncrypted.encryptedData,
+				bankIv: bankEncrypted.iv,
+				transitNum: transitEncrypted.encryptedData,
+				transitIv: transitEncrypted.iv,
+				accountNum: accountEncrypted.encryptedData,
+				accountIv: accountEncrypted.iv,
+			});
+		}
+
+		const updatedInfo = await updateBankingInfo(id, updatedData);
+		console.log("✅ Banking info updated", {
+			id,
+			empId,
+			timeMs: Date.now() - start,
+		});
+
+		return res.status(200).json("updatedInfo");
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ updateEmployeeBankingInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
 	}
 };
 
