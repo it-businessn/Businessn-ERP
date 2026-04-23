@@ -12,7 +12,6 @@ const { sortByEmpFullName, getPayrollActiveEmployees } = require("../helpers/use
 const { updatePayGroup } = require("./setUpController");
 const { vopayFundTransfer } = require("./vopayController");
 const { getEmployeeId } = require("./userController");
-const { findPayStub } = require("./payStubController");
 
 const buildFundingTotalsReport = async (
 	fundingTotal,
