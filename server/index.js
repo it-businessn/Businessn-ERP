@@ -238,6 +238,20 @@ db.once("open", () => {
 	console.log("Connected to MongoDB");
 });
 
+app.use((err, req, res, next) => {
+	console.error("🔥 Unhandled error:", {
+		message: err.message,
+		stack: err.stack,
+		path: req.path,
+		method: req.method,
+	});
+
+	res.status(500).json({
+		success: false,
+		message: "Something went wrong",
+	});
+});
+
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 });

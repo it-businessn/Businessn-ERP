@@ -246,7 +246,7 @@ const updateEmployeeBankingInfo = async (req, res) => {
 			timeMs: Date.now() - start,
 		});
 
-		return res.status(200).json("updatedInfo");
+		return res.status(200).json(updatedInfo);
 	} catch (error) {
 		console.error("❌ updateEmployeeBankingInfo ERROR", {
 			message: error.message,
