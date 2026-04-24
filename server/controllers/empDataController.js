@@ -9,6 +9,7 @@ const { encryptData } = require("../services/encryptDataService");
 const { addEmployee } = require("../helpers/userHelper");
 const { updateTADEmployee } = require("./timecardController");
 const { normalizePercent, isPercentType } = require("../services/util");
+const CONFIG = require("../config");
 
 const getNewUserID = async (companyName, data) => {
 	const newEmployee = await addEmployee(companyName, data);
@@ -16,8 +17,7 @@ const getNewUserID = async (companyName, data) => {
 };
 
 const encryptSSN = (SIN) => {
-	const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-	const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
+	const sinEncrypted = encryptData(SIN, CONFIG.SIN_KEY);
 	return { SIN: sinEncrypted.encryptedData, SINIv: sinEncrypted.iv };
 };
 
@@ -314,7 +314,6 @@ const addUserBankInfo = async (empId, companyName, bankingInfo) => {
 		paymentEmail,
 	};
 	if (!bankNum.includes("*") && !transitNum.includes("*") && !accountNum.includes("*")) {
-		const BANK_ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
 		const bankEncrypted = encryptData(bankNum, BANK_ENCRYPTION_KEY);
 		const transitEncrypted = encryptData(transitNum, BANK_ENCRYPTION_KEY);
 		const accountEncrypted = encryptData(accountNum, BANK_ENCRYPTION_KEY);

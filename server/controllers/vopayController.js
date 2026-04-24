@@ -2,25 +2,27 @@ const { generateVopaySignature } = require("../services/encryptDataService");
 const { apiFetch } = require("../helpers/apiFetch");
 const { COMPANIES } = require("../services/data");
 const moment = require("moment");
+const requireEnv = require("../helpers/requireEnv");
 
-const {
-	VOPAY_PARTNER_ACCOUNT_ID,
-	VOPAY_API_KEY_STAGING,
-	VOPAY_BASE_URL_STAGING,
-	VOPAY_SHARED_SECRET_STAGING,
-	VOPAY_API_KEY_PROD,
-	VOPAY_BASE_URL_PROD,
-	VOPAY_SHARED_SECRET_PROD,
-	VOPAY_PARTNER_ACCOUNT_ID_PROD_TEST,
-	VOPAY_API_KEY_PROD_TEST,
-	VOPAY_SHARED_SECRET_PROD_TEST,
-	CORNERSTONE_ACCOUNT_ID,
-	CORNERSTONE_SHARED_KEY,
-	CORNERSTONE_SHARED_SECRET,
-	TECHCORP_ACCOUNT_ID,
-	TECHCORP_SHARED_KEY,
-	TECHCORP_SHARED_SECRET,
-} = process.env;
+const VOPAY_PARTNER_ACCOUNT_ID = requireEnv("VOPAY_PARTNER_ACCOUNT_ID");
+const VOPAY_API_KEY_PROD = requireEnv("VOPAY_API_KEY_PROD");
+const VOPAY_SHARED_SECRET_PROD = requireEnv("VOPAY_SHARED_SECRET_PROD");
+const VOPAY_API_KEY_STAGING = requireEnv("VOPAY_API_KEY_STAGING");
+const VOPAY_SHARED_SECRET_STAGING = requireEnv("VOPAY_SHARED_SECRET_STAGING");
+const VOPAY_BASE_URL_STAGING = requireEnv("VOPAY_BASE_URL_STAGING");
+const VOPAY_PARTNER_ACCOUNT_ID_PROD_TEST = requireEnv("VOPAY_PARTNER_ACCOUNT_ID_PROD_TEST");
+const VOPAY_API_KEY_PROD_TEST = requireEnv("VOPAY_API_KEY_PROD_TEST");
+const VOPAY_BASE_URL_PROD = requireEnv("VOPAY_BASE_URL_PROD");
+const VOPAY_SHARED_SECRET_PROD_TEST = requireEnv("VOPAY_SHARED_SECRET_PROD_TEST");
+
+const TECHCORP_ACCOUNT_ID = requireEnv("TECHCORP_ACCOUNT_ID");
+const TECHCORP_SHARED_KEY = requireEnv("TECHCORP_SHARED_KEY");
+const TECHCORP_SHARED_SECRET = requireEnv("TECHCORP_SHARED_SECRET");
+
+const CORNERSTONE_ACCOUNT_ID = requireEnv("CORNERSTONE_ACCOUNT_ID");
+const CORNERSTONE_SHARED_KEY = requireEnv("CORNERSTONE_SHARED_KEY");
+const CORNERSTONE_SHARED_SECRET = requireEnv("CORNERSTONE_SHARED_SECRET");
+const CORNERSTONE_CLIENT_ACCOUNT_ID = requireEnv("CORNERSTONE_CLIENTACCOUNTID");
 
 const CONFIG = {
 	STAGING: {
@@ -161,7 +163,7 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 
 		const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 		const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
-		const DebitorClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
+		const DebitorClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 
 		const ClientAmount = employeePayStubs.find((emp) => emp.empId === "67c1360568f8bcf1d10d240b");
 
@@ -227,7 +229,7 @@ const transferWithdraw = async (req, res) => {
 		const isCornerStone = company === COMPANIES.CORNERSTONE;
 		if (isCornerStone) {
 			currentEnv = CONFIG.CORNERSTONE;
-			const DebitorClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
+			const DebitorClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 
 			const data = await apiFetch(`${BASE_URL}account/client-accounts/transfer-withdraw`, {
 				method: "POST",
@@ -257,7 +259,7 @@ const fundEmployerWallet = async (req, res) => {
 
 		//if conrn
 		currentEnv = CONFIG.CORNERSTONE;
-		const ClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
+		const ClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 		const data = await apiFetch(`${BASE_URL}eft/fund`, {
 			method: "POST",
 			data: {
@@ -304,7 +306,7 @@ const createClientAccountEmployee = async (req, res) => {
 
 		//if CORNERSTONE
 		currentEnv = CONFIG.CORNERSTONE;
-		const ClientAccountID = process.env.CORNERSTONE_CLIENTACCOUNTID;
+		const ClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 		const data = await apiFetch(`${BASE_URL}account/client-accounts/individual`, {
 			method: "POST",
 			data: {
@@ -343,46 +345,46 @@ const receiveWebhook = (io) => (req, res) => {
 		return res.status(401).send("Invalid signature");
 	}
 	// const data = await apiFetch(`${BASE_URL}iq11/generate-embed-url`, {
-	// 		method: "POST",
-	// 		data: {
-	// 			AccountID: ACCOUNT_ID,
-	// 			Key: SHARED_KEY,
-	// 			Signature: SIGNATURE,
-	// 			ClientAccountID: clientAccountId,
-	// 			RedirectURL: "https://businessn.com/",
-	// 		},
+	//const  method: "POST",
+	//const  data: {
+	//const  	AccountID: ACCOUNT_ID,
+	//const  	Key: SHARED_KEY,
+	//const  	Signature: SIGNATURE,
+	//const  	ClientAccountID: clientAccountId,
+	//const  	RedirectURL: "https://businessn.com/",
+	//const  },
 	// 	});
 
 	// const data = await apiFetch(`${BASE_URL}partner/account/onboarding-url`, {
 	// 	data: {
-	// 		AccountID: ACCOUNT_ID,
-	// 		Key: SHARED_KEY,
-	// 		Signature: SIGNATURE,
-	// 		VopayAccountID: vopayAccountId,
+	//const  AccountID: ACCOUNT_ID,
+	//const  Key: SHARED_KEY,
+	//const  Signature: SIGNATURE,
+	//const  VopayAccountID: vopayAccountId,
 	// 	},
 	// });
 
 	// 	const transactiongwtResponse = await fetch(
-	// 		`${BASE_URL}account/webhook-url/info?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`,
-	// 		{
-	// 			method: "GET",
-	// 			headers: {
-	// 				accept: "application/json",
-	// 			},
-	// 		},
+	//const  `${BASE_URL}account/webhook-url/info?AccountID=${TECHCORP_CREDS.AccountID}&Key=${TECHCORP_CREDS.KEY}&Signature=${TECHCORP_CREDS_Signature}`,
+	//const  {
+	//const  	method: "GET",
+	//const  	headers: {
+	//const  		accept: "application/json",
+	//const  	},
+	//const  },
 	// 	);
 	// 	const transactionRes = await transactiongwtResponse.json();
 
 	// checkTransactionStatus(transactionID) { /eft/fund/status
-	//   const res = await axios.get(`${process.env.BASE_URL}/eft/fund/status`, {
+	//   const res = await axios.get(`${BASE_URL}/eft/fund/status`, {
 	//     params: {
-	//       AccountID: process.env.VOPAY_ACCOUNT_ID,
-	//       Key: process.env.VOPAY_API_KEY,
+	//   AccountID: VOPAY_ACCOUNT_ID,
+	//   Key:  VOPAY_API_KEY,
 	//       Signature: generateVopaySignature({ TransactionID: transactionID }),
 	//       TransactionID: transactionID,
 	//     },
 	//   });
-	// 		payEmployee={
+	//const  payEmployee={
 	//     ClientAccountID: "CLIENT_ACCOUNT_ID_JANE",
 	//     FirstName: "Jane",
 	//     LastName: "Doe",

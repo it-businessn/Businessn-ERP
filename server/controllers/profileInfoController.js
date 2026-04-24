@@ -15,6 +15,7 @@ const {
 } = require("./empDataController");
 const { findCompany, addEmployee } = require("../helpers/userHelper");
 const { deleteAlerts } = require("./alertsController");
+const CONFIG = require("../config");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -42,18 +43,13 @@ const getAllProfileInfo = async (req, res) => {
 const getEmployeeProfileInfo = async (req, res) => {
 	try {
 		const { companyName, empId } = req.params;
-		const sinKeyHex = process.env.SIN_ENCRYPTION_KEY;
-		if (!sinKeyHex) {
-			throw new Error("Missing SIN encryption key");
-		}
-		const sin_key = Buffer.from(sinKeyHex, "hex");
 
 		const result = await findEmployeeProfileInfo(empId, companyName);
 		if (result) {
 			const isEncrypted = result?.SINIv && result?.SIN && !result.SIN.includes("*");
 
 			if (isEncrypted) {
-				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv);
+				result.SIN = decryptData(result?.SIN, CONFIG.SIN_KEY, result?.SINIv);
 			}
 			// optional masking (recommended for API responses)
 			// if (result.SIN) {
@@ -251,16 +247,9 @@ const addEmployeeProfileInfo = async (req, res) => {
 			middleName,
 			lastName,
 		};
-		const ENCRYPTION_KEY = process.env.SIN_ENCRYPTION_KEY
-			? Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex")
-			: null;
-
-		if (!ENCRYPTION_KEY) {
-			throw new Error("Missing SIN encryption key");
-		}
 
 		if (SIN && typeof SIN === "string" && !SIN.includes("*")) {
-			const encrypted = encryptData(SIN, ENCRYPTION_KEY);
+			const encrypted = encryptData(SIN, CONFIG.SIN_KEY);
 			updatedData.SIN = encrypted.encryptedData;
 			updatedData.SINIv = encrypted.iv;
 		}
@@ -421,18 +410,11 @@ const updateEmployeeProfileInfo = async (req, res) => {
 				message: "Profile not found",
 			});
 		}
-		const ENCRYPTION_KEY = process.env.SIN_ENCRYPTION_KEY
-			? Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex")
-			: null;
-
-		if (!ENCRYPTION_KEY) {
-			throw new Error("Missing SIN encryption key");
-		}
 
 		const { _id, ...updatedData } = req.body;
 
 		if (SIN && typeof SIN === "string" && !SIN.includes("*")) {
-			const encrypted = encryptData(SIN, ENCRYPTION_KEY);
+			const encrypted = encryptData(SIN, CONFIG.SIN_KEY);
 			updatedData.SIN = encrypted.encryptedData;
 			updatedData.SINIv = encrypted.iv;
 		}

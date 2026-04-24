@@ -23,7 +23,6 @@ const rateLimit = require("express-rate-limit");
 const path = require("path");
 
 const { authenticateToken } = require("./middleware/auth");
-const corsOptions = require("./config");
 const { getAllCompanies } = require("./controllers/companyController");
 const { getHolidays, addStatHolidayTimesheet } = require("./controllers/statHolidayController");
 
@@ -74,6 +73,7 @@ const userRoutes = require("./routes/userRoutes");
 const t4SlipRoutes = require("./routes/t4SlipRoutes");
 const vopayRoutes = require("./routes/vopayRoutes");
 const vopayWebHookRoutes = require("./routes/vopayWebHookRoutes");
+const CONFIG = require("./config");
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -83,8 +83,8 @@ const io = socketio(httpServer, {
 		origin: "*",
 	},
 });
-const PORT = process.env.PORT;
-const MONGO_URI = process.env.DB_CONNECTION_URL_STAGING_CRM;
+const PORT = CONFIG.PORT;
+const MONGO_URI = CONFIG.MONGO_URI;
 
 const limiter = rateLimit({
 	windowMs: 60 * 1000, // 1 minutes
@@ -109,7 +109,7 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
 app.use(cookieParser());
-app.use(cors(corsOptions));
+app.use(cors(CONFIG.corsOptions));
 
 app.use(helmet());
 app.use((req, res, next) => {

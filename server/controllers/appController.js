@@ -7,6 +7,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { hashPassword, comparePassword } = require("../services/passwordService");
 const { findCompany, addEmployee } = require("../helpers/userHelper");
 const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
+const CONFIG = require("../config");
 
 const login = async (req, res) => {
 	const { email, password, companyId } = req.body;
@@ -131,7 +132,7 @@ const refreshToken = async (req, res) => {
 		if (!refreshToken) {
 			return res.status(401).json({ message: "Refresh token is required", error });
 		}
-		const user = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+		const user = verifyToken(refreshToken, CONFIG.REFRESH_TOKEN_SECRET);
 
 		const newAccessToken = generateAccessToken({
 			id: user?._id,

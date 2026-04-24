@@ -8,6 +8,7 @@ const { decryptData } = require("../services/encryptDataService");
 const { COMPANIES } = require("../services/data");
 const { addEmployee } = require("../helpers/userHelper");
 const { findEmployeeProfileInfo, updateProfileInfo } = require("./profileInfoController");
+const CONFIG = require("../config");
 
 const getAffiliateProfileInfo = async (req, res) => {
 	const { companyName } = req.params;
@@ -28,8 +29,6 @@ const getAffiliateProfileInfo = async (req, res) => {
 const getEmployeeProfileInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
-		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-
 		const result = await findEmployeeProfileInfo(empId, companyName);
 
 		if (!result) {
@@ -46,7 +45,7 @@ const getEmployeeProfileInfo = async (req, res) => {
 		if (result) {
 			result.SIN =
 				!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))
-					? decryptData(result?.SIN, sin_key, result?.SINIv).replace(/.(?=.{4})/g, "*")
+					? decryptData(result?.SIN, CONFIG.SIN_KEY, result?.SINIv).replace(/.(?=.{4})/g, "*")
 					: result.SIN?.replace(/.(?=.{4})/g, "*") || "";
 			return res.status(200).json(result);
 		}
@@ -97,7 +96,7 @@ const addAffiliateProfileInfo = async (req, res) => {
 			updatedData.empId = profileInfoEmpId;
 			updatedData.affiliateCode = nanoid(8);
 			const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
-			const referralLink = `${process.env.BASE_URL_LIVE}/ref=${newProfileInfo.affiliateCode}`;
+			const referralLink = `${CONFIG.BASE_URL_LIVE}/ref=${newProfileInfo.affiliateCode}`;
 			return res.status(201).json({ newProfileInfo, referralLink });
 		}
 

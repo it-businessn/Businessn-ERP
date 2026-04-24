@@ -14,6 +14,7 @@ const EmployeeT4 = require("../models/EmployeeT4");
 
 const { encryptData, decryptData } = require("../services/encryptDataService");
 const { CURRENT_YEAR } = require("../services/data");
+const CONFIG = require("../config");
 
 const parser = new xml2js.Parser({ explicitArray: false });
 
@@ -32,19 +33,19 @@ const buildRecord = async (record) => {
 		"streetAddressSuite streetAddress city province postalCode country SIN SINIv firstName middleName lastName",
 	);
 
-	const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
 	const sinExists =
 		empProfileInfo?.SIN &&
 		empProfileInfo?.SINIv &&
 		!empProfileInfo?.SIN?.includes("*") &&
 		isNaN(empProfileInfo?.SIN);
 
+	const SIN_ENCRYPTION_KEY = CONFIG.SIN_KEY;
 	empProfileInfo.SIN = sinExists
-		? decryptData(empProfileInfo?.SIN, sin_key, empProfileInfo?.SINIv)
+		? decryptData(empProfileInfo?.SIN, SIN_ENCRYPTION_KEY, empProfileInfo?.SINIv)
 		: (!empProfileInfo?.SIN?.includes("*") && isNaN(Number(empProfileInfo?.SIN))) ||
-		  !empProfileInfo?.SIN
-		? ""
-		: empProfileInfo?.SIN;
+			  !empProfileInfo?.SIN
+			? ""
+			: empProfileInfo?.SIN;
 	const empEmploymentInfo = await EmployeeEmploymentInfo.findOne({
 		empId: record?.empId._id,
 	}).select("employeeNo employmentRegion employmentCountry");
@@ -488,9 +489,9 @@ const readSecureXML = () => {
 	);
 	const xmlString = fs.readFileSync(envFilePath, "utf8");
 
-	const ENCRYPTION_KEY = Buffer.from(process.env.XML_ENCRYPTION_KEY, "hex");
-	const encryptedXMLData = encryptData(xmlString, ENCRYPTION_KEY).encryptedData;
-	const encryptedXMLDataIV = encryptData(xmlString, ENCRYPTION_KEY).iv;
+	const XML_ENCRYPTION_KEY = CONFIG.XML_ENCRYPTION_KEY;
+	const encryptedXMLData = encryptData(xmlString, XML_ENCRYPTION_KEY).encryptedData;
+	const encryptedXMLDataIV = encryptData(xmlString, XML_ENCRYPTION_KEY).iv;
 
 	const fileName = `T4_BE6743_1734417913367.encrypted`;
 	const filePath = path.join(SAVE_FILE_OUTPUT_DIR, fileName);
@@ -499,7 +500,7 @@ const readSecureXML = () => {
 
 	//dEcrypt the XML file before upload
 	const encryptedContent = fs.readFileSync(envDecryptFilePath, "utf8");
-	const decryptedXML = decryptData(encryptedContent, ENCRYPTION_KEY, encryptedXMLDataIV);
+	const decryptedXML = decryptData(encryptedContent, XML_ENCRYPTION_KEY, encryptedXMLDataIV);
 	console.log("Decrypted XML:", decryptedXML);
 };
 

@@ -1,8 +1,9 @@
 const jwt = require("jwt-simple");
 const moment = require("moment");
+const CONFIG = require("../config");
 
-const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET;
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+const SECRET_KEY = CONFIG.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = CONFIG.REFRESH_TOKEN_SECRET;
 const refreshTokens = [];
 
 function generateAccessToken(user) {
@@ -33,7 +34,8 @@ const verifyToken = (token, secret) => {
 			throw new Error("Token has expired");
 		}
 	} catch (error) {
-		throw new Error("Invalid token");
+		console.error("Token verification failed:", err.message);
+		throw new Error("Invalid or expired refresh token");
 	}
 };
 

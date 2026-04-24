@@ -10,6 +10,7 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 const Company = require("../models/Company");
 
 const { SAVE_FILE_OUTPUT_DIR } = require("./t4SlipController");
+const CONFIG = require("../config");
 
 const parser = new xml2js.Parser({ explicitArray: false });
 
@@ -286,10 +287,8 @@ const generateROEXML = async (name, payPeriodId, payPeriodType) => {
 			return new Date(a.payPeriodEndDate) - new Date(b.payPeriodEndDate);
 		});
 
-		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-
 		if (!SIN?.includes("*") && SINIv && isNaN(Number(SIN))) {
-			SIN = decryptData(SIN, sin_key, SINIv);
+			SIN = decryptData(SIN, CONFIG.SIN_KEY, SINIv);
 		}
 		const replacedSIN = replaceStarsWithRandom(SIN);
 		const fullAddress = [streetAddressSuite, streetAddress].filter(Boolean).join(" ");

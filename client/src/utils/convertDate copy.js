@@ -1,0 +1,248 @@
+import moment from "moment";
+import momentTz from "moment-timezone";
+import { DateTime } from "luxon";
+
+export const timeSpan = (time) => {
+	const givenTime = new Date(time);
+	const currentTime = new Date();
+
+	const differenceMs = currentTime - givenTime;
+	const hoursAgo = Math.floor(differenceMs / (1000 * 60 * 60));
+	const minutesAgo = Math.floor((differenceMs % (1000 * 60 * 60)) / (1000 * 60));
+	return `${hoursAgo}hr ${minutesAgo}m ago`;
+};
+
+export const TODAY_DATE = moment();
+export const TOMORROW = moment().add(1, "day");
+export const CURRENT_MONTH = moment().month() + 1;
+export const CURRENT_YEAR = moment().year();
+
+export const isFutureDate = (date) => TODAY_DATE.isAfter(date, "day");
+export const getMomentDate = (date) => moment.utc(date);
+
+export const daysAgo = (date) => {
+	const numDays = moment(date)?.diff(TODAY_DATE, "days");
+	return numDays;
+};
+
+export const convertTo12HourFormatRange = (timeRange) => {
+	const [start, end] = timeRange.split("-");
+	const startFormatted = moment(start, "HH:mm").format("hh:mm A");
+	const endFormatted = moment(end, "HH:mm").format("hh:mm A");
+	return `${startFormatted} - ${endFormatted}`;
+};
+
+export const getMomentDateISO = (date) => moment(date).toISOString();
+
+export const isSameAsToday = (date) => moment(date).isSame(new Date(), "day");
+
+export const dayMonthYear = (date) => moment.utc(date).format("ddd MMM DD, YYYY");
+
+export const longTimeFormat = (date) => moment(date).format("MMM DD, YYYY hh:mm A");
+
+export const longFormat = (date) => moment.utc(date).format("dddd, D MMMM YYYY");
+
+export const monthDayYearFormat = (date) => moment.utc(date).format("MMMM, DD, YYYY");
+
+export const monthDayYearShortFormat = (date) => moment.utc(date).format("MMMM DD YYYY");
+
+export const mmmDayYearFormat = (date) => moment.utc(date).format("ddd, D MMMM YYYY");
+
+export const monthDayYear = TODAY_DATE.format("MMM DD, YYYY");
+
+export const today = TODAY_DATE.format("MMDDYY");
+
+export const formatDateMMDDYY = (date) => moment.utc(date).format("MM/DD/YYYY");
+
+export const formatDateMMDDYYShort = (date) => moment.utc(date).format("MM/DD/YY");
+
+export const formatDateBar = (date) => moment.utc(date).format("DD/MM/YYYY");
+
+export const formatDateRange = (startDate, endDate) => {
+	const start = dayMonthYear(startDate);
+	const end = dayMonthYear(endDate);
+	return `${start} - ${end}`;
+};
+
+export const getDefaultTime = (date) => moment(date, "HH:mm").format("hh:mm A");
+
+export const convertMomentTzDate = (timestamp) =>
+	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+
+export const getTimeCardFormat = (timestamp, notDevice, timeSheet) => {
+	let dt = DateTime.fromISO(timestamp, { zone: "utc" }).setZone("America/Vancouver");
+
+	if (!notDevice && dt.hour <= 23) {
+		// e.g., dt = dt.plus({ hours: 0 }); currently no adjustment required
+	}
+
+	return timeSheet
+		? dt.toFormat("hh:mm a") // e.g., Mon, 2026-03-23
+		: dt.toFormat("yyyy-LL-dd hh:mm a"); // e.g., 2026-03-23 08:19 AM
+};
+
+function formatTimeWithDST(utcTime, timeZone = "America/Vancouver") {
+	const dt = DateTime.fromISO(utcTime, { zone: "utc" }) // Parse UTC time and convert to target timezone
+		.setZone(timeZone); // DST-aware
+
+	return dt.toFormat("HH:mm");
+}
+
+export const getUTCTime = (time) => {
+	return formatTimeWithDST(time);
+	// const date = new Date(time);
+	// const hours = date.getUTCHours().toString().padStart(2, "0");
+	// const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+	// return `${hours}:${minutes}`;
+};
+
+function checkTimeWithDST(timestamp, timeZone = "America/Vancouver") {
+	// Convert UTC timestamp to local timezone (DST-aware)
+	const localTime = DateTime.fromISO(timestamp, { zone: "utc" }).setZone(timeZone);
+
+	const hour = localTime.hour; // 0-23
+	const minutes = localTime.minute; // 0-59
+	const timeStr = localTime.toFormat("HH:mm");
+	return timeStr;
+	// Example logic similar to your original snippet
+	if (hour <= 5 || timeStr > "17:00" || timeStr < "16:00") {
+		return {
+			localTime: timeStr,
+			note: "Outside regular working hours",
+		};
+	}
+
+	return {
+		localTime: timeStr,
+		note: "Within regular working hours",
+	};
+}
+// export const getTimeFormat = (date) => moment.utc(date).format("hh:mm A");
+export const getClockInTimeFormat = (timestamp) => {
+	// return checkTimeWithDST(timestamp);
+	const time = moment(timestamp);
+	if (
+		time.format("HH") <= "05" ||
+		time.format("HH:mm") > "17:00" ||
+		time.format("HH:mm") < "16:00"
+	) {
+		// console.log(
+		// 	"here",
+		// 	timestamp,
+		// 	time.format("HH"),
+		// 	time.format("HH:mm"),
+		// 	time.utc().format("HH:mm"),
+		// );
+		return time.utc().format("HH:mm");
+	} else {
+		// console.log(
+		// 	"else",
+		// 	timestamp,
+		// 	time.format("HH"),
+		// 	time.format("HH:mm"),
+		// 	time.utc().format("HH:mm"),
+		// 	time.format("hh:mm"),
+		// 	time.format("HH:mm") < "17:00",
+		// );
+		return time.format("HH:mm");
+	}
+	// timestamp = convertMomentTzDate(timestamp);
+	// let date = moment(timestamp);
+
+	// if (date.hour() <= 23) {
+	// 	date = date.utc();
+	// }
+	// const utcHours = new Date(timestamp).getUTCHours();
+	// const utcMinutes = new Date(timestamp).getUTCMinutes();
+	// const formattedUTC = `${(utcHours % 24).toString().padStart(2, "0") || 12}:${utcMinutes
+	// 	.toString()
+	// 	.padStart(2, "0")}`;
+
+	// return formattedUTC;
+};
+
+export const getTimeFormat = (timestamp, notDevice) => {
+	const time = moment.utc(timestamp);
+
+	if (time.format("HH") <= "16") {
+		// console.log("here", timestamp, time.format("HH"), time.format("HH:mm"));
+		return time.utc().format("HH:mm");
+	} else {
+		// console.log("else", timestamp, time.format("HH"), time.format("HH:mm"));
+		return time.format("HH:mm");
+	}
+};
+
+export const setUTCDate = (date, newDate, notDevice) => {
+	// const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	const utcDate = date ? moment(date) : moment();
+
+	let [hours, minutes] = newDate.split(":");
+	utcDate.set({
+		hour: parseInt(hours),
+		minute: parseInt(minutes),
+		second: 0,
+	});
+	return utcDate.toISOString();
+};
+
+export const getDateDiffHours = (date1, date2, totalBreaks) => {
+	const startTime = moment(date1, "HH:mm");
+	const endTime = moment(date2, "HH:mm");
+	const breakTime = totalBreaks === "" ? 0 : parseInt(totalBreaks) / 60;
+	const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes();
+	const netMinutes = totalMinutes - breakTime;
+	const hoursDiff = Math.floor(netMinutes / 60);
+	const minutesDiff = (netMinutes % 60).toFixed(2);
+
+	const formattedHours = String(hoursDiff).padStart(2, "0");
+	const formattedMinutes = String(minutesDiff).padStart(2, "0");
+	return `${formattedHours}:${formattedMinutes}`;
+};
+
+export const addBusinessDays = (date, days) => {
+	let result = moment(date);
+	let count = 0;
+	while (count < days) {
+		result = result.add(1, "days");
+
+		if (result.isoWeekday() !== 6 && result.isoWeekday() !== 7) {
+			count++;
+		}
+	}
+	return result;
+};
+
+export const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+export const getTimezone = (date) =>
+	moment.tz(date, "America/Chicago").clone().tz(userTimezone).format();
+
+export const formatDate = (date) =>
+	new Date(date).toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+	});
+
+export const generatePayPeriodId = (startDate, endDate) => {
+	const start = moment.utc(startDate).format("YYYY-MM-DD");
+	const end = moment.utc(endDate).format("YYYY-MM-DD");
+	return `${start}_${end}`;
+};
+
+export const formatDateTime = (date) =>
+	`${formatDate(date)} ${new Date(date).toLocaleTimeString()}`;
+
+export const getDefaultDateTime = (date, time) => `${date?.split("T")[0]}T${time}`;
+
+export const getDefaultDate = (isoDate = null) => {
+	const dateObject = isoDate ? new Date(isoDate) : new Date();
+	return dateObject.toISOString().split("T")[0];
+};
+
+export const getDefaultDateFormat = (date = null) => {
+	const dateObject = date ? new Date(date) : new Date();
+	return `${dateObject.getMonth() + 1}/${dateObject.getDate()}/${dateObject.getFullYear()}`;
+};
+
+export const timeToDecimal = (hours, minutes = 0) => (hours + minutes / 60).toFixed(1);

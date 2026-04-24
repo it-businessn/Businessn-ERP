@@ -1,9 +1,11 @@
+const CONFIG = require("../config");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const { ALERTS_TYPE } = require("../services/data");
 const { encryptData, decryptData } = require("../services/encryptDataService");
 const { deleteAlerts } = require("./alertsController");
 // const { saveKeyToEnv } = require("../services/fileService");
 
+const BANKING_ENCRYPTION_KEY = CONFIG.BANKING_KEY;
 const getAllBankingInfo = async (req, res) => {
 	const { companyName } = req.params;
 	try {
@@ -52,7 +54,7 @@ const getEmployeeBankingInfo = async (req, res) => {
 			paymentEmail: result.paymentEmail,
 		};
 
-		if (!process.env.BANKING_ENCRYPTION_KEY) {
+		if (!BANKING_ENCRYPTION_KEY) {
 			console.error("❌ Missing BANKING_ENCRYPTION_KEY");
 
 			newData.accountNum = "";
@@ -60,8 +62,6 @@ const getEmployeeBankingInfo = async (req, res) => {
 			newData.transitNum = "";
 			return res.status(200).json(newData);
 		}
-		const banking_key = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
-
 		// SAFE DECRYPT FUNCTION
 		const safeDecrypt = (value, iv, label) => {
 			try {
@@ -70,7 +70,7 @@ const getEmployeeBankingInfo = async (req, res) => {
 				// don't try decrypt masked values
 				if (typeof value === "string" && value.includes("*")) return "";
 
-				return decryptData(value, banking_key, iv);
+				return decryptData(value, BANKING_ENCRYPTION_KEY, iv);
 			} catch (err) {
 				console.error(`❌ Decryption failed for ${label}`, {
 					message: err.message,
@@ -128,10 +128,6 @@ const addEmployeeBankingInfo = async (req, res) => {
 			req.body;
 		// const ENCRYPTION_KEY = newEncryptionKey;
 		// saveKeyToEnv("BANKING_ENCRYPTION_KEY", ENCRYPTION_KEY);
-		if (!process.env.BANKING_ENCRYPTION_KEY) {
-			throw new Error("Missing BANKING_ENCRYPTION_KEY");
-		}
-		const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
 
 		const updatedData = {
 			empId,
@@ -156,9 +152,9 @@ const addEmployeeBankingInfo = async (req, res) => {
 				!transitNum.includes("*") &&
 				!accountNum.includes("*")
 			) {
-				const bankEncrypted = encryptData(bankNum, ENCRYPTION_KEY);
-				const transitEncrypted = encryptData(transitNum, ENCRYPTION_KEY);
-				const accountEncrypted = encryptData(accountNum, ENCRYPTION_KEY);
+				const bankEncrypted = encryptData(bankNum, BANKING_ENCRYPTION_KEY);
+				const transitEncrypted = encryptData(transitNum, BANKING_ENCRYPTION_KEY);
+				const accountEncrypted = encryptData(accountNum, BANKING_ENCRYPTION_KEY);
 				Object.assign(updatedData, {
 					bankNum: bankEncrypted.encryptedData,
 					bankIv: bankEncrypted.iv,
@@ -226,15 +222,9 @@ const updateEmployeeBankingInfo = async (req, res) => {
 			await deleteAlerts(empId, ALERTS_TYPE.BANK);
 		}
 		if (b && t && a && !b.includes("*") && !t.includes("*") && !a.includes("*")) {
-			if (!process.env.BANKING_ENCRYPTION_KEY) {
-				throw new Error("Missing BANKING_ENCRYPTION_KEY");
-			}
-
-			const ENCRYPTION_KEY = Buffer.from(process.env.BANKING_ENCRYPTION_KEY, "hex");
-
-			const bankEncrypted = encryptData(b, ENCRYPTION_KEY);
-			const transitEncrypted = encryptData(t, ENCRYPTION_KEY);
-			const accountEncrypted = encryptData(a, ENCRYPTION_KEY);
+			const bankEncrypted = encryptData(b, BANKING_ENCRYPTION_KEY);
+			const transitEncrypted = encryptData(t, BANKING_ENCRYPTION_KEY);
+			const accountEncrypted = encryptData(a, BANKING_ENCRYPTION_KEY);
 			Object.assign(updatedData, {
 				bankNum: bankEncrypted.encryptedData,
 				bankIv: bankEncrypted.iv,
