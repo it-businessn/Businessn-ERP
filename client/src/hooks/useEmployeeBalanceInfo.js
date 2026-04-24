@@ -16,8 +16,8 @@ const useEmployeeBalanceInfo = (company, empId, payPeriodPayDate) => {
 				console.error(error);
 			}
 		};
-		fetchEmployeeBalanceInfo();
-	}, [company, empId]);
+		if (payPeriodPayDate) fetchEmployeeBalanceInfo();
+	}, [company, empId, payPeriodPayDate]);
 	return balanceInfo;
 };
 
