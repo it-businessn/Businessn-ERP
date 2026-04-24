@@ -16,7 +16,15 @@ const addEmployee = async (name, data) => {
 			await existingCompany.save();
 		}
 		return newEmployee;
-	} catch (error) {}
+	} catch (error) {
+		console.error("addEmployee Error:", {
+			message: error.message,
+			stack: error.stack,
+			data,
+			name,
+		});
+		throw error;
+	}
 };
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
@@ -28,20 +36,26 @@ const findEmployee = async (data) => {
 			model: "Employee",
 			select: ["fullName", "email", "baseModule", "group"],
 		})
-		.select("payrollStatus employeeNo positions employmentRole");
+		.select("payrollStatus employeeNo positions employmentRole createdOn");
 
-	result = result?.filter((emp) => emp?.empId);
-	return sortByEmpFullName(result);
+	result = (result || []).filter((emp) => emp?.empId);
+	result = sortByEmpFullName(result);
+
+	return result;
 };
 
-const filterResultByDepartment = (result, deptName) => {
-	if (deptName && deptName !== "null") {
-		return result?.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
-	}
+const filterResultByDepartment = (result = [], deptName) => {
+	if (!deptName || deptName === "null") return result;
+	return result.filter((emp) => emp?.positions?.[0]?.employmentDepartment === deptName);
 };
 
-const filterResultByPaygroupOption = (result, payGroupOption) =>
-	result?.filter((emp) => emp?.positions?.find((_) => _?.employmentPayGroup === payGroupOption));
+const filterResultByPaygroupOption = (result = [], payGroupOption) => {
+	if (!payGroupOption) return result;
+
+	return result.filter((emp) =>
+		emp?.positions?.find((pos) => pos?.employmentPayGroup === payGroupOption),
+	);
+};
 
 const getShadowUserIds = async (companyName) => {
 	const shadowEmpIds = await EmployeeEmploymentInfo.find({
@@ -70,6 +84,15 @@ const getSalariedIds = async (companyName) => {
 	return result?.map((emp) => emp?.empId);
 };
 
+const applyPayrollFilters = (result, deptName, payGroup) => {
+	let filtered = result || [];
+
+	filtered = filterResultByPaygroupOption(filtered, payGroup);
+	filtered = filterResultByDepartment(filtered, deptName);
+
+	return filtered;
+};
+
 const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroupOption) => {
 	let result = await findEmployee({
 		payrollStatus: "Payroll Active",
@@ -78,6 +101,7 @@ const getPayrollActiveEmployees = async (companyName, deptName, selectedPayGroup
 		empId: { $exists: true },
 	});
 
+	// result = applyPayrollFilters(result, deptName, selectedPayGroupOption);
 	if (selectedPayGroupOption) {
 		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
 	}
@@ -95,6 +119,7 @@ const getPayrollInActiveEmployees = async (companyName, deptName, selectedPayGro
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 		empId: { $exists: true },
 	});
+	// result = applyPayrollFilters(result, deptName, selectedPayGroupOption);
 	if (selectedPayGroupOption) {
 		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
 	}
@@ -112,7 +137,7 @@ const getPayrollTerminatedEmployees = async (companyName, deptName, selectedPayG
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 		empId: { $exists: true },
 	});
-
+	// result = applyPayrollFilters(result, deptName, selectedPayGroupOption);
 	if (selectedPayGroupOption) {
 		result = filterResultByPaygroupOption(result, selectedPayGroupOption);
 	}
@@ -139,11 +164,15 @@ const getUserEmploymentRoleInfo = async (companyName) => {
 	return sortByEmpFullName(result);
 };
 
-const sortByEmpFullName = (result) =>
-	result?.sort((a, b) => {
-		if (a.empId?.fullName < b.empId?.fullName) return -1;
-		if (a.empId?.fullName > b.empId?.fullName) return 1;
-		return a.createdOn - b.createdOn;
+const sortByEmpFullName = (result = []) =>
+	result.sort((a, b) => {
+		const nameA = a.empId?.fullName || "";
+		const nameB = b.empId?.fullName || "";
+
+		if (nameA < nameB) return -1;
+		if (nameA > nameB) return 1;
+
+		return (a.createdOn || 0) - (b.createdOn || 0);
 	});
 
 module.exports = {

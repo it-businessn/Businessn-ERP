@@ -23,22 +23,37 @@ const getAllEmploymentInfo = async (req, res) => {
 			deptName,
 			selectedPayGroupOption,
 		);
+		// parallel execution instead of sequential loop
+		const results = await Promise.allSettled(
+			activeEmployees.map((employee) =>
+				buildPayPeriodEmpDetails(companyName, employee?.empId?._id),
+			),
+		);
+		const aggregatedResult = results
+			.filter((r) => r.status === "fulfilled" && r.value)
+			.map((r) => {
+				const empInfo = r.value;
+				const position = empInfo?.empPayStubResult?.positions?.find((p) => p?.title);
 
-		const aggregatedResult = [];
-		for (const employee of activeEmployees) {
-			const result = await buildPayPeriodEmpDetails(companyName, employee?.empId?._id);
-			if (result) aggregatedResult.push(result);
-		}
-		aggregatedResult.map((empInfo) => {
-			const position = empInfo?.empPayStubResult?.positions?.find((_) => _.title);
-			empInfo._id = empInfo?.empPayStubResult?._id;
-			empInfo.empId = empInfo?.empPayStubResult?.empId;
-			empInfo.employmentCostCenter = position?.employmentDepartment;
-		});
+				return {
+					...empInfo,
+					_id: empInfo?.empPayStubResult?._id,
+					empId: empInfo?.empPayStubResult?.empId,
+					employmentCostCenter: position?.employmentDepartment,
+				};
+			});
 
 		return res.status(200).json(aggregatedResult);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getAllEmploymentInfo Pay period aggregation error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -84,15 +99,28 @@ const getCompanyLastBadgeID = async (req, res) => {
 			positions: { $exists: true, $not: { $size: 0 } },
 			companyName,
 		}).select("positions");
-		const mappedBadgeIds = allBadgeIds
-			?.map((rec) => rec.positions?.filter((pos) => pos.timeManagementBadgeID))
-			?.filter((record) => record.length);
-		const allTimeManagementBadgeID = mappedBadgeIds.flat()?.map((r) => r.timeManagementBadgeID);
-		const lastTimeManagementBadgeID = Math.max(...allTimeManagementBadgeID);
+
+		const badgeIds = allBadgeIds
+			.flatMap((rec) =>
+				(rec.positions || [])
+					.filter((pos) => pos?.timeManagementBadgeID != null)
+					.map((pos) => Number(pos.timeManagementBadgeID)),
+			)
+			.filter((id) => !isNaN(id));
+
+		const lastTimeManagementBadgeID = badgeIds.length > 0 ? Math.max(...badgeIds) : null;
 
 		return res.status(200).json(lastTimeManagementBadgeID);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getCompanyLastBadgeID Badge ID fetch error:", {
+			message: error.message,
+			stack: error.stack,
+			companyName,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -107,16 +135,32 @@ const getEmployeeEmploymentInfo = async (req, res) => {
 			});
 			return res.status(200).json(user);
 		}
-		const currentDate = moment().format("YYYYMMDD");
+		// generate employeeNo only if missing
+		if (!result.employeeNo) {
+			const currentDate = moment().utc().format("YYYYMMDD");
 
-		if (!result?.employeeNo) {
-			result.employeeNo = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${
-				Math.floor(Math.random() * 10) + 10
-			}`;
+			const uniqueSuffix = Math.floor(100 + Math.random() * 900); // 100–999 safer
+
+			result.employeeNo = `${companyName.slice(0, 2).toUpperCase()}${currentDate}${uniqueSuffix}`;
+
+			await EmployeeEmploymentInfo.updateOne(
+				{ _id: result._id },
+				{ $set: { employeeNo: result.employeeNo } },
+			);
 		}
+
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getEmployeeEmploymentInfo fetch error:", {
+			message: error.message,
+			stack: error.stack,
+			empId,
+			companyName,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -137,19 +181,46 @@ const updateEmploymentInfo = async (id, data) =>
 
 const updateEmployee = async (empId, data) => {
 	const { payrollStatus, employeeNo, employmentRole } = data;
-	const employee = await Employee.findById(empId);
+	try {
+		const employee = await Employee.findById(empId);
+		if (!employee) {
+			return res.status(404).json({
+				message: "Employee not found",
+			});
+		}
 
-	if (employee?.payrollStatus !== payrollStatus) {
-		employee.payrollStatus = payrollStatus;
-	}
-	if (employeeNo && employeeNo !== "" && employee?.employeeNo !== employeeNo) {
-		employee.employeeNo = employeeNo;
-	}
-	if (employmentRole && employee?.role !== employmentRole) {
-		employee.role = employmentRole;
-	}
+		const updateFields = {};
 
-	await employee.save();
+		if (payrollStatus && employee.payrollStatus !== payrollStatus) {
+			updateFields.payrollStatus = payrollStatus;
+		}
+
+		if (employeeNo && employeeNo.trim() !== "" && employee.employeeNo !== employeeNo) {
+			updateFields.employeeNo = employeeNo;
+		}
+
+		if (employmentRole && employee.role !== employmentRole) {
+			updateFields.role = employmentRole;
+		}
+
+		// only update if something changed
+		if (Object.keys(updateFields).length > 0) {
+			Object.assign(employee, updateFields);
+			await employee.save();
+		}
+
+		return res.status(200).json(employee);
+	} catch (error) {
+		console.error("❌ updateEmployee update error:", {
+			message: error.message,
+			stack: error.stack,
+			empId,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
+	}
 };
 
 const addEmployeeEmploymentInfo = async (req, res) => {
@@ -171,23 +242,27 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 			employeeNo,
 			employmentRole,
 		};
-		const positionExists = positions?.find((_) => _.title);
+		const positionExists = positions?.find((p) => p?.title);
+
 		if (positionExists) {
 			const roles = [...positions];
-			const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
+
+			const existingPayInfo = await EmployeePayInfo.findOne({
+				empId,
+				companyName,
+			});
 			if (existingPayInfo) {
 				await updatePayInfo(existingPayInfo._id, { roles });
 			} else {
-				await EmployeePayInfo.create({
-					empId,
-					companyName,
-					roles,
-				});
+				await EmployeePayInfo.create([{ empId, companyName, roles }]);
 			}
 		}
+
 		const existingEmploymentInfo = await findEmployeeEmploymentInfo(empId, companyName);
+
+		let result;
 		if (existingEmploymentInfo) {
-			const updatedEmploymentInfo = await updateEmploymentInfo(existingEmploymentInfo._id, {
+			result = await updateEmploymentInfo(existingEmploymentInfo._id, {
 				payrollStatus,
 				employeeNo,
 				employmentStartDate,
@@ -197,38 +272,46 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 				employmentCountry,
 				employmentRegion,
 			});
-			await updateEmployee(existingEmploymentInfo.empId, data);
-			if (positions?.length && positions[0]) {
-				await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
-			}
-			if (
-				employmentRole !== existingEmploymentInfo?.employmentRole &&
-				companyName !== existingEmploymentInfo?.companyName
-			) {
-				await setInitialPermissions(existingEmploymentInfo.empId, employmentRole, companyName);
-			}
-			return res.status(201).json(updatedEmploymentInfo);
+		} else {
+			result = await EmployeeEmploymentInfo.create([
+				{
+					empId,
+					payrollStatus,
+					employeeNo,
+					companyName,
+					employmentStartDate,
+					employmentLeaveDate,
+					employmentRole,
+					positions,
+					employmentCountry,
+					employmentRegion,
+				},
+			]);
 		}
-		const newEmploymentInfo = await EmployeeEmploymentInfo.create({
-			empId,
-			payrollStatus,
-			employeeNo,
-			companyName,
-			employmentStartDate,
-			employmentLeaveDate,
-			employmentRole,
-			positions,
-			employmentCountry,
-			employmentRegion,
-		});
+
 		await updateEmployee(empId, data);
-		if (positionExists && positions[0]) {
+
+		if (positionExists && positions.length > 0 && positions[0]) {
 			await updateTADEmployee(empId, companyName, positions[0]);
 		}
-		await setInitialPermissions(empId, employmentRole, companyName);
-		return res.status(201).json(newEmploymentInfo);
+		if (
+			employmentRole !== existingEmploymentInfo?.employmentRole ||
+			companyName !== existingEmploymentInfo?.companyName
+		) {
+			await setInitialPermissions(empId, employmentRole, companyName);
+		}
+		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addEmployeeEmploymentInfo  error:", {
+			message: error.message,
+			stack: error.stack,
+			empId,
+			companyName,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -248,22 +331,27 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 	} = req.body;
 	try {
 		const existingEmploymentInfo = await EmployeeEmploymentInfo.findOne({ empId, companyName });
-		if (existingEmploymentInfo) {
-			const positionExists = positions?.find((_) => _.title);
-			if (positionExists) {
-				const roles = [...positions];
-				const existingPayInfo = await EmployeePayInfo.findOne({ empId, companyName });
-				if (existingPayInfo) {
-					await updatePayInfo(existingPayInfo._id, { roles });
-				} else {
-					await EmployeePayInfo.create({
-						empId,
-						companyName,
-						roles,
-					});
-				}
+
+		const positionExists = positions?.find((_) => _.title);
+		if (positionExists) {
+			const roles = [...positions];
+			const existingPayInfo = await EmployeePayInfo.findOne({
+				empId,
+				companyName,
+			});
+
+			if (existingPayInfo) {
+				await updatePayInfo(existingPayInfo._id, { roles });
+			} else {
+				await EmployeePayInfo.create({
+					empId,
+					companyName,
+					roles,
+				});
 			}
-			if (employmentRole !== existingEmploymentInfo?.employmentRole) {
+		}
+		if (existingEmploymentInfo) {
+			if (employmentRole && employmentRole !== existingEmploymentInfo?.employmentRole) {
 				await setInitialPermissions(existingEmploymentInfo.empId, employmentRole, companyName);
 			}
 
@@ -278,16 +366,31 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 				employmentCountry,
 				employmentRegion,
 			});
-			if (positions?.length && positions[0]) {
-				await updateTADEmployee(existingEmploymentInfo.empId, companyName, positions[0]);
+			if (positions.length > 0) {
+				await updateTADEmployee(empId, companyName, positions[0]);
 			}
 			return res.status(200).json(updatedInfo);
 		}
+
 		await setInitialPermissions(empId, employmentRole, companyName);
-		addUserEmploymentInfo(empId, companyName, req.body);
-		return res.status(201).json("Employment info added");
+		const newRecord = await addUserEmploymentInfo(empId, companyName, req.body);
+		if (!newRecord) {
+			return res.status(500).json({
+				message: "Failed to create employment record",
+			});
+		}
+		return res.status(201).json(newRecord);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ updateEmployeeEmploymentInfo error:", {
+			message: error.message,
+			stack: error.stack,
+			empId,
+			companyName,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 

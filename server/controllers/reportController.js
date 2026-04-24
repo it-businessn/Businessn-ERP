@@ -226,7 +226,7 @@ const updatePayrollProcess = async (req, res) => {
 	const { id } = req.params;
 	const { yearSchedules, companyName, currentPayPeriod } = req.body;
 	try {
-		if (req.body?._id) delete req.body._id;
+		const { _id, ...updateData } = req.body;
 		const updatedPaygroup = await updatePayGroup(id, {
 			yearSchedules,
 		});

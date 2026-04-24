@@ -660,12 +660,11 @@ const updateUser = async (req, res) => {
 			compArr.push(result);
 		}
 
-		req.body.companyId = compArr;
-
-		if (req.body?._id) delete req.body._id;
+		const { _id, ...updateData } = req.body;
+		updateData.companyId = compArr;
 		const updatedUser = await Employee.findByIdAndUpdate(
 			userId,
-			{ $set: req.body },
+			{ $set: updateData },
 			{
 				new: true,
 			},

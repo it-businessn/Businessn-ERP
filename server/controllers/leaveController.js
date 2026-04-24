@@ -47,8 +47,8 @@ const updateLeaveRequest = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		if (req.body?._id) delete req.body._id;
-		const { status } = req.body;
+		const { _id, ...updateData } = req.body;
+		const { status } = updateData;
 		const updatedRequest = await EmployeeLeave.findByIdAndUpdate(
 			id,
 			{ $set: { status } },

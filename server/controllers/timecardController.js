@@ -36,7 +36,14 @@ const getTADUsers = async (req, res) => {
 		);
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getTADUsers ERROR", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -50,9 +57,7 @@ const getFilteredTADUsers = async (req, res) => {
 				companyName: COMPANIES.NW,
 				timeManagementBadgeID: { $in: timecardBadges },
 			},
-			{
-				$set: { isNewUser: false },
-			},
+			{ $set: { isNewUser: false } },
 		);
 		const result = await EmployeeTADProfileInfo.find({
 			companyName: COMPANIES.NW,
@@ -62,14 +67,28 @@ const getFilteredTADUsers = async (req, res) => {
 		);
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getFilteredTADUsers ERROR", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const getTimecard = async (req, res) => {
-	const { companyName, filter } = req.params;
+	let filteredData;
 	try {
-		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { companyName, filter } = req.params;
+		if (!filter || !filter.includes("=")) {
+			throw new Error("Invalid filter format");
+		}
+		const rawValue = filter.split("=").slice(1).join("=");
+		const decoded = decodeURIComponent(rawValue);
+		filteredData = JSON.parse(decoded);
+
 		const { startDate, endDate } = filteredData;
 
 		let { page, limit } = req.query;
@@ -111,7 +130,15 @@ const getTimecard = async (req, res) => {
 			items: uniqueEntries,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getTimecard ERROR", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -149,7 +176,14 @@ const createTimecard = async (req, res) => {
 		await mapTimecardRawToTimecard();
 		return res.status(201).json("Timecard entries added successfully");
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ createTimecard ERROR", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -213,7 +247,9 @@ const mapTimecardRawToTimecard = async () => {
 				});
 			}
 		});
-	} catch (error) {}
+	} catch (error) {
+		throw error;
+	}
 };
 
 const updateTimecardData = async (id, data) =>
@@ -264,8 +300,8 @@ const addTimecardEntry = async (entry, isBreak) => {
 				payType: isBreak
 					? PAY_TYPES_TITLE.REG_PAY_BRK
 					: isStatHoliday
-					? PAY_TYPES_TITLE.STAT_WORK_PAY
-					: getPayType(),
+						? PAY_TYPES_TITLE.STAT_WORK_PAY
+						: getPayType(),
 				clockIn,
 				notDevice,
 				source: TIMESHEET_SOURCE.TAD,
@@ -445,7 +481,14 @@ const createTimecardManual = async (req, res) => {
 			}),
 		);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ createTimecardManual ERROR", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 

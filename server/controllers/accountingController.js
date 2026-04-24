@@ -64,19 +64,19 @@ const updateAccount = async (req, res) => {
 	try {
 		const existingInfo = await AccountLedger.findById(id);
 		if (existingInfo) {
-			if (req.body?._id) delete req.body._id;
+			const { _id, ...updateData } = req.body;
 			const updatedInfo = await AccountLedger.findByIdAndUpdate(
 				id,
-				{ $set: req.body },
+				{ $set: updateData },
 				{
 					new: true,
 				},
 			);
-			const budgetRecord = await BudgetAccount.findOne({ accCode: req.body.accCode });
+			const budgetRecord = await BudgetAccount.findOne({ accCode: updateData.accCode });
 			if (budgetRecord) {
 				await BudgetAccount.findByIdAndUpdate(
 					budgetRecord._id,
-					{ $set: req.body },
+					{ $set: updateData },
 					{
 						new: true,
 					},

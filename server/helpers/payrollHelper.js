@@ -8,6 +8,7 @@ const {
 	getSumRegHrs,
 } = require("../services/payrollService");
 const { TIMESHEET_STATUS, PAY_TYPES_TITLE, EARNING_TYPE } = require("../services/data");
+const { isPercentType } = require("../services/util");
 
 const getApprovedTimesheets = async (record) =>
 	await Timesheet.find(record)
@@ -94,8 +95,8 @@ const calcRegHrsWorked = (earningType, FTHrs, PTHrs, regHrs, isExtraRun) =>
 	!isExtraRun && earningType === EARNING_TYPE.FT
 		? convertHrsToFloat(FTHrs) || 0
 		: !isExtraRun && earningType === EARNING_TYPE.PT
-		? convertHrsToFloat(PTHrs) || 0
-		: regHrs;
+			? convertHrsToFloat(PTHrs) || 0
+			: regHrs;
 
 const calcPayRates = (newEmpDataPay) => {
 	const { regPay } = newEmpDataPay;
@@ -569,11 +570,11 @@ const validateContribution = (
 ) => {
 	const newAmount = treatmentType?.includes("No")
 		? 0
-		: treatmentType?.includes("%")
-		? accumulatedHrs * contributionAmt
-		: treatmentType?.includes("per Hour")
-		? contributionAmt * totalAllocatedHours
-		: contributionAmt;
+		: isPercentType(treatmentType)
+			? accumulatedHrs * contributionAmt
+			: treatmentType?.includes("per Hour")
+				? contributionAmt * totalAllocatedHours
+				: contributionAmt;
 	return newAmount;
 };
 

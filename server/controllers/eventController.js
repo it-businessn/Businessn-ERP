@@ -86,8 +86,8 @@ const createEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const event = await Event.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+		const { _id, ...updateData } = req.body;
+		const event = await Event.findByIdAndUpdate(id, { $set: updateData }, { new: true });
 		return res.status(200).json(event);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

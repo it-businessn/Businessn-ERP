@@ -5,8 +5,8 @@ const { deleteAlerts } = require("./alertsController");
 // const { saveKeyToEnv } = require("../services/fileService");
 
 const getAllBankingInfo = async (req, res) => {
+	const { companyName } = req.params;
 	try {
-		const { companyName } = req.params;
 		const result = await EmployeeBankingInfo.find({
 			companyName,
 		}).sort({
@@ -15,7 +15,15 @@ const getAllBankingInfo = async (req, res) => {
 
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ Error getAllBankingInfo:", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error while fetching banking info",
+		});
 	}
 };
 
@@ -72,9 +80,9 @@ const getEmployeeBankingInfo = async (req, res) => {
 				return "";
 			}
 		};
-		console.log("RAW DB DATA", {
-			accountNum: result.accountNum,
-		});
+		// console.log("RAW DB DATA", {
+		// 	accountNum: result.accountNum,
+		// });
 		newData.accountNum = safeDecrypt(result.accountNum, result.accountIv, "accountNum");
 		newData.bankNum = safeDecrypt(result.bankNum, result.bankIv, "bankNum");
 		newData.transitNum = safeDecrypt(result.transitNum, result.transitIv, "transitNum");
@@ -94,7 +102,6 @@ const getEmployeeBankingInfo = async (req, res) => {
 
 		return res.status(500).json({
 			message: "Internal Server Error",
-			error: error.message,
 		});
 	}
 };
@@ -185,7 +192,6 @@ const addEmployeeBankingInfo = async (req, res) => {
 
 		return res.status(500).json({
 			message: "Internal Server Error",
-			error: error.message,
 		});
 	}
 };
@@ -257,7 +263,6 @@ const updateEmployeeBankingInfo = async (req, res) => {
 
 		return res.status(500).json({
 			message: "Internal Server Error",
-			error: error.message,
 		});
 	}
 };

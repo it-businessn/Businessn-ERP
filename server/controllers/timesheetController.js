@@ -25,92 +25,181 @@ const {
 const { findEmpPayInfo } = require("./employmentInfoController");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
-	// const y = await Timesheet.deleteMany({
-	// 	clockIn: {
-	// 		$lte: moment("2024-10-22"),
-	// 	},
-	// });
-	// console.log("del", y);
-	const result = await Timesheet.find(record)
-		// .skip(skip)
-		// .limit(limit)
-		// .limit(50)
-		.populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["fullName"],
+	try {
+		// const y = await Timesheet.deleteMany({
+		// 	clockIn: {
+		// 		$lte: moment("2024-10-22"),
+		// 	},
+		// });
+		// console.log("del", y);
+		const result = await Timesheet.find(record)
+			// .skip(skip)
+			// .limit(limit)
+			// .limit(50)
+			.populate({
+				path: "employeeId",
+				model: "Employee",
+				select: ["fullName"],
+			})
+			.lean();
+		// if (!result) {
+		// 	console.warn("[Timesheet] No results found for record:", record);
+		// 	return [];
+		// }
+
+		const empData = result.sort((a, b) => {
+			const nameA = a.employeeId?.fullName || "";
+			const nameB = b.employeeId?.fullName || "";
+
+			if (nameA < nameB) return -1;
+			if (nameA > nameB) return 1;
+
+			return (a.clockIn ?? 0) - (b.clockIn ?? 0);
 		});
-	const empData = result?.sort((a, b) => {
-		if (a.employeeId?.fullName < b.employeeId?.fullName) return -1;
-		if (a.employeeId?.fullName > b.employeeId?.fullName) return 1;
-		return a.clockIn - b.clockIn;
-	});
-	return empData;
+		return empData;
+	} catch (error) {
+		console.error("❌ findByRecordTimesheets ERROR", {
+			message: error.message,
+			stack: error.stack,
+			record,
+		});
+		throw error;
+	}
 };
 
 const getTimesheetResult = async (companyName) => {
-	const payInfoResult = await findEmpPayInfo(companyName);
+	try {
+		const payInfoResult = await findEmpPayInfo(companyName);
+		// if (!Array.isArray(payInfoResult)) {
+		// 	console.warn("[PayInfo] Invalid result:", payInfoResult);
+		// 	return new Map();
+		// }
 
-	const payInfoMapResult = new Map(payInfoResult.map((payInfo) => [payInfo.empId, payInfo?.roles]));
-	return payInfoMapResult;
+		const payInfoMapResult = new Map(
+			payInfoResult
+				.filter((p) => p?.empId) // prevent null keys breaking Map
+				.map((payInfo) => {
+					if (!payInfo.empId) {
+						console.warn("[getTimesheetResult] Missing empId:", payInfo);
+					}
+
+					return [payInfo.empId, payInfo?.roles ?? []];
+				}),
+		);
+
+		return payInfoMapResult;
+	} catch (error) {
+		console.error("❌ getTimesheetResult ERROR", {
+			message: error.message,
+			stack: error.stack,
+			companyName,
+		});
+
+		throw error;
+	}
 };
 
 const getEmploymentResult = async (companyName) => {
-	const empInfoResult = await EmployeeEmploymentInfo.find({
-		companyName,
-		payrollStatus: "Payroll Active",
-		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
-		empId: { $exists: true },
-	}).select("empId positions");
-	const empInfoMap = new Map(
-		empInfoResult?.map((empInfo) => [
-			empInfo?.empId?.toString(),
-			{
-				positions: empInfo.positions,
-			},
-		]),
-	);
-	return empInfoMap;
+	try {
+		const empInfoResult = await EmployeeEmploymentInfo.find({
+			companyName,
+			payrollStatus: "Payroll Active",
+			employmentRole: { $ne: ROLES.SHADOW_ADMIN },
+			empId: { $exists: true, $ne: null },
+		}).select("empId positions");
+
+		// if (!Array.isArray(empInfoResult)) {
+		// 	console.warn("[EmpInfo] Invalid result:", empInfoResult);
+		// 	return new Map();
+		// }
+
+		const empInfoMap = new Map();
+		for (const empInfo of empInfoResult) {
+			const empId = empInfo?.empId?.toString();
+
+			if (!empId) {
+				console.warn("[getEmploymentResult] Missing empId record:", empInfo);
+				continue;
+			}
+
+			empInfoMap.set(empId, {
+				positions: empInfo.positions ?? [],
+			});
+		}
+
+		return empInfoMap;
+	} catch (error) {
+		console.error("❌ getEmploymentResult", {
+			message: error.message,
+			stack: error.stack,
+			companyName,
+		});
+
+		throw error;
+	}
 };
 
 const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) => {
+	let missingPayInfo = 0;
+	let missingEmpInfo = 0;
+
 	timesheets.forEach((timesheet) => {
 		const empIdStr = timesheet?.employeeId?._id?.toString();
-		if (empInfos?.has(empIdStr)) {
-			const empInfo = empInfos?.get(empIdStr);
-			timesheet.positions = empInfo.positions;
+		if (!empIdStr) {
+			console.warn("[Timesheet] Missing empId:", timesheet?._id);
+			return;
 		}
 
-		if (payInfos.has(empIdStr)) {
-			timesheet.payInfo = payInfos.get(empIdStr);
-			const empRole = timesheet?.role
-				? timesheet.payInfo?.find(({ title }) => title === timesheet?.role)
-				: timesheet.payInfo[0];
-			if (empRole) {
-				empRole.regPay = empRole?.payRate || 0;
-				const empRoleRates = calcPayRates(empRole);
+		if (empInfos?.has(empIdStr)) {
+			timesheet.positions = empInfos.get(empIdStr)?.positions ?? [];
+		} else {
+			missingEmpInfo++;
+		}
+		if (payInfos?.has(empIdStr)) {
+			const payInfo = payInfos.get(empIdStr) ?? [];
+			timesheet.payInfo = payInfo;
 
-				timesheet.regPay = empRoleRates?.regPay;
-				timesheet.overTimePay = empRoleRates?.overTimePay;
-				timesheet.dblOverTimePay = empRoleRates?.dblOverTimePay;
-				timesheet.statWorkPay = empRoleRates?.statWorkPay;
-				timesheet.statPay = empRoleRates?.statPay;
-				timesheet.sickPay = empRoleRates?.sickPay;
-				timesheet.vacationPay = empRoleRates?.vacationPay;
-				timesheet.bereavementPay = empRoleRates?.bereavementPay;
-				timesheet.personalDayPay = empRoleRates?.personalDayPay;
-				timesheet.typeOfEarning = empRole?.typeOfEarning;
+			const empRole = timesheet?.role
+				? payInfo.find(({ title }) => title === timesheet.role)
+				: payInfo[0];
+
+			if (empRole) {
+				const empRoleRates = calcPayRates({
+					...empRole,
+					regPay: empRole?.payRate || 0,
+				});
+
+				Object.assign(timesheet, {
+					regPay: empRoleRates?.regPay ?? 0,
+					overTimePay: empRoleRates?.overTimePay ?? 0,
+					dblOverTimePay: empRoleRates?.dblOverTimePay ?? 0,
+					statWorkPay: empRoleRates?.statWorkPay ?? 0,
+					statPay: empRoleRates?.statPay ?? 0,
+					sickPay: empRoleRates?.sickPay ?? 0,
+					vacationPay: empRoleRates?.vacationPay ?? 0,
+					bereavementPay: empRoleRates?.bereavementPay ?? 0,
+					personalDayPay: empRoleRates?.personalDayPay ?? 0,
+					typeOfEarning: empRole?.typeOfEarning,
+				});
 			}
+		} else {
+			missingPayInfo++;
 		}
 	});
-
+	console.log("[Timesheet Mapping Summary]", {
+		total: timesheets.length,
+		missingPayInfo,
+		missingEmpInfo,
+	});
 	const nonSalariedTimeEntries = timesheets
-		?.filter(
-			({ typeOfEarning, positions }) =>
+		?.filter(({ typeOfEarning, positions }) => {
+			return (
 				typeOfEarning !== EARNING_TYPE.FT &&
 				typeOfEarning !== EARNING_TYPE.PT &&
-				positions?.some((position) => position?.employmentPayGroup === selectedPayGroupOption),
-		)
+				Array.isArray(positions) &&
+				positions.some((position) => position?.employmentPayGroup === selectedPayGroupOption)
+			);
+		})
 		?.map((timesheet) => {
 			const isEditableBase = timesheet.source !== TIMESHEET_SOURCE.EMPLOYEE;
 			const isAppOrTad = timesheet.manualAdded || timesheet.source === TIMESHEET_SOURCE.TAD;
@@ -118,15 +207,16 @@ const mapTimesheet = (payInfos, timesheets, empInfos, selectedPayGroupOption) =>
 				isEditableBase && isAppOrTad
 					? !moment(timesheet.clockIn).isSame(moment(), "day")
 					: isEditableBase;
+
 			const showBreak = timesheet.payType.includes("Break")
 				? timesheet.approveStatus === TIMESHEET_STATUS.APPROVED
 				: isEditable;
-
-			timesheet.isEditable = isEditable;
-			timesheet.showBreak = showBreak;
-			timesheet.isDisabled = !timesheet?.clockIn || !timesheet?.clockOut;
-
-			return timesheet;
+			return {
+				...timesheet,
+				isEditable,
+				showBreak,
+				isDisabled: !timesheet?.clockIn || !timesheet?.clockOut,
+			};
 		});
 	return nonSalariedTimeEntries;
 };
@@ -139,42 +229,87 @@ const getTimesheets = async (req, res) => {
 			companyName,
 			clockIn: { $lte: NEXT_DAY },
 		});
+
 		const payInfo = await getTimesheetResult(companyName);
-
 		const result = mapTimesheet(payInfo, timesheets);
-
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getTimesheets ERROR", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const getFilteredTimesheetsByStatus = async (req, res) => {
-	const { companyName, filter } = req.params;
+	let filteredData;
 	try {
-		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { companyName, filter } = req.params;
+		if (!filter || !filter.includes("=")) {
+			throw new Error("Invalid filter format");
+		}
+		const rawValue = filter.split("=").slice(1).join("=");
+		const decoded = decodeURIComponent(rawValue);
+		filteredData = JSON.parse(decoded);
+
 		const { startDate, endDate } = filteredData;
+		if (!startDate || !endDate) {
+			console.error("❌ Missing date range:", filteredData);
+
+			return res.status(400).json({
+				message: "startDate and endDate are required",
+			});
+		}
+
+		const start = moment(startDate).utc().startOf("day");
+		const end = moment(endDate).utc().endOf("day");
+		if (!start.isValid() || !end.isValid()) {
+			console.error("❌ Invalid dates:", { startDate, endDate });
+
+			return res.status(400).json({
+				message: "Invalid date range",
+			});
+		}
 
 		const timesheets = await Timesheet.find({
 			deleted: false,
 			companyName,
 			clockIn: {
-				$gte: moment(startDate).utc().startOf("day").toDate(),
-				$lte: moment(endDate).utc().endOf("day").toDate(),
+				$gte: start.toDate(),
+				$lte: end.toDate(),
 			},
 		}).select("approveStatus");
 
 		return res.status(200).json(timesheets);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getFilteredTimesheetsByStatus ERROR", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const getFilteredTimesheets = async (req, res) => {
-	const { companyName, filter } = req.params;
-
+	let filteredData;
 	try {
-		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { companyName, filter } = req.params;
+		if (!filter || !filter.includes("=")) {
+			throw new Error("Invalid filter format");
+		}
+		const rawValue = filter.split("=").slice(1).join("=");
+		const decoded = decodeURIComponent(rawValue);
+		filteredData = JSON.parse(decoded);
+
 		const { startDate, endDate } = filteredData;
 		const selectedPayGroupOption = filteredData?.selectedPayGroupOption;
 
@@ -195,6 +330,7 @@ const getFilteredTimesheets = async (req, res) => {
 		};
 
 		let timesheets = await findByRecordTimesheets(filterRecordCriteria, skip, limit);
+
 		const payInfo = await getTimesheetResult(companyName);
 		const employmentInfo = await getEmploymentResult(companyName);
 
@@ -209,14 +345,16 @@ const getFilteredTimesheets = async (req, res) => {
 		}
 		if (filteredData?.filteredDept?.length) {
 			result = result.filter((item) =>
-				filteredData?.filteredDept?.includes(item?.positions?.[0]?.employmentDepartment),
+				item?.positions?.some((p) => filteredData.filteredDept.includes(p?.employmentDepartment)),
 			);
 		}
+
 		if (filteredData?.filteredCC?.length) {
 			result = result.filter((item) =>
-				filteredData?.filteredCC?.includes(item?.positions?.[0]?.employmentCostCenter),
+				item?.positions?.some((p) => filteredData.filteredCC.includes(p?.employmentCostCenter)),
 			);
 		}
+
 		return res.status(200).json({
 			page,
 			limit,
@@ -225,15 +363,28 @@ const getFilteredTimesheets = async (req, res) => {
 			items: result,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getFilteredTimesheets ERROR", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const getEmployeeTimesheet = async (req, res) => {
-	const { companyName, employeeId, filter } = req.params;
-
+	let filteredData;
 	try {
-		const filteredData = JSON.parse(filter.split("=")[1]);
+		const { companyName, employeeId, filter } = req.params;
+		if (!filter || !filter.includes("=")) {
+			throw new Error("Invalid filter format");
+		}
+		const rawValue = filter.split("=").slice(1).join("=");
+		const decoded = decodeURIComponent(rawValue);
+		filteredData = JSON.parse(decoded);
+
 		const { startDate, endDate } = filteredData;
 
 		const timesheets = await Timesheet.find({
@@ -247,23 +398,33 @@ const getEmployeeTimesheet = async (req, res) => {
 		}).sort({ createdOn: -1 });
 		return res.status(200).json(timesheets);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getEmployeeTimesheet ERROR", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const createManualTimesheet = async (req, res) => {
 	const { company, punch, employeeId, source } = req.body;
 
-	const param_hours =
-		punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.CLOCK_OUT
-			? PARAM_HOURS.REGULAR
-			: PARAM_HOURS.BREAK;
-	const payType = getPayType(param_hours === PARAM_HOURS.BREAK);
-
-	const date = new Date();
-	date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 	try {
-		if (punch === PUNCH_CODE.CLOCK_IN || punch === PUNCH_CODE.BREAK_IN) {
+		const isClockIn = punch === PUNCH_CODE.CLOCK_IN;
+		const isBreakIn = punch === PUNCH_CODE.BREAK_IN;
+		const isClockOut = punch === PUNCH_CODE.CLOCK_OUT;
+		const isBreakOut = punch === PUNCH_CODE.BREAK_OUT;
+
+		const param_hours = isClockIn || isClockOut ? PARAM_HOURS.REGULAR : PARAM_HOURS.BREAK;
+		const payType = getPayType(param_hours === PARAM_HOURS.BREAK);
+
+		const date = new Date();
+		date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+
+		if (isClockIn || isBreakIn) {
 			const newEntry = {
 				employeeId,
 				clockIn: moment.utc(date).toISOString(),
@@ -282,28 +443,35 @@ const createManualTimesheet = async (req, res) => {
 			companyName: company,
 			payType,
 		};
-		if (punch === PUNCH_CODE.CLOCK_OUT) {
+		if (isClockOut) {
 			existingPunch[param_hours] = 0;
 		}
-		const findEmployeeTimesheetExists = await Timesheet.findOne(existingPunch).sort({
+		const openEntry = await Timesheet.findOne(existingPunch).sort({
 			clockIn: -1,
 		});
-		if (findEmployeeTimesheetExists) {
-			findEmployeeTimesheetExists.clockOut = moment.utc(date).toISOString();
-			if (punch === PUNCH_CODE.CLOCK_OUT) {
-				const totalWorkedHours = calcTotalWorkedHours(
-					findEmployeeTimesheetExists.clockIn,
-					findEmployeeTimesheetExists.clockOut,
-				);
-				findEmployeeTimesheetExists[param_hours] = totalWorkedHours;
+		if (openEntry) {
+			openEntry.clockOut = moment.utc(date).toISOString();
+			if (isClockOut) {
+				const totalWorkedHours = calcTotalWorkedHours(openEntry.clockIn, openEntry.clockOut);
+				openEntry[param_hours] = totalWorkedHours;
 			}
-			await findEmployeeTimesheetExists.save();
-			return res.status(200).json(findEmployeeTimesheetExists);
+			await openEntry.save();
+			return res.status(200).json(openEntry);
 		} else {
-			return res.status(404).json({ message: "Record not found" });
+			return res.status(400).json({
+				message: "Invalid punch type",
+			});
 		}
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ createManualTimesheet ERROR", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -313,6 +481,44 @@ const createTimesheet = async (req, res) => {
 	try {
 		if (startTime) clockIn = setTime(clockIn, startTime);
 		if (endTime) clockOut = setTime(clockIn, endTime);
+
+		// const start = new Date(clockIn);
+		// const end = new Date(clockOut);
+
+		// if (isNaN(start) || isNaN(end)) {
+		// 	return res.status(400).json({
+		// 		message: "Invalid date values",
+		// 	});
+		// }
+
+		// if (end <= start) {
+		// 	return res.status(400).json({
+		// 		message: "clockOut must be after clockIn",
+		// 	});
+		// }
+
+		// // whitelist param_hours
+		// const allowedParams = [PARAM_HOURS.REGULAR, PARAM_HOURS.BREAK];
+		// if (!allowedParams.includes(param_hours)) {
+		// 	return res.status(400).json({
+		// 		message: "Invalid param_hours",
+		// 	});
+		// }
+
+		// // optional: overlap check
+		// const overlapping = await Timesheet.findOne({
+		// 	employeeId,
+		// 	companyName: company,
+		// 	clockIn: { $lt: end },
+		// 	clockOut: { $gt: start },
+		// });
+
+		// if (overlapping) {
+		// 	return res.status(409).json({
+		// 		message: "Overlapping timesheet exists",
+		// 	});
+		// }
+
 		const totalWorkedHours = calcTotalWorkedHours(clockIn, clockOut);
 
 		if (type === PAY_TYPES_TITLE.REG_PAY && totalWorkedHours > 8) {
@@ -349,20 +555,46 @@ const createTimesheet = async (req, res) => {
 		const newTimesheet = await addTimesheetEntry(newEntry);
 		return res.status(201).json(newTimesheet);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ createTimesheet ERROR", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const setTime = (date, time) => {
 	// const utcDate = date ? (notDevice ? moment(date) : moment.utc(date)) : moment.utc();
+	if (!date || !time || typeof time !== "string") {
+		throw new Error("Invalid date or time input");
+	}
+
 	const utcDate = moment.utc(date);
 
-	let [hours, minutes] = time.split(":");
+	if (!utcDate.isValid()) {
+		throw new Error("Invalid date");
+	}
+
+	const [hoursStr, minutesStr] = time.split(":");
+
+	const hours = parseInt(hoursStr, 10);
+	const minutes = parseInt(minutesStr, 10);
+
+	if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+		throw new Error("Invalid time format");
+	}
+
 	utcDate.set({
-		hour: parseInt(hours),
-		minute: parseInt(minutes),
+		hour: hours,
+		minute: minutes,
 		second: 0,
+		// millisecond: 0,
 	});
+
 	return utcDate.toISOString();
 };
 
@@ -371,72 +603,127 @@ const actionAllTimesheets = async (req, res) => {
 
 	try {
 		if (approveStatus === TIMESHEET_STATUS.DELETE) {
-			const updatedIDs = await Timesheet.deleteMany({ _id: { $in: timesheetIDs } });
-			return res.status(201).json(updatedIDs);
+			const result = await Timesheet.deleteMany({ _id: { $in: timesheetIDs } });
+			return res.status(200).json(result);
 		}
-		const updatedData = { approveStatus };
+
 		const updatedIDs = await Timesheet.updateMany(
 			{ _id: { $in: timesheetIDs } },
-			{ $set: updatedData },
+			{ $set: { approveStatus } },
 		);
-		return res.status(201).json(updatedIDs);
+
+		return res.status(200).json(updatedIDs);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ actionAllTimesheets ERROR", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const updateTimesheetRole = async (req, res) => {
 	const { id } = req.params;
-	const { role, positions } = req.body;
+	const { role, positions = [] } = req.body;
 	try {
-		const updatedRole = positions?.find(({ title }) => title === role);
-		const updatedData = { role, department: updatedRole?.employmentDepartment };
+		if (!Array.isArray(positions) || positions.length === 0) {
+			return res.status(400).json({
+				message: "positions must be a non-empty array",
+			});
+		}
+		const updatedRole = positions.find((p) => p && p.title === role);
 
-		updatedData.regPay = updatedRole?.payRate || 0;
-		updatedData.overTimePay = 1.5 * updatedRole?.payRate || 0;
-		updatedData.dblOverTimePay = 2 * updatedRole?.payRate || 0;
-		updatedData.statWorkPay = 1.5 * updatedRole?.payRate || 0;
-		updatedData.statPay = updatedRole?.payRate || 0;
-		updatedData.sickPay = updatedRole?.payRate || 0;
-		updatedData.vacationPay = updatedRole?.payRate || 0;
-		updatedData.personalDayPay = updatedRole?.payRate || 0;
-		updatedData.bereavementPay = updatedRole?.payRate || 0;
+		if (!updatedRole) {
+			return res.status(404).json({
+				message: `Role '${role}' not found in positions`,
+			});
+		}
+		const payRate = Number(updatedRole.payRate);
+
+		if (isNaN(payRate)) {
+			return res.status(400).json({
+				message: "Invalid payRate for selected role",
+			});
+		}
+		const updatedData = {
+			role,
+			department: updatedRole.employmentDepartment,
+			regPay: payRate,
+			overTimePay: payRate * 1.5,
+			dblOverTimePay: payRate * 2,
+			statWorkPay: payRate * 1.5,
+			statPay: payRate,
+			sickPay: payRate,
+			vacationPay: payRate,
+			personalDayPay: payRate,
+			bereavementPay: payRate,
+		};
 
 		const timesheet = await updateTimesheetData(id, updatedData);
-		return res.status(201).json(timesheet);
+		return res.status(200).json(timesheet);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ updateTimesheetRole error:", {
+			message: error.message,
+			stack: error.stack,
+			id,
+			role,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const updateTimesheetPayType = async (req, res) => {
-	const { id } = req.params;
-
 	try {
-		if (req.body?._id) delete req.body._id;
-		const timesheet = await updateTimesheetData(id, req.body);
-		return res.status(201).json(timesheet);
+		const { id } = req.params;
+		const { _id, ...updateData } = req.body;
+		const timesheet = await updateTimesheetData(id, updateData);
+
+		if (!timesheet) {
+			return res.status(404).json({
+				message: "Timesheet not found or not updated",
+			});
+		}
+		return res.status(200).json(timesheet);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ updateTimesheetPayType error:", {
+			id,
+			body: req.body,
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
 const updateTimesheet = async (req, res) => {
-	const { id } = req.params;
-	let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime, source } =
-		req.body;
-
 	try {
-		const existingTimesheetInfo = await Timesheet.findById(id);
+		const { id } = req.params;
+		let { clockIn, clockOut, empId, approve, param_hours, company, startTime, endTime, source } =
+			req.body;
+		const existing = await Timesheet.findById(id);
+		if (!existing) {
+			return res.status(404).json({
+				message: "Timesheet not found",
+			});
+		}
 
 		const empPayInfoResult = await EmployeePayInfo.findOne({
 			empId,
-			companyName: existingTimesheetInfo?.companyName,
+			companyName: existing?.companyName,
 		});
-		if (
-			existingTimesheetInfo?.role &&
-			existingTimesheetInfo?.role === empPayInfoResult?.roles?.[1]?.title
-		) {
+
+		const roleTitle = empPayInfoResult?.roles?.[1]?.title;
+		if (existing.role && roleTitle && existing.role === roleTitle) {
 			param_hours = PARAM_HOURS.REGULAR2;
 		}
 
@@ -451,63 +738,70 @@ const updateTimesheet = async (req, res) => {
 			approve === true
 				? TIMESHEET_STATUS.APPROVED
 				: approve === false
-				? TIMESHEET_STATUS.REJECTED
-				: TIMESHEET_STATUS.PENDING;
+					? TIMESHEET_STATUS.REJECTED
+					: TIMESHEET_STATUS.PENDING;
 
 		if (param_hours === PARAM_HOURS.REGULAR && totalWorkedHours > 8) {
 			const adjustedClockOut = await addOvertimeRecord(clockIn, clockOut, empId, company, source);
-			const updatedData = {
+
+			const updated = await updateTimesheetData(id, {
 				clockIn,
 				clockOut: adjustedClockOut,
 				[param_hours]: 8,
 				approveStatus,
 				source,
-			};
-			const timesheet = await updateTimesheetData(id, updatedData);
-			return res.status(201).json(timesheet);
+			});
+
+			return res.status(200).json(updated);
 		}
 
-		const updatedWorkedHrs =
-			param_hours === PARAM_HOURS.BREAK ? (approve ? totalWorkedHours : 0) : totalWorkedHours;
+		let updatedWorkedHrs = totalWorkedHours;
 
-		const updatedData = {
+		if (param_hours === PARAM_HOURS.BREAK) {
+			updatedWorkedHrs = approve ? totalWorkedHours : 0;
+
+			const nearest = await Timesheet.find({
+				deleted: false,
+				employeeId: empId,
+				companyName: company,
+				payType: PAY_TYPES_TITLE.REG_PAY,
+				clockIn: { $lte: moment(clockIn).toDate() },
+				clockOut: { $gte: moment(clockOut).toDate() },
+			}).sort({ clockIn: -1 });
+
+			if (!nearest?.length) {
+				return res.status(201).json({
+					message: "Break must be within valid timeframe.",
+				});
+			}
+			const regRecord = nearest[0];
+			const adjustedRegHours =
+				calcTotalWorkedHours(regRecord.clockIn, regRecord.clockOut) - updatedWorkedHrs;
+			regRecord.regHoursWorked = adjustedRegHours;
+			regRecord.source = source;
+
+			await regRecord.save();
+		}
+		const updated = await updateTimesheetData(id, {
 			clockIn,
 			clockOut,
 			[param_hours]: updatedWorkedHrs,
 			approveStatus,
 			source,
-		};
+		});
 
-		if (param_hours === PARAM_HOURS.BREAK) {
-			const nearestClockInRecord = await Timesheet.find({
-				deleted: false,
-				employeeId: empId,
-				companyName: company,
-				payType: PAY_TYPES_TITLE.REG_PAY,
-				clockIn: {
-					$lte: moment(clockIn).toDate(),
-				},
-				clockOut: {
-					$gte: moment(clockOut).toDate(),
-				},
-			}).sort({ clockIn: -1 });
-			if (nearestClockInRecord?.length > 0) {
-				const regRecord = nearestClockInRecord[0];
-				const adjustedRegHours =
-					calcTotalWorkedHours(regRecord.clockIn, regRecord.clockOut) - updatedWorkedHrs;
-				regRecord.regHoursWorked = adjustedRegHours;
-				regRecord.source = source;
-				await regRecord.save();
-			} else {
-				return res
-					.status(201)
-					.json({ message: "Break records should be within the correct timeframe." });
-			}
-		}
-		const timesheet = await updateTimesheetData(id, updatedData);
-		return res.status(201).json(timesheet);
+		return res.status(200).json(updated);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ updateTimesheet error:", {
+			id,
+			body: req.body,
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -523,19 +817,28 @@ const updateTimesheetData = async (id, data) =>
 const deleteTimesheet = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const timesheet = await updateTimesheetData(id, req.body);
-
+		const { _id, ...updateData } = req.body;
+		const timesheet = await updateTimesheetData(id, updateData);
+		if (!timesheet) {
+			return res.status(404).json({
+				message: "Timesheet not found.",
+			});
+		}
 		// const resource = await Timesheet.findByIdAndDelete({
 		// 	_id: id,
 		// });
-		if (timesheet) {
-			return res.status(200).json(`Timesheet with id ${id} deleted successfully.`);
-		} else {
-			return res.status(404).json({ message: "Timesheet Details not found." });
-		}
+		return res.status(200).json(`Timesheet with id ${id} deleted successfully.`);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ deleteTimesheet failed:", {
+			id,
+			body: req.body,
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error while updating timesheet.",
+		});
 	}
 };
 

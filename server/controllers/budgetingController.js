@@ -50,10 +50,10 @@ const updateBudgetAccount = async (req, res) => {
 	try {
 		const existingInfo = await BudgetAccount.findById(id);
 		if (existingInfo) {
-			if (req.body?._id) delete req.body._id;
+			const { _id, ...updateData } = req.body;
 			const updatedInfo = await BudgetAccount.findByIdAndUpdate(
 				id,
-				{ $set: req.body },
+				{ $set: updateData },
 				{
 					new: true,
 				},

@@ -55,12 +55,27 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 const addStatHolidayTimesheet = async (companyName) => {
 	try {
 		const result = await getPayrollActiveEmployees(companyName);
-		for (const emp of result) {
-			await addStatHolidayDefaultTimesheet(emp?.empId?._id, companyName);
-		}
+		await Promise.all(
+			result.map(async (emp) => {
+				try {
+					if (!emp?.empId?._id) return;
+
+					await addStatHolidayDefaultTimesheet(emp.empId._id, companyName);
+				} catch (err) {
+					console.error("[StatHoliday] Failed:", {
+						empId: emp?.empId?._id,
+						error: err.message,
+					});
+				}
+			}),
+		);
+
 		console.log("StatHolidayDefaultTimesheet added");
 	} catch (error) {
-		console.error("Error adding record:", error);
+		console.error("Error adding stat holiday records:", {
+			message: error.message,
+			stack: error.stack,
+		});
 	}
 };
 
@@ -113,7 +128,15 @@ const getStatHoliday = async (req, res) => {
 		const holidays = await getHolidays({ companyName, year });
 		return res.status(200).json(holidays);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("[getStatHoliday Error]:", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -126,17 +149,27 @@ const addStatHoliday = async (req, res) => {
 			companyName: company,
 			year: moment().format("YYYY"),
 		};
+
 		const existingRecord = await Holiday.findOne(data);
 		if (existingRecord) {
 			return res.status(409).json({ message: "Record already exists" });
 		}
-		data.date = date;
-		data.year = moment(date).format("YYYY");
 
-		const newHoliday = await Holiday.create(data);
+		const newHoliday = await Holiday.create({
+			...data,
+			date,
+			year: moment(date).format("YYYY"),
+		});
+
 		return res.status(201).json(newHoliday);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("[addStatHoliday Error]:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -144,28 +177,50 @@ const updateStatHoliday = async (req, res) => {
 	const { id } = req.params;
 	try {
 		const existingInfo = await Holiday.findById(id);
-		if (existingInfo) {
-			if (req.body?._id) delete req.body._id;
-			const updatedInfo = await updateHolidayRecord(id, req.body);
-			return res.status(201).json(updatedInfo);
+		if (!existingInfo) {
+			return res.status(404).json({
+				message: "Record not found.",
+			});
 		}
-		return res.status(404).json({ message: "Record not found." });
+
+		const { _id, ...updateData } = req.body;
+
+		const updatedInfo = await updateHolidayRecord(id, updateData);
+		return res.status(200).json(updatedInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("[updateStatHoliday Error]:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const deleteStatHoliday = async (req, res) => {
 	const { id } = req.params;
+
 	try {
 		const resource = await Holiday.findByIdAndDelete(id);
-		if (resource) {
-			return res.status(200).json(`Holiday with id ${id} deleted successfully.`);
-		} else {
-			return res.status(404).json({ message: "Holiday Details not found." });
+
+		if (!resource) {
+			return res.status(404).json({
+				message: "Holiday Details not found.",
+			});
 		}
+
+		return res.status(200).json({
+			message: `Holiday ${id} deleted successfully`,
+		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("[deleteStatHoliday Error]:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 

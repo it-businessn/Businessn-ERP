@@ -125,8 +125,8 @@ const applyBCTaxRate = (annualIncome) => {
 		annualIncome > 0 && annualIncome <= 23179
 			? 521
 			: annualIncome > 23179 && annualIncome < 37814
-			? 521 - 0.0356 * (annualIncome - 23179)
-			: 0;
+				? 521 - 0.0356 * (annualIncome - 23179)
+				: 0;
 	return BC_TaxReductionAmount;
 };
 
@@ -136,8 +136,17 @@ const calcSalary = (hrs, rate) => hrs * rate;
 const getHrs = (num) => `${(num / 60).toFixed(0)}.${num % 60}`;
 
 // const convertHrsToFloat = (hrs) => (hrs ? parseFloat(getHrs(hrs)) : 0);
-const convertHrsToFloat = (hrs) => (hrs ? parseFloat(hrs) : 0);
 
+const convertHrsToFloat = (hrs) => {
+	const value = parseFloat(hrs);
+
+	if (Number.isNaN(value)) {
+		// console.warn("[convertHrsToFloat] Invalid hours value:", hrs);
+		return 0;
+	}
+
+	return value;
+};
 const getSumTotal = (data1, data2) => (data1 || 0) + data2;
 
 const getTaxDetails = (payRate, grossEarning, empTaxCreditResult, frequency = "Biweekly") => {
@@ -204,7 +213,16 @@ const getTaxDetails = (payRate, grossEarning, empTaxCreditResult, frequency = "B
 	};
 };
 
-const getSumRegHrs = (regHrs1, regHrs2) => (regHrs2 ? regHrs1 - regHrs2 : regHrs1);
+const getSumRegHrs = (regHrs1, regHrs2) => {
+	const base = Number(regHrs1) || 0;
+	const subtract = Number(regHrs2);
+
+	if (!Number.isFinite(subtract)) {
+		return base;
+	}
+
+	return base - subtract;
+};
 
 module.exports = {
 	TAX_CONFIG,

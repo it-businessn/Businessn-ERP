@@ -8,7 +8,7 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { encryptData } = require("../services/encryptDataService");
 const { addEmployee } = require("../helpers/userHelper");
 const { updateTADEmployee } = require("./timecardController");
-const { getPercent } = require("../services/util");
+const { normalizePercent, isPercentType } = require("../services/util");
 
 const getNewUserID = async (companyName, data) => {
 	const newEmployee = await addEmployee(companyName, data);
@@ -268,34 +268,34 @@ const addUserBenefitInfo = async (empId, companyName, benefitsInfo) => {
 		companyName,
 		// carryFwd,
 		typeOfVacationTreatment,
-		vacationPayPercent: getPercent(vacationPayPercent),
+		vacationPayPercent: normalizePercent(vacationPayPercent),
 		typeOfUnionDuesTreatment,
-		unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
-			? getPercent(unionDuesContribution)
+		unionDuesContribution: isPercentType(typeOfUnionDuesTreatment)
+			? normalizePercent(unionDuesContribution)
 			: unionDuesContribution || 0,
 		typeOfExtendedHealthEETreatment,
-		extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
-			? getPercent(extendedHealthEEContribution)
+		extendedHealthEEContribution: isPercentType(typeOfExtendedHealthEETreatment)
+			? normalizePercent(extendedHealthEEContribution)
 			: extendedHealthEEContribution || 0,
 		typeOfDentalEETreatment,
-		dentalEEContribution: typeOfDentalEETreatment?.includes("%")
-			? getPercent(dentalEEContribution)
+		dentalEEContribution: isPercentType(typeOfDentalEETreatment)
+			? normalizePercent(dentalEEContribution)
 			: dentalEEContribution || 0,
 		typeOfPensionEETreatment,
-		pensionEEContribution: typeOfPensionEETreatment?.includes("%")
-			? getPercent(pensionEEContribution)
+		pensionEEContribution: isPercentType(typeOfPensionEETreatment)
+			? normalizePercent(pensionEEContribution)
 			: pensionEEContribution || 0,
 		typeOfExtendedHealthERTreatment,
-		extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
-			? getPercent(extendedHealthERContribution)
+		extendedHealthERContribution: isPercentType(typeOfExtendedHealthERTreatment)
+			? normalizePercent(extendedHealthERContribution)
 			: extendedHealthERContribution || 0,
 		typeOfDentalERTreatment,
-		dentalERContribution: typeOfDentalERTreatment?.includes("%")
-			? getPercent(dentalERContribution)
+		dentalERContribution: isPercentType(typeOfDentalERTreatment)
+			? normalizePercent(dentalERContribution)
 			: dentalERContribution || 0,
 		typeOfPensionERTreatment,
-		pensionERContribution: typeOfPensionERTreatment?.includes("%")
-			? getPercent(pensionERContribution)
+		pensionERContribution: isPercentType(typeOfPensionERTreatment)
+			? normalizePercent(pensionERContribution)
 			: pensionERContribution || 0,
 	};
 	const newBalanceInfo = await EmployeeBalanceInfo.create(newBenefitInfo);

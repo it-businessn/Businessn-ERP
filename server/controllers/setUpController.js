@@ -150,8 +150,8 @@ const updateCrew = async (req, res) => {
 const updateRole = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const setup = await EmployeeRole.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+		const { _id, ...updateData } = req.body;
+		const setup = await EmployeeRole.findByIdAndUpdate(id, { $set: updateData }, { new: true });
 		return res.status(200).json(setup);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -392,8 +392,8 @@ const addModule = async (req, res) => {
 const updateModule = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const setup = await Module.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+		const { _id, ...updateData } = req.body;
+		const setup = await Module.findByIdAndUpdate(id, { $set: updateData }, { new: true });
 		return res.status(200).json(setup);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -653,7 +653,7 @@ const updateGroup = async (req, res) => {
 		// 	yearSchedules,
 		// });
 		// return;
-		if (req.body?._id) delete req.body._id;
+		const { _id, ...updateData } = req.body;
 		const setup = await updatePayGroup(id, {
 			modules: baseModule,
 			companyName: company,

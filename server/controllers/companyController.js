@@ -50,8 +50,8 @@ const getCompanyEmployees = async (req, res) => {
 const updateCompany = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.body?._id) delete req.body._id;
-		const updatedCompany = await Company.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+		const { _id, ...updateData } = req.body;
+		const updatedCompany = await Company.findByIdAndUpdate(id, { $set: updateData }, { new: true });
 		return res.status(200).json(updatedCompany);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -78,27 +78,42 @@ const addCompanyModules = async (companyName) => {
 };
 
 const addCompany = async (req, res) => {
-	const { name, founding_year, registration_number, address, industry_type } = req.body;
-	const { streetNumber, city, state, postalCode, country } = address;
-
 	try {
+		const { name, founding_year, registration_number, address, industry_type } = req.body || {};
+		const { streetNumber, city, state, postalCode, country } = address;
+
+		if (!name || !registration_number) {
+			return res.status(400).json({
+				message: "name and registration_number are required",
+			});
+		}
 		const shadowAdmins = await getShadowUserIds(COMPANIES.BUSINESSN_ORG);
 		const companyExists = await Company.findOne({ name, registration_number });
-		if (!companyExists) {
-			const newCompany = await Company.create({
-				name,
-				founding_year,
-				registration_number,
-				industry_type,
-				address: { streetNumber, city, state, postalCode, country },
-				employees: shadowAdmins,
+		if (companyExists) {
+			return res.status(409).json({
+				message: "Company with this registration_number already exists",
 			});
-			addCompanyModules(name);
-			return res.status(201).json(newCompany);
 		}
-		return res.status(409).json({ message: "Company of same registration_number already exists!" });
+		const newCompany = await Company.create({
+			name,
+			founding_year,
+			registration_number,
+			industry_type,
+			address: { streetNumber, city, state, postalCode, country },
+			employees: shadowAdmins,
+		});
+		addCompanyModules(name);
+		return res.status(201).json(newCompany);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ Company creation error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 

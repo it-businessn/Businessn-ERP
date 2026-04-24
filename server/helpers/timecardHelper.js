@@ -45,22 +45,42 @@ const calcTotalWorkedHours = (clockIn, clockOut) => {
 	// const roundedTime = totalTime.toFixed(2).includes(".99") ? Math.round(totalTime) : totalTime;
 	// return roundedTime;
 
-	const startDate = new Date(clockIn);
-	const endDate = new Date(clockOut);
+	const start = new Date(clockIn);
+	const end = new Date(clockOut);
+	// if (isNaN(start) || isNaN(end)) {
+	// 	console.error("[calcTotalWorkedHours] Invalid dates:", {
+	// 		clockIn,
+	// 		clockOut,
+	// 	});
+	// 	return 0;
+	// }
 
-	const sameHourAndMinute =
-		startDate.getUTCHours() === endDate.getUTCHours() &&
-		startDate.getUTCMinutes() === endDate.getUTCMinutes();
+	const diffMs = end.getTime() - start.getTime();
 
-	if (sameHourAndMinute) return 8;
+	// if (diffMs <= 0) {
+	// 	console.warn("[calcTotalWorkedHours] Invalid time range:", {
+	// 		clockIn,
+	// 		clockOut,
+	// 	});
+	// 	return 0;
+	// }
 
-	const totalTime = (endDate - startDate) / (1000 * 60 * 60); // convert ms to hours
-	const fixedTime = totalTime.toFixed(2);
+	const hours = diffMs / (1000 * 60 * 60);
 
-	if (fixedTime.endsWith(".99")) return Math.round(totalTime);
-	if (fixedTime.endsWith(".01")) return Math.floor(totalTime);
+	return Math.round(hours * 100) / 100;
+	// const sameHourAndMinute =
+	// 	startDate.getUTCHours() === endDate.getUTCHours() &&
+	// 	startDate.getUTCMinutes() === endDate.getUTCMinutes();
 
-	return fixedTime;
+	// if (sameHourAndMinute) return 8;
+
+	// const totalTime = (endDate - startDate) / (1000 * 60 * 60); // convert ms to hours
+	// const fixedTime = totalTime.toFixed(2);
+
+	// if (fixedTime.endsWith(".99")) return Math.round(totalTime);
+	// if (fixedTime.endsWith(".01")) return Math.floor(totalTime);
+
+	// return fixedTime;
 };
 
 const addTimesheetEntry = async (record) => await Timesheet.create(record);

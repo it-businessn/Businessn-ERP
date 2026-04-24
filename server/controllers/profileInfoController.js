@@ -27,25 +27,40 @@ const getAllProfileInfo = async (req, res) => {
 
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getAllProfileInfo fetch error:", {
+			message: error.message,
+			stack: error.stack,
+			companyName,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
 const getEmployeeProfileInfo = async (req, res) => {
-	const { companyName, empId } = req.params;
 	try {
-		const sin_key = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
+		const { companyName, empId } = req.params;
+		const sinKeyHex = process.env.SIN_ENCRYPTION_KEY;
+		if (!sinKeyHex) {
+			throw new Error("Missing SIN encryption key");
+		}
+		const sin_key = Buffer.from(sinKeyHex, "hex");
 
 		const result = await findEmployeeProfileInfo(empId, companyName);
 		if (result) {
-			if (!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))) {
+			const isEncrypted = result?.SINIv && result?.SIN && !result.SIN.includes("*");
+
+			if (isEncrypted) {
 				result.SIN = decryptData(result?.SIN, sin_key, result?.SINIv);
 			}
-			// result.SIN = result.SIN?.replace(/.(?=.{4})/g, "*") || "";
+			// optional masking (recommended for API responses)
+			// if (result.SIN) {
+			// 	result.SIN = result.SIN.replace(/.(?=.{4})/g, "*");
+			// }
 			return res.status(200).json(result);
-		}
-
-		if (!result) {
+		} else {
 			const user = await Employee.findById(empId)
 				.select("firstName middleName lastName email phoneNumber")
 				.sort({
@@ -54,7 +69,16 @@ const getEmployeeProfileInfo = async (req, res) => {
 			return res.status(200).json(user);
 		}
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getEmployeeProfileInfo Employee SIN fetch error:", {
+			message: error.message,
+			stack: error.stack,
+			empId,
+			companyName,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -91,12 +115,13 @@ const updateEmployee = async (empId, data) => {
 		manager,
 		phoneNumber,
 	} = data;
-	const streetNumber = `${streetAddressSuite || ""} ${streetAddress || ""}`;
-
-	const employee = await Employee.findById(empId);
-
-	const primaryAddress =
-		streetNumber && streetNumber !== ""
+	try {
+		const employee = await Employee.findById(empId);
+		if (!employee) {
+			throw new Error("Employee not found");
+		}
+		const streetNumber = [streetAddressSuite, streetAddress].filter(Boolean).join(" ").trim();
+		const primaryAddress = streetNumber
 			? {
 					streetNumber,
 					city,
@@ -104,32 +129,42 @@ const updateEmployee = async (empId, data) => {
 					postalCode,
 					country,
 				}
-			: employee?.primaryAddress;
-	const empEmail = personalEmail || userEmail || businessEmail;
-	const newEmail = empEmail && empEmail !== "" ? empEmail : employee?.email;
+			: employee.primaryAddress;
+		const empEmail = personalEmail || userEmail || businessEmail;
 
-	const updatedObj = {
-		primaryAddress,
-		firstName,
-		middleName,
-		lastName,
-		fullName: `${firstName} ${middleName} ${lastName}`,
-		manager,
-		phoneNumber,
-	};
-	if (newEmail !== employee?.email) {
-		updatedObj.email = newEmail;
+		const updatedObj = {
+			primaryAddress,
+			firstName,
+			middleName,
+			lastName,
+			fullName: [firstName, middleName, lastName].filter(Boolean).join(" "),
+			manager,
+			phoneNumber,
+		};
+		if (empEmail && empEmail !== employee.email) {
+			updatedObj.email = empEmail;
+		}
+
+		await Employee.findByIdAndUpdate(
+			empId,
+			{ $set: updatedObj },
+			{
+				new: true,
+			},
+		);
+
+		const existingCompany = await findCompany("name", companyName);
+		if (!existingCompany.employees.includes(empId)) existingCompany.employees.push(empId);
+		await existingCompany.save();
+	} catch (error) {
+		console.error("❌ Employee update error updateEmployee:", {
+			message: error.message,
+			stack: error.stack,
+			empId,
+			companyName,
+		});
+		throw error;
 	}
-	await Employee.findByIdAndUpdate(
-		empId,
-		{ $set: updatedObj },
-		{
-			new: true,
-		},
-	);
-	const existingCompany = await findCompany("name", companyName);
-	if (!existingCompany.employees.includes(empId)) existingCompany.employees.push(empId);
-	await existingCompany.save();
 };
 
 const addEmployeeProfileInfo = async (req, res) => {
@@ -162,6 +197,11 @@ const addEmployeeProfileInfo = async (req, res) => {
 		manager,
 	} = req.body;
 	try {
+		if (!companyName || !firstName || !lastName) {
+			return res.status(400).json({
+				message: "Missing required fields",
+			});
+		}
 		const data = {
 			userEmail,
 			personalEmail,
@@ -179,6 +219,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			manager,
 			phoneNumber: personalPhoneNum,
 		};
+
 		const existingProfileInfo = await EmployeeProfileInfo.findOne({
 			firstName,
 			companyName,
@@ -186,7 +227,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 			userEmail,
 		});
 		const updatedData = {
-			streetAddress: `${streetAddressSuite ?? ""} ${streetAddress}`,
+			streetAddress: [streetAddressSuite, streetAddress].filter(Boolean).join(" ").trim(),
 			city,
 			manager,
 			province,
@@ -210,58 +251,86 @@ const addEmployeeProfileInfo = async (req, res) => {
 			middleName,
 			lastName,
 		};
-		if (SIN && !SIN.includes("*")) {
-			const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-			const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
-			updatedData.SIN = sinEncrypted.encryptedData;
-			updatedData.SINIv = sinEncrypted.iv;
+		const ENCRYPTION_KEY = process.env.SIN_ENCRYPTION_KEY
+			? Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex")
+			: null;
+
+		if (!ENCRYPTION_KEY) {
+			throw new Error("Missing SIN encryption key");
 		}
+
+		if (SIN && typeof SIN === "string" && !SIN.includes("*")) {
+			const encrypted = encryptData(SIN, ENCRYPTION_KEY);
+			updatedData.SIN = encrypted.encryptedData;
+			updatedData.SINIv = encrypted.iv;
+		}
+
 		if (existingProfileInfo) {
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
-			await updateEmployee(existingProfileInfo?.empId, data);
-			return res.status(201).json(updatedProfileInfo);
+			await updateEmployee(existingProfileInfo.empId, data);
+			return res.status(200).json(updatedProfileInfo);
 		}
+
+		const email = personalEmail || userEmail || businessEmail;
 		const existingEmp = await Employee.findOne({
 			firstName,
 			middleName,
 			lastName,
-			email: personalEmail || userEmail || businessEmail,
+			email,
 		});
+
 		let profileInfoEmpId = existingEmp?._id;
+
 		if (!existingEmp) {
-			const newRecord = {
+			const newEmployee = await addEmployee(companyName, {
 				firstName,
 				middleName,
 				lastName,
-				email: personalEmail || userEmail || businessEmail,
-				fullName: `${firstName} ${middleName} ${lastName}`,
+				email,
+				fullName: [firstName, middleName, lastName].filter(Boolean).join(" "),
 				manager,
 				phoneNumber: personalPhoneNum,
-			};
-			const newEmployee = await addEmployee(companyName, newRecord);
+			});
 			profileInfoEmpId = newEmployee._id;
 		}
+
 		updatedData.empId = profileInfoEmpId;
 		const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
+
 		return res.status(201).json(newProfileInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addEmployeeProfileInfo Error:", {
+			message: error.message,
+			stack: error.stack,
+			companyName,
+			empId,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
 const onBoardNewUser = async (req, res) => {
-	const {
-		companyName,
-		bankingInfo,
-		benefitsInfo,
-		contactInfo,
-		emergencyContact,
-		employmentInfo,
-		governmentInfo,
-		payInfo,
-		personalInfo,
-	} = req.body;
 	try {
+		const {
+			companyName,
+			bankingInfo,
+			benefitsInfo,
+			contactInfo,
+			emergencyContact,
+			employmentInfo,
+			governmentInfo,
+			payInfo,
+			personalInfo,
+		} = req.body;
+		if (!companyName || !personalInfo) {
+			return res.status(400).json({
+				message: "Missing required fields",
+			});
+		}
+
 		const newUserID = await addNewUser(
 			companyName,
 			personalInfo,
@@ -288,7 +357,15 @@ const onBoardNewUser = async (req, res) => {
 			newUserBankingInfo,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ User creation onBoardNewUser failed:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Employee setup failed",
+		});
 	}
 };
 
@@ -333,24 +410,46 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			phoneNumber: personalPhoneNum,
 		};
 
-		const existingProfileInfo = await EmployeeProfileInfo.findById(id);
 		if (SIN && SIN !== "") {
 			await deleteAlerts(empId, ALERTS_TYPE.SIN);
 		}
 		await updateEmployee(empId, data);
-		if (existingProfileInfo) {
-			if (SIN && !SIN.includes("*")) {
-				const ENCRYPTION_KEY = Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex");
-				const sinEncrypted = encryptData(SIN, ENCRYPTION_KEY);
-				req.body.SIN = sinEncrypted.encryptedData;
-				req.body.SINIv = sinEncrypted.iv;
-			}
-			if (req.body?._id) delete req.body._id;
-			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, req.body);
-			return res.status(201).json(updatedProfileInfo);
+
+		const existingProfileInfo = await EmployeeProfileInfo.findById(id);
+		if (!existingProfileInfo) {
+			return res.status(404).json({
+				message: "Profile not found",
+			});
 		}
+		const ENCRYPTION_KEY = process.env.SIN_ENCRYPTION_KEY
+			? Buffer.from(process.env.SIN_ENCRYPTION_KEY, "hex")
+			: null;
+
+		if (!ENCRYPTION_KEY) {
+			throw new Error("Missing SIN encryption key");
+		}
+
+		const { _id, ...updatedData } = req.body;
+
+		if (SIN && typeof SIN === "string" && !SIN.includes("*")) {
+			const encrypted = encryptData(SIN, ENCRYPTION_KEY);
+			updatedData.SIN = encrypted.encryptedData;
+			updatedData.SINIv = encrypted.iv;
+		}
+		const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
+		return res.status(201).json(updatedProfileInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ updateEmployeeProfileInfo error:", {
+			message: error.message,
+			stack: error.stack,
+			id,
+			empId,
+			companyName,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 

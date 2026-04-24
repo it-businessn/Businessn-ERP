@@ -1,88 +1,155 @@
 const { findEmployeePayStub } = require("../helpers/payStubHelper");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
-const { getPercent, showPercent } = require("../services/util");
+const { showPercent, isPercentType, normalizePercent } = require("../services/util");
 
 const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
-	const empBalanceInfo = await EmployeeBalanceInfo.findOne({
-		empId,
-		companyName,
-	});
+	try {
+		if (!empId || !companyName) {
+			console.warn("⚠️ Missing params in findEmployeeBalanceInfo", {
+				empId,
+				companyName,
+			});
+			return null;
+		}
 
-	if (isUpdate) {
-		return empBalanceInfo;
+		const empBalanceInfo = await EmployeeBalanceInfo.findOne({
+			empId,
+			companyName,
+		});
+
+		if (!empBalanceInfo) {
+			console.warn("⚠️ No balance info found", {
+				empId,
+				companyName,
+			});
+			return null;
+		}
+
+		if (isUpdate) {
+			return empBalanceInfo;
+		}
+
+		return {
+			_id: empBalanceInfo?._id,
+			empId: empBalanceInfo?.empId,
+			typeOfVacationTreatment: empBalanceInfo?.typeOfVacationTreatment,
+			vacationPayPercent: empBalanceInfo?.vacationPayPercent,
+			carryFwd: empBalanceInfo?.carryFwd,
+			typeOfUnionDuesTreatment: empBalanceInfo?.typeOfUnionDuesTreatment,
+			unionDuesContribution: empBalanceInfo?.unionDuesContribution,
+			typeOfExtendedHealthEETreatment: empBalanceInfo?.typeOfExtendedHealthEETreatment,
+			extendedHealthEEContribution: empBalanceInfo?.extendedHealthEEContribution,
+			typeOfDentalEETreatment: empBalanceInfo?.typeOfDentalEETreatment,
+			dentalEEContribution: empBalanceInfo?.dentalEEContribution,
+			typeOfPensionEETreatment: empBalanceInfo?.typeOfPensionEETreatment,
+			pensionEEContribution: empBalanceInfo?.pensionEEContribution,
+			typeOfExtendedHealthERTreatment: empBalanceInfo?.typeOfExtendedHealthERTreatment,
+			extendedHealthERContribution: empBalanceInfo?.extendedHealthERContribution,
+			typeOfDentalERTreatment: empBalanceInfo?.typeOfDentalERTreatment,
+			dentalERContribution: empBalanceInfo?.dentalERContribution,
+			typeOfPensionERTreatment: empBalanceInfo?.typeOfPensionERTreatment,
+			pensionERContribution: empBalanceInfo?.pensionERContribution,
+		};
+	} catch (error) {
+		console.error("❌ findEmployeeBalanceInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			empId,
+			companyName,
+		});
+		throw error;
 	}
-
-	return {
-		_id: empBalanceInfo?._id,
-		empId: empBalanceInfo?.empId,
-		typeOfVacationTreatment: empBalanceInfo?.typeOfVacationTreatment,
-		vacationPayPercent: empBalanceInfo?.vacationPayPercent,
-		carryFwd: empBalanceInfo?.carryFwd,
-		typeOfUnionDuesTreatment: empBalanceInfo?.typeOfUnionDuesTreatment,
-		unionDuesContribution: empBalanceInfo?.unionDuesContribution,
-		typeOfExtendedHealthEETreatment: empBalanceInfo?.typeOfExtendedHealthEETreatment,
-		extendedHealthEEContribution: empBalanceInfo?.extendedHealthEEContribution,
-		typeOfDentalEETreatment: empBalanceInfo?.typeOfDentalEETreatment,
-		dentalEEContribution: empBalanceInfo?.dentalEEContribution,
-		typeOfPensionEETreatment: empBalanceInfo?.typeOfPensionEETreatment,
-		pensionEEContribution: empBalanceInfo?.pensionEEContribution,
-		typeOfExtendedHealthERTreatment: empBalanceInfo?.typeOfExtendedHealthERTreatment,
-		extendedHealthERContribution: empBalanceInfo?.extendedHealthERContribution,
-		typeOfDentalERTreatment: empBalanceInfo?.typeOfDentalERTreatment,
-		dentalERContribution: empBalanceInfo?.dentalERContribution,
-		typeOfPensionERTreatment: empBalanceInfo?.typeOfPensionERTreatment,
-		pensionERContribution: empBalanceInfo?.pensionERContribution,
-	};
 };
 
 const getAllBalanceInfo = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const result = await EmployeeBalanceInfo.find({
-			companyName,
-		}).sort({
+		if (!companyName) {
+			return res.status(400).json({ message: "companyName is required" });
+		}
+
+		const result = await EmployeeBalanceInfo.find({ companyName }).sort({
 			createdOn: -1,
 		});
 
+		// console.log("✅ Balance info fetched", {
+		// 	companyName,
+		// 	count: result.length,
+		// });
+
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getAllBalanceInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
 const getEmployeeBalanceInfo = async (req, res) => {
+	const start = Date.now();
 	const { companyName, empId, payPeriodPayDate } = req.params;
 	try {
+		if (!companyName || !empId) {
+			return res.status(400).json({ message: "companyName and empId required" });
+		}
+
 		const result = await findEmployeeBalanceInfo(empId, companyName);
 		const empPayStub = await findEmployeePayStub(empId, payPeriodPayDate, companyName);
 
-		result.vacationPayPercent = showPercent(result?.vacationPayPercent);
+		if (!result) {
+			console.warn("⚠️ Balance info not found", { empId, companyName });
+			return res.status(404).json({ message: "Balance info not found" });
+		}
+		const formatted = { ...result };
 
-		if (result?.typeOfUnionDuesTreatment?.includes("%")) {
-			result.unionDuesContribution = showPercent(result.unionDuesContribution);
+		formatted.vacationPayPercent = showPercent(formatted.vacationPayPercent);
+
+		if (isPercentType(formatted.typeOfUnionDuesTreatment)) {
+			formatted.unionDuesContribution = showPercent(formatted.unionDuesContribution);
 		}
-		if (result?.typeOfExtendedHealthEETreatment?.includes("%")) {
-			result.extendedHealthEEContribution = showPercent(result.extendedHealthEEContribution);
+		if (isPercentType(formatted.typeOfExtendedHealthEETreatment)) {
+			formatted.extendedHealthEEContribution = showPercent(formatted.extendedHealthEEContribution);
 		}
-		if (result?.typeOfDentalEETreatment?.includes("%")) {
-			result.dentalEEContribution = showPercent(result.dentalEEContribution);
+		if (isPercentType(formatted.typeOfDentalEETreatment)) {
+			formatted.dentalEEContribution = showPercent(formatted.dentalEEContribution);
 		}
-		if (result?.typeOfPensionEETreatment?.includes("%")) {
-			result.pensionEEContribution = showPercent(result.pensionEEContribution);
+		if (isPercentType(formatted.typeOfPensionEETreatment)) {
+			formatted.pensionEEContribution = showPercent(formatted.pensionEEContribution);
 		}
-		if (result?.typeOfExtendedHealthERTreatment?.includes("%")) {
-			result.extendedHealthERContribution = showPercent(result.extendedHealthERContribution);
+		if (isPercentType(formatted.typeOfExtendedHealthERTreatment)) {
+			formatted.extendedHealthERContribution = showPercent(formatted.extendedHealthERContribution);
 		}
-		if (result?.typeOfDentalERTreatment?.includes("%")) {
-			result.dentalERContribution = showPercent(result.dentalERContribution);
+		if (isPercentType(formatted.typeOfDentalERTreatment)) {
+			formatted.dentalERContribution = showPercent(formatted.dentalERContribution);
 		}
-		if (result?.typeOfPensionERTreatment?.includes("%")) {
-			result.pensionERContribution = showPercent(result.pensionERContribution);
+		if (isPercentType(formatted.typeOfPensionERTreatment)) {
+			formatted.pensionERContribution = showPercent(formatted.pensionERContribution);
 		}
-		result.empPayStub = empPayStub;
-		return res.status(200).json(result);
+
+		formatted.empPayStub = empPayStub;
+		// console.log("✅ Balance info fetched", {
+		// 	empId,
+		// 	companyName,
+		// 	timeMs: Date.now() - start,
+		// });
+
+		return res.status(200).json(formatted);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getEmployeeBalanceInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			params: req.params,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -123,47 +190,55 @@ const addEmployeeBalanceInfo = async (req, res) => {
 			companyName,
 			carryFwd,
 			typeOfVacationTreatment,
-			vacationPayPercent: getPercent(vacationPayPercent),
+			vacationPayPercent: normalizePercent(vacationPayPercent),
 			typeOfUnionDuesTreatment,
-			unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
-				? getPercent(unionDuesContribution)
+			unionDuesContribution: isPercentType(typeOfUnionDuesTreatment)
+				? normalizePercent(unionDuesContribution)
 				: unionDuesContribution || 0,
 			typeOfExtendedHealthEETreatment,
-			extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
-				? getPercent(extendedHealthEEContribution)
+			extendedHealthEEContribution: isPercentType(typeOfExtendedHealthEETreatment)
+				? normalizePercent(extendedHealthEEContribution)
 				: extendedHealthEEContribution || 0,
 			typeOfDentalEETreatment,
-			dentalEEContribution: typeOfDentalEETreatment?.includes("%")
-				? getPercent(dentalEEContribution)
+			dentalEEContribution: isPercentType(typeOfDentalEETreatment)
+				? normalizePercent(dentalEEContribution)
 				: dentalEEContribution || 0,
 			typeOfPensionEETreatment,
-			pensionEEContribution: typeOfPensionEETreatment?.includes("%")
-				? getPercent(pensionEEContribution)
+			pensionEEContribution: isPercentType(typeOfPensionEETreatment)
+				? normalizePercent(pensionEEContribution)
 				: pensionEEContribution || 0,
 			typeOfExtendedHealthERTreatment,
-			extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
-				? getPercent(extendedHealthERContribution)
+			extendedHealthERContribution: isPercentType(typeOfExtendedHealthERTreatment)
+				? normalizePercent(extendedHealthERContribution)
 				: extendedHealthERContribution || 0,
 			typeOfDentalERTreatment,
-			dentalERContribution: typeOfDentalERTreatment?.includes("%")
-				? getPercent(dentalERContribution)
+			dentalERContribution: isPercentType(typeOfDentalERTreatment)
+				? normalizePercent(dentalERContribution)
 				: dentalERContribution || 0,
 			typeOfPensionERTreatment,
-			pensionERContribution: typeOfPensionERTreatment?.includes("%")
-				? getPercent(pensionERContribution)
+			pensionERContribution: isPercentType(typeOfPensionERTreatment)
+				? normalizePercent(pensionERContribution)
 				: pensionERContribution || 0,
 		};
-		const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName, true);
-		// if (existingBalanceInfo) {
-		// 	const updatedBalanceInfo = await updateBalanceInfo(existingBalanceInfo._id, data);
-		// 	return res.status(201).json(updatedBalanceInfo);
-		// }
-		if (!existingBalanceInfo) {
-			const newBalanceInfo = await EmployeeBalanceInfo.create(data);
-			return res.status(201).json(newBalanceInfo);
+
+		const existing = await findEmployeeBalanceInfo(empId, companyName, true);
+		let result;
+		if (existing) {
+			// result = await updateBalanceInfo(existing._id, data);
+		} else {
+			result = await EmployeeBalanceInfo.create(data);
 		}
+		return res.status(201).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addEmployeeBalanceInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -172,11 +247,13 @@ const updateEmployeeBalanceInfo = async (req, res) => {
 	try {
 		// const { empId, companyName } = req.body;
 		// const existingBalanceInfo = await findEmployeeBalanceInfo(empId, companyName);
-		const existingBalanceInfo = await EmployeeBalanceInfo.findById(id);
-		if (!existingBalanceInfo) {
+		const existing = await EmployeeBalanceInfo.findById(id);
+		if (!existing) {
 			return res.status(404).json({ message: "Record does not exist" });
 		}
-		if (req.body?._id) delete req.body._id;
+
+		const { _id, ...updateData } = req.body;
+
 		const {
 			empId,
 			companyName,
@@ -197,47 +274,54 @@ const updateEmployeeBalanceInfo = async (req, res) => {
 			dentalERContribution,
 			typeOfPensionERTreatment,
 			pensionERContribution,
-		} = req.body;
-
+		} = updateData;
 		const data = {
 			empId,
 			companyName,
 			// carryFwd,
 			typeOfVacationTreatment,
-			vacationPayPercent: getPercent(vacationPayPercent),
+			vacationPayPercent: normalizePercent(vacationPayPercent),
 			typeOfUnionDuesTreatment,
-			unionDuesContribution: typeOfUnionDuesTreatment?.includes("%")
-				? getPercent(unionDuesContribution)
+			unionDuesContribution: isPercentType(typeOfUnionDuesTreatment)
+				? normalizePercent(unionDuesContribution)
 				: unionDuesContribution || 0,
 			typeOfExtendedHealthEETreatment,
-			extendedHealthEEContribution: typeOfExtendedHealthEETreatment?.includes("%")
-				? getPercent(extendedHealthEEContribution)
+			extendedHealthEEContribution: isPercentType(typeOfExtendedHealthEETreatment)
+				? normalizePercent(extendedHealthEEContribution)
 				: extendedHealthEEContribution || 0,
 			typeOfDentalEETreatment,
-			dentalEEContribution: typeOfDentalEETreatment?.includes("%")
-				? getPercent(dentalEEContribution)
+			dentalEEContribution: isPercentType(typeOfDentalEETreatment)
+				? normalizePercent(dentalEEContribution)
 				: dentalEEContribution || 0,
 			typeOfPensionEETreatment,
-			pensionEEContribution: typeOfPensionEETreatment?.includes("%")
-				? getPercent(pensionEEContribution)
+			pensionEEContribution: isPercentType(typeOfPensionEETreatment)
+				? normalizePercent(pensionEEContribution)
 				: pensionEEContribution || 0,
 			typeOfExtendedHealthERTreatment,
-			extendedHealthERContribution: typeOfExtendedHealthERTreatment?.includes("%")
-				? getPercent(extendedHealthERContribution)
+			extendedHealthERContribution: isPercentType(typeOfExtendedHealthERTreatment)
+				? normalizePercent(extendedHealthERContribution)
 				: extendedHealthERContribution || 0,
 			typeOfDentalERTreatment,
-			dentalERContribution: typeOfDentalERTreatment?.includes("%")
-				? getPercent(dentalERContribution)
+			dentalERContribution: isPercentType(typeOfDentalERTreatment)
+				? normalizePercent(dentalERContribution)
 				: dentalERContribution || 0,
 			typeOfPensionERTreatment,
-			pensionERContribution: typeOfPensionERTreatment?.includes("%")
-				? getPercent(pensionERContribution)
+			pensionERContribution: isPercentType(typeOfPensionERTreatment)
+				? normalizePercent(pensionERContribution)
 				: pensionERContribution || 0,
 		};
+
 		const updatedInfo = await updateBalanceInfo(id, data);
 		return res.status(201).json(updatedInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ updateEmployeeBalanceInfo ERROR", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 

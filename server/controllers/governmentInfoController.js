@@ -97,8 +97,8 @@ const updateEmployeeGovernmentInfo = async (req, res) => {
 	try {
 		const existingInfo = await EmployeeGovernmentInfo.findById(id);
 		if (existingInfo) {
-			if (req.body?._id) delete req.body._id;
-			const updatedInfo = await updateGovernmentInfo(id, req.body);
+			const { _id, ...updateData } = req.body;
+			const updatedInfo = await updateGovernmentInfo(id, updateData);
 			return res.status(201).json(updatedInfo);
 		}
 		return res.status(404).json({ message: "Record does not exist" });

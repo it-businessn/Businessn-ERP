@@ -36,7 +36,14 @@ const getAllPayGroups = async (req, res) => {
 		}).select("scheduleSettings yearSchedules name scheduleFrequency");
 		return res.status(200).json(groups);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getAllPayGroups ERROR", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+		});
 	}
 };
 
@@ -54,6 +61,11 @@ const getGroupedTimesheet = async (req, res) => {
 	} = req.body;
 
 	try {
+		if (!companyName || !payrunType) {
+			return res.status(400).json({
+				message: "Missing required fields",
+			});
+		}
 		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
@@ -73,6 +85,12 @@ const getGroupedTimesheet = async (req, res) => {
 		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
 		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
 
+		// console.log("[GroupedTimesheet Debug]", {
+		// 	companyName,
+		// 	activeEmployeesCount: activeEmployees?.length,
+		// 	payrunType,
+		// 	isExtraPayRun,
+		// });
 		const aggregatedResult = await getHourlyAggregatedResult(
 			activeEmployees,
 			currentPeriodEmployees,
@@ -85,7 +103,15 @@ const getGroupedTimesheet = async (req, res) => {
 		);
 		return res.status(200).json(aggregatedResult);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getGroupedTimesheet error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -121,35 +147,46 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 					totalPersonalDayHoursWorked: 0,
 				};
 			}
+			const reg = Number(timesheet.regHoursWorked) || 0;
+			const reg2 = Number(timesheet.regHoursWorked2) || 0;
+			const empKey = timesheet.employeeId;
+
 			// timesheet.regHoursWorked = timesheet.regHoursWorked.toFixed(2);
-			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-				acc[timesheet.employeeId].totalRegHoursWorked +=
-					getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY) {
+				acc[empKey].totalRegHoursWorked += getSumRegHrs(reg, reg2) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
-				acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY) {
+				acc[empKey].totalOvertimeHoursWorked += Number(timesheet.overtimeHoursWorked) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY)
-				acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
-					timesheet.dblOvertimeHoursWorked || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY) {
+				acc[empKey].totalDblOvertimeHoursWorked += Number(timesheet.dblOvertimeHoursWorked) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY)
-				acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY) {
+				acc[empKey].totalStatHours += Number(timesheet.statDayHours) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.STAT_WORK_PAY)
-				acc[timesheet.employeeId].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.STAT_WORK_PAY) {
+				acc[empKey].totalStatDayHoursWorked += Number(timesheet.statDayHoursWorked) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.SICK_PAY)
-				acc[timesheet.employeeId].totalSickHoursWorked += timesheet.sickPayHours || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.SICK_PAY) {
+				acc[empKey].totalSickHoursWorked += Number(timesheet.sickPayHours) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY)
-				acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY) {
+				acc[empKey].totalVacationHoursWorked += Number(timesheet.vacationPayHours) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.BEREAVEMENT_PAY)
-				acc[timesheet.employeeId].totalBereavementHoursWorked += timesheet.bereavementPayHours || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.BEREAVEMENT_PAY) {
+				acc[empKey].totalBereavementHoursWorked += Number(timesheet.bereavementPayHours) || 0;
+			}
 
-			if (timesheet.payType === PAY_TYPES_TITLE.PERSONAL_DAY_PAY)
-				acc[timesheet.employeeId].totalPersonalDayHoursWorked += timesheet.personalPayHours || 0;
+			if (timesheet.payType === PAY_TYPES_TITLE.PERSONAL_DAY_PAY) {
+				acc[empKey].totalPersonalDayHoursWorked += Number(timesheet.personalPayHours) || 0;
+			}
 
 			return acc;
 		}, {});
@@ -172,6 +209,12 @@ const getEEContribution = async (req, res) => {
 	} = req.body;
 
 	try {
+		if (!companyName || !payrunType) {
+			return res.status(400).json({
+				message: "Missing required fields",
+			});
+		}
+
 		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
@@ -191,6 +234,13 @@ const getEEContribution = async (req, res) => {
 		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
 		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
 
+		// console.log("[EE Contribution Debug]", {
+		// 	companyName,
+		// 	activeEmployees: activeEmployees?.length,
+		// 	hasTimesheetData: !!currentPeriodEmployees,
+		// 	isExtraPayRun,
+		// });
+
 		const aggregatedResult = await getPayrunEEContributionResult(
 			activeEmployees,
 			currentPeriodEmployees,
@@ -203,7 +253,15 @@ const getEEContribution = async (req, res) => {
 
 		return res.status(200).json(aggregatedResult);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getEEContribution error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -221,6 +279,12 @@ const getERContribution = async (req, res) => {
 	} = req.body;
 
 	try {
+		if (!companyName || !payrunType) {
+			return res.status(400).json({
+				message: "Missing required fields",
+			});
+		}
+
 		const isExtraPayRun = checkExtraRun(isExtraRun);
 
 		const activeEmployees = await fetchActiveEmployees(
@@ -240,6 +304,13 @@ const getERContribution = async (req, res) => {
 		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
 		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
 
+		// console.log("[ER Contribution Debug]", {
+		// 	companyName,
+		// 	activeEmployeesCount: activeEmployees?.length,
+		// 	hasTimesheets: !!currentPeriodEmployees,
+		// 	isExtraPayRun,
+		// });
+
 		const aggregatedResult = await getPayrunERContributionResult(
 			activeEmployees,
 			currentPeriodEmployees,
@@ -252,7 +323,15 @@ const getERContribution = async (req, res) => {
 
 		return res.status(200).json(aggregatedResult);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getERContribution error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -267,57 +346,41 @@ const getERContribution = async (req, res) => {
 // 		new: true,
 // 	});
 // const addPayGroup = async (req, res) => {
-// 	const {
+// try {
+// 	const { empId, companyName, _id, ...updateData } = req.body || {};
+
+// 	if (!empId || !companyName) {
+// 		return res.status(400).json({
+// 			message: "empId and companyName are required",
+// 		});
+// 	}
+
+// 	const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
+
+// 	if (existingPayInfo) {
+// 		const updatedPayInfo = await updatePayInfo(existingPayInfo._id, updateData);
+
+// 		return res.status(200).json(updatedPayInfo);
+// 	}
+
+// 	const newPayInfo = await EmployeePayInfo.create({
 // 		empId,
 // 		companyName,
-// 		regPay,
-// 		overTimePay,
-// 		dblOverTimePay,
-// 		statWorkPay,
-// 		statPay,
-// 		sickPay,
-// 		salaryRate,
-// 		dailyHours,
-// 		longTermDisabilityEE,
-// 		longTermDisabilityER,
-// 		dentalEE,
-// 		dentalER,
-// 		extendedHealthEE,
-// 		extendedHealthER,
-// 		unionDues,
-// 		vacationPay,
-// 	} = req.body;
-// 	try {
-// 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
-// 		if (existingPayInfo) {
-// 		if (req.body?._id) delete req.body._id;
-// 			const updatedPayInfo = await updatePayInfo(existingPayInfo._id, req.body);
-// 			return res.status(201).json(updatedPayInfo);
-// 		}
-// 		const newPayInfo = await EmployeePayInfo.create({
-// 			empId,
-// 			companyName,
-// 			regPay,
-// 			overTimePay,
-// 			dblOverTimePay,
-// 			statWorkPay,
-// 			statPay,
-// 			sickPay,
-// 			salaryRate,
-// 			dailyHours,
-// 			longTermDisabilityEE,
-// 			longTermDisabilityER,
-// 			dentalEE,
-// 			dentalER,
-// 			extendedHealthEE,
-// 			extendedHealthER,
-// 			unionDues,
-// 			vacationPay,
-// 		});
-// 		return res.status(201).json(newPayInfo);
-// 	} catch (error) {
-// 		return res.status(500).json({ message: "Internal Server Error", error });
-// 	}
+// 		...updateData,
+// 	});
+
+// 	return res.status(201).json(newPayInfo);
+// } catch (error) {
+// 	console.error("❌ addPayGroup error:", {
+// 		message: error.message,
+// 		stack: error.stack,
+// 		body: req.body,
+// 	});
+
+// 	return res.status(500).json({
+// 		message: "Internal server error",
+// 	});
+// }
 // };
 const getPayGroup = () => {};
 const addPayGroup = () => {};

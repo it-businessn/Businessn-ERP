@@ -1,9 +1,7 @@
 const Project = require("../models/Project");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
-
-const getPercent = (totalActualHours, totalEstimatedHours) =>
-	Math.min(Math.max((totalActualHours / totalEstimatedHours) * 100, 0), 100).toFixed(2);
+const { getPercent } = require("./util");
 
 const calculateTaskCompletionPercent = (task) => {
 	let totalEstimatedHours = parseInt(task.timeToComplete) || 0;

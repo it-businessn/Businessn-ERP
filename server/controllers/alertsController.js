@@ -12,86 +12,119 @@ const addAlertInfo = async (record) => await EmployeeAlertsViolationInfo.create(
 
 const addAlertsAndViolations = async (req, res) => {
 	const { companyName, inputsReviewData } = req.body;
-
 	try {
+		if (!Array.isArray(inputsReviewData)) {
+			console.error("[Alerts] Invalid inputsReviewData:", inputsReviewData);
+			return res.status(400).json({
+				message: "inputsReviewData must be an array",
+			});
+		}
+
 		for (const data of inputsReviewData) {
-			const empBankResult = await EmployeeBankingInfo.findOne({
-				companyName,
-				empId: data?.empId?._id,
-			}).select("empId bankNum transitNum accountNum");
+			try {
+				const empId = data?.empId?._id || data?.empId;
 
-			const empSINResult = await EmployeeProfileInfo.findOne({
-				companyName,
-				empId: data?.empId?._id,
-			}).select("empId SIN");
-
-			const empPayInfo = await EmployeePayInfo.findOne({
-				companyName,
-				empId: data?.empId?._id,
-			}).select("empId roles");
-
-			const missingBankInfo =
-				!empBankResult?.bankNum || !empBankResult?.transitNum || !empBankResult?.accountNum;
-			if (missingBankInfo) {
-				const alertInfo = {
-					empId: data?.empId?._id,
-					companyName,
-					description: "Banking information missing",
-					actionRequired: true,
-					type: ALERTS_TYPE.BANK,
-				};
-				const bankingInfoAlertExists = await findAlertInfo(alertInfo);
-				if (!bankingInfoAlertExists) {
-					alertInfo.payPeriodNum = data?.payPeriodNum;
-					await addAlertInfo(alertInfo);
+				if (!empId) {
+					console.warn("[Alerts] Missing empId:", data);
+					continue;
 				}
-			}
 
-			const belowMinimumWage =
-				!empPayInfo?.roles?.length ||
-				empPayInfo?.roles?.find((_) => parseFloat(_?.payRate) < 17.85);
-			if (belowMinimumWage) {
-				const alertInfo = {
-					empId: data?.empId?._id,
-					companyName,
-					description: "Minimum wage is below $17.85.",
-					actionRequired: true,
-					type: ALERTS_TYPE.WAGE,
-				};
-				const wageAlertExists = await findAlertInfo(alertInfo);
-				if (!wageAlertExists) {
-					alertInfo.payPeriodNum = data?.payPeriodNum;
-					await addAlertInfo(alertInfo);
-				}
-			}
+				const [empBankResult, empSINResult, empPayInfo] = await Promise.all([
+					EmployeeBankingInfo.findOne({ companyName, empId })
+						.select("empId bankNum transitNum accountNum")
+						.lean(),
 
-			const missingSINInfo = !empSINResult || !empSINResult.SIN || empSINResult.SIN === "";
-			if (missingSINInfo) {
-				const alertInfo = {
-					empId: data?.empId?._id,
-					companyName,
-					actionRequired: false,
-					description: "SIN missing",
-					type: ALERTS_TYPE.SIN,
-				};
-				const SINViolationExists = await findAlertInfo(alertInfo);
-				if (!SINViolationExists) {
-					alertInfo.payPeriodNum = data?.payPeriodNum;
-					await addAlertInfo(alertInfo);
+					EmployeeProfileInfo.findOne({ companyName, empId }).select("empId SIN").lean(),
+
+					EmployeePayInfo.findOne({ companyName, empId }).select("empId roles").lean(),
+				]);
+
+				// BANK CHECK
+				const missingBankInfo =
+					!empBankResult?.bankNum || !empBankResult?.transitNum || !empBankResult?.accountNum;
+
+				if (missingBankInfo) {
+					const alertInfo = {
+						empId,
+						companyName,
+						description: "Banking information missing",
+						actionRequired: true,
+						type: ALERTS_TYPE.BANK,
+						payPeriodNum: data?.payPeriodNum,
+					};
+
+					const exists = await findAlertInfo(alertInfo);
+					if (!exists) await addAlertInfo(alertInfo);
 				}
+
+				// WAGE CHECK
+				const hasLowWage = empPayInfo?.roles?.some((r) => Number(r?.payRate) < 17.85);
+
+				if (!empPayInfo?.roles?.length || hasLowWage) {
+					const alertInfo = {
+						empId,
+						companyName,
+						description: "Minimum wage is below $17.85.",
+						actionRequired: true,
+						type: ALERTS_TYPE.WAGE,
+						payPeriodNum: data?.payPeriodNum,
+					};
+
+					const exists = await findAlertInfo(alertInfo);
+					if (!exists) await addAlertInfo(alertInfo);
+				}
+
+				// SIN CHECK
+				const missingSIN = !empSINResult?.SIN || empSINResult.SIN.trim() === "";
+
+				if (missingSIN) {
+					const alertInfo = {
+						empId,
+						companyName,
+						description: "SIN missing",
+						actionRequired: false,
+						type: ALERTS_TYPE.SIN,
+						payPeriodNum: data?.payPeriodNum,
+					};
+
+					const exists = await findAlertInfo(alertInfo);
+					if (!exists) await addAlertInfo(alertInfo);
+				}
+			} catch (empError) {
+				console.error("[Alerts] Error processing employee:", {
+					error: empError.message,
+					stack: empError.stack,
+					data,
+					companyName,
+				});
 			}
 		}
-		return res.status(200).json({ message: "Alerts processed successfully" });
+		return res.status(200).json({
+			message: "Alerts processed successfully",
+		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("[Alerts] Fatal error in addAlertsAndViolations:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Failed to process alerts",
+		});
 	}
 };
 
 const deleteAlerts = async (empId, type) => {
-	const existingAlert = await EmployeeAlertsViolationInfo.deleteMany({
+	const result = await EmployeeAlertsViolationInfo.deleteMany({
 		empId,
 		type,
 	});
+	// console.log("[Alerts Delete]", {
+	// 	empId,
+	// 	type,
+	// 	deletedCount: result?.deletedCount,
+	// });
 	// const existingAlert = await findAlertInfo({
 	// 		empId,
 	// 	});
@@ -119,13 +152,16 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 		const payrollActiveEmps = await EmployeeEmploymentInfo.find({
 			payrollStatus: "Payroll Active",
 			companyName,
-		}).select("empId");
+		}).select("empId positions");
 
 		const payrollActiveIds = payrollActiveEmps
-			?.filter(
-				(emp) =>
-					emp?.empId && emp?.positions?.find((_) => _.employmentPayGroup === selectedPayGroup),
-			)
+			?.filter((emp) => {
+				if (!emp?.empId) return false;
+
+				if (!selectedPayGroup) return true;
+
+				return emp?.positions?.find((p) => p?.employmentPayGroup === selectedPayGroup);
+			})
 			?.map((emp) => emp.empId);
 
 		const alerts = await EmployeeAlertsViolationInfo.find({
@@ -139,7 +175,14 @@ const getAlertsAndViolationsInfo = async (req, res) => {
 			});
 		return res.status(200).json(alerts);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getAlertsAndViolationsInfo error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -153,7 +196,14 @@ const getTotalAlertsAndViolationsInfo = async (req, res) => {
 		});
 		return res.status(200).json(alerts);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getTotalAlertsAndViolationsInfo error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 

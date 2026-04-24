@@ -17,6 +17,9 @@ const getAmountAllocation = async (req, res) => {
 
 	try {
 		const isExtraPayRun = checkExtraRun(isExtraRun);
+		const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;
+		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
+		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
 
 		const activeEmployees = await fetchActiveEmployees(
 			isExtraPayRun,
@@ -26,11 +29,20 @@ const getAmountAllocation = async (req, res) => {
 			deptName,
 			selectedPayGroupOption,
 		);
+		if (!activeEmployees?.length) {
+			console.warn("⚠️ No active employees found", {
+				companyName,
+				payDate,
+				groupId,
+				selectedPayGroupOption,
+			});
 
-		const isSuperficial = payrunType === PAYRUN_TYPE.SUPERFICIAL;
-		const isManual = payrunType === PAYRUN_TYPE.MANUAL;
-		const isPayout = payrunType === PAYRUN_TYPE.PAYOUT;
-
+			return res.status(200).json({
+				items: [],
+				total: 0,
+				message: "No active employees found for given filters",
+			});
+		}
 		const aggregatedResult = await getPayrunAmtAllocatedResult(
 			activeEmployees,
 			companyName,
@@ -42,7 +54,15 @@ const getAmountAllocation = async (req, res) => {
 
 		return res.status(200).json(aggregatedResult);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ getAmountAllocation error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -90,34 +110,23 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 		totalPayoutHoursWorked,
 	} = req.body;
 	try {
+		const empIdStr = empId?._id?.toString() || empId;
 		const existingInfo = await findAdditionalHoursAllocatedInfo({
-			empId: empId._id,
+			empId: empIdStr,
 			companyName,
 			payPeriodPayDate,
 		});
+		const chequeSet = new Set(existingInfo?.chequesType || []);
+		if (totalSuperficialHoursWorked !== undefined) chequeSet.add(PAYRUN_TYPE.SUPERFICIAL);
 
-		if (existingInfo) {
-			if (totalSuperficialHoursWorked) {
-				const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
-					(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
-				);
-				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
-			}
-			if (totalManualHoursWorked) {
-				const chequeTypeManualExists = existingInfo?.chequesType?.find(
-					(_) => _ === PAYRUN_TYPE.MANUAL,
-				);
-				if (!chequeTypeManualExists) existingInfo?.chequesType.push(PAYRUN_TYPE.MANUAL);
-			}
-			if (totalPayoutHoursWorked) {
-				const chequeTypePayoutExists = existingInfo?.chequesType?.find(
-					(_) => _ === PAYRUN_TYPE.PAYOUT,
-				);
-				if (!chequeTypePayoutExists) existingInfo?.chequesType.push(PAYRUN_TYPE.PAYOUT);
-			}
-			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, {
+		if (totalManualHoursWorked !== undefined) chequeSet.add(PAYRUN_TYPE.MANUAL);
+
+		if (totalPayoutHoursWorked !== undefined) chequeSet.add(PAYRUN_TYPE.PAYOUT);
+		const chequesType = Array.from(chequeSet);
+		const updateData = Object.fromEntries(
+			Object.entries({
 				additionalRegHoursWorked,
-				chequesType: existingInfo.chequesType,
+				chequesType,
 				additionalOvertimeHoursWorked,
 				additionalDblOvertimeHoursWorked,
 				additionalStatHoursWorked,
@@ -154,65 +163,30 @@ const addAdditionalHoursAllocationInfo = async (req, res) => {
 				totalSuperficialHoursWorked,
 				totalManualHoursWorked,
 				totalPayoutHoursWorked,
-			});
+			}).filter(([_, v]) => v !== undefined),
+		);
+		if (existingInfo) {
+			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, updateData);
 			return res.status(201).json(updatedInfo);
 		}
-		const chequesType = [];
-		if (totalSuperficialHoursWorked) {
-			chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
-		}
-		if (totalManualHoursWorked) {
-			chequesType.push(PAYRUN_TYPE.MANUAL);
-		}
-		if (totalPayoutHoursWorked) {
-			chequesType.push(PAYRUN_TYPE.PAYOUT);
-		}
 		const newInfo = await addNewAllocationRecord({
-			empId,
-			chequesType,
+			empId: empIdStr,
 			companyName,
-			additionalRegHoursWorked,
-			additionalOvertimeHoursWorked,
-			additionalDblOvertimeHoursWorked,
-			additionalStatDayHoursWorked,
-			additionalStatHoursWorked,
-			additionalVacationHoursWorked,
-			additionalSickHoursWorked,
-			additionalRegHoursWorked2,
-
-			additionalPayoutRegHoursWorked,
-			additionalPayoutOvertimeHoursWorked,
-			additionalPayoutDblOvertimeHoursWorked,
-			additionalPayoutStatHoursWorked,
-			additionalPayoutStatDayHoursWorked,
-			additionalPayoutVacationHoursWorked,
-			additionalPayoutSickHoursWorked,
-
-			additionalManualRegHoursWorked,
-			additionalManualOvertimeHoursWorked,
-			additionalManualDblOvertimeHoursWorked,
-			additionalManualStatHoursWorked,
-			additionalManualStatDayHoursWorked,
-			additionalManualVacationHoursWorked,
-			additionalManualSickHoursWorked,
-
-			additionalSuperficialRegHoursWorked,
-			additionalSuperficialOvertimeHoursWorked,
-			additionalSuperficialDblOvertimeHoursWorked,
-			additionalSuperficialStatHoursWorked,
-			additionalSuperficialStatDayHoursWorked,
-			additionalSuperficialVacationHoursWorked,
-			additionalSuperficialSickHoursWorked,
-
 			payPeriodPayDate,
-			totalHoursWorked,
-			totalSuperficialHoursWorked,
-			totalManualHoursWorked,
-			totalPayoutHoursWorked,
+			...updateData,
 		});
+
 		return res.status(201).json(newInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addAdditionalHoursAllocationInfo  error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
@@ -312,155 +286,64 @@ const addAmountAllocation = async (req, res) => {
 			totalManualAmountAllocated,
 			totalPayoutAmountAllocated,
 		} = updatedRec;
+		if (!updatedRec || typeof updatedRec !== "object") {
+			return res.status(400).json({ message: "Invalid updatedRec" });
+		}
+		const empIdStr = empId?._id?.toString() || empId;
 
-		const newData = {
-			commission,
-			bonus,
-			retroactive,
-			pILBenefitPay,
-			reimbursement,
-			terminationPayout,
-			vacationPayout,
-			vacationBalAdjust,
-			vacationAccrual,
-			vacationUsed,
-			federalTax,
-			provTax,
-			incomeTax,
-			regPayAmt,
-			regPayAmt2,
-			OTPayAmt,
-			dblOTPayAmt,
-			statPayAmt,
-			statWorkPayAmt,
-			vacationPayAmt,
-			bereavementPayAmt,
-			personalDayPayAmt,
-			sickPayAmt,
-
-			commissionPayout,
-			bonusPayout,
-			retroactivePayout,
-			reimbursementPayout,
-			terminationPayoutPayout,
-			vacationPayoutPayout,
-			vacationBalAdjustPayout,
-			vacationAccrualPayout,
-			vacationUsedPayout,
-			federalTaxPayout,
-			provTaxPayout,
-			incomeTaxPayout,
-			regPayAmtPayout,
-			OTPayAmtPayout,
-			dblOTPayAmtPayout,
-			statPayAmtPayout,
-			statWorkPayAmtPayout,
-			vacationPayAmtPayout,
-			sickPayAmtPayout,
-
-			commissionManual,
-			bonusManual,
-			retroactiveManual,
-			reimbursementManual,
-			terminationPayoutManual,
-			vacationPayoutManual,
-			vacationBalAdjustManual,
-			vacationAccrualManual,
-			vacationUsedManual,
-			federalTaxManual,
-			provTaxManual,
-			incomeTaxManual,
-			regPayAmtManual,
-			OTPayAmtManual,
-			dblOTPayAmtManual,
-			statPayAmtManual,
-			statWorkPayAmtManual,
-			vacationPayAmtManual,
-			sickPayAmtManual,
-
-			commissionSuperficial,
-			pILBenefitPaySuperficial,
-			bonusSuperficial,
-			retroactiveSuperficial,
-			reimbursementSuperficial,
-			terminationPayoutSuperficial,
-			vacationPayoutSuperficial,
-			vacationBalAdjustSuperficial,
-			vacationAccrualSuperficial,
-			vacationUsedSuperficial,
-			federalTaxSuperficial,
-			provTaxSuperficial,
-			incomeTaxSuperficial,
-			regPayAmtSuperficial,
-			OTPayAmtSuperficial,
-			dblOTPayAmtSuperficial,
-			statPayAmtSuperficial,
-			statWorkPayAmtSuperficial,
-			vacationPayAmtSuperficial,
-			sickPayAmtSuperficial,
-
-			totalAmountAllocated,
-			totalSuperficialAmountAllocated,
-			totalManualAmountAllocated,
-			totalPayoutAmountAllocated,
-		};
 		const existingInfo = await findAdditionalHoursAllocatedInfo({
-			empId: empId._id,
+			empId: empIdStr,
+			companyName,
+			payPeriodPayDate,
+		});
+		const newData = Object.fromEntries(
+			Object.entries(updatedRec).filter(([_, v]) => v !== undefined),
+		);
+
+		const chequeSet = new Set(existingInfo?.chequesType || []);
+
+		if (updatedRec.totalSuperficialAmountAllocated !== undefined)
+			chequeSet.add(PAYRUN_TYPE.SUPERFICIAL);
+
+		if (updatedRec.totalManualAmountAllocated !== undefined) chequeSet.add(PAYRUN_TYPE.MANUAL);
+
+		if (updatedRec.totalPayoutAmountAllocated !== undefined) chequeSet.add(PAYRUN_TYPE.PAYOUT);
+
+		newData.chequesType = Array.from(chequeSet);
+
+		if (existingInfo) {
+			const updated = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
+			return res.status(200).json(updated);
+		}
+
+		const newInfo = await addNewAllocationRecord({
+			...newData,
+			empId: empIdStr,
 			companyName,
 			payPeriodPayDate,
 		});
 
-		if (existingInfo) {
-			if (totalSuperficialAmountAllocated) {
-				const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
-					(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
-				);
-				if (!chequeTypeSuperficialExists) existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
-			}
-			if (totalManualAmountAllocated) {
-				const chequeTypeManualExists = existingInfo?.chequesType?.find(
-					(_) => _ === PAYRUN_TYPE.MANUAL,
-				);
-				if (!chequeTypeManualExists) existingInfo?.chequesType.push(PAYRUN_TYPE.MANUAL);
-			}
-			if (totalPayoutAmountAllocated) {
-				const chequeTypePayoutExists = existingInfo?.chequesType?.find(
-					(_) => _ === PAYRUN_TYPE.PAYOUT,
-				);
-				if (!chequeTypePayoutExists) existingInfo?.chequesType.push(PAYRUN_TYPE.PAYOUT);
-			}
-			newData.chequesType = existingInfo?.chequesType;
-			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
-			return res.status(201).json(updatedInfo);
-		}
-		const chequesType = [];
-		if (totalSuperficialAmountAllocated) {
-			chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
-		}
-		if (totalManualAmountAllocated) {
-			chequesType.push(PAYRUN_TYPE.MANUAL);
-		}
-		if (totalPayoutAmountAllocated) {
-			chequesType.push(PAYRUN_TYPE.PAYOUT);
-		}
-		newData.chequesType = chequesType;
-		newData.empId = empId;
-		newData.companyName = companyName;
-		newData.payPeriodPayDate = payPeriodPayDate;
-
-		const newInfo = await addNewAllocationRecord(newData);
-
 		return res.status(201).json(newInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addAmountAllocation error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({
+			message: "Internal server error",
+		});
 	}
 };
 
 const addEmployeeContribution = async (req, res) => {
 	const { empId, companyName, updatedRec, payPeriodPayDate } = req.body;
 	try {
+		const empIdStr = empId?._id || empId;
+
 		const existingInfo = await findEESuperficialContribution({
-			empId: empId._id,
+			empId: empIdStr,
 			companyName,
 			payPeriodPayDate,
 		});
@@ -482,21 +365,18 @@ const addEmployeeContribution = async (req, res) => {
 		};
 
 		if (existingInfo) {
-			const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
-				(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
-			);
-			if (!chequeTypeSuperficialExists) {
-				if (!existingInfo?.chequesType?.length) existingInfo.chequesType = [];
-				existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
-			}
-			newData.chequesType = existingInfo?.chequesType;
+			const chequeSet = new Set(existingInfo.chequesType || []);
+			chequeSet.add(PAYRUN_TYPE.SUPERFICIAL);
+
+			newData.chequesType = Array.from(chequeSet);
 
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
-			return res.status(201).json(updatedInfo);
+
+			return res.status(200).json(updatedInfo);
 		}
 
 		newData.chequesType = [PAYRUN_TYPE.SUPERFICIAL];
-		newData.empId = empId;
+		newData.empId = empIdStr;
 		newData.companyName = companyName;
 		newData.payPeriodPayDate = payPeriodPayDate;
 
@@ -504,15 +384,23 @@ const addEmployeeContribution = async (req, res) => {
 
 		return res.status(201).json(newInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addEmployeeContribution Error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({ message: "Internal server error" });
 	}
 };
 
 const addEmployerContribution = async (req, res) => {
 	const { empId, companyName, updatedRec, payPeriodPayDate } = req.body;
 	try {
+		const empIdStr = empId?._id || empId;
+
 		const existingInfo = await findEESuperficialContribution({
-			empId: empId._id,
+			empId: empIdStr,
 			companyName,
 			payPeriodPayDate,
 		});
@@ -528,21 +416,18 @@ const addEmployerContribution = async (req, res) => {
 		};
 
 		if (existingInfo) {
-			const chequeTypeSuperficialExists = existingInfo?.chequesType?.find(
-				(_) => _ === PAYRUN_TYPE.SUPERFICIAL,
-			);
-			if (!chequeTypeSuperficialExists) {
-				if (!existingInfo?.chequesType?.length) existingInfo.chequesType = [];
-				existingInfo?.chequesType.push(PAYRUN_TYPE.SUPERFICIAL);
-			}
-			newData.chequesType = existingInfo?.chequesType;
+			const chequeSet = new Set(existingInfo.chequesType || []);
+			chequeSet.add(PAYRUN_TYPE.SUPERFICIAL);
+
+			newData.chequesType = Array.from(chequeSet);
 
 			const updatedInfo = await updateAdditionalHoursAllocatedInfo(existingInfo._id, newData);
-			return res.status(201).json(updatedInfo);
+
+			return res.status(200).json(updatedInfo);
 		}
 
 		newData.chequesType = [PAYRUN_TYPE.SUPERFICIAL];
-		newData.empId = empId;
+		newData.empId = empIdStr;
 		newData.companyName = companyName;
 		newData.payPeriodPayDate = payPeriodPayDate;
 
@@ -550,7 +435,13 @@ const addEmployerContribution = async (req, res) => {
 
 		return res.status(201).json(newInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ addEmployerContribution Error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+
+		return res.status(500).json({ message: "Internal server error" });
 	}
 };
 
