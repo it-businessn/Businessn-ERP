@@ -1,26 +1,36 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
+const SALT_ROUNDS = 10;
 const hashPassword = async (password) => {
+	if (!password || typeof password !== "string") {
+		throw new Error("Invalid password input");
+	}
 	try {
-		return await bcrypt.hash(password, 10);
+		return await bcrypt.hash(password, SALT_ROUNDS);
 	} catch (error) {
-		throw new Error("Password hashing failed");
+		throw new Error(`Password hashing failed: ${error.message}`);
 	}
 };
 
-const hashSyncPassword = async (newPassword) => {
+const hashSyncPassword = async (password) => {
+	if (!password || typeof password !== "string") {
+		throw new Error("Invalid password input");
+	}
 	try {
-		return bcrypt.hashSync(newPassword, 10);
+		return bcrypt.hashSync(password, SALT_ROUNDS);
 	} catch (error) {
-		throw new Error("Password hashing failed");
+		throw new Error(`Password hashing sync failed: ${error.message}`);
 	}
 };
 
-const comparePassword = async (password1, password2) => {
+const comparePassword = async (plainPassword, hashedPassword) => {
+	if (!plainPassword || !hashedPassword) {
+		throw new Error("Both passwords are required for comparison");
+	}
 	try {
-		return await bcrypt.compare(password1, password2);
+		return await bcrypt.compare(plainPassword, hashedPassword);
 	} catch (error) {
-		throw new Error("Password hashing failed");
+		throw new Error(`Password comparison failed: ${error.message}`);
 	}
 };
 
