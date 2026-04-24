@@ -13,8 +13,6 @@ const http = require("http");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const cron = require("node-cron");
-const moment = require("moment");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const socketio = require("socket.io");
@@ -23,8 +21,6 @@ const rateLimit = require("express-rate-limit");
 const path = require("path");
 
 const { authenticateToken } = require("./middleware/auth");
-const { getAllCompanies } = require("./controllers/companyController");
-const { getHolidays, addStatHolidayTimesheet } = require("./controllers/statHolidayController");
 
 const accountingRoutes = require("./routes/accountingRoutes");
 const budgetingRoutes = require("./routes/budgetingRoutes");
@@ -74,6 +70,7 @@ const t4SlipRoutes = require("./routes/t4SlipRoutes");
 const vopayRoutes = require("./routes/vopayRoutes");
 const vopayWebHookRoutes = require("./routes/vopayWebHookRoutes");
 const CONFIG = require("./config");
+const runStatHolidayJob = require("./jobs/statHoliday");
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -199,6 +196,9 @@ app.use("/api/user", userRoutes);
 app.use("/api/vopay", vopayRoutes);
 // app.use("/api/vopay-webhook", vopayWebHookRoutes(io));
 
+// Scheduler job
+runStatHolidayJob();
+
 // Connect to MongoDB
 mongoose.connect(MONGO_URI, {
 	useNewUrlParser: true,
@@ -206,34 +206,6 @@ mongoose.connect(MONGO_URI, {
 });
 
 const db = mongoose.connection;
-
-// Scheduler
-cron.schedule("0 0 * * *", async () => {
-	// every 15sec
-	// cron.schedule("*/15 * * * * *", async () => {
-	const allCompanies = await getAllCompanies();
-	await Promise.all(
-		(allCompanies || [])?.map(async (company) => {
-			const statHolidays = await getHolidays({ companyName: company.name });
-			if (!statHolidays?.length) return;
-
-			const today = moment().format("YYYY-MM-DD");
-			const isStatDay = statHolidays.find(
-				({ date }) => moment.utc(date).format("YYYY-MM-DD") === today,
-			);
-
-			if (isStatDay) {
-				console.log(
-					`Scheduling to add timecard entry for ${company.name} (holiday: ${
-						isStatDay.name || today
-					})`,
-				);
-				await addStatHolidayTimesheet(company.name);
-			}
-		}),
-	);
-});
-
 db.once("open", () => {
 	console.log("Connected to MongoDB");
 });
