@@ -51,7 +51,7 @@ const PayInfo = ({ company, userId }) => {
 				console.error(error);
 			}
 		};
-		fetchEmployeePayInfo();
+		if (userId) fetchEmployeePayInfo();
 	}, [company, userId]);
 
 	useEffect(() => {
