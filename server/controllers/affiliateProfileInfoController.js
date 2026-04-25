@@ -4,7 +4,7 @@ const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Payout = require("../models/Payout");
 
-const { decryptData } = require("../services/encryptDataService");
+const { decryptData, shouldDecrypt } = require("../services/encryptDataService");
 const { findEmployeeProfileInfo, updateProfileInfo } = require("./profileInfoController");
 const CONFIG = require("../config/app.config");
 const { COMPANIES } = require("../constants/constant");
@@ -43,10 +43,9 @@ const getEmployeeProfileInfo = async (req, res) => {
 			return res.status(200).json(user);
 		}
 		if (result) {
-			result.SIN =
-				!result?.SIN?.includes("*") && result?.SINIv && isNaN(Number(result?.SIN))
-					? decryptData(result?.SIN, CONFIG.SIN_KEY, result?.SINIv).replace(/.(?=.{4})/g, "*")
-					: result.SIN?.replace(/.(?=.{4})/g, "*") || "";
+			result.SIN = shouldDecrypt(result?.SIN, result?.SINIv)
+				? decryptData(result?.SIN, CONFIG.SIN_KEY, result?.SINIv).replace(/.(?=.{4})/g, "*")
+				: result.SIN?.replace(/.(?=.{4})/g, "*") || "";
 			return res.status(200).json(result);
 		}
 	} catch (error) {

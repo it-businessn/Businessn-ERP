@@ -12,7 +12,7 @@ const Company = require("../models/Company");
 const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
 const EmployeeT4 = require("../models/EmployeeT4");
 
-const { encryptData, decryptData } = require("../services/encryptDataService");
+const { encryptData, decryptData, shouldDecrypt } = require("../services/encryptDataService");
 const CONFIG = require("../config/app.config");
 const { CURRENT_YEAR } = require("../utils/date.util");
 
@@ -33,15 +33,8 @@ const buildRecord = async (record) => {
 		"streetAddressSuite streetAddress city province postalCode country SIN SINIv firstName middleName lastName",
 	);
 
-	const sinExists =
-		empProfileInfo?.SIN &&
-		empProfileInfo?.SINIv &&
-		!empProfileInfo?.SIN?.includes("*") &&
-		isNaN(empProfileInfo?.SIN);
-
-	const SIN_ENCRYPTION_KEY = CONFIG.SIN_KEY;
-	empProfileInfo.SIN = sinExists
-		? decryptData(empProfileInfo?.SIN, SIN_ENCRYPTION_KEY, empProfileInfo?.SINIv)
+	empProfileInfo.SIN = shouldDecrypt(empProfileInfo?.SIN, empProfileInfo?.SINIv)
+		? decryptData(empProfileInfo?.SIN, CONFIG.SIN_KEY, empProfileInfo?.SINIv)
 		: (!empProfileInfo?.SIN?.includes("*") && isNaN(Number(empProfileInfo?.SIN))) ||
 			  !empProfileInfo?.SIN
 			? ""

@@ -11,6 +11,7 @@ const Company = require("../models/Company");
 
 const { SAVE_FILE_OUTPUT_DIR } = require("./t4SlipController");
 const CONFIG = require("../config/app.config");
+const { shouldDecrypt, decryptData } = require("../services/encryptDataService");
 
 const parser = new xml2js.Parser({ explicitArray: false });
 
@@ -287,7 +288,7 @@ const generateROEXML = async (name, payPeriodId, payPeriodType) => {
 			return new Date(a.payPeriodEndDate) - new Date(b.payPeriodEndDate);
 		});
 
-		if (!SIN?.includes("*") && SINIv && isNaN(Number(SIN))) {
+		if (shouldDecrypt(SIN, SINIv)) {
 			SIN = decryptData(SIN, CONFIG.SIN_KEY, SINIv);
 		}
 		const replacedSIN = replaceStarsWithRandom(SIN);

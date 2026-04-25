@@ -3,7 +3,7 @@ const moment = require("moment");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
-const { decryptData, encryptData } = require("../services/encryptDataService");
+const { decryptData, encryptData, shouldDecrypt } = require("../services/encryptDataService");
 const {
 	addNewUser,
 	addUserEmploymentInfo,
@@ -41,16 +41,14 @@ const getAllProfileInfo = async (req, res) => {
 };
 
 const getEmployeeProfileInfo = async (req, res) => {
+	const { companyName, empId } = req.params;
 	try {
-		const { companyName, empId } = req.params;
-
 		const result = await findEmployeeProfileInfo(empId, companyName);
 		if (result) {
-			const isEncrypted = result?.SINIv && result?.SIN && !result.SIN.includes("*");
-
-			if (isEncrypted) {
-				result.SIN = decryptData(result?.SIN, CONFIG.SIN_KEY, result?.SINIv);
+			if (shouldDecrypt(result?.SIN, result?.SINIv)) {
+				result.SIN = decryptData(result.SIN, CONFIG.SIN_KEY, result.SINIv);
 			}
+
 			// optional masking (recommended for API responses)
 			// if (result.SIN) {
 			// 	result.SIN = result.SIN.replace(/.(?=.{4})/g, "*");

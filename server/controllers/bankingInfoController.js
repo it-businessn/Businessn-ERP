@@ -1,7 +1,7 @@
 const CONFIG = require("../config/app.config");
 const { ALERTS_TYPE } = require("../constants/pay.constants");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
-const { encryptData, decryptData } = require("../services/encryptDataService");
+const { encryptData, decryptData, shouldDecrypt } = require("../services/encryptDataService");
 const { deleteAlerts } = require("./alertsController");
 // const { saveKeyToEnv } = require("../services/fileService");
 
@@ -65,12 +65,7 @@ const getEmployeeBankingInfo = async (req, res) => {
 		// SAFE DECRYPT FUNCTION
 		const safeDecrypt = (value, iv, label) => {
 			try {
-				if (!value || !iv) return "";
-
-				// don't try decrypt masked values
-				if (typeof value === "string" && value.includes("*")) return "";
-
-				return decryptData(value, BANKING_ENCRYPTION_KEY, iv);
+				if (shouldDecrypt(value, iv)) return decryptData(value, BANKING_ENCRYPTION_KEY, iv);
 			} catch (err) {
 				console.error(`❌ Decryption failed for ${label}`, {
 					message: err.message,
