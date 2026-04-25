@@ -69,7 +69,7 @@ const userRoutes = require("./routes/userRoutes");
 const t4SlipRoutes = require("./routes/t4SlipRoutes");
 const vopayRoutes = require("./routes/vopayRoutes");
 const vopayWebHookRoutes = require("./routes/vopayWebHookRoutes");
-const CONFIG = require("./config");
+const CONFIG = require("./config/app.config");
 const runStatHolidayJob = require("./jobs/statHoliday");
 
 const app = express();

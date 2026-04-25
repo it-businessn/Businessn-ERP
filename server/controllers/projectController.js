@@ -5,8 +5,7 @@ const Task = require("../models/Task");
 const SubTask = require("../models/SubTask");
 const Activity = require("../models/Activity");
 const ProjectFile = require("../models/ProjectFile");
-
-const { TIMESHEET_STATUS } = require("../services/data");
+const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
 
 const PREV_DAY = moment.utc().subtract(1, "days");
 

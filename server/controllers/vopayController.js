@@ -1,8 +1,8 @@
 const { generateVopaySignature } = require("../services/encryptDataService");
 const { apiFetch } = require("../helpers/apiFetch");
-const { COMPANIES } = require("../services/data");
 const moment = require("moment");
 const requireEnv = require("../helpers/requireEnv");
+const { COMPANIES } = require("../constants/constant");
 
 const VOPAY_PARTNER_ACCOUNT_ID = requireEnv("VOPAY_PARTNER_ACCOUNT_ID");
 const VOPAY_API_KEY_PROD = requireEnv("VOPAY_API_KEY_PROD");
@@ -24,7 +24,7 @@ const CORNERSTONE_SHARED_KEY = requireEnv("CORNERSTONE_SHARED_KEY");
 const CORNERSTONE_SHARED_SECRET = requireEnv("CORNERSTONE_SHARED_SECRET");
 const CORNERSTONE_CLIENT_ACCOUNT_ID = requireEnv("CORNERSTONE_CLIENTACCOUNTID");
 
-const CONFIG = {
+const VOPAY_CONFIG = {
 	STAGING: {
 		ACCOUNT_ID: VOPAY_PARTNER_ACCOUNT_ID,
 		SHARED_KEY: VOPAY_API_KEY_STAGING,
@@ -57,7 +57,7 @@ const CONFIG = {
 	},
 };
 
-let currentEnv = CONFIG.STAGING;
+let currentEnv = VOPAY_CONFIG.STAGING;
 const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 
 const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
@@ -159,7 +159,7 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 	const isCornerStone = companyName === COMPANIES.CORNERSTONE;
 
 	if (isCornerStone) {
-		currentEnv = CONFIG.CORNERSTONE;
+		currentEnv = VOPAY_CONFIG.CORNERSTONE;
 
 		const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 		const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
@@ -228,7 +228,7 @@ const transferWithdraw = async (req, res) => {
 		return;
 		const isCornerStone = company === COMPANIES.CORNERSTONE;
 		if (isCornerStone) {
-			currentEnv = CONFIG.CORNERSTONE;
+			currentEnv = VOPAY_CONFIG.CORNERSTONE;
 			const DebitorClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 
 			const data = await apiFetch(`${BASE_URL}account/client-accounts/transfer-withdraw`, {
@@ -258,7 +258,7 @@ const fundEmployerWallet = async (req, res) => {
 			req.body;
 
 		//if conrn
-		currentEnv = CONFIG.CORNERSTONE;
+		currentEnv = VOPAY_CONFIG.CORNERSTONE;
 		const ClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 		const data = await apiFetch(`${BASE_URL}eft/fund`, {
 			method: "POST",
@@ -305,7 +305,7 @@ const createClientAccountEmployee = async (req, res) => {
 		} = req.body;
 
 		//if CORNERSTONE
-		currentEnv = CONFIG.CORNERSTONE;
+		currentEnv = VOPAY_CONFIG.CORNERSTONE;
 		const ClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 		const data = await apiFetch(`${BASE_URL}account/client-accounts/individual`, {
 			method: "POST",

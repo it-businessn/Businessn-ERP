@@ -3,13 +3,15 @@ const moment = require("moment");
 const Group = require("../models/Group");
 const Timesheet = require("../models/Timesheet");
 
-const { PAYRUN_TYPE, TIMESHEET_STATUS, PAY_TYPES_TITLE } = require("../services/data");
 const { fetchActiveEmployees } = require("./userController");
 const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
 const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
 const { getPayrunERContributionResult } = require("./payrunERContrCalc");
-const { getSumRegHrs } = require("../services/payrollService");
-const { checkExtraRun } = require("../services/util");
+
+const { getSumRegHrs } = require("../utils/time.util");
+const { checkExtraRun } = require("../helpers/payrollHelper");
+const { PAY_TYPES_TITLE, PAYRUN_TYPE } = require("../constants/pay.constants");
+const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
 
 //update roles-
 

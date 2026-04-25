@@ -1,6 +1,6 @@
 const jwt = require("jwt-simple");
 const moment = require("moment");
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
 
 const SECRET_KEY = CONFIG.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = CONFIG.REFRESH_TOKEN_SECRET;

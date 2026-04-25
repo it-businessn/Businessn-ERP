@@ -10,7 +10,7 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 const Company = require("../models/Company");
 
 const { SAVE_FILE_OUTPUT_DIR } = require("./t4SlipController");
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
 
 const parser = new xml2js.Parser({ explicitArray: false });
 

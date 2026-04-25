@@ -8,7 +8,9 @@ const Lead = require("../models/Lead");
 
 const { sendEmail } = require("../services/emailService");
 const { filePath, fileContentType } = require("../services/fileService");
-const { TICKET_STATUS, COMPANIES, SUPPORT_ADMIN_CONTACT } = require("../services/data");
+const { COMPANIES } = require("../constants/constant");
+const { SUPPORT_ADMIN_CONTACT } = require("../constants/permissions.constants");
+const { TICKET_STATUS } = require("../constants/ticket.constants");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
@@ -80,13 +82,13 @@ const getFilteredTickets = async (req, res) => {
 						companyName,
 						$or: [{ originator: id }, { assignee: id }],
 						status: { $ne: TICKET_STATUS.CLOSED },
-				  }
+					}
 				: {
 						companyName,
 						category,
 						$or: [{ originator: id }, { assignee: id }],
 						status: { $ne: TICKET_STATUS.CLOSED },
-				  };
+					};
 		const tickets = await SupportTicket.find(filterCriteria).sort({ priority: 1 });
 		tickets.map((task) => {
 			task.ticketDaysOpened = Math.round(

@@ -1,6 +1,6 @@
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
+const { ALERTS_TYPE } = require("../constants/pay.constants");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
-const { ALERTS_TYPE } = require("../services/data");
 const { encryptData, decryptData } = require("../services/encryptDataService");
 const { deleteAlerts } = require("./alertsController");
 // const { saveKeyToEnv } = require("../services/fileService");

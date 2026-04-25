@@ -1,4 +1,4 @@
-const { TIMESHEET_STATUS } = require("../services/data");
+const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
 
 [
 	{

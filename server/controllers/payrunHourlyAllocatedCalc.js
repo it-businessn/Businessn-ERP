@@ -1,5 +1,5 @@
+const { EARNING_TYPE } = require("../constants/earning.constants");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { EARNING_TYPE } = require("../services/data");
 const {
 	findAdditionalSuperficialHoursAllocatedInfo,
 	findAdditionalManualHoursAllocatedInfo,
@@ -382,10 +382,10 @@ const getGroupedData = async (empTimesheetData, employee, companyName, isExtraPa
 		!isExtraPayRun && isFT
 			? empPayInfoResult?.roles?.[0]?.fullTimeStandardHours
 			: !isExtraPayRun && isPT
-			? empPayInfoResult?.roles?.[0]?.partTimeStandardHours
-			: empTimesheetData
-			? empTimesheetData.totalRegHoursWorked
-			: 0;
+				? empPayInfoResult?.roles?.[0]?.partTimeStandardHours
+				: empTimesheetData
+					? empTimesheetData.totalRegHoursWorked
+					: 0;
 	const totalOvertimeHoursWorked = empTimesheetData ? empTimesheetData.totalOvertimeHoursWorked : 0;
 	const totalDblOvertimeHoursWorked = empTimesheetData
 		? empTimesheetData.totalDblOvertimeHoursWorked

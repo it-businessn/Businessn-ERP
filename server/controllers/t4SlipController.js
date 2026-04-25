@@ -13,8 +13,8 @@ const EmployeeGovernmentInfo = require("../models/EmployeeGovernmentInfo");
 const EmployeeT4 = require("../models/EmployeeT4");
 
 const { encryptData, decryptData } = require("../services/encryptDataService");
-const { CURRENT_YEAR } = require("../services/data");
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
+const { CURRENT_YEAR } = require("../utils/date.util");
 
 const parser = new xml2js.Parser({ explicitArray: false });
 

@@ -5,9 +5,9 @@ const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const { hashPassword, comparePassword } = require("../services/passwordService");
-const { findCompany, addEmployee } = require("../helpers/userHelper");
 const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
+const { addEmployee, findCompany } = require("../services/userService");
 
 const login = async (req, res) => {
 	const { email, password, companyId } = req.body;

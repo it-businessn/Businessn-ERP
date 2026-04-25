@@ -1,4 +1,4 @@
-const requireEnv = require("./helpers/requireEnv");
+const requireEnv = require("../helpers/requireEnv");
 
 const toHexBuffer = (keyName) => {
 	const value = requireEnv(keyName);

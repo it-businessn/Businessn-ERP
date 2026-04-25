@@ -1,4 +1,3 @@
-const { getShadowUserIds } = require("../helpers/userHelper");
 const CostCenter = require("../models/CostCenter");
 const Crew = require("../models/Crew");
 const DailyTotals = require("../models/DailyTotals");
@@ -11,8 +10,8 @@ const Location = require("../models/Location");
 const Module = require("../models/Module");
 const Setup = require("../models/Setup");
 const WorkShift = require("../models/WorkShift");
-
-const { CURRENT_YEAR } = require("../services/data");
+const { getShadowUserIds } = require("../services/userService");
+const { CURRENT_YEAR } = require("../utils/date.util");
 
 const getAllSetup = async (req, res) => {
 	try {

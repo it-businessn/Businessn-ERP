@@ -1,16 +1,12 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
 
-const { COMPANIES } = require("../services/data");
-const { getSumTotal } = require("../services/payrollService");
 const { findEmployeeGovernmentInfoDetails } = require("./governmentInfoController");
 const {
-	calculateTimesheetApprovedHours,
-	findEmployeeBenefitInfo,
 	buildNewEmpPayStubInfo,
+	getSumTotal,
+	appendPrevPayInfoBalance,
 } = require("../helpers/payrollHelper");
-const { getPayrollActiveEmployees } = require("../helpers/userHelper");
-const { appendPrevPayInfoBalance } = require("../helpers/payStubHelper");
 const { findAllAdditionalHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 const { addSeparateManualCheque } = require("./payStubManualCalc");
 const { addSeparatePayoutCheque } = require("./payStubPayoutCalc");
@@ -18,6 +14,13 @@ const { addSeparateSuperficialCheque } = require("./payStubSuperficialCalc");
 const { buildFundingTotalsReport } = require("./reportController");
 const { generateT4Slip } = require("./t4SlipController");
 const { getEmployeeId } = require("./userController");
+const { COMPANIES } = require("../constants/constant");
+const { PAYRUN_TYPE } = require("../constants/pay.constants");
+const {
+	calculateTimesheetApprovedHours,
+	findEmployeeBenefitInfo,
+} = require("../services/payrollService");
+const { getPayrollActiveEmployees } = require("../services/userService");
 
 const buildPayStub = (
 	empId,
@@ -685,7 +688,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 		// return;
 
 		// const kg = await EmployeePayStub.updateMany(
-		// 	{ companyName: COMPANIES.NW },
+		//  { companyName: COMPANIES.NW },
 		// 	{ $set: { scheduleFrequency: "Biweekly" } },
 		// );
 		// console.log("upd", kg);

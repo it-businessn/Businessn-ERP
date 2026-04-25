@@ -1,4 +1,4 @@
-const { getSumTotal } = require("../services/payrollService");
+const { getSumTotal } = require("../helpers/payrollHelper");
 const { findAdditionalManualAmountAllocatedInfo } = require("./payrunEEContrCalc");
 const { findAdditionalManualHoursAllocatedInfo } = require("./payrunExtraAllocationInfoController");
 

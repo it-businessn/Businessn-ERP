@@ -1,7 +1,7 @@
-const { getShadowUserIds } = require("../helpers/userHelper");
+const { ERP_MODULES, COMPANIES } = require("../constants/constant");
 const Company = require("../models/Company");
 const Module = require("../models/Module");
-const { COMPANIES } = require("../services/data");
+const { getShadowUserIds } = require("../services/userService");
 
 const getCompanies = async (req, res) => {
 	try {
@@ -60,16 +60,6 @@ const updateCompany = async (req, res) => {
 
 const addCompanyModules = async (companyName) => {
 	try {
-		const ERP_MODULES = [
-			"Sales",
-			"Project Management",
-			"Payroll",
-			"Scheduling",
-			"HR",
-			"Operations",
-			"Accounting",
-			"Budgeting",
-		];
 		const modules = ERP_MODULES.map((module) => {
 			return { name: module, companyName };
 		});

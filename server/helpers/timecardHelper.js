@@ -2,7 +2,7 @@ const moment = require("moment");
 const momentTz = require("moment-timezone");
 
 const Timesheet = require("../models/Timesheet");
-const { PAY_TYPES_TITLE } = require("../services/data");
+const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
 
 const getTimeFormat = (timestamp) => {
 	let time = moment(timestamp);

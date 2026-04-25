@@ -11,21 +11,13 @@ const {
 	addTimesheetEntry,
 	calcTotalWorkedHours,
 } = require("../helpers/timecardHelper");
-
-const {
-	getUTCTime,
-	startOfDay,
-	endOfDay,
-	getPayType,
-	calcTotalHours,
-	PAY_TYPES_TITLE,
-	PUNCH_CODE,
-	PARAM_HOURS,
-	TIMESHEET_SOURCE,
-	COMPANIES,
-	ROLES,
-} = require("../services/data");
 const { getHolidays } = require("./statHolidayController");
+const { COMPANIES } = require("../constants/constant");
+const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
+const { ROLES } = require("../constants/roles.constants");
+const { TIMESHEET_SOURCE, PUNCH_CODE, PARAM_HOURS } = require("../constants/timesheet.constants");
+const { getPayType, calcTotalHours } = require("../helpers/payrollHelper");
+const { getUTCTime, startOfDay, endOfDay } = require("../utils/date.util");
 
 const getTADUsers = async (req, res) => {
 	try {

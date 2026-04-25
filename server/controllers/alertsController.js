@@ -1,10 +1,9 @@
+const { ALERTS_TYPE } = require("../constants/pay.constants");
 const EmployeeAlertsViolationInfo = require("../models/EmployeeAlertsViolationInfo");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
-
-const { ALERTS_TYPE } = require("../services/data");
 
 const findAlertInfo = async (record) => await EmployeeAlertsViolationInfo.findOne(record);
 

@@ -34,10 +34,6 @@ const showPercent = (stored) => {
 	return Number(num.toFixed(2));
 };
 
-const checkExtraRun = (isExtraRun) => {
-	return isExtraRun === true || isExtraRun === "true";
-};
-
 const isPercentType = (val) => typeof val === "string" && val.includes("%");
 
-module.exports = { showPercent, checkExtraRun, isPercentType, normalizePercent, getPercent };
+module.exports = { showPercent, isPercentType, normalizePercent, getPercent };

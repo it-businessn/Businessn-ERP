@@ -1,6 +1,5 @@
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const {
-	findEmployeeBenefitInfo,
 	getContributionsDeductions,
 	calcHoursWorkedTotals,
 	calcPayRates,
@@ -10,6 +9,7 @@ const {
 	findAdditionalHoursAllocatedInfo,
 	findEESuperficialContribution,
 } = require("./payrunExtraAllocationInfoController");
+const { findEmployeeBenefitInfo } = require("../services/payrollService");
 
 const getPayrunERContributionResult = async (
 	activeEmployees,

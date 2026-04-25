@@ -5,13 +5,13 @@ const FundingTotalsPay = require("../models/FundingTotalsPay");
 const Order = require("../models/Order");
 const JournalEntry = require("../models/JournalEntry");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
-
-const { PAYRUN_TYPE, COMPANIES } = require("../services/data");
-const { checkExtraRun } = require("../services/util");
-const { sortByEmpFullName, getPayrollActiveEmployees } = require("../helpers/userHelper");
 const { updatePayGroup } = require("./setUpController");
 const { vopayFundTransfer } = require("./vopayController");
 const { getEmployeeId } = require("./userController");
+const { checkExtraRun } = require("../helpers/payrollHelper");
+const { COMPANIES } = require("../constants/constant");
+const { PAYRUN_TYPE } = require("../constants/pay.constants");
+const { sortByEmpFullName } = require("../services/userService");
 
 const buildFundingTotalsReport = async (
 	fundingTotal,

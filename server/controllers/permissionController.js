@@ -1,11 +1,11 @@
-const UserPermissions = require("../models/permissions");
 const {
-	BUSINESSN_ADMIN_PERMISSION,
+	CLIENT_ORG_MANAGER_PERMISSION,
 	CLIENT_ORG_ADMIN_PERMISSION,
 	CLIENT_ORG_EMP_PERMISSION,
-	ROLES,
-	CLIENT_ORG_MANAGER_PERMISSION,
-} = require("../services/data");
+	BUSINESSN_ADMIN_PERMISSION,
+} = require("../constants/permissions.constants");
+const { ROLES } = require("../constants/roles.constants");
+const UserPermissions = require("../models/permissions");
 
 const getUserPermissions = async (req, res) => {
 	try {

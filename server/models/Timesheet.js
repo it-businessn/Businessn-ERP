@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { TIMESHEET_STATUS } = require("../services/data");
+const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
 
 const timesheetSchema = new mongoose.Schema(
 	{

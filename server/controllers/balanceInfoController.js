@@ -1,6 +1,6 @@
-const { findEmployeePayStub } = require("../helpers/payStubHelper");
 const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
-const { showPercent, isPercentType, normalizePercent } = require("../services/util");
+const { showPercent, isPercentType, normalizePercent } = require("../helpers/percent");
+const { findEmployeePayStub } = require("../services/payrollService");
 
 const findEmployeeBalanceInfo = async (empId, companyName, isUpdate) => {
 	try {

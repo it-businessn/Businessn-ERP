@@ -5,10 +5,10 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Payout = require("../models/Payout");
 
 const { decryptData } = require("../services/encryptDataService");
-const { COMPANIES } = require("../services/data");
-const { addEmployee } = require("../helpers/userHelper");
 const { findEmployeeProfileInfo, updateProfileInfo } = require("./profileInfoController");
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
+const { COMPANIES } = require("../constants/constant");
+const { addEmployee } = require("../services/userService");
 
 const getAffiliateProfileInfo = async (req, res) => {
 	const { companyName } = req.params;

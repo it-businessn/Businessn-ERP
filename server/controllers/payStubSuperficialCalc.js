@@ -1,4 +1,3 @@
-const { getSumTotal } = require("../services/payrollService");
 const { findAdditionalSuperficialAmountAllocatedInfo } = require("./payrunEEContrCalc");
 const {
 	findAdditionalSuperficialHoursAllocatedInfo,

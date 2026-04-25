@@ -1,6 +1,6 @@
 const jwt = require("jwt-simple");
 const moment = require("moment");
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
 
 const getResetPasswordLink = (user) => {
 	try {

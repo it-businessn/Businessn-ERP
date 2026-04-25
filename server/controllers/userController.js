@@ -7,26 +7,27 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const UserActivity = require("../models/UserActivity");
-
-const { ROLES, COMPANIES } = require("../services/data");
 const { sendEmail } = require("../services/emailService");
 const { getResetPasswordLink } = require("../services/tokenService");
-const {
-	filterResultByPaygroupOption,
-	filterResultByDepartment,
-	findEmployee,
-	findCompany,
-	addEmployee,
-	sortByEmpFullName,
-	getUserEmploymentRoleInfo,
-	getPayrollActiveEmployees,
-	getShadowUserIds,
-	getSalariedIds,
-	getPayrollInActiveEmployees,
-	getPayrollTerminatedEmployees,
-} = require("../helpers/userHelper");
+
 const { findGroupEmployees } = require("./setUpController");
 const { setInitialPermissions } = require("./permissionController");
+const { COMPANIES } = require("../constants/constant");
+const { ROLES } = require("../constants/roles.constants");
+const {
+	addEmployee,
+	findCompany,
+	findEmployee,
+	filterResultByPaygroupOption,
+	filterResultByDepartment,
+	getShadowUserIds,
+	getSalariedIds,
+	getPayrollActiveEmployees,
+	getPayrollInActiveEmployees,
+	getPayrollTerminatedEmployees,
+	getUserEmploymentRoleInfo,
+	sortByEmpFullName,
+} = require("../services/userService");
 
 const getAllEmployees = async (req, res) => {
 	try {

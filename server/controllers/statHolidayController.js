@@ -1,12 +1,13 @@
 const moment = require("moment");
 
-const { getPayrollActiveEmployees } = require("../helpers/userHelper");
 const { addTimesheetEntry } = require("../helpers/timecardHelper");
 
 const Holiday = require("../models/Holiday");
 const Timesheet = require("../models/Timesheet");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-const { PARAM_HOURS, TIMESHEET_SOURCE, PAY_TYPES_TITLE } = require("../services/data");
+const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
+const { TIMESHEET_SOURCE, PARAM_HOURS } = require("../constants/timesheet.constants");
+const { getPayrollActiveEmployees } = require("../services/userService");
 
 const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 	const startOfToday = moment().startOf("day");

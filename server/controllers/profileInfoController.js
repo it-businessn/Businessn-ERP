@@ -4,7 +4,6 @@ const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const { decryptData, encryptData } = require("../services/encryptDataService");
-const { ALERTS_TYPE } = require("../services/data");
 const {
 	addNewUser,
 	addUserEmploymentInfo,
@@ -13,9 +12,10 @@ const {
 	addUserBenefitInfo,
 	addUserBankInfo,
 } = require("./empDataController");
-const { findCompany, addEmployee } = require("../helpers/userHelper");
 const { deleteAlerts } = require("./alertsController");
-const CONFIG = require("../config");
+const CONFIG = require("../config/app.config");
+const { ALERTS_TYPE } = require("../constants/pay.constants");
+const { addEmployee, findCompany } = require("../services/userService");
 
 const getAllProfileInfo = async (req, res) => {
 	const { companyName } = req.params;

@@ -6,10 +6,10 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const { encryptData } = require("../services/encryptDataService");
-const { addEmployee } = require("../helpers/userHelper");
 const { updateTADEmployee } = require("./timecardController");
-const { normalizePercent, isPercentType } = require("../services/util");
-const CONFIG = require("../config");
+const { normalizePercent, isPercentType } = require("../helpers/percent");
+const CONFIG = require("../config/app.config");
+const { addEmployee } = require("../services/userService");
 
 const getNewUserID = async (companyName, data) => {
 	const newEmployee = await addEmployee(companyName, data);

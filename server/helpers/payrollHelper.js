@@ -1,94 +1,19 @@
-const moment = require("moment");
-const Timesheet = require("../models/Timesheet");
-const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
-const {
-	calcSalary,
-	convertHrsToFloat,
-	getTaxDetails,
-	getSumRegHrs,
-} = require("../services/payrollService");
-const { TIMESHEET_STATUS, PAY_TYPES_TITLE, EARNING_TYPE } = require("../services/data");
-const { isPercentType } = require("../services/util");
+const { isPercentType } = require("./percent");
+const { getTaxDetails } = require("../services/taxService");
+const { convertHrsToFloat } = require("../utils/time.util");
+const { EARNING_TYPE } = require("../constants/earning.constants");
+const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
+const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
+const { momentTime, momentDuration } = require("../utils/date.util");
+const { findEmployeePayStub } = require("../services/payrollService");
 
-const getApprovedTimesheets = async (record) =>
-	await Timesheet.find(record)
-		.sort({ clockIn: -1 })
-		.populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["companyId", "employeeId", "fullName", "payrollStatus"],
-		});
+// const calcSalary = (hrs, rate) => (hrs / 60).toFixed(2) * rate;
+const calcSalary = (hrs, rate) => hrs * rate;
 
-const findEmployeeBenefitInfo = async (empId, companyName) =>
-	await EmployeeBalanceInfo.findOne({
-		empId,
-		companyName,
-	});
+const getSumTotal = (data1, data2) => (data1 || 0) + data2;
 
-const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) => {
-	const timesheets = await getApprovedTimesheets({
-		deleted: false,
-		companyName,
-		clockIn: {
-			$gte: moment(startDate).utc().startOf("day").toDate(),
-			$lte: moment(endDate).utc().endOf("day").toDate(),
-		},
-		approveStatus: TIMESHEET_STATUS.APPROVED,
-	});
-
-	const timesheetApprovedHoursSum = timesheets?.reduce((acc, timesheet) => {
-		if (!acc[timesheet.employeeId]) {
-			acc[timesheet.employeeId] = {
-				_id: timesheet._id,
-				empId: timesheet.employeeId,
-				totalRegHoursWorked: 0,
-				totalRegHoursWorked2: 0,
-				totalOvertimeHoursWorked: 0,
-				totalDblOvertimeHoursWorked: 0,
-				totalStatDayHoursWorked: 0,
-				totalStatHours: 0,
-				totalSickHoursWorked: 0,
-				totalVacationHoursWorked: 0,
-				totalBereavementHoursWorked: 0,
-				totalPersonalDayHoursWorked: 0,
-			};
-		}
-
-		if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-			acc[timesheet.employeeId].totalRegHoursWorked +=
-				getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
-
-		// if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-		// acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2 || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
-			acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY)
-			acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
-				timesheet.dblOvertimeHoursWorked || 0;
-		if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY)
-			acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.STAT_WORK_PAY)
-			acc[timesheet.employeeId].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.SICK_PAY)
-			acc[timesheet.employeeId].totalSickHoursWorked += timesheet.sickPayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY)
-			acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.BEREAVEMENT_PAY)
-			acc[timesheet.employeeId].totalBereavementHoursWorked += timesheet.bereavementPayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.PERSONAL_DAY_PAY)
-			acc[timesheet.employeeId].totalPersonalDayHoursWorked += timesheet.personalPayHours || 0;
-		return acc;
-	}, {});
-
-	const result = Object.values(timesheetApprovedHoursSum);
-	return result;
+const checkExtraRun = (isExtraRun) => {
+	return isExtraRun === true || isExtraRun === "true";
 };
 
 const calcRegHrsWorked = (earningType, FTHrs, PTHrs, regHrs, isExtraRun) =>
@@ -578,12 +503,302 @@ const validateContribution = (
 	return newAmount;
 };
 
+const getPayType = (isBreak = false) =>
+	isBreak ? PAY_TYPES_TITLE.REG_PAY_BRK : PAY_TYPES_TITLE.REG_PAY;
+
+const calcTotalHours = (data) => {
+	if (!(data?.clockIn && data?.clockOut)) {
+		return;
+	}
+	const clockIn = momentTime(data?.clockIn);
+	const clockOut = momentTime(data?.clockOut);
+	const hasStartBreak = data?.startBreaks?.length;
+	const hasEndBreak = data?.endBreaks?.length;
+
+	const break1Start = hasStartBreak && momentTime(data?.startBreaks[0]);
+	const break1End = hasEndBreak && momentTime(data?.endBreaks[0]);
+
+	const break2Start = hasStartBreak > 1 && momentTime(data?.startBreaks[1]);
+	const break2End = hasEndBreak > 1 && momentTime(data?.startBreaks[1]);
+
+	const break3Start = hasStartBreak > 2 && momentTime(data?.startBreaks[2]);
+	const break3End = hasEndBreak > 2 && momentTime(data?.startBreaks[2]);
+
+	const break1Duration = momentDuration(break1Start, break1End);
+	const break2Duration = momentDuration(break2Start, break2End);
+	const break3Duration = momentDuration(break3Start, break3End);
+
+	const totalBreakHours =
+		hasStartBreak && hasEndBreak ? break1Duration.add(break2Duration).add(break3Duration) : 0;
+
+	const totalClockInToOut = momentDuration(clockIn, clockOut);
+	const totalWorkingTime = totalClockInToOut.subtract(totalBreakHours);
+	const hours = Math.floor(totalWorkingTime.asHours());
+	const minutes = Math.floor(totalWorkingTime.minutes());
+
+	return {
+		totalBreakHours: totalBreakHours ? Math.floor(totalBreakHours.asHours()) : 0,
+		totalWorkedHours: `${hours < 10 ? `0${hours < 0 ? 0 : hours}` : hours}:${
+			minutes < 10 ? `0${minutes < 0 ? 0 : minutes}` : minutes
+		}`,
+	};
+};
+
+const appendPrevPayInfoBalance = (prevPayPayInfo, newPayStub) => {
+	const {
+		YTDCommission,
+		YTDRetroactive,
+		YTDVacationPayout,
+		YTDBonus,
+		YTDTerminationPayout,
+		YTDRegHoursWorked,
+		YTDOvertimeHoursWorked,
+		YTDDblOvertimeHoursWorked,
+		YTDStatDayHoursWorked,
+		YTDStatHoursWorked,
+		YTDSickHoursWorked,
+		YTDVacationHoursWorked,
+		YTDBereavementHoursWorked,
+		YTDPersonalDayHoursWorked,
+		YTDSprayHoursWorked,
+		YTDFirstAidHoursWorked,
+		YTDRegPayTotal,
+		YTDRegPayTotal2,
+		YTDOverTimePayTotal,
+		YTDDblOverTimePayTotal,
+		YTDStatWorkPayTotal,
+		YTDStatPayTotal,
+		YTDSickPayTotal,
+		YTDVacationPayTotal,
+		YTDBereavementPayTotal,
+		YTDPersonalDayPayTotal,
+		YTD_FDTaxDeductions,
+		YTDStateTaxDeductions,
+		YTD_IncomeTaxDeductions,
+		YTD_EmployeeEIDeductions,
+		YTD_EmployerEIDeductions,
+		YTD_EmployerCPPDeductions,
+		YTD_CPPDeductions,
+		YTDUnionDuesDeductions,
+		YTDEmployeeHealthContributions,
+		YTDEmployeePensionContributions,
+		YTDEmployerPensionContributions,
+		YTDEmployerHealthContributions,
+		YTDEmployerContributions,
+		YTDVacationAccrued,
+		YTDVacationUsed,
+		YTDVacationBalanceFwd,
+		YTDVacationBalance,
+		YTDSprayPayTotal,
+		YTDFirstAidPayTotal,
+		YTDPayInLieuPay,
+		YTDBenefitPay,
+		YTDBankedTimePay,
+		YTDRegularByAmount,
+		YTDPrimaryDeposit,
+		YTDOtherDeductions,
+		YTDGrossPay,
+		YTDDeductionsTotal,
+		YTDNetPay,
+		YTDSickAccrued,
+		YTDSickUsed,
+		YTDSickBalance,
+	} = newPayStub;
+	if (!prevPayPayInfo) {
+		prevPayPayInfo = {};
+	}
+	prevPayPayInfo.YTDCommission = getSumTotal(prevPayPayInfo.YTDCommission, YTDCommission);
+	prevPayPayInfo.YTDRetroactive = getSumTotal(prevPayPayInfo.YTDRetroactive, YTDRetroactive);
+	prevPayPayInfo.YTDVacationPayout = getSumTotal(
+		prevPayPayInfo.YTDVacationPayout,
+		YTDVacationPayout,
+	);
+	prevPayPayInfo.YTDBonus = getSumTotal(prevPayPayInfo.YTDBonus, YTDBonus);
+	prevPayPayInfo.YTDTerminationPayout = getSumTotal(
+		prevPayPayInfo.YTDTerminationPayout,
+		YTDTerminationPayout,
+	);
+	prevPayPayInfo.YTDRegHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDRegHoursWorked,
+		YTDRegHoursWorked,
+	);
+	prevPayPayInfo.YTDOvertimeHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDOvertimeHoursWorked,
+		YTDOvertimeHoursWorked,
+	);
+	prevPayPayInfo.YTDDblOvertimeHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDDblOvertimeHoursWorked,
+		YTDDblOvertimeHoursWorked,
+	);
+	prevPayPayInfo.YTDStatDayHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDStatDayHoursWorked,
+		YTDStatDayHoursWorked,
+	);
+	prevPayPayInfo.YTDStatHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDStatHoursWorked,
+		YTDStatHoursWorked,
+	);
+	prevPayPayInfo.YTDSickHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDSickHoursWorked,
+		YTDSickHoursWorked,
+	);
+	prevPayPayInfo.YTDVacationHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDVacationHoursWorked,
+		YTDVacationHoursWorked,
+	);
+	prevPayPayInfo.YTDBereavementHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDBereavementHoursWorked,
+		YTDBereavementHoursWorked,
+	);
+	prevPayPayInfo.YTDPersonalDayHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDPersonalDayHoursWorked,
+		YTDPersonalDayHoursWorked,
+	);
+	prevPayPayInfo.YTDSprayHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDSprayHoursWorked,
+		YTDSprayHoursWorked,
+	);
+	prevPayPayInfo.YTDFirstAidHoursWorked = getSumTotal(
+		prevPayPayInfo.YTDFirstAidHoursWorked,
+		YTDFirstAidHoursWorked,
+	);
+
+	prevPayPayInfo.YTDRegPayTotal = getSumTotal(prevPayPayInfo.YTDRegPayTotal, YTDRegPayTotal);
+	prevPayPayInfo.YTDRegPayTotal2 = getSumTotal(prevPayPayInfo.YTDRegPayTotal, YTDRegPayTotal2);
+	prevPayPayInfo.YTDOverTimePayTotal = getSumTotal(
+		prevPayPayInfo.YTDOverTimePayTotal,
+		YTDOverTimePayTotal,
+	);
+	prevPayPayInfo.YTDDblOverTimePayTotal = getSumTotal(
+		prevPayPayInfo.YTDDblOverTimePayTotal,
+		YTDDblOverTimePayTotal,
+	);
+	prevPayPayInfo.YTDStatWorkPayTotal = getSumTotal(
+		prevPayPayInfo.YTDStatWorkPayTotal,
+		YTDStatWorkPayTotal,
+	);
+	prevPayPayInfo.YTDStatPayTotal = getSumTotal(prevPayPayInfo.YTDStatPayTotal, YTDStatPayTotal);
+	prevPayPayInfo.YTDSickPayTotal = getSumTotal(prevPayPayInfo.YTDSickPayTotal, YTDSickPayTotal);
+	prevPayPayInfo.YTDVacationPayTotal = getSumTotal(
+		prevPayPayInfo.YTDVacationPayTotal,
+		YTDVacationPayTotal,
+	);
+	prevPayPayInfo.YTDBereavementPayTotal = getSumTotal(
+		prevPayPayInfo.YTDBereavementPayTotal,
+		YTDBereavementPayTotal,
+	);
+	prevPayPayInfo.YTDPersonalDayPayTotal = getSumTotal(
+		prevPayPayInfo.YTDPersonalDayPayTotal,
+		YTDPersonalDayPayTotal,
+	);
+
+	prevPayPayInfo.YTD_FDTaxDeductions = getSumTotal(
+		prevPayPayInfo.YTD_FDTaxDeductions,
+		YTD_FDTaxDeductions,
+	);
+	prevPayPayInfo.YTDStateTaxDeductions = getSumTotal(
+		prevPayPayInfo.YTDStateTaxDeductions,
+		YTDStateTaxDeductions,
+	);
+	prevPayPayInfo.YTD_IncomeTaxDeductions = getSumTotal(
+		prevPayPayInfo.YTD_IncomeTaxDeductions,
+		YTD_IncomeTaxDeductions,
+	);
+	prevPayPayInfo.YTD_EmployeeEIDeductions = getSumTotal(
+		prevPayPayInfo.YTD_EmployeeEIDeductions,
+		YTD_EmployeeEIDeductions,
+	);
+	prevPayPayInfo.YTD_EmployerEIDeductions = getSumTotal(
+		prevPayPayInfo.YTD_EmployerEIDeductions,
+		YTD_EmployerEIDeductions,
+	);
+	prevPayPayInfo.YTD_EmployerCPPDeductions = getSumTotal(
+		prevPayPayInfo.YTD_EmployerCPPDeductions,
+		YTD_EmployerCPPDeductions,
+	);
+	prevPayPayInfo.YTD_CPPDeductions = getSumTotal(
+		prevPayPayInfo.YTD_CPPDeductions,
+		YTD_CPPDeductions,
+	);
+	prevPayPayInfo.YTDUnionDuesDeductions = getSumTotal(
+		prevPayPayInfo.YTDUnionDuesDeductions,
+		YTDUnionDuesDeductions,
+	);
+	prevPayPayInfo.YTDEmployeeHealthContributions = getSumTotal(
+		prevPayPayInfo.YTDEmployeeHealthContributions,
+		YTDEmployeeHealthContributions,
+	);
+	prevPayPayInfo.YTDEmployeePensionContributions = getSumTotal(
+		prevPayPayInfo.YTDEmployeePensionContributions,
+		YTDEmployeePensionContributions,
+	);
+	prevPayPayInfo.YTDEmployerPensionContributions = getSumTotal(
+		prevPayPayInfo.YTDEmployerPensionContributions,
+		YTDEmployerPensionContributions,
+	);
+	prevPayPayInfo.YTDEmployerHealthContributions = getSumTotal(
+		prevPayPayInfo.YTDEmployerHealthContributions,
+		YTDEmployerHealthContributions,
+	);
+	prevPayPayInfo.YTDEmployerContributions = getSumTotal(
+		prevPayPayInfo.YTDEmployerContributions,
+		YTDEmployerContributions,
+	);
+	// prevPayPayInfo.YTDVacationAccrued = getSumTotal(
+	// 	prevPayPayInfo.YTDVacationAccrued,
+	// 	YTDVacationAccrued,
+	// );
+	prevPayPayInfo.YTDVacationAccrued = YTDVacationAccrued;
+	prevPayPayInfo.YTDVacationUsed = getSumTotal(prevPayPayInfo.YTDVacationUsed, YTDVacationUsed);
+	prevPayPayInfo.YTDVacationBalanceFwd = getSumTotal(
+		prevPayPayInfo.YTDVacationBalanceFwd,
+		YTDVacationBalanceFwd,
+	);
+	prevPayPayInfo.YTDVacationBalance = getSumTotal(
+		prevPayPayInfo.YTDVacationBalance,
+		YTDVacationBalance,
+	);
+	prevPayPayInfo.YTDSprayPayTotal = getSumTotal(prevPayPayInfo.YTDSprayPayTotal, YTDSprayPayTotal);
+	prevPayPayInfo.YTDFirstAidPayTotal = getSumTotal(
+		prevPayPayInfo.YTDFirstAidPayTotal,
+		YTDFirstAidPayTotal,
+	);
+	prevPayPayInfo.YTDPayInLieuPay = getSumTotal(prevPayPayInfo.YTDPayInLieuPay, YTDPayInLieuPay);
+	prevPayPayInfo.YTDBenefitPay = getSumTotal(prevPayPayInfo.YTDBenefitPay, YTDBenefitPay);
+	prevPayPayInfo.YTDBankedTimePay = getSumTotal(prevPayPayInfo.YTDBankedTimePay, YTDBankedTimePay);
+	prevPayPayInfo.YTDRegularByAmount = getSumTotal(
+		prevPayPayInfo.YTDRegularByAmount,
+		YTDRegularByAmount,
+	);
+	prevPayPayInfo.YTDPrimaryDeposit = getSumTotal(
+		prevPayPayInfo.YTDPrimaryDeposit,
+		YTDPrimaryDeposit,
+	);
+	prevPayPayInfo.YTDOtherDeductions = getSumTotal(
+		prevPayPayInfo.YTDOtherDeductions,
+		YTDOtherDeductions,
+	);
+	prevPayPayInfo.YTDGrossPay = getSumTotal(prevPayPayInfo.YTDGrossPay, YTDGrossPay);
+	prevPayPayInfo.YTDDeductionsTotal = getSumTotal(
+		prevPayPayInfo.YTDDeductionsTotal,
+		YTDDeductionsTotal,
+	);
+	prevPayPayInfo.YTDNetPay = getSumTotal(prevPayPayInfo.YTDNetPay, YTDNetPay);
+	prevPayPayInfo.YTDSickAccrued = getSumTotal(prevPayPayInfo.YTDSickAccrued, YTDSickAccrued);
+	prevPayPayInfo.YTDSickUsed = getSumTotal(prevPayPayInfo.YTDSickUsed, YTDSickUsed);
+	prevPayPayInfo.YTDSickBalance = getSumTotal(prevPayPayInfo.YTDSickBalance, YTDSickBalance);
+	return prevPayPayInfo;
+};
+
 module.exports = {
-	findEmployeeBenefitInfo,
 	buildNewEmpPayStubInfo,
 	getContributionsDeductions,
-	calculateTimesheetApprovedHours,
 	calcHoursWorkedTotals,
 	calcEmpBenefits,
 	calcPayRates,
+	checkExtraRun,
+	getSumTotal,
+	getPayType,
+	calcTotalHours,
+	appendPrevPayInfoBalance,
 };

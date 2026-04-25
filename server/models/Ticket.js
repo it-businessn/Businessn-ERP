@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { TICKET_STATUS } = require("../services/data");
+const { TICKET_STATUS } = require("../constants/ticket.constants");
 
 const supportTicketSchema = new mongoose.Schema(
 	{

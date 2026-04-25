@@ -4,25 +4,23 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Timesheet = require("../models/Timesheet");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 
-const { calcPayRates } = require("../helpers/payrollHelper");
+const { calcPayRates, getPayType } = require("../helpers/payrollHelper");
 const {
 	addOvertimeRecord,
 	addTimesheetEntry,
 	calcTotalWorkedHours,
 } = require("../helpers/timecardHelper");
-
-const {
-	PAY_TYPES_TITLE,
-	TIMESHEET_STATUS,
-	PARAM_HOURS,
-	NEXT_DAY,
-	PUNCH_CODE,
-	getPayType,
-	EARNING_TYPE,
-	TIMESHEET_SOURCE,
-	ROLES,
-} = require("../services/data");
 const { findEmpPayInfo } = require("./employmentInfoController");
+const { EARNING_TYPE } = require("../constants/earning.constants");
+const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
+const { ROLES } = require("../constants/roles.constants");
+const {
+	TIMESHEET_STATUS,
+	TIMESHEET_SOURCE,
+	PUNCH_CODE,
+	PARAM_HOURS,
+} = require("../constants/timesheet.constants");
+const { NEXT_DAY } = require("../utils/date.util");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	try {

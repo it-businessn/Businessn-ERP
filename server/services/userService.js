@@ -1,9 +1,9 @@
+const { EARNING_TYPE } = require("../constants/earning.constants");
+const { ROLES } = require("../constants/roles.constants");
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
-
-const { ROLES, EARNING_TYPE } = require("../services/data");
 
 const addEmployee = async (name, data) => {
 	try {
