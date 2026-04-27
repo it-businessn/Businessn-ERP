@@ -34,7 +34,7 @@ const verifyToken = (token, secret) => {
 			throw new Error("Token has expired");
 		}
 	} catch (error) {
-		console.error("Token verification failed:", err.message);
+		console.error("Token verification failed:", error.message);
 		throw new Error("Invalid or expired refresh token");
 	}
 };
