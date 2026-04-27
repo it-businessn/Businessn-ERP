@@ -142,8 +142,16 @@ const addUserEmploymentInfo = async (empId, companyName, employmentInfo) => {
 		employmentRegion,
 		employmentCountry,
 	});
-	if (newEmploymentInfo) {
-		await updateTADEmployee(newEmploymentInfo.empId, companyName, newEmpPosition[0]);
+	if (newEmploymentInfo && newEmpPosition?.length) {
+		try {
+			await updateTADEmployee(newEmploymentInfo.empId, companyName, newEmpPosition[0]);
+		} catch (error) {
+			console.error("❌ TAD update failed:", {
+				empId: newEmploymentInfo.empId,
+				companyName,
+				message: error.message,
+			});
+		}
 	}
 	return newEmpPosition;
 };

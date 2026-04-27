@@ -485,34 +485,60 @@ const createTimecardManual = async (req, res) => {
 };
 
 const updateTADEmployee = async (empId, companyName, positionData) => {
-	const empProfileInfo = await EmployeeProfileInfo.findOne({
-		empId,
-		companyName,
-	}).select("firstName middleName lastName");
+	try {
+		if (!empId || !companyName) {
+			throw new Error("empId and companyName are required");
+		}
 
-	const { firstName, middleName, lastName } = empProfileInfo;
-
-	const dept = positionData?.employmentDepartment?.toLowerCase();
-	const tadDevice = dept.includes("restaurant") ? "kitchen" : "maintenance";
-
-	const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId, companyName });
-	if (tadUserExists) {
-		tadUserExists.cardNum = positionData?.employeeCardNumber;
-		tadUserExists.timeManagementBadgeID = positionData?.timeManagementBadgeID;
-		tadUserExists.tadDevice = tadDevice;
-		return await tadUserExists.save();
-	}
-	if (!tadUserExists && positionData?.timeManagementBadgeID) {
-		return await EmployeeTADProfileInfo.create({
+		const empProfileInfo = await EmployeeProfileInfo.findOne({
 			empId,
 			companyName,
-			firstName,
-			middleName,
-			lastName,
-			cardNum: positionData?.employeeCardNumber,
-			timeManagementBadgeID: positionData?.timeManagementBadgeID,
-			tadDevice,
+		}).select("firstName middleName lastName");
+
+		if (!empProfileInfo) {
+			throw new Error(`Employee profile not found for empId: ${empId}`);
+		}
+
+		const { firstName, middleName, lastName } = empProfileInfo;
+		const dept = positionData?.employmentDepartment?.toLowerCase?.() || "";
+		const tadDevice = dept.includes("restaurant") ? "kitchen" : "maintenance";
+
+		const tadUserExists = await EmployeeTADProfileInfo.findOne({ empId, companyName });
+
+		// UPDATE case
+		if (tadUserExists) {
+			tadUserExists.cardNum = positionData?.employeeCardNumber ?? tadUserExists.cardNum;
+			tadUserExists.timeManagementBadgeID =
+				positionData?.timeManagementBadgeID ?? tadUserExists.timeManagementBadgeID;
+			tadUserExists.tadDevice = tadDevice;
+
+			return await tadUserExists.save();
+		}
+		// CREATE case
+		if (positionData?.timeManagementBadgeID) {
+			return await EmployeeTADProfileInfo.create({
+				empId,
+				companyName,
+				firstName,
+				middleName,
+				lastName,
+				cardNum: positionData?.employeeCardNumber,
+				timeManagementBadgeID: positionData?.timeManagementBadgeID,
+				tadDevice,
+			});
+		}
+
+		// Nothing to update or create
+		return null;
+	} catch (error) {
+		console.error("❌ Error in updateTADEmployee:", {
+			empId,
+			companyName,
+			message: error.message,
+			stack: error.stack,
 		});
+
+		throw error;
 	}
 };
 

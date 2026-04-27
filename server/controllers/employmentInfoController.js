@@ -291,8 +291,16 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 
 		await updateEmployee(empId, data);
 
-		if (positionExists && positions.length > 0 && positions[0]) {
-			await updateTADEmployee(empId, companyName, positions[0]);
+		if (positionExists && positions?.length) {
+			try {
+				await updateTADEmployee(empId, companyName, positions[0]);
+			} catch (error) {
+				console.error("❌ TAD update failed:", {
+					empId,
+					companyName,
+					message: error.message,
+				});
+			}
 		}
 		if (
 			employmentRole !== existingEmploymentInfo?.employmentRole ||
@@ -366,8 +374,13 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 				employmentCountry,
 				employmentRegion,
 			});
-			if (positions.length > 0) {
-				await updateTADEmployee(empId, companyName, positions[0]);
+
+			if (positions?.length) {
+				try {
+					await updateTADEmployee(empId, companyName, positions[0]);
+				} catch (err) {
+					console.error("❌ TAD update failed:", err.message);
+				}
 			}
 			return res.status(200).json(updatedInfo);
 		}
