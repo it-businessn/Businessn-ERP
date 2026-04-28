@@ -1,5 +1,6 @@
 const { EARNING_TYPE } = require("../constants/earning.constants");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
+const { safeNum } = require("../utils/time.util");
 const {
 	findAdditionalSuperficialHoursAllocatedInfo,
 	findAdditionalManualHoursAllocatedInfo,
@@ -79,18 +80,28 @@ const calcRegularAggregatedHours = async (
 		payPeriodPayDate,
 	});
 
-	result.additionalRegHoursWorked = additionalHoursAllocatedInfo?.additionalRegHoursWorked || 0;
-	result.additionalRegHoursWorked2 = additionalHoursAllocatedInfo?.additionalRegHoursWorked2 || 0;
-	result.additionalOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalOvertimeHoursWorked || 0;
-	result.additionalDblOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalDblOvertimeHoursWorked || 0;
-	result.additionalStatHoursWorked = additionalHoursAllocatedInfo?.additionalStatHoursWorked || 0;
-	result.additionalStatDayHoursWorked =
-		additionalHoursAllocatedInfo?.additionalStatDayHoursWorked || 0;
-	result.additionalSickHoursWorked = additionalHoursAllocatedInfo?.additionalSickHoursWorked || 0;
-	result.additionalVacationHoursWorked =
-		additionalHoursAllocatedInfo?.additionalVacationHoursWorked || 0;
+	result.additionalRegHoursWorked = safeNum(additionalHoursAllocatedInfo?.additionalRegHoursWorked);
+	result.additionalRegHoursWorked2 = safeNum(
+		additionalHoursAllocatedInfo?.additionalRegHoursWorked2,
+	);
+	result.additionalOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalOvertimeHoursWorked,
+	);
+	result.additionalDblOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalDblOvertimeHoursWorked,
+	);
+	result.additionalStatHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalStatHoursWorked,
+	);
+	result.additionalStatDayHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalStatDayHoursWorked,
+	);
+	result.additionalSickHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSickHoursWorked,
+	);
+	result.additionalVacationHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalVacationHoursWorked,
+	);
 
 	const {
 		totalDblOvertimeHoursWorked,
@@ -154,20 +165,27 @@ const calcManualAggregatedHours = async (
 		payPeriodPayDate,
 	});
 
-	result.additionalManualRegHoursWorked =
-		additionalHoursAllocatedInfo?.additionalManualRegHoursWorked || 0;
-	result.additionalManualOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalManualOvertimeHoursWorked || 0;
-	result.additionalManualDblOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalManualDblOvertimeHoursWorked || 0;
-	result.additionalManualStatHoursWorked =
-		additionalHoursAllocatedInfo?.additionalManualStatHoursWorked || 0;
-	result.additionalManualStatDayHoursWorked =
-		additionalHoursAllocatedInfo?.additionalManualStatDayHoursWorked || 0;
-	result.additionalManualSickHoursWorked =
-		additionalHoursAllocatedInfo?.additionalManualSickHoursWorked || 0;
-	result.additionalManualVacationHoursWorked =
-		additionalHoursAllocatedInfo?.additionalManualVacationHoursWorked || 0;
+	result.additionalManualRegHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalManualRegHoursWorked,
+	);
+	result.additionalManualOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalManualOvertimeHoursWorked,
+	);
+	result.additionalManualDblOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalManualDblOvertimeHoursWorked,
+	);
+	result.additionalManualStatHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalManualStatHoursWorked,
+	);
+	result.additionalManualStatDayHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalManualStatDayHoursWorked,
+	);
+	result.additionalManualSickHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalManualSickHoursWorked,
+	);
+	result.additionalManualVacationHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalManualVacationHoursWorked,
+	);
 
 	const {
 		totalDblOvertimeHoursWorked,

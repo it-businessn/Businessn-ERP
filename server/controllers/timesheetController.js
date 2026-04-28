@@ -21,6 +21,7 @@ const {
 	PARAM_HOURS,
 } = require("../constants/timesheet.constants");
 const { NEXT_DAY } = require("../utils/date.util");
+const { safeNum } = require("../utils/time.util");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
 	try {
@@ -640,7 +641,7 @@ const updateTimesheetRole = async (req, res) => {
 				message: `Role '${role}' not found in positions`,
 			});
 		}
-		const payRate = Number(updatedRole.payRate);
+		const payRate = safeNum(updatedRole.payRate);
 
 		if (isNaN(payRate)) {
 			return res.status(400).json({

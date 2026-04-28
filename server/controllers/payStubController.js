@@ -21,6 +21,7 @@ const {
 	findEmployeeBenefitInfo,
 } = require("../services/payrollService");
 const { getPayrollActiveEmployees } = require("../services/userService");
+const { safeNum } = require("../utils/time.util");
 
 const buildPayStub = (
 	empId,
@@ -331,53 +332,41 @@ const buildPayStub = (
 		YTD_FDTaxDeductions:
 			payPeriod == 1
 				? currentFDTaxDeductions
-				: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions || 0, currentFDTaxDeductions || 0),
+				: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions, currentFDTaxDeductions),
 		YTDStateTaxDeductions:
 			payPeriod == 1
 				? currentStateTaxDeductions
-				: getSumTotal(prevPayPayInfo?.YTDStateTaxDeductions || 0, currentStateTaxDeductions || 0),
+				: getSumTotal(prevPayPayInfo?.YTDStateTaxDeductions, currentStateTaxDeductions),
 		YTD_IncomeTaxDeductions:
 			payPeriod == 1
 				? currentIncomeTaxDeductions
-				: getSumTotal(
-						prevPayPayInfo?.YTD_IncomeTaxDeductions || 0,
-						currentIncomeTaxDeductions || 0,
-					),
+				: getSumTotal(prevPayPayInfo?.YTD_IncomeTaxDeductions, currentIncomeTaxDeductions),
 		YTD_EmployeeEIDeductions:
 			payPeriod == 1
 				? currentEmployeeEIDeductions
-				: getSumTotal(
-						prevPayPayInfo?.YTD_EmployeeEIDeductions || 0,
-						currentEmployeeEIDeductions || 0,
-					),
+				: getSumTotal(prevPayPayInfo?.YTD_EmployeeEIDeductions, currentEmployeeEIDeductions),
 		YTD_EmployerEIDeductions:
 			payPeriod == 1
 				? currentEmployerEIDeductions
-				: getSumTotal(
-							prevPayPayInfo?.YTD_EmployerEIDeductions || 0,
-							currentEmployerEIDeductions || 0,
-					  ) < 0
+				: getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions, currentEmployerEIDeductions) < 0
 					? 0
-					: getSumTotal(
-							prevPayPayInfo?.YTD_EmployerEIDeductions || 0,
-							currentEmployerEIDeductions || 0,
-						),
+					: getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions, currentEmployerEIDeductions),
 		YTD_CPPDeductions:
 			payPeriod == 1
 				? currentCPPDeductions
-				: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions || 0, currentCPPDeductions || 0) < 0
+				: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, currentCPPDeductions) < 0
 					? 0
-					: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions || 0, currentCPPDeductions || 0),
+					: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, currentCPPDeductions),
 		YTDUnionDuesDeductions:
 			payPeriod == 1
 				? currentUnionDuesDeductions
-				: getSumTotal(prevPayPayInfo?.YTDUnionDuesDeductions || 0, currentUnionDuesDeductions || 0),
+				: getSumTotal(prevPayPayInfo?.YTDUnionDuesDeductions, currentUnionDuesDeductions),
 		YTDEmployeeHealthContributions:
 			payPeriod == 1
 				? currentEmployeeHealthContributions
 				: getSumTotal(
-						prevPayPayInfo?.YTDEmployeeHealthContributions || 0,
-						currentEmployeeHealthContributions || 0,
+						prevPayPayInfo?.YTDEmployeeHealthContributions,
+						currentEmployeeHealthContributions,
 					),
 		YTDPrimaryDeposit: getSumTotal(prevPayPayInfo?.YTDPrimaryDeposit, currentPrimaryDeposit),
 		YTDEmployeePensionContributions:
@@ -385,17 +374,15 @@ const buildPayStub = (
 				? currentEmployeePensionContributions
 				: getSumTotal(
 						prevPayPayInfo?.YTDEmployeePensionContributions,
-						currentEmployeePensionContributions || 0,
+						currentEmployeePensionContributions,
 					),
 		YTDOtherDeductions:
 			payPeriod == 1
 				? currentOtherDeductions
-				: getSumTotal(prevPayPayInfo?.YTDOtherDeductions || 0, currentOtherDeductions),
+				: getSumTotal(prevPayPayInfo?.YTDOtherDeductions, currentOtherDeductions),
 
 		YTDGrossPay:
-			payPeriod == 1
-				? currentGrossPay
-				: getSumTotal(prevPayPayInfo?.YTDGrossPay || 0, currentGrossPay || 0),
+			payPeriod == 1 ? currentGrossPay : getSumTotal(prevPayPayInfo?.YTDGrossPay, currentGrossPay),
 
 		YTDEmployerPensionContributions:
 			payPeriod == 1
@@ -416,9 +403,7 @@ const buildPayStub = (
 				? currentEmployerContributions
 				: getSumTotal(prevPayPayInfo?.YTDEmployerContributions, currentEmployerContributions),
 		YTDVacationAccrued:
-			payPeriod == 1
-				? currentVacationAccrued
-				: getSumTotal(prevPayPayInfo?.YTDVacationAccrued) || 0,
+			payPeriod == 1 ? currentVacationAccrued : getSumTotal(prevPayPayInfo?.YTDVacationAccrued),
 		YTDVacationBalanceFwd:
 			payPeriod == 1 ? prevPayPayInfo?.YTDVacationAccrued : currentVacationBalanceFwd,
 
@@ -451,18 +436,18 @@ const buildPayStub = (
 	newPayStub.YTDVacationUsed = YTDVacationPayout + YTDVacationPayTotal;
 	newPayStub.YTDVacationBalance =
 		payPeriod == 1
-			? (YTDVacationBalanceFwd || 0) + (YTDVacationAccrued || 0) - newPayStub.YTDVacationUsed
+			? safeNum(YTDVacationBalanceFwd) + safeNum(YTDVacationAccrued) - newPayStub.YTDVacationUsed
 			: YTDVacationAccrued - newPayStub.YTDVacationUsed;
 
 	newPayStub.YTDDeductionsTotal =
 		YTDEmployeePensionContributions +
-			YTDPrimaryDeposit +
-			YTDEmployeeHealthContributions +
-			YTDUnionDuesDeductions +
-			YTD_CPPDeductions +
-			YTD_EmployeeEIDeductions +
-			YTD_IncomeTaxDeductions || 0;
-	newPayStub.YTDNetPay = YTDGrossPay - newPayStub.YTDDeductionsTotal || 0;
+		YTDPrimaryDeposit +
+		YTDEmployeeHealthContributions +
+		YTDUnionDuesDeductions +
+		YTD_CPPDeductions +
+		YTD_EmployeeEIDeductions +
+		safeNum(YTD_IncomeTaxDeductions);
+	newPayStub.YTDNetPay = YTDGrossPay - safeNum(newPayStub.YTDDeductionsTotal);
 
 	return newPayStub;
 };

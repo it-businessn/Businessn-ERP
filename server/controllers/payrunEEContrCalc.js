@@ -11,6 +11,7 @@ const {
 	findEESuperficialContribution,
 } = require("./payrunExtraAllocationInfoController");
 const { findEmployeeBenefitInfo } = require("../services/payrollService");
+const { safeNum } = require("../utils/time.util");
 
 const getPayrunEEContributionResult = async (
 	activeEmployees,
@@ -71,11 +72,11 @@ const calcSuperficialEEContribution = async (empId, fullName, payDate, aggregate
 	aggregatedResult.push({
 		_id: empId,
 		empId: { fullName, _id: empId },
-		unionDuesSuperficial: empEESuperficialContribution?.unionDuesSuperficial || 0,
-		EE_EHPSuperficial: empEESuperficialContribution?.EE_EHPSuperficial || 0,
-		EE_EPPSuperficial: empEESuperficialContribution?.EE_EPPSuperficial || 0,
-		EE_EISuperficial: empEESuperficialContribution?.EE_EISuperficial || 0,
-		EE_CPPSuperficial: empEESuperficialContribution?.EE_CPPSuperficial || 0,
+		unionDuesSuperficial: safeNum(empEESuperficialContribution?.unionDuesSuperficial),
+		EE_EHPSuperficial: safeNum(empEESuperficialContribution?.EE_EHPSuperficial),
+		EE_EPPSuperficial: safeNum(empEESuperficialContribution?.EE_EPPSuperficial),
+		EE_EISuperficial: safeNum(empEESuperficialContribution?.EE_EISuperficial),
+		EE_CPPSuperficial: safeNum(empEESuperficialContribution?.EE_CPPSuperficial),
 	});
 
 	return aggregatedResult;
@@ -103,7 +104,7 @@ const calcPayoutEEContribution = async (
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
 
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.roles?.[0]?.payRate || 0;
+	newEmpData.regPay = safeNum(empPayInfoResult?.roles?.[0]?.payRate);
 	calcPayRates(newEmpData);
 	calcHoursWorkedTotals(
 		newEmpData,
@@ -150,7 +151,7 @@ const calcManualEEContribution = async (
 	const empBenefitInfoResult = await findEmployeeBenefitInfo(empId, companyName);
 
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.roles?.[0]?.payRate || 0;
+	newEmpData.regPay = safeNum(empPayInfoResult?.roles?.[0]?.payRate);
 	calcPayRates(newEmpData);
 	calcHoursWorkedTotals(
 		newEmpData,
@@ -198,7 +199,7 @@ const calcRegularEEContribution = async (
 	});
 
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.roles?.[0]?.payRate || 0;
+	newEmpData.regPay = safeNum(empPayInfoResult?.roles?.[0]?.payRate);
 	calcPayRates(newEmpData);
 	calcHoursWorkedTotals(
 		newEmpData,

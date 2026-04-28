@@ -32,13 +32,19 @@ const buildRecord = async (record) => {
 	}).select(
 		"streetAddressSuite streetAddress city province postalCode country SIN SINIv firstName middleName lastName",
 	);
-
-	empProfileInfo.SIN = shouldDecrypt(empProfileInfo?.SIN, empProfileInfo?.SINIv)
-		? decryptData(empProfileInfo?.SIN, CONFIG.SIN_KEY, empProfileInfo?.SINIv)
-		: (!empProfileInfo?.SIN?.includes("*") && isNaN(Number(empProfileInfo?.SIN))) ||
-			  !empProfileInfo?.SIN
-			? ""
-			: empProfileInfo?.SIN;
+	if (shouldDecrypt(empProfileInfo?.SIN, empProfileInfo?.SINIv)) {
+		try {
+			empProfileInfo.SIN = decryptData(empProfileInfo.SIN, CONFIG.SIN_KEY, empProfileInfo.SINIv);
+		} catch (err) {
+			console.error("SIN decrypt failed, skipping value");
+		}
+	} else {
+		empProfileInfo.SIN =
+			(!empProfileInfo?.SIN?.includes("*") && isNaN(Number(empProfileInfo?.SIN))) ||
+			!empProfileInfo?.SIN
+				? ""
+				: empProfileInfo?.SIN;
+	}
 	const empEmploymentInfo = await EmployeeEmploymentInfo.findOne({
 		empId: record?.empId._id,
 	}).select("employeeNo employmentRegion employmentCountry");

@@ -1,6 +1,6 @@
 const { isPercentType } = require("./percent");
 const { getTaxDetails } = require("../services/taxService");
-const { convertHrsToFloat } = require("../utils/time.util");
+const { convertHrsToFloat, safeNum } = require("../utils/time.util");
 const { EARNING_TYPE } = require("../constants/earning.constants");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
 const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
@@ -10,7 +10,7 @@ const { findEmployeePayStub } = require("../services/payrollService");
 // const calcSalary = (hrs, rate) => (hrs / 60).toFixed(2) * rate;
 const calcSalary = (hrs, rate) => hrs * rate;
 
-const getSumTotal = (data1, data2) => (data1 || 0) + data2;
+const getSumTotal = (data1, data2) => safeNum(data1) + safeNum(data2);
 
 const checkExtraRun = (isExtraRun) => {
 	return isExtraRun === true || isExtraRun === "true";

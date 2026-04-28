@@ -13,7 +13,7 @@ const convertHrsToFloat = (hrs) => {
 	return value;
 };
 const getSumRegHrs = (regHrs1, regHrs2) => {
-	const base = Number(regHrs1) || 0;
+	const base = safeNum(regHrs1);
 	const subtract = Number(regHrs2);
 
 	if (!Number.isFinite(subtract)) {
@@ -22,7 +22,10 @@ const getSumRegHrs = (regHrs1, regHrs2) => {
 
 	return base - subtract;
 };
+const safeNum = (v) => Number(v) || 0;
+
 module.exports = {
 	convertHrsToFloat,
 	getSumRegHrs,
+	safeNum,
 };

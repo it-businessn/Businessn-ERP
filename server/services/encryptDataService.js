@@ -24,19 +24,33 @@ const shouldDecrypt = (value, iv) => {
 	return true;
 };
 
-const decryptData = (encryptedData, encryption_key, iv) => {
-	if (!isValidHex(encryptedData)) {
-		throw new Error("Invalid encryptedData (not valid hex)");
-	}
+const decryptData = (encryptedData, encryptionKey, iv) => {
+	try {
+		if (!isValidHex(encryptedData)) {
+			throw new Error("Invalid encryptedData (not hex)");
+		}
 
-	if (!isValidHex(iv)) {
-		throw new Error("Invalid IV (not valid hex)");
-	}
-	const decipher = crypto.createDecipheriv(algorithm, encryption_key, Buffer.from(iv, "hex"));
+		if (!isValidHex(iv)) {
+			throw new Error("Invalid IV (not hex)");
+		}
 
-	let decrypted = decipher.update(encryptedData, "hex", "utf8");
-	decrypted += decipher.final("utf8");
-	return decrypted;
+		const keyBuffer =
+			typeof encryptionKey === "string" ? Buffer.from(encryptionKey, "utf8") : encryptionKey;
+
+		const decipher = crypto.createDecipheriv(algorithm, keyBuffer, Buffer.from(iv, "hex"));
+
+		let decrypted = decipher.update(encryptedData, "hex", "utf8");
+		decrypted += decipher.final("utf8");
+
+		return decrypted;
+	} catch (err) {
+		console.error("Decrypt failed:", {
+			err: err.message,
+			encryptedData,
+			iv,
+		});
+		throw err;
+	}
 };
 
 const generateVopaySignature = (key, secret_key) => {

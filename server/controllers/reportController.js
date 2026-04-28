@@ -12,6 +12,7 @@ const { checkExtraRun } = require("../helpers/payrollHelper");
 const { COMPANIES } = require("../constants/constant");
 const { PAYRUN_TYPE } = require("../constants/pay.constants");
 const { sortByEmpFullName } = require("../services/userService");
+const { safeNum } = require("../utils/time.util");
 
 const buildFundingTotalsReport = async (
 	fundingTotal,
@@ -20,75 +21,105 @@ const buildFundingTotalsReport = async (
 	isCornerStone,
 	scheduleFrequency,
 ) => {
-	fundingTotal.totalCPP_Contr =
-		fundingTotal?.totalCPP_EE_Contr + fundingTotal?.totalCPP_ER_Contr || 0;
-	fundingTotal.totalEI_Contr = fundingTotal?.totalEI_EE_Contr + fundingTotal?.totalEI_ER_Contr || 0;
-	fundingTotal.totalGovtContr =
-		fundingTotal?.totalCPP_Contr +
-			fundingTotal?.totalEI_Contr +
-			fundingTotal?.totalIncomeTaxContr || 0;
+	try {
+		fundingTotal.totalCPP_Contr =
+			safeNum(fundingTotal?.totalCPP_EE_Contr) + safeNum(fundingTotal?.totalCPP_ER_Contr);
 
-	fundingTotal.totalEmpPaymentRemitCost = fundingTotal.totalNetPay || 0;
+		fundingTotal.totalEI_Contr =
+			safeNum(fundingTotal?.totalEI_EE_Contr) + safeNum(fundingTotal?.totalEI_ER_Contr);
 
-	fundingTotal.totalEmpPayrollCost = isCornerStone ? 0 : totalEmployees * 2;
-	fundingTotal.totalTimeManagementEmpCost = isCornerStone ? 0 : totalEmployees * 1.75;
+		fundingTotal.totalGovtContr =
+			safeNum(fundingTotal?.totalCPP_Contr) +
+			safeNum(fundingTotal?.totalEI_Contr) +
+			safeNum(fundingTotal?.totalIncomeTaxContr);
 
-	fundingTotal.totalCorePayrollCost =
-		fundingTotal.totalBatchCharges + fundingTotal.totalEmpPayrollCost || 0;
-	fundingTotal.totalTimeManagementPayrollCost =
-		fundingTotal.timeClockMaintenanceCost + fundingTotal.totalTimeManagementEmpCost || 0;
-	fundingTotal.totalServiceCharges =
-		fundingTotal.totalCorePayrollCost + fundingTotal.totalTimeManagementPayrollCost || 0;
+		fundingTotal.totalEmpPaymentRemitCost = safeNum(fundingTotal.totalNetPay);
 
-	fundingTotal.totalFundingWithDrawals =
-		fundingTotal.totalGovtContr +
-			fundingTotal.totalEmpPaymentRemitCost +
-			fundingTotal.totalServiceCharges || 0;
-	if (isExtraRun) fundingTotal.isExtraRun = isExtraRun;
+		fundingTotal.totalEmpPayrollCost = isCornerStone ? 0 : totalEmployees * 2;
+		fundingTotal.totalTimeManagementEmpCost = isCornerStone ? 0 : totalEmployees * 1.75;
 
-	const { companyName } = fundingTotal;
-	const existsFundDetails = await FundingTotalsPay.findOne({
-		companyName: fundingTotal.companyName,
-		payPeriodNum: fundingTotal.payPeriodNum,
-		isExtraRun,
-		payPeriodPayDate: moment.utc(fundingTotal.payPeriodPayDate).startOf("day").toDate(),
-		scheduleFrequency,
-	}).sort({
-		createdOn: -1,
-	});
-	if (existsFundDetails) {
-		await FundingTotalsPay.findByIdAndUpdate(
-			existsFundDetails._id,
-			{ $set: fundingTotal },
-			{
-				new: true,
-			},
-		);
-	} else {
-		const newTotals = await FundingTotalsPay.create(fundingTotal);
-		createJournalEntry(newTotals._id, companyName, scheduleFrequency);
+		fundingTotal.totalCorePayrollCost =
+			safeNum(fundingTotal.totalBatchCharges) + safeNum(fundingTotal.totalEmpPayrollCost);
+
+		fundingTotal.totalTimeManagementPayrollCost =
+			safeNum(fundingTotal.timeClockMaintenanceCost) +
+			safeNum(fundingTotal.totalTimeManagementEmpCost);
+
+		fundingTotal.totalServiceCharges =
+			safeNum(fundingTotal.totalCorePayrollCost) +
+			safeNum(fundingTotal.totalTimeManagementPayrollCost);
+
+		fundingTotal.totalFundingWithDrawals =
+			safeNum(fundingTotal.totalGovtContr) +
+			safeNum(fundingTotal.totalEmpPaymentRemitCost) +
+			safeNum(fundingTotal.totalServiceCharges);
+
+		if (isExtraRun) fundingTotal.isExtraRun = isExtraRun;
+
+		const existsFundDetails = await FundingTotalsPay.findOne({
+			companyName: fundingTotal.companyName,
+			payPeriodNum: fundingTotal.payPeriodNum,
+			isExtraRun,
+			payPeriodPayDate: moment.utc(fundingTotal.payPeriodPayDate).startOf("day").toDate(),
+			scheduleFrequency,
+		}).sort({
+			createdOn: -1,
+		});
+		let result;
+		if (existsFundDetails) {
+			await FundingTotalsPay.findByIdAndUpdate(
+				existsFundDetails._id,
+				{ $set: fundingTotal },
+				{
+					new: true,
+				},
+			);
+		} else {
+			result = await FundingTotalsPay.create(fundingTotal);
+			createJournalEntry(result._id, fundingTotal.companyName, scheduleFrequency).catch((err) =>
+				console.error("Journal entry failed:", err),
+			);
+			return result;
+		}
+	} catch (error) {
+		console.error("❌ buildFundingTotalsReport Error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		throw error;
 	}
 };
 
 const createNewOrder = async (fundingTotalsId, customer, totalRecipients) => {
-	const length = await Order.countDocuments({ companyName: COMPANIES.BUSINESSN_ORG });
-	const orderNumber = `BE100${length + 1}`;
-	const newOrder = {
-		companyName: COMPANIES.BUSINESSN_ORG,
-		orderNumber,
-		fundingTotalsId,
-		totalRecipients,
-		customer,
-	};
-	const existingRecord = await Order.findOne(newOrder);
-	if (!existingRecord) {
-		await Order.create(newOrder);
+	try {
+		const length = await Order.countDocuments({ companyName: COMPANIES.BUSINESSN_ORG });
+		const orderNumber = `BE100${length + 1}`;
+		const newOrder = {
+			companyName: COMPANIES.BUSINESSN_ORG,
+			orderNumber,
+			fundingTotalsId,
+			totalRecipients,
+			customer,
+		};
+		const existingRecord = await Order.findOne(newOrder);
+		if (!existingRecord) {
+			await Order.create(newOrder);
+		}
+		return orderNumber;
+	} catch (error) {
+		console.error("❌ createNewOrder Error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		throw error;
 	}
 };
 
 const createJournalEntry = async (fundingTotalReportId, companyName) => {
-	const existsFundDetails = await FundingTotalsPay.findById(fundingTotalReportId);
-	if (existsFundDetails) {
+	try {
+		const existsFundDetails = await FundingTotalsPay.findById(fundingTotalReportId);
+		if (!existsFundDetails) return;
+
 		const {
 			totalEmpPaymentRemitCost,
 			totalGovtContr,
@@ -111,97 +142,92 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 		}).select(
 			"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
 		);
-		const deptPromises = await Promise.all(
-			currentPayStubs.map(async (empPayStub) => {
-				const empDeptInfoResult = await EmployeeEmploymentInfo.findOne({
-					empId: empPayStub?.empId,
-					companyName,
-				});
-				const departments =
-					empDeptInfoResult?.positions?.map((pos) => pos?.employmentDepartment).filter(Boolean) ||
-					[];
-				if (empDeptInfoResult) {
-					const originalPayStub = empPayStub.toObject();
-					originalPayStub.currentEmployerCPPDeductions = originalPayStub.currentCPPDeductions;
-					const grossPay = originalPayStub.currentGrossPay || 0;
-					const cppDeductions = originalPayStub.currentCPPDeductions || 0;
-					const eiEmployee = originalPayStub.currentEmployeeEIDeductions || 0;
-					const eiEmployer = originalPayStub.currentEmployerEIDeductions || 0;
-					const cppEmployer = originalPayStub.currentEmployerCPPDeductions || 0;
-					const incomeTax = originalPayStub.currentIncomeTaxDeductions || 0;
-					const regPay2 = originalPayStub.currentRegPayTotal2 || 0;
+		const empIds = currentPayStubs.map((e) => e.empId);
+		// -----------------------------
+		// BULK FETCH (FIXES N+1 PROBLEM)
+		// -----------------------------
+		const empInfoList = await EmployeeEmploymentInfo.find({
+			empId: { $in: empIds },
+			companyName,
+		});
+		const empDeptMap = new Map(empInfoList.map((e) => [e.empId, e]));
+		// -----------------------------
+		// BUILD BREAKDOWN
+		// -----------------------------
+		const departmentBreakdown = {};
 
-					if (departments.length > 1) {
-						const dept1Stub = {
-							currentGrossPay: grossPay - regPay2,
-							currentCPPDeductions: cppDeductions,
-							currentEmployerCPPDeductions:
-								cppDeductions - (regPay2 / grossPay) * cppDeductions || 0,
-							currentEmployeeEIDeductions: eiEmployee,
-							currentEmployerEIDeductions: eiEmployer - (regPay2 / grossPay) * eiEmployer || 0,
-							currentIncomeTaxDeductions: incomeTax,
-							currentRegPayTotal2: regPay2,
-						};
+		for (const empPayStub of currentPayStubs) {
+			const empDeptInfo = empDeptMap.get(empPayStub.empId);
 
-						const dept2Stub = {
-							currentGrossPay: regPay2,
-							currentCPPDeductions: 0,
-							currentEmployerCPPDeductions: (regPay2 / grossPay) * cppDeductions || 0,
-							currentEmployeeEIDeductions: 0,
-							currentEmployerEIDeductions: (regPay2 / grossPay) * eiEmployer || 0,
-							currentIncomeTaxDeductions: 0,
-							currentRegPayTotal2: regPay2,
-						};
-						return {
-							records: [dept1Stub, dept2Stub],
-							departments,
-						};
-					}
+			const departments =
+				empDeptInfo?.positions?.map((p) => p?.employmentDepartment).filter(Boolean) || [];
 
-					return {
-						records: [originalPayStub],
-						departments,
+			const grossPay = empPayStub.currentGrossPay;
+			const regPay2 = empPayStub.currentRegPayTotal2;
+
+			const safeRatio = grossPay > 0 ? regPay2 / grossPay : 0;
+
+			const baseRecord = empPayStub.toObject();
+
+			const records =
+				departments.length > 1
+					? [
+							{
+								...baseRecord,
+								currentGrossPay: grossPay - regPay2,
+								currentEmployerCPPDeductions:
+									safeNum(empPayStub.currentCPPDeductions) * (1 - safeRatio),
+								currentEmployerEIDeductions:
+									safeNum(empPayStub.currentEmployerEIDeductions) * (1 - safeRatio),
+							},
+							{
+								...baseRecord,
+								currentGrossPay: regPay2,
+								currentCPPDeductions: 0,
+								currentEmployerCPPDeductions: safeNum(empPayStub.currentCPPDeductions) * safeRatio,
+								currentEmployerEIDeductions:
+									safeNum(empPayStub.currentEmployerEIDeductions) * safeRatio,
+							},
+						]
+					: [baseRecord];
+
+			records.forEach((record, idx) => {
+				const deptName = departments[idx] || "Unknown";
+
+				if (!departmentBreakdown[deptName]) {
+					departmentBreakdown[deptName] = {
+						department: deptName,
+						incomeTaxContribution: 0,
+						employeeEIContribution: 0,
+						employerEIBenefitExpense: 0,
+						employeeCPPContribution: 0,
+						employerCPPBenefitExpense: 0,
+						grossWageExpense: 0,
+						CPPPayable: 0,
+						EIPayable: 0,
 					};
 				}
-			}),
-		);
 
-		const allDepartmentBreakDown = await Promise.all(deptPromises.filter((dept) => dept));
-		const departmentBreakdown = allDepartmentBreakDown.reduce((acc, { records, departments }) => {
-			records.forEach((record, idx) => {
-				const department = departments[idx] || "Unknown";
+				const dept = departmentBreakdown[deptName];
 
-				const dept = acc[department] || {
-					department,
-					incomeTaxContribution: 0,
-					employeeEIContribution: 0,
-					employerEIBenefitExpense: 0,
-					employeeCPPContribution: 0,
-					employerCPPBenefitExpense: 0,
-					grossWageExpense: 0,
-					CPPPayable: 0,
-					EIPayable: 0,
-				};
+				dept.incomeTaxContribution += safeNum(record.currentIncomeTaxDeductions);
+				dept.employeeEIContribution += safeNum(record.currentEmployeeEIDeductions);
+				dept.employerEIBenefitExpense += safeNum(record.currentEmployerEIDeductions);
+				dept.employeeCPPContribution += safeNum(record.currentCPPDeductions);
+				dept.employerCPPBenefitExpense += safeNum(record.currentEmployerCPPDeductions);
+				dept.grossWageExpense += safeNum(record.currentGrossPay);
 
-				dept.incomeTaxContribution += record.currentIncomeTaxDeductions || 0;
-				dept.employeeEIContribution += record.currentEmployeeEIDeductions || 0;
-				dept.employerEIBenefitExpense += record.currentEmployerEIDeductions || 0;
-				dept.employeeCPPContribution += record.currentCPPDeductions || 0;
-				dept.employerCPPBenefitExpense += record.currentEmployerCPPDeductions || 0;
-				dept.grossWageExpense += record.currentGrossPay || 0;
 				dept.CPPPayable = dept.employerCPPBenefitExpense;
 				dept.EIPayable = dept.employerEIBenefitExpense;
-
-				acc[department] = dept;
 			});
-			return acc;
-		}, {});
+		}
 
-		const groupedDepartmentBreakDown = Object.values(departmentBreakdown);
-
+		// -----------------------------
+		// JOURNAL ENTRY
+		// -----------------------------
 		const journalEntry = {
 			companyName,
-			departmentBreakDown: groupedDepartmentBreakDown,
+			departmentBreakDown: Object.values(departmentBreakdown),
 			totalDebit: 0,
 			totalCredit: 0,
 			netFundingWithdrawals: totalEmpPaymentRemitCost + totalGovtContr,
@@ -215,10 +241,18 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			isExtraRun,
 			scheduleFrequency,
 		};
+
 		const existingRecord = await JournalEntry.findOne(journalEntry);
+
 		if (!existingRecord) {
 			await JournalEntry.create(journalEntry);
 		}
+	} catch (error) {
+		console.error("❌ createJournalEntry  Error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		throw error;
 	}
 };
 
@@ -382,6 +416,7 @@ const getReportInfo = async (req, res) => {
 		const endOfYear = moment().year(year).endOf("year").toDate();
 
 		const isExtraPayRun = checkExtraRun(isExtraRun);
+
 		let payStubs = await EmployeePayStub.find({
 			empId: { $exists: true },
 			companyName,
@@ -395,7 +430,7 @@ const getReportInfo = async (req, res) => {
 			scheduleFrequency,
 		}).populate(EMP_INFO);
 
-		payStubs = payStubs?.filter((_) => _?.empId);
+		payStubs = payStubs?.filter((p) => p?.empId);
 		return res.status(200).json(sortByEmpFullName(payStubs));
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -410,7 +445,9 @@ const getEmployeeReportInfo = async (req, res) => {
 			companyName,
 			empId,
 			isProcessed: true,
-			reportType: { $nin: [PAYRUN_TYPE.SUPERFICIAL, PAYRUN_TYPE.MANUAL, PAYRUN_TYPE.PAYOUT] },
+			reportType: {
+				$nin: [PAYRUN_TYPE.SUPERFICIAL, PAYRUN_TYPE.MANUAL, PAYRUN_TYPE.PAYOUT],
+			},
 			currentNetPay: { $ne: 0 },
 		})
 			.populate(EMP_INFO)

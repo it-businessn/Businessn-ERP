@@ -10,6 +10,7 @@ const { updateTADEmployee } = require("./timecardController");
 const { normalizePercent, isPercentType } = require("../helpers/percent");
 const CONFIG = require("../config/app.config");
 const { addEmployee } = require("../services/userService");
+const { safeNum } = require("../utils/time.util");
 
 const getNewUserID = async (companyName, data) => {
 	const newEmployee = await addEmployee(companyName, data);
@@ -280,31 +281,31 @@ const addUserBenefitInfo = async (empId, companyName, benefitsInfo) => {
 		typeOfUnionDuesTreatment,
 		unionDuesContribution: isPercentType(typeOfUnionDuesTreatment)
 			? normalizePercent(unionDuesContribution)
-			: unionDuesContribution || 0,
+			: safeNum(unionDuesContribution),
 		typeOfExtendedHealthEETreatment,
 		extendedHealthEEContribution: isPercentType(typeOfExtendedHealthEETreatment)
 			? normalizePercent(extendedHealthEEContribution)
-			: extendedHealthEEContribution || 0,
+			: safeNum(extendedHealthEEContribution),
 		typeOfDentalEETreatment,
 		dentalEEContribution: isPercentType(typeOfDentalEETreatment)
 			? normalizePercent(dentalEEContribution)
-			: dentalEEContribution || 0,
+			: safeNum(dentalEEContribution),
 		typeOfPensionEETreatment,
 		pensionEEContribution: isPercentType(typeOfPensionEETreatment)
 			? normalizePercent(pensionEEContribution)
-			: pensionEEContribution || 0,
+			: safeNum(pensionEEContribution),
 		typeOfExtendedHealthERTreatment,
 		extendedHealthERContribution: isPercentType(typeOfExtendedHealthERTreatment)
 			? normalizePercent(extendedHealthERContribution)
-			: extendedHealthERContribution || 0,
+			: safeNum(extendedHealthERContribution),
 		typeOfDentalERTreatment,
 		dentalERContribution: isPercentType(typeOfDentalERTreatment)
 			? normalizePercent(dentalERContribution)
-			: dentalERContribution || 0,
+			: safeNum(dentalERContribution),
 		typeOfPensionERTreatment,
 		pensionERContribution: isPercentType(typeOfPensionERTreatment)
 			? normalizePercent(pensionERContribution)
-			: pensionERContribution || 0,
+			: safeNum(pensionERContribution),
 	};
 	const newBalanceInfo = await EmployeeBalanceInfo.create(newBenefitInfo);
 	return newBalanceInfo;

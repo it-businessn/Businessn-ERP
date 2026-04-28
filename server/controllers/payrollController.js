@@ -8,7 +8,7 @@ const { getHourlyAggregatedResult } = require("./payrunHourlyAllocatedCalc");
 const { getPayrunEEContributionResult } = require("./payrunEEContrCalc");
 const { getPayrunERContributionResult } = require("./payrunERContrCalc");
 
-const { getSumRegHrs } = require("../utils/time.util");
+const { getSumRegHrs, safeNum } = require("../utils/time.util");
 const { checkExtraRun } = require("../helpers/payrollHelper");
 const { PAY_TYPES_TITLE, PAYRUN_TYPE } = require("../constants/pay.constants");
 const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
@@ -149,45 +149,45 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 					totalPersonalDayHoursWorked: 0,
 				};
 			}
-			const reg = Number(timesheet.regHoursWorked) || 0;
-			const reg2 = Number(timesheet.regHoursWorked2) || 0;
+			const reg = safeNum(timesheet.regHoursWorked);
+			const reg2 = safeNum(timesheet.regHoursWorked2);
 			const empKey = timesheet.employeeId;
 
 			// timesheet.regHoursWorked = timesheet.regHoursWorked.toFixed(2);
 			if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY) {
-				acc[empKey].totalRegHoursWorked += getSumRegHrs(reg, reg2) || 0;
+				acc[empKey].totalRegHoursWorked += safeNum(getSumRegHrs(reg, reg2));
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY) {
-				acc[empKey].totalOvertimeHoursWorked += Number(timesheet.overtimeHoursWorked) || 0;
+				acc[empKey].totalOvertimeHoursWorked += safeNum(timesheet.overtimeHoursWorked);
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY) {
-				acc[empKey].totalDblOvertimeHoursWorked += Number(timesheet.dblOvertimeHoursWorked) || 0;
+				acc[empKey].totalDblOvertimeHoursWorked += safeNum(timesheet.dblOvertimeHoursWorked);
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY) {
-				acc[empKey].totalStatHours += Number(timesheet.statDayHours) || 0;
+				acc[empKey].totalStatHours += safeNum(timesheet.statDayHours);
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.STAT_WORK_PAY) {
-				acc[empKey].totalStatDayHoursWorked += Number(timesheet.statDayHoursWorked) || 0;
+				acc[empKey].totalStatDayHoursWorked += safeNum(timesheet.statDayHoursWorked);
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.SICK_PAY) {
-				acc[empKey].totalSickHoursWorked += Number(timesheet.sickPayHours) || 0;
+				acc[empKey].totalSickHoursWorked += safeNum(timesheet.sickPayHours);
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY) {
-				acc[empKey].totalVacationHoursWorked += Number(timesheet.vacationPayHours) || 0;
+				acc[empKey].totalVacationHoursWorked += safeNum(timesheet.vacationPayHours);
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.BEREAVEMENT_PAY) {
-				acc[empKey].totalBereavementHoursWorked += Number(timesheet.bereavementPayHours) || 0;
+				acc[empKey].totalBereavementHoursWorked += safeNum(timesheet.bereavementPayHours);
 			}
 
 			if (timesheet.payType === PAY_TYPES_TITLE.PERSONAL_DAY_PAY) {
-				acc[empKey].totalPersonalDayHoursWorked += Number(timesheet.personalPayHours) || 0;
+				acc[empKey].totalPersonalDayHoursWorked += safeNum(timesheet.personalPayHours);
 			}
 
 			return acc;
