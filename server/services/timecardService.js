@@ -16,6 +16,7 @@ const getTimeFormat = (timestamp) => {
 		return time.format("HH:mm");
 	}
 };
+
 const getClockInTimeFormat = (timestamp) => {
 	// const date = notDevice ? moment(timestamp) : moment.utc(timestamp);
 	// return timeSheet ? date.format("YYYY-MM-DD") : date.format("YYYY-MM-DD  hh:mm A");

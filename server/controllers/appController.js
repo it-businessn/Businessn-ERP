@@ -26,13 +26,14 @@ const login = async (req, res) => {
 			registration_number: companyId,
 			employees: user._id,
 		}).select("name registration_number address");
+
 		if (!existingCompanyUser) {
 			return res.status(404).json({ message: "User does not exist for the company" });
 		}
-		const existingCompany = await findCompany("registration_number", companyId);
+		// const existingCompany = await findCompany("registration_number", companyId);
 
 		const empInfo = await EmployeeEmploymentInfo.findOne({
-			companyName: existingCompany.name,
+			companyName: existingCompanyUser.name,
 			empId: user._id,
 		}).select("positions employeeNo payrollStatus employmentRole");
 
@@ -42,7 +43,10 @@ const login = async (req, res) => {
 			$or: [{ useremail: email }, { businessEmail: email }, { businessemail: email }],
 		});
 
-		const profilePwdMatch = password === existingProfileInfo?.password;
+		const profilePwdMatch = existingProfileInfo?.password
+			? await comparePassword(password, user?.password)
+			: false;
+
 		const match = user?.password ? await comparePassword(password, user?.password) : false;
 
 		if (match || profilePwdMatch) {
@@ -61,12 +65,12 @@ const login = async (req, res) => {
 					email,
 					role: empInfo?.employmentRole,
 					department: empInfo?.positions?.[0]?.employmentDepartment,
-					phoneNumber,
-					primaryAddress,
 					employmentType: empInfo?.employmentRole,
-					manager,
 					employeeId: empInfo?.employeeNo,
 					payrollStatus: empInfo?.payrollStatus,
+					phoneNumber,
+					primaryAddress,
+					manager,
 				},
 				existingCompanyUser,
 				accessToken,
@@ -75,8 +79,12 @@ const login = async (req, res) => {
 		}
 		return res.status(401).json({ message: "Invalid credentials. Please reset your password!" });
 	} catch (error) {
-		console.error("Error checking password:", error);
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ Login error:", {
+			message: error.message,
+			stack: error.stack,
+			body: req.body,
+		});
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 
@@ -84,14 +92,19 @@ const logOut = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		for (const cookieName in req.cookies) {
-			if (req.cookies.hasOwnProperty(cookieName)) {
-				res.clearCookie(cookieName, {
-					httpOnly: true,
-					secure: true,
-					sameSite: "None",
-					path: "/",
-				});
+		if (!id) {
+			return res.status(400).json({ message: "User ID is required" });
+		}
+		if (req.cookies) {
+			for (const cookieName in req.cookies) {
+				if (Object.prototype.hasOwnProperty.call(req.cookies, cookieName)) {
+					res.clearCookie(cookieName, {
+						httpOnly: true,
+						secure: process.env.NODE_ENV === "production",
+						sameSite: "None",
+						path: "/",
+					});
+				}
 			}
 		}
 		const logoutTime = new Date();
@@ -109,20 +122,35 @@ const logOut = async (req, res) => {
 		}
 		return res.json({ message: "Logged out successfully", activity });
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("❌ Logout error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 
 const logUserLoginActivity = async (userID) => {
 	try {
-		const loginTime = new Date();
+		if (!userID) {
+			console.warn("Missing userID in login activity");
+			return;
+		}
+		// Close any previous open sessions
+		await UserActivity.updateMany(
+			{ userID, logoutTime: null },
+			{ $set: { logoutTime: new Date() } },
+		);
 		const activity = new UserActivity({
 			userID,
-			loginTime,
+			loginTime: new Date(),
 		});
 		await activity.save();
 	} catch (error) {
-		console.error("Error in login activity:", error);
+		console.error("Login activity error:", {
+			message: error.message,
+			stack: error.stack,
+		});
 	}
 };
 
@@ -130,21 +158,26 @@ const refreshToken = async (req, res) => {
 	const { refreshToken } = req.body;
 	try {
 		if (!refreshToken) {
-			return res.status(401).json({ message: "Refresh token is required", error });
+			return res.status(401).json({ message: "Refresh token is required" });
 		}
 		const user = verifyToken(refreshToken, CONFIG.REFRESH_TOKEN_SECRET);
-
+		if (!user || !user._id) {
+			return res.status(403).json({ message: "Invalid refresh token payload" });
+		}
 		const newAccessToken = generateAccessToken({
 			id: user?._id,
 			username: user?.username,
 		});
-		res.json({ accessToken: newAccessToken });
+		return res.json({ accessToken: newAccessToken });
 	} catch (error) {
 		if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
 			return res.status(403).json({ message: "Invalid or expired refresh token" });
 		}
-		console.error("Error verifying refresh token:", error);
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error verifying refresh token:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 
@@ -164,13 +197,21 @@ const signUp = async (req, res) => {
 		primaryAddress,
 		employmentType,
 	} = req.body;
-	const { streetNumber, city, state, postalCode, country } = primaryAddress;
+	const { streetNumber, city, state, postalCode, country } = primaryAddress || {};
 
 	// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };for fd
 	// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
 	// console.log(updatedLeads);
 
 	try {
+		if (!email || !password) {
+			return res.status(400).json({ message: "Email and password are required" });
+		}
+		const existingUser = await Employee.findOne({ email });
+		if (existingUser) {
+			return res.status(409).json({ message: "User already exists" });
+		}
+		const hashedPassword = await hashPassword(password);
 		const data = {
 			employeeId: companyId,
 			firstName,
@@ -184,18 +225,17 @@ const signUp = async (req, res) => {
 			primaryAddress: { streetNumber, city, state, postalCode, country },
 			employmentType,
 			password: hashedPassword,
-			fullName: `${firstName} ${middleName} ${lastName}`,
+			fullName: [firstName, middleName, lastName].filter(Boolean).join(" "),
 		};
-		const existingUser = await Employee.findOne({ email: data.email });
-		if (existingUser) {
-			return res.status(409).json({ message: "User already exists" });
-		}
-		const hashedPassword = await hashPassword(password);
-		const employee = await addEmployee(company, data);
 
+		const employee = await addEmployee(company, data);
 		return res.status(201).json(employee);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Create employee error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 

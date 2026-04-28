@@ -9,7 +9,7 @@ const {
 	addOvertimeRecord,
 	addTimesheetEntry,
 	calcTotalWorkedHours,
-} = require("../helpers/timecardHelper");
+} = require("../services/timecardService");
 const { findEmpPayInfo } = require("./employmentInfoController");
 const { EARNING_TYPE } = require("../constants/earning.constants");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");

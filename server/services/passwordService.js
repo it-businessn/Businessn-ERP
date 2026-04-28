@@ -24,6 +24,9 @@ const hashSyncPassword = async (password) => {
 };
 
 const comparePassword = async (plainPassword, hashedPassword) => {
+	if (typeof plainPassword !== "string" || typeof hashedPassword !== "string") {
+		return false;
+	}
 	if (!plainPassword || !hashedPassword) {
 		throw new Error("Both passwords are required for comparison");
 	}
@@ -31,6 +34,7 @@ const comparePassword = async (plainPassword, hashedPassword) => {
 		return await bcrypt.compare(plainPassword, hashedPassword);
 	} catch (error) {
 		throw new Error(`Password comparison failed: ${error.message}`);
+		return false;
 	}
 };
 

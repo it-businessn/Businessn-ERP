@@ -10,7 +10,7 @@ const {
 	addOvertimeRecord,
 	addTimesheetEntry,
 	calcTotalWorkedHours,
-} = require("../helpers/timecardHelper");
+} = require("../services/timecardService");
 const { getHolidays } = require("./statHolidayController");
 const { COMPANIES } = require("../constants/constant");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");

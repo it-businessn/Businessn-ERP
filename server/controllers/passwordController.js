@@ -10,22 +10,25 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const forgotPassword = async (req, res) => {
 	const { email } = req.body;
 	try {
-		const user = await Employee.findOne({ email }).sort({
-			createdOn: -1,
-		});
+		const user = await Employee.findOne({ email });
 		if (!user) {
 			return res.status(404).json({
-				message: "Please enter the email you used to register.",
+				message: "If the email exists, a reset link has been sent.",
 			});
 		}
 
 		const resetLink = getResetPasswordLink({ _id: user._id });
-		if (resetLink)
-			await sendEmail(
-				user.email,
-				"Reset Password for Businessᴺ",
-				resetLink,
-				`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
+		if (!resetLink) {
+			return res.status(500).json({
+				message: "Failed to generate reset link",
+			});
+		}
+
+		await sendEmail(
+			user.email,
+			"Reset Password for Businessᴺ",
+			resetLink,
+			`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
 		<div
 			class="header"
 			style="
@@ -96,36 +99,44 @@ const forgotPassword = async (req, res) => {
 			
 		</div>
 	</body> `,
-				[
-					{
-						filename: "BusinessN_dark1.png",
-						path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-						cid: "footerLogo",
-					},
-				],
-			);
+			[
+				{
+					filename: "BusinessN_dark1.png",
+					path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
+					cid: "footerLogo",
+				},
+			],
+		);
 
 		return res.status(200).json({
-			message: "Please check your email inbox for a link to reset your password.",
+			message: "Please check your email inbox. A reset link has been sent to reset your password.",
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Reset Password Link error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 
 const resetPassword = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const user = await Employee.findById(id);
+		const user = await Employee.findById(id).select("email");
 		if (!user) {
 			return res.status(404).json({ message: "User does not exist" });
 		}
-		res.render("index", {
+		return res.render("index", {
 			email: user.email,
 			status: "Not verified",
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "User not verified!", error });
+		console.error("User verification error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({ message: "User not verified!" });
 	}
 };
 
@@ -133,23 +144,26 @@ const setNewPassword = async (req, res) => {
 	const { id } = req.params;
 	const { password } = req.body;
 
-	const user = await Employee.findOne({ _id: id });
-	if (!user) {
-		return res.status(400).json({ message: "User Not Exist!" });
-	}
-
 	try {
+		// if (!password || password.length < 6) {
+		// 	return res.status(400).json({ message: "Password must be at least 6 characters" });
+		// }
+		const user = await Employee.findById(id);
+		if (!user) {
+			return res.status(400).json({ message: "User not found" });
+		}
 		const hashedPassword = await hashPassword(password);
-		await Employee.findByIdAndUpdate(
-			{ _id: id },
-			{
-				$set: { password: hashedPassword },
-			},
-		);
+		await Employee.findByIdAndUpdate(id, {
+			$set: { password: hashedPassword },
+		});
 		await EmployeeProfileInfo.updateMany({ empId: user._id }, { $set: { password } });
 		return res.render("index", { email: user.email, status: "Verified" });
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Set password error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 
@@ -173,7 +187,11 @@ const changePassword = async (req, res) => {
 			result,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Change password error:", {
+			message: error.message,
+			stack: error.stack,
+		});
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 

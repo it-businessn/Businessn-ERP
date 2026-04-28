@@ -1,6 +1,6 @@
 const moment = require("moment");
 
-const { addTimesheetEntry } = require("../helpers/timecardHelper");
+const { addTimesheetEntry } = require("../services/timecardService");
 
 const Holiday = require("../models/Holiday");
 const Timesheet = require("../models/Timesheet");

@@ -33,6 +33,7 @@ const verifyToken = (token, secret) => {
 		if (decoded.exp && decoded.exp < moment().unix()) {
 			throw new Error("Token has expired");
 		}
+		return decoded;
 	} catch (error) {
 		console.error("Token verification failed:", error.message);
 		throw new Error("Invalid or expired refresh token");
@@ -42,7 +43,9 @@ const verifyToken = (token, secret) => {
 const authenticateToken = async (req, res, next) => {
 	const authHeader = req.headers["authorization"];
 	const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
-	if (!token) return res.status(401).json({ message: "Access token is required" });
+	if (!token) {
+		return res.status(401).json({ message: "Access token is required" });
+	}
 
 	try {
 		const user = verifyToken(token, SECRET_KEY);
