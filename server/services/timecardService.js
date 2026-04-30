@@ -40,70 +40,64 @@ const getClockInTimeFormat = (timestamp) => {
 const convertMomentTzDate = (timestamp) =>
 	momentTz(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
 
-const calcTotalWorkedHours = (clockIn, clockOut) => {
-	// const hoursWorked = moment.duration(moment(clockOut).diff(moment(clockIn))).asHours();
-	// const totalTime = Math.round(hoursWorked * 100) / 100;
-	// const roundedTime = totalTime.toFixed(2).includes(".99") ? Math.round(totalTime) : totalTime;
-	// return roundedTime;
+const calcTotalWorkedHours = (start, end) => {
+	const startTime = new Date(start).getTime();
+	const endTime = new Date(end).getTime();
 
-	const start = new Date(clockIn);
-	const end = new Date(clockOut);
-	// if (isNaN(start) || isNaN(end)) {
-	// 	console.error("[calcTotalWorkedHours] Invalid dates:", {
-	// 		clockIn,
-	// 		clockOut,
-	// 	});
-	// 	return 0;
-	// }
+	if (!startTime || !endTime || endTime <= startTime) return 0;
 
-	const diffMs = end.getTime() - start.getTime();
-
-	// if (diffMs <= 0) {
-	// 	console.warn("[calcTotalWorkedHours] Invalid time range:", {
-	// 		clockIn,
-	// 		clockOut,
-	// 	});
-	// 	return 0;
-	// }
-
-	const hours = diffMs / (1000 * 60 * 60);
-
-	return Math.round(hours * 100) / 100;
-	// const sameHourAndMinute =
-	// 	startDate.getUTCHours() === endDate.getUTCHours() &&
-	// 	startDate.getUTCMinutes() === endDate.getUTCMinutes();
-
-	// if (sameHourAndMinute) return 8;
-
-	// const totalTime = (endDate - startDate) / (1000 * 60 * 60); // convert ms to hours
-	// const fixedTime = totalTime.toFixed(2);
-
-	// if (fixedTime.endsWith(".99")) return Math.round(totalTime);
-	// if (fixedTime.endsWith(".01")) return Math.floor(totalTime);
-
-	// return fixedTime;
+	const diffHours = (endTime - startTime) / (1000 * 60 * 60);
+	return Math.round(diffHours * 100) / 100;
 };
 
 const addTimesheetEntry = async (record) => await Timesheet.create(record);
 
 const addOvertimeRecord = async (clockIn, clockOut, employeeId, company, source) => {
-	const adjustedClockOut = moment(clockIn).add(8, "hours");
-	const overtimeClockIn = moment(adjustedClockOut);
-	const overtimeClockOut = moment(clockOut);
-	const overtimeHoursWorked = calcTotalWorkedHours(overtimeClockIn, overtimeClockOut);
+	try {
+		if (!clockIn || !clockOut) {
+			throw new Error("Missing clockIn or clockOut");
+		}
 
-	const newEntry = {
-		employeeId,
-		companyName: company,
-		clockIn: overtimeClockIn.toISOString(),
-		clockOut: overtimeClockOut.toISOString(),
-		payType: PAY_TYPES_TITLE.OVERTIME_PAY,
-		overtimeHoursWorked,
-		source,
-	};
+		const start = moment(clockIn);
+		const end = moment(clockOut);
 
-	await addTimesheetEntry(newEntry);
-	return adjustedClockOut.toISOString();
+		if (!start.isValid() || !end.isValid()) {
+			throw new Error("Invalid date format");
+		}
+
+		// Regular shift = 8 hours
+		const regularShiftEnd = start.clone().add(8, "hours");
+
+		// No overtime → exit early
+		if (end.isSameOrBefore(regularShiftEnd)) {
+			return regularShiftEnd.toISOString();
+		}
+
+		const overtimeClockIn = regularShiftEnd;
+		const overtimeClockOut = end;
+
+		const overtimeHoursWorked = calcTotalWorkedHours(
+			overtimeClockIn.toISOString(),
+			overtimeClockOut.toISOString(),
+		);
+
+		const newEntry = {
+			employeeId,
+			companyName: company,
+			clockIn: overtimeClockIn.toISOString(),
+			clockOut: overtimeClockOut.toISOString(),
+			payType: PAY_TYPES_TITLE.OVERTIME_PAY,
+			overtimeHoursWorked,
+			source,
+		};
+
+		await addTimesheetEntry(newEntry);
+
+		return regularShiftEnd.toISOString();
+	} catch (err) {
+		console.error("Error adding overtime record:", err);
+		throw err;
+	}
 };
 
 module.exports = { addOvertimeRecord, addTimesheetEntry, calcTotalWorkedHours };

@@ -31,166 +31,119 @@ const TAX_CONFIG = {
 	MAX_PROVINCIAL_CLAIM: 11981.0,
 };
 
-//2025 FD tax brackets
-const applyFederalTaxRate = (annualIncome, taxCredit) => {
-	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
-	const taxBrackets = [
-		{ upperLimit: 58523, rate: 0.14 },
-		{ upperLimit: 117045, rate: 0.205 },
-		{ upperLimit: 181440, rate: 0.26 },
-		{ upperLimit: 258482, rate: 0.29 },
-		{ upperLimit: Infinity, rate: 0.33 },
-	];
-	const projectedTaxes = [];
+const FEDERAL_TAX_BRACKETS_2026 = [
+	{ upperLimit: 58523, rate: 0.14 },
+	{ upperLimit: 117045, rate: 0.205 },
+	{ upperLimit: 181440, rate: 0.26 },
+	{ upperLimit: 258482, rate: 0.29 },
+	{ upperLimit: Infinity, rate: 0.33 },
+];
 
-	for (let i = 0; i < taxBrackets.length; i++) {
-		const bracket = taxBrackets[i];
-		const lowerLimit = i === 0 ? personalCredit : taxBrackets[i - 1].upperLimit;
-		let remainingIncome = annualIncome;
+const BC_TAX_BRACKETS_2026 = [
+	{ upperLimit: 50363, rate: 0.0506 }, // or 0.056 if using updated budget rate
+	{ upperLimit: 100728, rate: 0.077 },
+	{ upperLimit: 115648, rate: 0.105 },
+	{ upperLimit: 140430, rate: 0.1229 },
+	{ upperLimit: 190405, rate: 0.147 },
+	{ upperLimit: 265545, rate: 0.168 },
+	{ upperLimit: Infinity, rate: 0.205 },
+];
 
-		if (remainingIncome > lowerLimit) {
-			const taxableEarning = annualIncome < bracket.upperLimit ? annualIncome : bracket.upperLimit;
-			const taxableIncome = taxableEarning - lowerLimit;
+const normalizeFrequency = (frequency) => {
+	if (!frequency) return "Biweekly";
 
-			const taxInBracket = taxableIncome * bracket.rate;
-			projectedTaxes.push({
-				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
-				taxableIncome,
-				taxInBracket,
-			});
-			remainingIncome -= taxableIncome;
-		} else {
-			projectedTaxes.push({
-				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
-				taxableIncome: 0,
-				taxInBracket: 0,
-			});
-		}
-	}
+	const map = {
+		daily: "Daily",
+		weekly: "Weekly",
+		biweekly: "Biweekly",
+		"bi-weekly": "Biweekly",
+		semimonthly: "Semimonthly",
+		monthly: "Monthly",
+		quarterly: "Quarterly",
+		annually: "Annually",
+	};
 
-	const projectedAnnualTaxBill = projectedTaxes.reduce(
-		(sum, bracketIncome) => sum + bracketIncome.taxInBracket,
-		0,
-	);
-	return projectedAnnualTaxBill;
+	return map[frequency.toLowerCase()] || "Biweekly";
 };
 
-//2025 BC Provincial tax brackets
-const applyProvincialTaxRate = (annualIncome, taxCredit) => {
-	const personalCredit = taxCredit ? parseFloat(taxCredit) : 0;
-	const taxBrackets = [
-		{ upperLimit: 50363, rate: 0.0506 },
-		{ upperLimit: 100728, rate: 0.077 },
-		{ upperLimit: 115648, rate: 0.105 },
-		{ upperLimit: 140430, rate: 0.1229 },
-		{ upperLimit: 190405, rate: 0.147 },
-		{ upperLimit: 265545, rate: 0.168 },
-		{ upperLimit: Infinity, rate: 0.205 },
-	];
-	const projectedTaxes = [];
+const calculateTax = (annualIncome, taxCredit = 0, brackets = []) => {
+	const credit = Number(taxCredit) || 0;
 
-	for (let i = 0; i < taxBrackets.length; i++) {
-		const bracket = taxBrackets[i];
-		const lowerLimit = i === 0 ? personalCredit : taxBrackets[i - 1].upperLimit;
-		let remainingIncome = annualIncome;
+	return brackets.reduce((tax, bracket, i) => {
+		const lower = i === 0 ? credit : brackets[i - 1].upperLimit;
+		const upper = bracket.upperLimit;
 
-		if (remainingIncome > lowerLimit) {
-			const taxableEarning = annualIncome < bracket.upperLimit ? annualIncome : bracket.upperLimit;
-			const taxableIncome = taxableEarning - lowerLimit;
+		if (annualIncome <= lower) return tax;
 
-			const taxInBracket = taxableIncome * bracket.rate;
-			projectedTaxes.push({
-				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
-				taxableIncome,
-				taxInBracket,
-			});
-			remainingIncome -= taxableIncome;
-		} else {
-			projectedTaxes.push({
-				bracket: `Income between $${lowerLimit.toFixed(2)} and $${bracket.upperLimit.toFixed(2)}`,
-				taxableIncome: 0,
-				taxInBracket: 0,
-			});
-		}
-	}
-
-	const projectedAnnualTaxBill = projectedTaxes.reduce(
-		(sum, bracketIncome) => sum + bracketIncome.taxInBracket,
-		0,
-	);
-	return projectedAnnualTaxBill;
+		const taxableIncome = Math.min(annualIncome, upper) - lower;
+		return tax + taxableIncome * bracket.rate;
+	}, 0);
 };
 
-const applyBCTaxRate = (annualIncome) => {
-	const BC_TaxReductionAmount =
-		annualIncome > 0 && annualIncome <= 23179
-			? 521
-			: annualIncome > 23179 && annualIncome < 37814
-				? 521 - 0.0356 * (annualIncome - 23179)
-				: 0;
-	return BC_TaxReductionAmount;
+const parseCurrency = (value) => {
+	if (!value) return 0;
+	if (typeof value === "number") return value;
+
+	return parseFloat(value.replace(/[$,]/g, "")) || 0;
 };
-const getTaxDetails = (payRate, grossEarning, empTaxCreditResult, frequency = "Biweekly") => {
-	frequency = "bi-weekly" || "Biweekly" ? "Biweekly" : frequency;
-	const annualPayPeriods = FREQUENCY_MAP[frequency].ANNUAL_PAY_PERIODS;
-	const hrsPayPeriods = FREQUENCY_MAP[frequency].HOURS_PER_PERIOD;
-	const annualProjectedGrossEarning = grossEarning * annualPayPeriods;
 
-	// const projectedIncome = payRate * hrsPayPeriods * annualPayPeriods;
-	const projectedIncome = annualProjectedGrossEarning;
-	const adjustedProjectedIncome = projectedIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
-	const adjustedGrossEarning = adjustedProjectedIncome / annualPayPeriods;
+const getTaxDetails = (
+	payRate,
+	grossEarning,
+	empTaxCreditResult = {},
+	frequencyInput = "Biweekly",
+) => {
+	const frequency = normalizeFrequency(frequencyInput);
+	const freq = FREQUENCY_MAP[frequency];
 
-	const CPPAmount = empTaxCreditResult?.isCPPExempt
-		? 0
-		: adjustedGrossEarning * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE;
-	const CPPContribution = CPPAmount < 0 ? 0 : CPPAmount;
-
-	if (empTaxCreditResult?.federalTaxCredit) {
-		empTaxCreditResult.federalTaxCredit = parseFloat(
-			empTaxCreditResult.federalTaxCredit.replace(/[$,]/g, ""),
-		);
-	}
-	if (empTaxCreditResult?.regionalTaxCredit) {
-		empTaxCreditResult.regionalTaxCredit = parseFloat(
-			empTaxCreditResult.regionalTaxCredit.replace(/[$,]/g, ""),
-		);
+	if (!freq) {
+		throw new Error(`Invalid frequency: ${frequency}`);
 	}
 
-	const federalTaxDeductionByPayPeriod =
-		applyFederalTaxRate(annualProjectedGrossEarning, empTaxCreditResult?.federalTaxCredit) /
-		annualPayPeriods;
+	const annualPayPeriods = freq.ANNUAL_PAY_PERIODS;
+	const annualIncome = grossEarning * annualPayPeriods;
 
-	const totalProvincialTaxDeduction =
-		applyProvincialTaxRate(annualProjectedGrossEarning, empTaxCreditResult?.regionalTaxCredit) /
-		annualPayPeriods;
+	const federalCredit = parseCurrency(empTaxCreditResult?.federalTaxCredit);
+	const provincialCredit = parseCurrency(empTaxCreditResult?.regionalTaxCredit);
 
-	const EE_EIContribution = empTaxCreditResult?.isEIExempt
+	// CPP
+	const adjustedIncome = annualIncome - TAX_CONFIG.CPP_BASIC_EXEMPTION;
+	const cppPerPeriod = empTaxCreditResult?.isCPPExempt
 		? 0
-		: TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossEarning;
-	const EmployeeEIContribution = EE_EIContribution < 0 ? 0 : EE_EIContribution;
+		: Math.max(0, (adjustedIncome / annualPayPeriods) * TAX_CONFIG.TOTAL_CONTRIBUTION_RATE);
 
-	const EmployeeEIByPayPeriodMax =
-		EmployeeEIContribution > TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
-			? TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION
-			: EmployeeEIContribution;
+	// Federal tax
+	const federalTax =
+		calculateTax(annualIncome, federalCredit, FEDERAL_TAX_BRACKETS_2026) / annualPayPeriods;
 
-	const ER_EIContribution = empTaxCreditResult?.isEIExempt
+	// Provincial tax
+	const provincialTax =
+		calculateTax(annualIncome, provincialCredit, BC_TAX_BRACKETS_2026) / annualPayPeriods;
+
+	// EI
+	const employeeEI = empTaxCreditResult?.isEIExempt
 		? 0
-		: TAX_CONFIG.EMP_CONTRIBUTION_RATE * 1.4 * grossEarning;
-	const EmployerEIContribution = ER_EIContribution < 0 ? 0 : ER_EIContribution;
+		: Math.min(
+				TAX_CONFIG.EMP_CONTRIBUTION_RATE * grossEarning,
+				TAX_CONFIG.MAX_EMPLOYEE_EI_CONTRIBUTION,
+			);
 
-	const EmployerEIByPayPeriodMax =
-		EmployerEIContribution > TAX_CONFIG.MAX_EMPLOYER_EI_CONTRIBUTION
-			? TAX_CONFIG.MAX_EMPLOYER_EI_CONTRIBUTION
-			: EmployerEIContribution;
+	const employerEI = empTaxCreditResult?.isEIExempt
+		? 0
+		: Math.min(
+				TAX_CONFIG.EMP_CONTRIBUTION_RATE * 1.4 * grossEarning,
+				TAX_CONFIG.MAX_EMPLOYER_EI_CONTRIBUTION,
+			);
 
 	return {
-		CPPContribution,
-		totalProvincialTaxDeduction,
-		federalTaxDeductionByPayPeriod,
-		EmployeeEIContribution: EmployeeEIByPayPeriodMax,
-		EmployerEIContribution: EmployerEIByPayPeriodMax,
+		// annualIncome,
+		// federalTaxPerPeriod: federalTax,
+		// provincialTaxPerPeriod: provincialTax,
+		CPPContribution: cppPerPeriod,
+		totalProvincialTaxDeduction: provincialTax,
+		federalTaxDeductionByPayPeriod: federalTax,
+		EmployeeEIContribution: employeeEI,
+		EmployerEIContribution: employerEI,
 	};
 };
 

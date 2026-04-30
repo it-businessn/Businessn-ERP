@@ -30,6 +30,9 @@ const runStatHolidayJob = () => {
 					}
 				}),
 			);
+			console.log(
+				`runStatHolidayJob job ran | Local: ${now.toLocaleString()} | UTC: ${now.toISOString()}`,
+			);
 		} catch (error) {
 			console.error("❌ Cron job failed:", error.message);
 		}

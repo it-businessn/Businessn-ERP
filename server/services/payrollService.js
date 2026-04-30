@@ -6,86 +6,11 @@ const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
 const { getSumRegHrs } = require("../utils/time.util");
 
-const getApprovedTimesheets = async (record) =>
-	await Timesheet.find(record)
-		.sort({ clockIn: -1 })
-		.populate({
-			path: "employeeId",
-			model: "Employee",
-			select: ["companyId", "employeeId", "fullName", "payrollStatus"],
-		});
-
 const findEmployeeBenefitInfo = async (empId, companyName) =>
 	await EmployeeBalanceInfo.findOne({
 		empId,
 		companyName,
 	});
-
-const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) => {
-	const timesheets = await getApprovedTimesheets({
-		deleted: false,
-		companyName,
-		clockIn: {
-			$gte: moment(startDate).utc().startOf("day").toDate(),
-			$lte: moment(endDate).utc().endOf("day").toDate(),
-		},
-		approveStatus: TIMESHEET_STATUS.APPROVED,
-	});
-
-	const timesheetApprovedHoursSum = timesheets?.reduce((acc, timesheet) => {
-		if (!acc[timesheet.employeeId]) {
-			acc[timesheet.employeeId] = {
-				_id: timesheet._id,
-				empId: timesheet.employeeId,
-				totalRegHoursWorked: 0,
-				totalRegHoursWorked2: 0,
-				totalOvertimeHoursWorked: 0,
-				totalDblOvertimeHoursWorked: 0,
-				totalStatDayHoursWorked: 0,
-				totalStatHours: 0,
-				totalSickHoursWorked: 0,
-				totalVacationHoursWorked: 0,
-				totalBereavementHoursWorked: 0,
-				totalPersonalDayHoursWorked: 0,
-			};
-		}
-
-		if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-			acc[timesheet.employeeId].totalRegHoursWorked +=
-				getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
-
-		// if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-		// acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2 || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.OVERTIME_PAY)
-			acc[timesheet.employeeId].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.DBL_OVERTIME_PAY)
-			acc[timesheet.employeeId].totalDblOvertimeHoursWorked +=
-				timesheet.dblOvertimeHoursWorked || 0;
-		if (timesheet.payType === PAY_TYPES_TITLE.STAT_PAY)
-			acc[timesheet.employeeId].totalStatHours += timesheet.statDayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.STAT_WORK_PAY)
-			acc[timesheet.employeeId].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.SICK_PAY)
-			acc[timesheet.employeeId].totalSickHoursWorked += timesheet.sickPayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.VACATION_PAY)
-			acc[timesheet.employeeId].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.BEREAVEMENT_PAY)
-			acc[timesheet.employeeId].totalBereavementHoursWorked += timesheet.bereavementPayHours || 0;
-
-		if (timesheet.payType === PAY_TYPES_TITLE.PERSONAL_DAY_PAY)
-			acc[timesheet.employeeId].totalPersonalDayHoursWorked += timesheet.personalPayHours || 0;
-		return acc;
-	}, {});
-
-	const result = Object.values(timesheetApprovedHoursSum);
-	return result;
-};
 
 const findEmployeePayStub = async (empId, payPeriodPayDate, companyName) =>
 	await EmployeePayStub.findOne({
@@ -108,6 +33,104 @@ const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>
 			select: "fullName",
 		})
 		.select("commission retroactive reimbursement vacationPayout bonus terminationPayout");
+
+const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) => {
+	try {
+		const timesheets = await Timesheet.find({
+			deleted: false,
+			companyName,
+			clockIn: {
+				$gte: moment(startDate).utc().startOf("day").toDate(),
+				$lte: moment(endDate).utc().endOf("day").toDate(),
+			},
+			approveStatus: TIMESHEET_STATUS.APPROVED,
+		})
+			.sort({ clockIn: -1 })
+			.populate({
+				path: "employeeId",
+				model: "Employee",
+				select: ["companyId", "employeeId", "fullName", "payrollStatus"],
+			});
+
+		if (!Array.isArray(timesheets) || timesheets.length === 0) {
+			return [];
+		}
+
+		const summary = timesheets.reduce((acc, timesheet) => {
+			try {
+				const empKey = timesheet.employeeId?.toString();
+				if (!empKey) return acc;
+
+				if (!acc[empKey]) {
+					acc[empKey] = {
+						_id: timesheet._id,
+						empId: timesheet.employeeId,
+						totalRegHoursWorked: 0,
+						totalRegHoursWorked2: 0,
+						totalOvertimeHoursWorked: 0,
+						totalDblOvertimeHoursWorked: 0,
+						totalStatDayHoursWorked: 0,
+						totalStatHours: 0,
+						totalSickHoursWorked: 0,
+						totalVacationHoursWorked: 0,
+						totalBereavementHoursWorked: 0,
+						totalPersonalDayHoursWorked: 0,
+					};
+				}
+
+				switch (timesheet.payType) {
+					case PAY_TYPES_TITLE.REG_PAY:
+						acc[empKey].totalRegHoursWorked +=
+							getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
+						break;
+					// if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
+					// acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2 || 0;
+
+					case PAY_TYPES_TITLE.OVERTIME_PAY:
+						acc[empKey].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
+						break;
+
+					case PAY_TYPES_TITLE.DBL_OVERTIME_PAY:
+						acc[empKey].totalDblOvertimeHoursWorked += timesheet.dblOvertimeHoursWorked || 0;
+						break;
+
+					case PAY_TYPES_TITLE.STAT_PAY:
+						acc[empKey].totalStatHours += timesheet.statDayHours || 0;
+						break;
+
+					case PAY_TYPES_TITLE.STAT_WORK_PAY:
+						acc[empKey].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
+						break;
+
+					case PAY_TYPES_TITLE.SICK_PAY:
+						acc[empKey].totalSickHoursWorked += timesheet.sickPayHours || 0;
+						break;
+
+					case PAY_TYPES_TITLE.VACATION_PAY:
+						acc[empKey].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
+						break;
+
+					case PAY_TYPES_TITLE.BEREAVEMENT_PAY:
+						acc[empKey].totalBereavementHoursWorked += timesheet.bereavementPayHours || 0;
+						break;
+
+					case PAY_TYPES_TITLE.PERSONAL_DAY_PAY:
+						acc[empKey].totalPersonalDayHoursWorked += timesheet.personalPayHours || 0;
+						break;
+				}
+				return acc;
+			} catch (innerErr) {
+				console.error("Error processing timesheet:", innerErr);
+				return acc;
+			}
+		}, {});
+
+		return Object.values(summary);
+	} catch (err) {
+		console.error("Error calculating approved hours:", err);
+		throw new Error("Failed to calculate timesheet approved hours");
+	}
+};
 
 module.exports = {
 	findEmployeeBenefitInfo,
