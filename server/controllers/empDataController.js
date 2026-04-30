@@ -322,10 +322,11 @@ const addUserBankInfo = async (empId, companyName, bankingInfo) => {
 		payStubSendByEmail,
 		paymentEmail,
 	};
+	const BANKING_ENCRYPTION_KEY = CONFIG.BANKING_KEY;
 	if (!bankNum.includes("*") && !transitNum.includes("*") && !accountNum.includes("*")) {
-		const bankEncrypted = encryptData(bankNum, BANK_ENCRYPTION_KEY);
-		const transitEncrypted = encryptData(transitNum, BANK_ENCRYPTION_KEY);
-		const accountEncrypted = encryptData(accountNum, BANK_ENCRYPTION_KEY);
+		const bankEncrypted = encryptData(bankNum, BANKING_ENCRYPTION_KEY);
+		const transitEncrypted = encryptData(transitNum, BANKING_ENCRYPTION_KEY);
+		const accountEncrypted = encryptData(accountNum, BANKING_ENCRYPTION_KEY);
 
 		newBankInfo.bankNum = bankEncrypted.encryptedData;
 		newBankInfo.bankIv = bankEncrypted.iv;
