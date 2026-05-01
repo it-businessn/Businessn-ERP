@@ -737,12 +737,12 @@ const addEmployeePayStubInfo = async (req, res) => {
 				employee?.empId?._id,
 				scheduleFrequency,
 			);
-			fundingTotal.totalIncomeTaxContr += payStubResult?.currentIncomeTaxDeductions || 0;
-			fundingTotal.totalCPP_EE_Contr += payStubResult?.currentCPPDeductions || 0;
-			fundingTotal.totalCPP_ER_Contr += payStubResult?.currentCPPDeductions || 0;
-			fundingTotal.totalEI_EE_Contr += payStubResult?.currentEmployeeEIDeductions || 0;
-			fundingTotal.totalEI_ER_Contr += payStubResult?.currentEmployerEIDeductions || 0;
-			fundingTotal.totalNetPay += payStubResult?.currentNetPay || 0;
+			fundingTotal.totalIncomeTaxContr += safeNum(payStubResult?.currentIncomeTaxDeductions);
+			fundingTotal.totalCPP_EE_Contr += safeNum(payStubResult?.currentCPPDeductions);
+			fundingTotal.totalCPP_ER_Contr += safeNum(payStubResult?.currentCPPDeductions);
+			fundingTotal.totalEI_EE_Contr += safeNum(payStubResult?.currentEmployeeEIDeductions);
+			fundingTotal.totalEI_ER_Contr += safeNum(payStubResult?.currentEmployerEIDeductions);
+			fundingTotal.totalNetPay += safeNum(payStubResult?.currentNetPay);
 		}
 
 		await buildFundingTotalsReport(

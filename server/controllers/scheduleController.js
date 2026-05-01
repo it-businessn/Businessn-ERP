@@ -10,6 +10,7 @@ const { sendEmail } = require("../services/emailService");
 const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const BudgetAccount = require("../models/BudgetAccount");
+const { safeNum } = require("../utils/time.util");
 
 const currentYear = new Date().getFullYear();
 
@@ -291,7 +292,7 @@ const getWorkWeekEmpShifts = async (req, res) => {
 						select: ["email"],
 					})
 					.select("empId roles");
-				const rate = employeeData?.roles[0]?.payRate || 0;
+				const rate = safeNum(employeeData?.roles[0]?.payRate);
 				const email = employeeData?.empId?.email || "";
 
 				return {
@@ -462,7 +463,7 @@ const getWorkShiftByDate = async (req, res) => {
 							$gte: moment.utc(date).startOf("day").toDate(),
 							$lte: moment.utc(date).endOf("day").toDate(),
 						},
-				  })
+					})
 				: await WorkShift.find({
 						companyName: name,
 						location,
@@ -471,7 +472,7 @@ const getWorkShiftByDate = async (req, res) => {
 							$lte: moment.utc(date).endOf("day").toDate(),
 						},
 						empName,
-				  });
+					});
 		return res.status(200).json(shifts);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

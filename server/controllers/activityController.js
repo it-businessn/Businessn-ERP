@@ -1,4 +1,5 @@
 const moment = require("moment");
+const mongoose = require("mongoose");
 const Contact = require("../models/Contact");
 const LogActivity = require("../models/LogActivity");
 
@@ -10,6 +11,7 @@ const getActivity = async (req, res) => {
 		});
 		return res.status(200).json(activities);
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -24,6 +26,7 @@ const getActivityById = async (req, res) => {
 		});
 		return res.status(200).json(notes);
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -61,26 +64,27 @@ const getFilterRange = (filter) => {
 		}
 		return { startOfDay: startOfQuarter, endOfDay: endOfQuarter };
 	}
+	const now = moment();
 
 	const startOfDay = isToday
-		? moment().startOf("day").toDate()
+		? now.clone().startOf("day").toDate()
 		: isWeekly
-		? moment().startOf("week").toDate()
-		: isMonthly
-		? moment().startOf("month").toDate()
-		: isAnnual
-		? moment().startOf("year").toDate()
-		: null;
+			? now.clone().startOf("week").toDate()
+			: isMonthly
+				? now.clone().startOf("month").toDate()
+				: isAnnual
+					? now.clone().startOf("year").toDate()
+					: null;
 
 	const endOfDay = isToday
-		? moment().endOf("day").toDate()
+		? now.clone().endOf("day").toDate()
 		: isWeekly
-		? moment().endOf("week").toDate()
-		: isMonthly
-		? moment().endOf("month").toDate()
-		: isAnnual
-		? moment().endOf("year").toDate()
-		: null;
+			? now.clone().endOf("week").toDate()
+			: isMonthly
+				? now.clone().endOf("month").toDate()
+				: isAnnual
+					? now.clone().endOf("year").toDate()
+					: null;
 	return { startOfDay, endOfDay };
 };
 
@@ -88,6 +92,10 @@ const getActivityRange = async (req, res) => {
 	const { createdBy, companyName, filter } = req.params;
 
 	const { startOfDay, endOfDay } = getFilterRange(filter);
+
+	if (!startOfDay || !endOfDay) {
+		return res.status(400).json({ message: "Invalid filter value" });
+	}
 
 	try {
 		const result = await LogActivity.find({
@@ -97,15 +105,26 @@ const getActivityRange = async (req, res) => {
 				$gte: startOfDay,
 				$lte: endOfDay,
 			},
-		}).select("type");
+		})
+			.select("type")
+			.lean();
+
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error fetching activity range:", error);
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
 	}
 };
 
 const createActivity = async (req, res) => {
 	const { contactId, createdBy, description, duration, type, companyName } = req.body;
+
+	const session = await mongoose.startSession();
+	session.startTransaction();
 
 	try {
 		const data = {
@@ -116,30 +135,53 @@ const createActivity = async (req, res) => {
 			type,
 			companyName,
 		};
-		const existingRecord = await LogActivity.findOne(data);
+
+		const existingRecord = await LogActivity.findOne(data).session(session);
 
 		if (existingRecord) {
+			await session.abortTransaction();
 			return res.status(409).json({ message: "Log Activity already exists" });
 		}
-		const newActivity = await LogActivity.create(data);
-		saveContactActivities(contactId, companyName, newActivity._id);
 
-		return res.status(201).json(newActivity);
+		const newActivity = await LogActivity.create([data], { session });
+
+		await saveContactActivities(contactId, companyName, newActivity[0]._id, session);
+
+		await session.commitTransaction();
+
+		return res.status(201).json(newActivity[0]);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		await session.abortTransaction();
+		console.error(error);
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
+	} finally {
+		session.endSession();
 	}
 };
 
-const saveContactActivities = async (contactId, companyName, activity) => {
-	const contact = await Contact.findOne({
-		$or: [
-			{ _id: contactId, companyName },
-			{ leadId: contactId, companyName },
-		],
-	});
-	contact.activities.push(activity);
+const saveContactActivities = async (contactId, companyName, activity, session) => {
+	try {
+		const contact = await Contact.findOne({
+			$or: [
+				{ _id: contactId, companyName },
+				{ leadId: contactId, companyName },
+			],
+		}).session(session);
 
-	await contact.save();
+		if (!contact) {
+			throw new Error("Contact not found");
+		}
+
+		contact.activities.push(activity);
+
+		await contact.save({ session });
+	} catch (error) {
+		throw error;
+	}
 };
 
 module.exports = {

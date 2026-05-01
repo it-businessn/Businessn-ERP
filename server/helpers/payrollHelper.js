@@ -250,8 +250,8 @@ const buildNewEmpPayStubInfo = (
 	frequency,
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
-	newEmpData.regPay = empPayInfoResult?.roles[0]?.payRate || 0;
-	newEmpData.regPay2 = empPayInfoResult?.roles[1]?.payRate || 0;
+	newEmpData.regPay = safeNum(empPayInfoResult?.roles[0]?.payRate);
+	newEmpData.regPay2 = safeNum(empPayInfoResult?.roles[1]?.payRate);
 	calcPayRates(newEmpData);
 
 	calcHoursWorkedTotals(
@@ -278,7 +278,7 @@ const buildNewEmpPayStubInfo = (
 	const netPay = newEmpData.currentGrossPay - newEmpData.currentDeductionsTotal;
 	// newEmpData.currentNetPay = netPay < 0 ? 0 : netPay;
 
-	newEmpData.currentNetPay = netPay || 0;
+	newEmpData.currentNetPay = safeNum(netPay);
 	newEmpData.totalAmountAllocated = empAdditionalDataAllocated?.totalAmountAllocated;
 	return newEmpData;
 };

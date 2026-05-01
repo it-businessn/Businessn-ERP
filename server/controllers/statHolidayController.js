@@ -8,6 +8,7 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
 const { TIMESHEET_SOURCE, PARAM_HOURS } = require("../constants/timesheet.constants");
 const { getPayrollActiveEmployees } = require("../services/userService");
+const { safeNum } = require("../utils/time.util");
 
 const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 	const startOfToday = moment().startOf("day");
@@ -32,7 +33,7 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		companyName,
 	);
 	const statPayAmount = numberOfDaysWorked ? employeeEarnings / numberOfDaysWorked : 0;
-	const statHours = statPayAmount / statPayRate || 0;
+	const statHours = statPayAmount / safeNum(statPayRate);
 
 	const startTime = moment().set({
 		hour: 13,
@@ -95,7 +96,7 @@ const findStatPayMonthlyEarning = async (employeeId, companyName) => {
 
 	const empPayInfoResult = await EmployeePayInfo.findOne({ empId: employeeId, companyName });
 	const record = empPayInfoResult?.roles?.[0];
-	const statPayRate = record?.payRate || 0;
+	const statPayRate = safeNum(record?.payRate);
 	const employeeEarnings = timesheets?.reduce((acc, item) => {
 		return (
 			acc +

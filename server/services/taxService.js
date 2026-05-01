@@ -1,3 +1,5 @@
+const { safeNum } = require("../utils/time.util");
+
 const FREQUENCY_MAP = {
 	Daily: { ANNUAL_PAY_PERIODS: 260, HOURS_PER_PERIOD: 8, TOTAL_WEEKS: 52 },
 	Weekly: { ANNUAL_PAY_PERIODS: 52, HOURS_PER_PERIOD: 40, TOTAL_WEEKS: 52 },
@@ -67,7 +69,7 @@ const normalizeFrequency = (frequency) => {
 };
 
 const calculateTax = (annualIncome, taxCredit = 0, brackets = []) => {
-	const credit = Number(taxCredit) || 0;
+	const credit = safeNum(taxCredit);
 
 	return brackets.reduce((tax, bracket, i) => {
 		const lower = i === 0 ? credit : brackets[i - 1].upperLimit;

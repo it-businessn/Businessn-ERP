@@ -18,6 +18,9 @@ const getCompany = async (req, res) => {
 		const company = await Company.findOne({ name }).select(
 			"address industry_type founding_year registration_number name cra_business_number",
 		);
+		if (!company) {
+			return res.status(404).json({ message: "Company not found" });
+		}
 		return res.status(200).json(company);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -52,6 +55,9 @@ const updateCompany = async (req, res) => {
 	try {
 		const { _id, ...updateData } = req.body;
 		const updatedCompany = await Company.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+		if (!updatedCompany) {
+			return res.status(404).json({ message: "Company not found" });
+		}
 		return res.status(200).json(updatedCompany);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -64,13 +70,15 @@ const addCompanyModules = async (companyName) => {
 			return { name: module, companyName };
 		});
 		await Module.insertMany(modules);
-	} catch (error) {}
+	} catch (error) {
+		console.error("addCompanyModules error:", error);
+	}
 };
 
 const addCompany = async (req, res) => {
 	try {
 		const { name, founding_year, registration_number, address, industry_type } = req.body || {};
-		const { streetNumber, city, state, postalCode, country } = address;
+		const { streetNumber, city, state, postalCode, country } = address || {};
 
 		if (!name || !registration_number) {
 			return res.status(400).json({
@@ -92,7 +100,7 @@ const addCompany = async (req, res) => {
 			address: { streetNumber, city, state, postalCode, country },
 			employees: shadowAdmins,
 		});
-		addCompanyModules(name);
+		addCompanyModules(name).catch(console.error);
 		return res.status(201).json(newCompany);
 	} catch (error) {
 		console.error("❌ Company creation error:", {
@@ -108,9 +116,11 @@ const addCompany = async (req, res) => {
 };
 
 const getAllCompanies = async () =>
-	await Company.find({}).sort({
-		createdOn: -1,
-	});
+	await Company.find({})
+		.sort({
+			createdOn: -1,
+		})
+		.lean();
 
 module.exports = {
 	addCompany,

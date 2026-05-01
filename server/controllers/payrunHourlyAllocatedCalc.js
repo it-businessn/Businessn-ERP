@@ -243,20 +243,27 @@ const calcPayoutAggregatedHours = async (
 		payPeriodPayDate,
 	});
 
-	result.additionalPayoutRegHoursWorked =
-		additionalHoursAllocatedInfo?.additionalPayoutRegHoursWorked || 0;
-	result.additionalPayoutOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalPayoutOvertimeHoursWorked || 0;
-	result.additionalPayoutDblOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalPayoutDblOvertimeHoursWorked || 0;
-	result.additionalPayoutStatHoursWorked =
-		additionalHoursAllocatedInfo?.additionalPayoutStatHoursWorked || 0;
-	result.additionalPayoutStatDayHoursWorked =
-		additionalHoursAllocatedInfo?.additionalPayoutStatDayHoursWorked || 0;
-	result.additionalPayoutSickHoursWorked =
-		additionalHoursAllocatedInfo?.additionalPayoutSickHoursWorked || 0;
-	result.additionalPayoutVacationHoursWorked =
-		additionalHoursAllocatedInfo?.additionalPayoutVacationHoursWorked || 0;
+	result.additionalPayoutRegHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalPayoutRegHoursWorked,
+	);
+	result.additionalPayoutOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalPayoutOvertimeHoursWorked,
+	);
+	result.additionalPayoutDblOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalPayoutDblOvertimeHoursWorked,
+	);
+	result.additionalPayoutStatHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalPayoutStatHoursWorked,
+	);
+	result.additionalPayoutStatDayHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalPayoutStatDayHoursWorked,
+	);
+	result.additionalPayoutSickHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalPayoutSickHoursWorked,
+	);
+	result.additionalPayoutVacationHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalPayoutVacationHoursWorked,
+	);
 
 	const {
 		totalDblOvertimeHoursWorked,
@@ -314,20 +321,27 @@ const calcSuperficialAggregatedHours = async (
 		payPeriodPayDate,
 	});
 
-	result.additionalSuperficialRegHoursWorked =
-		additionalHoursAllocatedInfo?.additionalSuperficialRegHoursWorked || 0;
-	result.additionalSuperficialOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalSuperficialOvertimeHoursWorked || 0;
-	result.additionalSuperficialDblOvertimeHoursWorked =
-		additionalHoursAllocatedInfo?.additionalSuperficialDblOvertimeHoursWorked || 0;
-	result.additionalSuperficialStatHoursWorked =
-		additionalHoursAllocatedInfo?.additionalSuperficialStatHoursWorked || 0;
-	result.additionalSuperficialStatDayHoursWorked =
-		additionalHoursAllocatedInfo?.additionalSuperficialStatDayHoursWorked || 0;
-	result.additionalSuperficialSickHoursWorked =
-		additionalHoursAllocatedInfo?.additionalSuperficialSickHoursWorked || 0;
-	result.additionalSuperficialVacationHoursWorked =
-		additionalHoursAllocatedInfo?.additionalSuperficialVacationHoursWorked || 0;
+	result.additionalSuperficialRegHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSuperficialRegHoursWorked,
+	);
+	result.additionalSuperficialOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSuperficialOvertimeHoursWorked,
+	);
+	result.additionalSuperficialDblOvertimeHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSuperficialDblOvertimeHoursWorked,
+	);
+	result.additionalSuperficialStatHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSuperficialStatHoursWorked,
+	);
+	result.additionalSuperficialStatDayHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSuperficialStatDayHoursWorked,
+	);
+	result.additionalSuperficialSickHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSuperficialSickHoursWorked,
+	);
+	result.additionalSuperficialVacationHoursWorked = safeNum(
+		additionalHoursAllocatedInfo?.additionalSuperficialVacationHoursWorked,
+	);
 
 	const {
 		additionalSuperficialRegHoursWorked,

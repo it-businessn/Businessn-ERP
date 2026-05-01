@@ -4,7 +4,7 @@ const EmployeeBalanceInfo = require("../models/EmployeeBalanceInfo");
 const EmployeePayStub = require("../models/EmployeePayStub");
 const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
-const { getSumRegHrs } = require("../utils/time.util");
+const { getSumRegHrs, safeNum } = require("../utils/time.util");
 
 const findEmployeeBenefitInfo = async (empId, companyName) =>
 	await EmployeeBalanceInfo.findOne({
@@ -84,38 +84,38 @@ const calculateTimesheetApprovedHours = async (startDate, endDate, companyName) 
 							getSumRegHrs(timesheet.regHoursWorked, timesheet.regHoursWorked2) || 0;
 						break;
 					// if (timesheet.payType === PAY_TYPES_TITLE.REG_PAY)
-					// acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2 || 0;
+					// acc[timesheet.employeeId].totalRegHoursWorked2 += timesheet.regHoursWorked2);
 
 					case PAY_TYPES_TITLE.OVERTIME_PAY:
-						acc[empKey].totalOvertimeHoursWorked += timesheet.overtimeHoursWorked || 0;
+						acc[empKey].totalOvertimeHoursWorked += safeNum(timesheet.overtimeHoursWorked);
 						break;
 
 					case PAY_TYPES_TITLE.DBL_OVERTIME_PAY:
-						acc[empKey].totalDblOvertimeHoursWorked += timesheet.dblOvertimeHoursWorked || 0;
+						acc[empKey].totalDblOvertimeHoursWorked += safeNum(timesheet.dblOvertimeHoursWorked);
 						break;
 
 					case PAY_TYPES_TITLE.STAT_PAY:
-						acc[empKey].totalStatHours += timesheet.statDayHours || 0;
+						acc[empKey].totalStatHours += safeNum(timesheet.statDayHours);
 						break;
 
 					case PAY_TYPES_TITLE.STAT_WORK_PAY:
-						acc[empKey].totalStatDayHoursWorked += timesheet.statDayHoursWorked || 0;
+						acc[empKey].totalStatDayHoursWorked += safeNum(timesheet.statDayHoursWorked);
 						break;
 
 					case PAY_TYPES_TITLE.SICK_PAY:
-						acc[empKey].totalSickHoursWorked += timesheet.sickPayHours || 0;
+						acc[empKey].totalSickHoursWorked += safeNum(timesheet.sickPayHours);
 						break;
 
 					case PAY_TYPES_TITLE.VACATION_PAY:
-						acc[empKey].totalVacationHoursWorked += timesheet.vacationPayHours || 0;
+						acc[empKey].totalVacationHoursWorked += safeNum(timesheet.vacationPayHours);
 						break;
 
 					case PAY_TYPES_TITLE.BEREAVEMENT_PAY:
-						acc[empKey].totalBereavementHoursWorked += timesheet.bereavementPayHours || 0;
+						acc[empKey].totalBereavementHoursWorked += safeNum(timesheet.bereavementPayHours);
 						break;
 
 					case PAY_TYPES_TITLE.PERSONAL_DAY_PAY:
-						acc[empKey].totalPersonalDayHoursWorked += timesheet.personalPayHours || 0;
+						acc[empKey].totalPersonalDayHoursWorked += safeNum(timesheet.personalPayHours);
 						break;
 				}
 				return acc;

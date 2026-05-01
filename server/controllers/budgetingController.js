@@ -20,6 +20,7 @@ const addAccountsJournalEntry = async (req, res) => {
 		const newEntry = await GeneralJournal.create(req.body);
 		return res.status(201).json(newEntry);
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -27,20 +28,40 @@ const addAccountsJournalEntry = async (req, res) => {
 const getAccountJournalEntries = async (req, res) => {
 	const { companyName, accountName } = req.params;
 	try {
-		const accounts = await GeneralJournal.find({
-			companyName,
-			"entries.accountName": accountName,
-		}).select("transactionDate entries");
+		// const accounts = await GeneralJournal.find({
+		// 	companyName,
+		// 	"entries.accountName": accountName,
+		// }).select("transactionDate entries");
 
-		const allEntries = accounts.flatMap((doc) =>
-			(doc.entries || []).map((entry) => ({
-				...(entry.toObject?.() ?? entry),
-				transactionDate: doc.transactionDate,
-			})),
-		);
-
+		// const allEntries = accounts.flatMap((doc) =>
+		// 	(doc.entries || []).map((entry) => ({
+		// 		...(entry.toObject?.() ?? entry),
+		// 		transactionDate: doc.transactionDate,
+		// 	})),
+		// );
+		const allEntries = await GeneralJournal.aggregate([
+			{
+				$match: {
+					companyName,
+					"entries.accountName": accountName,
+				},
+			},
+			{ $unwind: "$entries" },
+			{
+				$match: {
+					"entries.accountName": accountName,
+				},
+			},
+			{
+				$project: {
+					transactionDate: 1,
+					entry: "$entries",
+				},
+			},
+		]);
 		return res.status(200).json(allEntries);
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -62,6 +83,7 @@ const updateBudgetAccount = async (req, res) => {
 		}
 		return res.status(404).json({ message: "Record not found." });
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -74,11 +96,17 @@ const addBudgetAccount = async (req, res) => {
 		if (existingRecord) {
 			return res.status(409).json({ message: "Record already exists" });
 		}
+		const session = await mongoose.startSession();
+		session.startTransaction();
+		await AccountLedger.create([req.body], { session });
+		const newAcc = await BudgetAccount.create([req.body], { session });
 
-		await AccountLedger.create(req.body);
-		const newAcc = await BudgetAccount.create(req.body);
-		return res.status(201).json(newAcc);
+		await session.commitTransaction();
+
+		return res.status(201).json(newAcc[0]);
 	} catch (error) {
+		console.error(error);
+		await session.abortTransaction();
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -86,11 +114,14 @@ const addBudgetAccount = async (req, res) => {
 const getDeptAccounts = async (req, res) => {
 	const { companyName, department } = req.params;
 	try {
-		const accounts = await BudgetAccount.find({ companyName, department }).sort({
-			accCode: 1,
-		});
+		const accounts = await BudgetAccount.find({ companyName, department })
+			.sort({
+				accCode: 1,
+			})
+			.lean();
 		return res.status(200).json(accounts);
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -98,11 +129,14 @@ const getDeptAccounts = async (req, res) => {
 const getBudgetAccounts = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const accounts = await BudgetAccount.find({ companyName }).sort({
-			accCode: -1,
-		});
+		const accounts = await BudgetAccount.find({ companyName })
+			.sort({
+				accCode: -1,
+			})
+			.lean();
 		return res.status(200).json(accounts);
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
@@ -115,6 +149,7 @@ const getBudgetAccounts = async (req, res) => {
 // 		const task = await LogTask.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 // 		return res.status(201).json(task);
 // 	} catch (error) {
+// console.error(error);
 // return res.status(500).json({ message: "Internal Server Error", error });
 // 	}
 // };

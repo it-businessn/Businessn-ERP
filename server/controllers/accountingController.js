@@ -3,29 +3,38 @@ const BudgetAccount = require("../models/BudgetAccount");
 const GeneralJournal = require("../models/GeneralJournal");
 
 const addAccountsJournalEntry = async (req, res) => {
-	// const { companyName } = req.body;
-	// const recentJournalEntryNum = await AccountLedger.findOne({ companyName })
-	// 	.sort({
-	// 		createdOn: -1,
-	// 	})
-	// 	.select("journalEntryNum");
-
-	// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
-
 	try {
+		// const { companyName } = req.body;
+		// const recentJournalEntryNum = await AccountLedger.findOne({ companyName })
+		// 	.sort({
+		// 		createdOn: -1,
+		// 	})
+		// 	.select("journalEntryNum");
+
+		// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
+
 		const existingRecord = await GeneralJournal.findOne(req.body);
+
 		if (existingRecord) {
 			return res.status(409).json({ message: "Entry already exists" });
 		}
+
 		const newEntry = await GeneralJournal.create(req.body);
+
 		return res.status(201).json(newEntry);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error creating journal entry:", error);
+
+		return res.status(500).json({
+			message: "Something went wrong",
+			error: error.message,
+		});
 	}
 };
 
 const getAccountJournalEntries = async (req, res) => {
 	const { companyName, accountName } = req.params;
+
 	try {
 		const accounts = await GeneralJournal.find({
 			companyName,
@@ -41,53 +50,70 @@ const getAccountJournalEntries = async (req, res) => {
 
 		return res.status(200).json(allEntries);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error fetching journal entries:", error);
+
+		return res.status(500).json({
+			message: "Failed to fetch journal entries",
+			error: error.message,
+		});
 	}
 };
 
 const addAccount = async (req, res) => {
 	try {
 		const existingRecord = await AccountLedger.findOne(req.body);
+
 		if (existingRecord) {
 			return res.status(409).json({ message: "Account already exists" });
 		}
+
 		const newAcc = await AccountLedger.create(req.body);
 		await BudgetAccount.create(req.body);
 		return res.status(201).json(newAcc);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error fetching journal entries:", error);
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
 	}
 };
 
 const updateAccount = async (req, res) => {
 	const { id } = req.params;
+
 	try {
 		const existingInfo = await AccountLedger.findById(id);
-		if (existingInfo) {
-			const { _id, ...updateData } = req.body;
-			const updatedInfo = await AccountLedger.findByIdAndUpdate(
-				id,
-				{ $set: updateData },
-				{
-					new: true,
-				},
-			);
-			const budgetRecord = await BudgetAccount.findOne({ accCode: updateData.accCode });
-			if (budgetRecord) {
-				await BudgetAccount.findByIdAndUpdate(
-					budgetRecord._id,
-					{ $set: updateData },
-					{
-						new: true,
-					},
-				);
-			}
 
-			return res.status(201).json(updatedInfo);
+		if (!existingInfo) {
+			return res.status(404).json({ message: "Account not found." });
 		}
-		return res.status(404).json({ message: "Account not found." });
+
+		const { _id, ...updateData } = req.body;
+
+		const updatedInfo = await AccountLedger.findByIdAndUpdate(
+			id,
+			{ $set: updateData },
+			{ new: true },
+		);
+
+		const budgetRecord = await BudgetAccount.findOne({
+			accCode: updateData.accCode,
+		});
+
+		if (budgetRecord) {
+			await BudgetAccount.findByIdAndUpdate(budgetRecord._id, { $set: updateData }, { new: true });
+		}
+
+		return res.status(200).json(updatedInfo);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error fetching journal entries:", error);
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
 	}
 };
 
@@ -100,46 +126,56 @@ const getAccounts = async (req, res) => {
 
 		return res.status(200).json(accounts);
 	} catch (error) {
+		console.error("Error getAccounts:", error);
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
 const getAccountLedgers = async (req, res) => {
 	const { companyName } = req.params;
+
 	try {
-		const accounts = await AccountLedger.find({ companyName }).sort({
-			accCode: -1,
+		const accounts = await AccountLedger.find({ companyName }).sort({ accCode: -1 }).lean();
+
+		const journals = await GeneralJournal.find({ companyName }).select("entries").lean();
+
+		const allEntries = journals.flatMap((doc) => doc.entries || []);
+
+		const grouped = allEntries.reduce((acc, entry) => {
+			if (!entry.accountName) return acc;
+
+			if (!acc[entry.accountName]) {
+				acc[entry.accountName] = [];
+			}
+
+			acc[entry.accountName].push(entry);
+			return acc;
+		}, {});
+
+		const updatedAccounts = accounts.map((account) => {
+			const entries = grouped[account.accountName] || [];
+
+			const totalDebit = entries.reduce((sum, e) => sum + (parseFloat(e.debit) || 0), 0);
+
+			const totalCredit = entries.reduce((sum, e) => sum + (parseFloat(e.credit) || 0), 0);
+
+			return {
+				...account,
+				entries,
+				totalDebit,
+				totalCredit,
+				totalJournalEntries: entries.length,
+			};
 		});
-		const updatedAccounts = await Promise.all(
-			accounts.map(async (account) => {
-				const accountDetails = await GeneralJournal.find({
-					companyName,
-					"entries.accountName": account.accountName,
-				}).select("transactionDate entries");
-
-				const allEntries = accountDetails.flatMap((doc) => doc.entries || []);
-
-				const filteredEntries = allEntries.filter(
-					(entry) => entry.accountName === account.accountName,
-				);
-
-				account.entries = filteredEntries;
-				account.totalDebit = filteredEntries.reduce(
-					(sum, record) => sum + (parseFloat(record.debit) || 0),
-					0,
-				);
-				account.totalCredit = filteredEntries.reduce(
-					(sum, record) => sum + (parseFloat(record.credit) || 0),
-					0,
-				);
-				account.totalJournalEntries = filteredEntries.length;
-				return account;
-			}),
-		);
 
 		return res.status(200).json(updatedAccounts);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("Error fetching account ledgers:", error);
+
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
 	}
 };
 
@@ -151,6 +187,7 @@ const getAccountLedgers = async (req, res) => {
 // 		const task = await LogTask.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 // 		return res.status(201).json(task);
 // 	} catch (error) {
+// console.error("Error updateTask:", error);
 // return res.status(500).json({ message: "Internal Server Error", error });
 // 	}
 // };
