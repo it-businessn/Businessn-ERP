@@ -287,7 +287,7 @@ const addSeparatePayoutCheque = async (
 		YTD_CPPDeductions +
 		YTD_EmployeeEIDeductions +
 		YTD_IncomeTaxDeductions;
-	payoutPayStub.YTDNetPay = YTDGrossPay - manualPayStub.YTDDeductionsTotal;
+	payoutPayStub.YTDNetPay = YTDGrossPay - payoutPayStub.YTDDeductionsTotal;
 
 	return payoutPayStub;
 };

@@ -568,37 +568,37 @@ const buildPayStubDetails = async (
 		return prevPayPayInfo || 1;
 	};
 
-	const checkAllChequesRun = await runBalances();
+	// const checkAllChequesRun = await runBalances();
 
-	if (checkAllChequesRun) {
-		const updatedPayStub = buildPayStub(
-			empId,
-			companyName,
-			payPeriodStartDate,
-			payPeriodEndDate,
-			payPeriodPayDate,
-			payPeriodProcessingDate,
-			payPeriod,
-			isExtraRun,
-			payStubInfoData,
-			prevPayPayInfo,
-		);
-		const currentPayInfo = await findPayStub(
-			payPeriod,
-			companyName,
-			empId,
-			isExtraRun ? isExtraRun : false,
-			scheduleFrequency,
-		);
-		if (currentPayInfo?.scheduleFrequency) {
-			updatedPayStub.scheduleFrequency = currentPayInfo.scheduleFrequency;
-			await updatePayStub(currentPayInfo._id, updatedPayStub);
-			return updatedPayStub;
-		}
-		updatedPayStub.scheduleFrequency = scheduleFrequency;
-		await addPayStub(updatedPayStub);
+	// if (checkAllChequesRun) {
+	const updatedPayStub = buildPayStub(
+		empId,
+		companyName,
+		payPeriodStartDate,
+		payPeriodEndDate,
+		payPeriodPayDate,
+		payPeriodProcessingDate,
+		payPeriod,
+		isExtraRun,
+		payStubInfoData,
+		prevPayPayInfo,
+	);
+	const currentPayInfo = await findPayStub(
+		payPeriod,
+		companyName,
+		empId,
+		isExtraRun ? isExtraRun : false,
+		scheduleFrequency,
+	);
+	if (currentPayInfo?.scheduleFrequency) {
+		updatedPayStub.scheduleFrequency = currentPayInfo.scheduleFrequency;
+		await updatePayStub(currentPayInfo._id, updatedPayStub);
 		return updatedPayStub;
 	}
+	updatedPayStub.scheduleFrequency = scheduleFrequency;
+	await addPayStub(updatedPayStub);
+	return updatedPayStub;
+	// }
 };
 
 const findPayStub = async (payPeriodNum, companyName, empId, isExtra, scheduleFrequency) => {
@@ -755,6 +755,11 @@ const addEmployeePayStubInfo = async (req, res) => {
 		if (!isExtraRun) generateT4Slip(companyName, payPeriod, payPeriodEndDate);
 		return res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
+		console.error("❌ addEmployeePayStubInfo error:", {
+			body: req.body,
+			message: error.message,
+			stack: error.stack,
+		});
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
