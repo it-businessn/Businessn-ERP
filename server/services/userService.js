@@ -10,12 +10,16 @@ const addEmployee = async (name, data) => {
 		const existingCompany = await findCompany("name", name);
 		data.companyId = existingCompany._id;
 
-		const newEmployee = await Employee.create(data);
-		if (newEmployee && existingCompany) {
-			existingCompany.employees.push(newEmployee._id);
+		const employee = await Employee.findOneAndUpdate(
+			{ email: data.email },
+			{ $set: data },
+			{ new: true, upsert: true },
+		);
+		if (employee && existingCompany) {
+			existingCompany.employees.push(employee._id);
 			await existingCompany.save();
 		}
-		return newEmployee;
+		return employee;
 	} catch (error) {
 		console.error("addEmployee Error:", {
 			message: error.message,

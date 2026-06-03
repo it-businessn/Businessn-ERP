@@ -12,11 +12,6 @@ const CONFIG = require("../config/app.config");
 const { addEmployee } = require("../services/userService");
 const { safeNum } = require("../utils/time.util");
 
-const getNewUserID = async (companyName, data) => {
-	const newEmployee = await addEmployee(companyName, data);
-	return newEmployee._id;
-};
-
 const encryptSSN = (SIN) => {
 	const sinEncrypted = encryptData(SIN, CONFIG.SIN_KEY);
 	return { SIN: sinEncrypted.encryptedData, SINIv: sinEncrypted.iv };
@@ -70,7 +65,10 @@ const addNewUser = async (
 		email: userEmail,
 		fullName: `${firstName} ${middleName} ${lastName}`,
 	};
-	const empId = await getNewUserID(companyName, newUserEmpRecord);
+
+	const newEmployee = await addEmployee(companyName, newUserEmpRecord);
+	const empId = newEmployee._id;
+
 	const encryptedSSN = SIN && !SIN.includes("*") ? encryptSSN(SIN) : "";
 	const isAffiliateMember = isAffiliate ? true : false;
 
