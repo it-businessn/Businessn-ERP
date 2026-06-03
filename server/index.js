@@ -83,9 +83,11 @@ const io = socketio(httpServer, {
 const PORT = CONFIG.PORT;
 const MONGO_URI = CONFIG.MONGO_URI;
 
-const limiter = rateLimit({
+const globalLimiter = rateLimit({
 	windowMs: 60 * 1000,
-	max: 100,
+	max: 200,
+	standardHeaders: true,
+	legacyHeaders: false,
 	handler: (req, res) => {
 		console.log("Rate limit exceeded:", req.ip);
 		res.status(429).json({
@@ -94,7 +96,7 @@ const limiter = rateLimit({
 	},
 });
 
-app.use(limiter);
+app.use(globalLimiter);
 // Middleware
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.set("views", __dirname + "/views");
@@ -158,7 +160,13 @@ app.use(helmet.originAgentCluster());
 
 // Routes
 app.use("/api", appRoutes);
-app.use("/api/timecard", timecardRoutes);
+
+const apiLimiter = rateLimit({
+	windowMs: 60 * 1000,
+	max: 200,
+});
+app.use("/api/timecard", timecardRoutes, apiLimiter);
+
 app.use("/api/ticket", ticketRoutes);
 app.use("/api/resource", resourceRoutes);
 app.use("/api/affiliate", affiliateRoutes);
