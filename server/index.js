@@ -84,9 +84,14 @@ const PORT = CONFIG.PORT;
 const MONGO_URI = CONFIG.MONGO_URI;
 
 const limiter = rateLimit({
-	windowMs: 60 * 1000, // 1 minutes
-	max: 100, // Limit each IP to 100 requests per windowMs
-	message: "Too many requests, please try again later.",
+	windowMs: 60 * 1000,
+	max: 100,
+	handler: (req, res) => {
+		console.log("Rate limit exceeded:", req.ip);
+		res.status(429).json({
+			message: "Too many requests",
+		});
+	},
 });
 
 app.use(limiter);
@@ -111,7 +116,13 @@ app.use(cors(CONFIG.corsOptions));
 app.use(helmet());
 app.use((req, res, next) => {
 	res.locals.nonce = crypto.randomBytes(16).toString("base64");
-	console.log(req.path, req.method);
+	console.log(
+		new Date().toISOString(),
+		req.method,
+		req.originalUrl,
+		req.ip,
+		req.headers["user-agent"],
+	);
 	next();
 });
 app.use(
