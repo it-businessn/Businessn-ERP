@@ -135,6 +135,7 @@ const getTimecard = async (req, res) => {
 };
 
 const createTimecard = async (req, res) => {
+	console.log(new Error().stack);
 	try {
 		const data = req.body;
 		// const data = [
