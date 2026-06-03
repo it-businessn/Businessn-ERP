@@ -24,6 +24,7 @@ API.interceptors.request.use(
 	},
 );
 
+let refreshPromise = null;
 export const setupAxiosInterceptors = (setSessionExpired) => {
 	API.interceptors.response.use(
 		(response) => response,
@@ -31,20 +32,28 @@ export const setupAxiosInterceptors = (setSessionExpired) => {
 			const originalRequest = error.config;
 
 			if (error?.response?.status === 403 && !originalRequest._retry) {
-				originalRequest._retry = true; // Prevent infinite retry loop
+				originalRequest._retry = true;
 
 				try {
-					const { data } = await LoginService.refresh({
-						refreshToken: localStorage.getItem("refreshToken"),
-					});
+					if (!refreshPromise) {
+						refreshPromise = LoginService.refresh({
+							refreshToken: localStorage.getItem("refreshToken"),
+						}).finally(() => {
+							refreshPromise = null;
+						});
+					}
+
+					const { data } = await refreshPromise;
+
 					const { accessToken } = data;
 
 					sessionStorage.setItem("accessToken", accessToken);
 
 					originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
 					return API(originalRequest);
 				} catch (refreshError) {
-					console.error("Refresh refreshError", refreshError);
+					console.error("Refresh error", refreshError);
 					// setSessionExpired(true);
 					redirectLogin();
 				}

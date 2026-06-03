@@ -85,7 +85,10 @@ const MONGO_URI = CONFIG.MONGO_URI;
 
 const globalLimiter = rateLimit({
 	windowMs: 60 * 1000,
-	max: 200,
+	max: (req) => {
+		// give more quota to authenticated users
+		return req.user ? 500 : 200;
+	},
 	standardHeaders: true,
 	legacyHeaders: false,
 	handler: (req, res) => {
@@ -96,7 +99,6 @@ const globalLimiter = rateLimit({
 	},
 });
 
-app.use(globalLimiter);
 // Middleware
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.set("views", __dirname + "/views");
@@ -125,8 +127,17 @@ app.use((req, res, next) => {
 		req.ip,
 		req.headers["user-agent"],
 	);
-	next();
+	if (
+		req.path.startsWith("/api/auth") ||
+		req.path.startsWith("/api/login") ||
+		req.path.startsWith("api/refresh-token")
+	) {
+		return next();
+	}
+
+	return globalLimiter(req, res, next);
 });
+
 app.use(
 	helmet({
 		contentSecurityPolicy: {
