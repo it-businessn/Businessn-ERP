@@ -4,40 +4,45 @@ const { getAllCompanies } = require("../controllers/companyController");
 const { getHolidays, addStatHolidayTimesheet } = require("../controllers/statHolidayController");
 
 const runStatHolidayJob = () => {
-	cron.schedule("0 0 * * *", async () => {
-		try {
-			// every 15sec
-			// cron.schedule("*/15 * * * * *", async () => {
-			const allCompanies = await getAllCompanies();
+	cron.schedule(
+		"0 0 * * *",
+		async () => {
+			try {
+				// every 15sec
+				// cron.schedule("*/15 * * * * *", async () => {
+				const allCompanies = await getAllCompanies();
 
-			await Promise.all(
-				(allCompanies || []).map(async (company) => {
-					const statHolidays = await getHolidays({ companyName: company.name });
-					if (!statHolidays?.length) return;
+				await Promise.all(
+					(allCompanies || []).map(async (company) => {
+						const statHolidays = await getHolidays({ companyName: company.name });
+						if (!statHolidays?.length) return;
 
-					const today = moment().format("YYYY-MM-DD");
-
-					const isStatDay = statHolidays.find(
-						({ date }) => moment.utc(date).format("YYYY-MM-DD") === today,
-					);
-
-					if (isStatDay) {
-						console.log(
-							`📅 Adding timecard for ${company.name} (holiday: ${isStatDay.name || today})`,
+						const today = moment().tz("America/Vancouver").format("YYYY-MM-DD");
+						const isStatDay = statHolidays.find(
+							({ date }) => moment.utc(date).format("YYYY-MM-DD") === today,
 						);
 
-						await addStatHolidayTimesheet(company.name);
-					}
-				}),
-			);
-			const now = new Date();
+						if (isStatDay) {
+							console.log(
+								`📅 Adding timecard for ${company.name} (holiday: ${isStatDay.name || today})`,
+							);
 
-			var time = `Local: ${now.toLocaleString()} | UTC: ${now.toISOString()}`;
-			console.log(`runStatHolidayJob job ran | ${time}`);
-		} catch (error) {
-			console.error("❌ Cron job failed:", error.message);
-		}
-	});
+							await addStatHolidayTimesheet(company.name);
+						}
+					}),
+				);
+				const now = new Date();
+
+				var time = `Local: ${now.toLocaleString()} | UTC: ${now.toISOString()}`;
+				console.log(`runStatHolidayJob job ran | ${time}`);
+			} catch (error) {
+				console.error("❌ Cron job failed:", error.message);
+			}
+		},
+		{
+			timezone: "America/Vancouver",
+		},
+	);
 };
 
 module.exports = runStatHolidayJob;
