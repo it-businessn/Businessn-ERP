@@ -360,6 +360,16 @@ const getERContribution = async (req, res) => {
 // 	const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 
 // 	if (existingPayInfo) {
+// const updateData = {
+// 			title: roles.title,
+// 			employmentPayGroup: roles.employmentPayGroup,
+// 			employmentCostCenter: roles.employmentCostCenter,
+// 			employmentDepartment: roles.employmentDepartment,
+// 			timeManagementBadgeID: roles.timeManagementBadgeID,
+// 			employeeCardNumber: roles.employeeCardNumber,
+// 		};
+
+// 		await updatePayInfo(existingPayInfo._id, updateData);
 // 		const updatedPayInfo = await updatePayInfo(existingPayInfo._id, updateData);
 
 // 		return res.status(200).json(updatedPayInfo);

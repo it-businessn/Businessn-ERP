@@ -252,7 +252,16 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 				companyName,
 			});
 			if (existingPayInfo) {
-				await updatePayInfo(existingPayInfo._id, { roles });
+				const updateData = {
+					title: roles.title,
+					employmentPayGroup: roles.employmentPayGroup,
+					employmentCostCenter: roles.employmentCostCenter,
+					employmentDepartment: roles.employmentDepartment,
+					timeManagementBadgeID: roles.timeManagementBadgeID,
+					employeeCardNumber: roles.employeeCardNumber,
+				};
+
+				await updatePayInfo(existingPayInfo._id, updateData);
 			} else {
 				await EmployeePayInfo.create([{ empId, companyName, roles }]);
 			}
@@ -349,7 +358,16 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 			});
 
 			if (existingPayInfo) {
-				await updatePayInfo(existingPayInfo._id, { roles });
+				const updateData = {
+					title: roles.title,
+					employmentPayGroup: roles.employmentPayGroup,
+					employmentCostCenter: roles.employmentCostCenter,
+					employmentDepartment: roles.employmentDepartment,
+					timeManagementBadgeID: roles.timeManagementBadgeID,
+					employeeCardNumber: roles.employeeCardNumber,
+				};
+
+				await updatePayInfo(existingPayInfo._id, updateData);
 			} else {
 				await EmployeePayInfo.create({
 					empId,
