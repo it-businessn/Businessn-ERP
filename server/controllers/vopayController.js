@@ -165,8 +165,21 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 		const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
 		const DebitorClientAccountID = CORNERSTONE_CLIENT_ACCOUNT_ID;
 
-		const ClientAmount = employeePayStubs.find((emp) => emp.empId === "67c1360568f8bcf1d10d240b");
+		const accountMap = {
+			"67c1360568f8bcf1d10d240b": "business_cornerstone_maintenance_group_ltd_primary1",
+			"6a28906efcc68f0aad5eab3a": "business_cornerstone_maintenance_group_ltd_primary3",
+		};
 
+		const recipientSplit = employeePayStubs
+			.filter((emp) => accountMap[emp.empId])
+			.map((emp) => ({
+				ClientAccountID: accountMap[emp.empId],
+				Amount: Number(emp.currentNetPay).toFixed(2),
+			}));
+
+		// const totalAmount = selectedEmployees
+		// 	.reduce((sum, emp) => sum + Number(emp.currentNetPay), 0)
+		// 	.toFixed(2);
 		if (fundTotals?.totalEmpPaymentRemitCost > 0) {
 			try {
 				await apiFetch(`${BASE_URL}account/client-accounts/fund-transfer-withdraw`, {
@@ -176,19 +189,14 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 						Key: SHARED_KEY,
 						Signature: SIGNATURE,
 						DebitorClientAccountID,
-						RecipientClientAccountIDSplit: JSON.stringify([
-							{
-								ClientAccountID: "business_cornerstone_maintenance_group_ltd_primary1",
-								Amount: ClientAmount.currentNetPay.toFixed(2),
-							},
-						]),
+						RecipientClientAccountIDSplit: JSON.stringify(recipientSplit),
 						Amount: fundTotals?.totalEmpPaymentRemitCost.toFixed(2),
 						Currency: "CAD",
 						Notes: "Processed Payroll Transfer",
 					},
 				});
 			} catch (error) {
-				console.log("fundEmployerWallet error:=", JSON.stringify(error));
+				console.error("vopayFundTransfer fundEmployerWallet error:=", JSON.stringify(error));
 			}
 		}
 	}
