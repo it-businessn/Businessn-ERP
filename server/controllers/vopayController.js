@@ -168,6 +168,7 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 		const accountMap = {
 			"67c1360568f8bcf1d10d240b": "business_cornerstone_maintenance_group_ltd_primary1",
 			"6a28906efcc68f0aad5eab3a": "business_cornerstone_maintenance_group_ltd_primary3",
+			"6a9b0e6ac2eed18508624742": "business_cornerstone_maintenance_group_ltd_primary4",
 		};
 
 		const recipientSplit = employeePayStubs
