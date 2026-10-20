@@ -17,23 +17,27 @@ const useTimesheet = (company, userId, refresh, filter) => {
 		}
 	};
 
-	useEffect(() => {
-		if (
-			refresh ||
-			filter?.startDate ||
-			filter?.filteredEmployees.length ||
-			filter?.filteredDept.length
-		) {
-			fetchAllEmployeeTimesheet();
-		}
-	}, [
-		company,
-		refresh,
+	// F-13: the filter arrays are rebuilt by the parent on every render, so
+	// depending on their identity refetched on unrelated re-renders. Compare by
+	// value instead.
+	const filterKey = JSON.stringify([
 		filter?.startDate,
 		filter?.filteredEmployees,
 		filter?.filteredDept,
 		filter?.filteredCC,
 	]);
+
+	useEffect(() => {
+		if (
+			refresh ||
+			filter?.startDate ||
+			filter?.filteredEmployees?.length ||
+			filter?.filteredDept?.length
+		) {
+			fetchAllEmployeeTimesheet();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [company, refresh, filterKey]);
 
 	return timesheets;
 };

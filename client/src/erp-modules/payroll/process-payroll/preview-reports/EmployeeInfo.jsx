@@ -14,7 +14,7 @@ const buildAddress = (address) =>
 	}`;
 
 const BasicInfo = ({ title1, title2, mt, border, weight, whiteSpace }) => (
-	<HStack w={"100%"} mt={mt} spacing={border && 0}>
+	<HStack w={"100%"} mt={mt} gap={0} spacing={border && 0}>
 		<TextTitle
 			title={title1}
 			size="xs"

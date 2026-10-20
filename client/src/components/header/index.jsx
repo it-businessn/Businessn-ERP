@@ -1,4 +1,5 @@
-import { Box, Flex, HStack, Spacer, Stack } from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Spacer, Stack } from "@chakra-ui/react";
+import { HiOutlineMenu } from "react-icons/hi";
 import { redirectLogin } from "api";
 import { Menu, UserProfile } from "components";
 import Logo from "components/logo";
@@ -14,6 +15,7 @@ const Navbar = ({
 	isMobile,
 	menuList,
 	consoleAccess,
+	onOpen,
 }) => {
 	const handleLogout = async () => {
 		try {
@@ -30,11 +32,24 @@ const Navbar = ({
 	return (
 		<Box position="fixed" width="100%" zIndex={1} bg="var(--banner_bg)">
 			<HStack spacing={0} alignItems="center" px={{ base: "0em", md: "1em" }}>
+				{/* F-02: on phones the module tabs are hidden, so the drawer is the only
+				    way to navigate. The drawer existed but nothing opened it. */}
+				{isMobile && (
+					<IconButton
+						aria-label="Open navigation menu"
+						icon={<HiOutlineMenu size="1.5em" />}
+						variant="ghost"
+						color="var(--main_color)"
+						_hover={{ bg: "rgba(255,255,255,0.15)" }}
+						onClick={onOpen}
+						ml={2}
+					/>
+				)}
 				<Logo />
 				<Flex
 					w="100%"
 					// backgroundImage={navBarImg}
-					p={3}
+					p={isMobile ? 2 : 3}
 					borderRadius={isMobile ? 0 : "10px"}
 					ml={isMobile ? 0 : 3}
 					// backgroundSize={"cover"}
@@ -46,9 +61,9 @@ const Navbar = ({
 						justifyContent={"start"}
 						color="var(--main_color)"
 					>
-						<Stack minW={isMobile ? "auto" : "320px"}>
+						<Stack minW={isMobile ? "auto" : "320px"} spacing={0}>
 							<TextTitle size={isMobile ? "sm" : "lg"} title={companyName} />
-							<TextTitle size={"lg"} title={companyId} />
+							{!isMobile && <TextTitle size={"lg"} title={companyId} />}
 						</Stack>
 						<HStack w="100%" h={"30"}>
 							{!isMobile &&

@@ -1,4 +1,7 @@
-export async function apiFetch(url, { method = "GET", data, headers = {} } = {}) {
+// FIX (AUD-020): this file used ESM `export` inside a CommonJS project. It only
+// loads on Node >= 22.12 (require(esm)); on Node 18/20 (allowed by package.json
+// "engines") and under Jest it throws "Must use import to load ES Module".
+async function apiFetch(url, { method = "GET", data, headers = {} } = {}) {
 	const options = {
 		method,
 		headers: {
@@ -25,3 +28,5 @@ export async function apiFetch(url, { method = "GET", data, headers = {} } = {})
 
 	return response.json();
 }
+
+module.exports = { apiFetch };

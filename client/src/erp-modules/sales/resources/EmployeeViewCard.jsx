@@ -4,7 +4,7 @@ import { doughnutOptions } from "constant";
 import { BADGES } from "erp-modules/project-management/workview/project/data";
 
 import { useEffect, useState } from "react";
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "components/ui/charts";
 import AssessmentService from "services/AssessmentService";
 import AttemptedTestScore from "./AttemptedTestScore";
 

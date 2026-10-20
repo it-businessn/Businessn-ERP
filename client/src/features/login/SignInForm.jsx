@@ -12,7 +12,7 @@ import {
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
 import { buildUserInfo, storeUser } from "utils/common";
@@ -21,6 +21,7 @@ import Logo from "../../components/logo";
 
 const SignInForm = ({ title, isMobile }) => {
 	const [isLoading, setIsLoading] = useState(false);
+	const submittingRef = useRef(false);
 
 	const [error, setError] = useState(null);
 	const defaultFormData = {
@@ -46,7 +47,10 @@ const SignInForm = ({ title, isMobile }) => {
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
+		if (isLoading || submittingRef.current) return; // guard against double submit (REV-010)
+		submittingRef.current = true;
 		setIsLoading(true);
+		setError(null);
 		try {
 			const res = await LoginService.signIn(formData);
 			const { user, existingCompanyUser, accessToken, refreshToken } = res.data;
@@ -60,8 +64,12 @@ const SignInForm = ({ title, isMobile }) => {
 
 			resetForm();
 		} catch (error) {
-			setError(error?.response?.data?.message);
+			setError(
+				error?.response?.data?.message ||
+					(error?.response ? "Login failed. Please try again." : "Unable to reach the server. Check your connection and try again."),
+			);
 		} finally {
+			submittingRef.current = false;
 			setIsLoading(false);
 		}
 	};
@@ -73,7 +81,9 @@ const SignInForm = ({ title, isMobile }) => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({ ...prevData, [name]: value.trim() }));
+		// FIX: passwords may legitimately contain spaces; only trim identifiers.
+		const nextValue = name === "password" ? value : value.trim();
+		setFormData((prevData) => ({ ...prevData, [name]: nextValue }));
 	};
 
 	const handleTogglePassword = () => {

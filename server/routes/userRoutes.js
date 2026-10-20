@@ -62,8 +62,10 @@ router.post("/send-paystub", userController.sendMailPaystub);
 
 router.put("/master/:userId", userController.updateMasterUser);
 
-router.put("/:userId", userController.updateUser);
-
+// FIX (AUD-012): static route must be declared before the "/:userId" wildcard,
+// otherwise PUT /api/user/assignLeads was handled by updateUser with userId="assignLeads".
 router.put("/assignLeads", userController.updateUserAssignedLeads);
+
+router.put("/:userId", userController.updateUser);
 
 module.exports = router;

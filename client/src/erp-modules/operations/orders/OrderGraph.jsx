@@ -1,6 +1,6 @@
 import { Box, Flex, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import { activityChartData, doughnutOptions } from "constant";
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "components/ui/charts";
 
 const OrderGraph = () => {
 	return (

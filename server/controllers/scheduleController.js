@@ -280,30 +280,39 @@ const getWorkWeekEmpShifts = async (req, res) => {
 
 	try {
 		const crew = await Crew.findOne({ name, companyName });
-		const crewEmps = await Promise.all(
-			crew?.config?.employee?.map(async (emp) => {
-				const employeeData = await EmployeePayInfo.findOne({
-					empId: emp?._id,
-					companyName,
+		const crewEmployees = crew?.config?.employee || [];
+		// F-05: one EmployeePayInfo query for the whole crew instead of one per member.
+		const payInfoByEmp = new Map();
+		if (crewEmployees.length > 0) {
+			const payInfos = await EmployeePayInfo.find({
+				companyName,
+				empId: { $in: crewEmployees.map((emp) => emp?._id).filter(Boolean) },
+			})
+				.populate({
+					path: "empId",
+					model: "Employee",
+					select: ["email"],
 				})
-					.populate({
-						path: "empId",
-						model: "Employee",
-						select: ["email"],
-					})
-					.select("empId roles");
-				const rate = safeNum(employeeData?.roles[0]?.payRate);
-				const email = employeeData?.empId?.email || "";
+				.select("empId roles")
+				.lean();
+			for (const payInfo of payInfos) {
+				const key = String(payInfo?.empId?._id ?? payInfo?.empId);
+				if (!payInfoByEmp.has(key)) payInfoByEmp.set(key, payInfo);
+			}
+		}
+		const crewEmps = crewEmployees.map((emp) => {
+			const employeeData = payInfoByEmp.get(String(emp?._id));
+			const rate = safeNum(employeeData?.roles?.[0]?.payRate);
+			const email = employeeData?.empId?.email || "";
 
-				return {
-					name: emp?.fullName,
-					role: emp?.positions[0]?.title,
-					payRate: parseFloat(rate),
-					email,
-					empId: emp?._id,
-				};
-			}) || [],
-		);
+			return {
+				name: emp?.fullName,
+				role: emp?.positions?.[0]?.title,
+				payRate: parseFloat(rate),
+				email,
+				empId: emp?._id,
+			};
+		});
 
 		// const locationIds = crew?.config?.department?.map((_) => _.name) || [];
 		const shifts = await WorkShift.aggregate([

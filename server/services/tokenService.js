@@ -2,7 +2,15 @@ const jwt = require("jwt-simple");
 const moment = require("moment");
 const CONFIG = require("../config/app.config");
 
-const getResetPasswordLink = (user) => {
+/**
+ * Reset tokens are signed with ACCESS_TOKEN_SECRET + the user's *current*
+ * password hash (REV-003). Changing the password therefore invalidates every
+ * outstanding link for that user without any server-side state, which makes a
+ * reset link effectively single-use.
+ */
+const resetSecret = (passwordHash) => `${CONFIG.ACCESS_TOKEN_SECRET}:${passwordHash || ""}`;
+
+const getResetPasswordLink = (user, passwordHash = "") => {
 	try {
 		if (!user || !user._id) {
 			throw new Error("Invalid user object. User ID is required to generate reset link.");
@@ -19,7 +27,7 @@ const getResetPasswordLink = (user) => {
 
 		let token;
 		try {
-			token = jwt.encode(payload, CONFIG.ACCESS_TOKEN_SECRET);
+			token = jwt.encode({ _id: String(user._id), exp: payload.exp }, resetSecret(passwordHash));
 		} catch (jwtError) {
 			throw new Error(`Token generation failed: ${jwtError.message}`);
 		}
@@ -37,4 +45,18 @@ const getResetPasswordLink = (user) => {
 	}
 };
 
-module.exports = { getResetPasswordLink };
+/**
+ * Verifies a password-reset token (signature + expiry). Throws on failure.
+ */
+const verifyResetPasswordToken = (token, passwordHash = "") => {
+	if (!token || typeof token !== "string") {
+		throw new Error("Reset token is required");
+	}
+	const decoded = jwt.decode(token, resetSecret(passwordHash));
+	if (!decoded?.exp || decoded.exp < moment().unix()) {
+		throw new Error("Reset token has expired");
+	}
+	return decoded;
+};
+
+module.exports = { getResetPasswordLink, verifyResetPasswordToken };

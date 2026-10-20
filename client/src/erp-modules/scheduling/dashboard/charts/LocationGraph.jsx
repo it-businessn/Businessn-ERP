@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "components/ui/charts";
 
 const LocationGraph = ({ roleMonthlyTotals }) => {
 	const options = {

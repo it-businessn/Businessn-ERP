@@ -394,9 +394,13 @@ const getERContribution = async (req, res) => {
 // 	});
 // }
 // };
-const getPayGroup = () => {};
-const addPayGroup = () => {};
-const updatePayGroup = () => {};
+// FIX (AUD-011): these handlers were empty functions, so the request never
+// received a response and hung until the client timed out. Answer explicitly.
+const notImplemented = (req, res) =>
+	res.status(501).json({ message: "This endpoint is not implemented", code: "NOT_IMPLEMENTED" });
+const getPayGroup = notImplemented;
+const addPayGroup = notImplemented;
+const updatePayGroup = notImplemented;
 
 module.exports = {
 	getAllPayGroups,

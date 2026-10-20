@@ -21,7 +21,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { activityChartData, doughnutOptions, leaderBoardData } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "components/ui/charts";
 import UserService from "services/UserService";
 
 const Meetings = () => {

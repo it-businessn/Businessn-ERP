@@ -22,6 +22,10 @@ const employeePayInfoSchema = new mongoose.Schema(
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
 
+// Performance (F-04): indexes for the query shapes used by the controllers.
+// Fields are unchanged; Mongoose builds these in the background on startup.
+employeePayInfoSchema.index({ companyName: 1, empId: 1 });
+
 const EmployeePayInfo = mongoose.model("EmployeePayInfo", employeePayInfoSchema);
 
 module.exports = EmployeePayInfo;

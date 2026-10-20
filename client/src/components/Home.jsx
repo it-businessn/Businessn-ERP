@@ -1,5 +1,5 @@
 import { useDisclosure, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { redirectLogin } from "api";
 import Navbar from "components/header";
@@ -30,6 +30,10 @@ const Home = () => {
 
 	const toast = useToast();
 	const [refresh, setRefresh] = useState(false);
+	// F-02: on phones the *initial* landing is the employee dashboard (existing
+	// behaviour). Previously every later module change was redirected there too,
+	// which made module switching impossible on mobile.
+	const hasLandedRef = useRef(false);
 	const { activeMenu, setActiveMenu, menuList } = useSidebarMenu(
 		user?._id,
 		company,
@@ -52,7 +56,13 @@ const Home = () => {
 		} else if (user && Object.keys(user).length > 0) {
 			const dashboard = activeMenu?.children?.find((_) => _.permissions?.canAccessModule);
 			if (activeMenu?.path) {
-				navigate(isMobile ? payrollEmpDashboardPath : `/${activeMenu?.path}/${dashboard?.path}`);
+				const landOnEmployeeDashboard = isMobile && !hasLandedRef.current;
+				hasLandedRef.current = true;
+				navigate(
+					landOnEmployeeDashboard
+						? payrollEmpDashboardPath
+						: `/${activeMenu?.path}/${dashboard?.path}`,
+				);
 			}
 		} else {
 			redirectLogin();
@@ -67,7 +77,7 @@ const Home = () => {
 					menuList={menuList}
 					handleClick={(menu) => {
 						setActiveMenu(menu);
-						onOpen();
+						if (!isMobile) onOpen();
 					}}
 					onOpen={onOpen}
 					user={user}
@@ -88,6 +98,8 @@ const Home = () => {
 						onClose={onClose}
 						isMobile={isMobile}
 						ticketAccess={isNotEnrollerOrEmployee(user?.role)}
+						modules={menuList}
+						onModuleClick={(menu) => setActiveMenu(menu)}
 					/>
 				</RootLayout>
 			) : null}

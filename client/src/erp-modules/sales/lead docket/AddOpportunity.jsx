@@ -1,8 +1,10 @@
 import { HStack, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import { useRef } from "react";
-import { SiMicrosoftexcel } from "react-icons/si";
-import * as XLSX from "xlsx";
+// FIX (AUD-021): SiMicrosoftexcel was removed in react-icons 5.x (the version pinned
+// in package-lock.json), which broke the production build.
+import { FaFileExcel } from "react-icons/fa";
+import XLSX from "utils/xlsxShim"; // replaced xlsx (CVE) with safe exceljs shim
 import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
 const AddOpportunity = ({ data, setData, company, companies, setRefresh }) => {
@@ -27,9 +29,10 @@ const AddOpportunity = ({ data, setData, company, companies, setRefresh }) => {
 				};
 			}
 
-			reader.onload = (e) => {
+			reader.onload = async (e) => {
 				try {
-					const workbook = XLSX.read(e.target.result, { type: "binary" });
+					// Use ArrayBuffer (readAsArrayBuffer below) — works with exceljs shim
+					const workbook = await XLSX.read(e.target.result);
 					const sheetName = workbook.SheetNames[0];
 					const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 					const formattedData = excelData.map((row) => ({
@@ -65,7 +68,7 @@ const AddOpportunity = ({ data, setData, company, companies, setRefresh }) => {
 				}
 			};
 
-			reader.readAsBinaryString(file);
+			reader.readAsArrayBuffer(file);
 		}
 	};
 
@@ -87,7 +90,7 @@ const AddOpportunity = ({ data, setData, company, companies, setRefresh }) => {
 			<PrimaryButton onOpen={onOpen} name={"Add new lead"} size={"xs"} />
 			<IconButton
 				size={"xs"}
-				icon={<SiMicrosoftexcel />}
+				icon={<FaFileExcel />}
 				bg="var(--primary_button_bg)"
 				variant={"solid"}
 				aria-label="Attach Excel file"
@@ -95,7 +98,6 @@ const AddOpportunity = ({ data, setData, company, companies, setRefresh }) => {
 			/>
 			{isOpen && (
 				<AddNewOpportunity
-					// setIsAdded={setIsAdded}
 					isDocket
 					isOpen={isOpen}
 					onClose={onClose}

@@ -1,6 +1,7 @@
 const { generateVopaySignature } = require("../services/encryptDataService");
 const { apiFetch } = require("../helpers/apiFetch");
 const moment = require("moment");
+const crypto = require("crypto");
 const requireEnv = require("../helpers/requireEnv");
 const { COMPANIES } = require("../constants/constant");
 
@@ -60,7 +61,16 @@ const VOPAY_CONFIG = {
 let currentEnv = VOPAY_CONFIG.STAGING;
 const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = currentEnv;
 
-const SIGNATURE = generateVopaySignature(SHARED_KEY, SHARED_SECRET);
+// FIX (AUD-010): VoPay signatures are sha1(key + secret + YYYY-MM-DD). This was
+// computed once at startup, so every VoPay call (and webhook check) failed after
+// the first midnight until the process restarted. Compute it lazily per use.
+const SIGNATURE_HOLDER = {
+	get value() {
+		return generateVopaySignature(SHARED_KEY, SHARED_SECRET);
+	},
+};
+const { value: _sigAtLoad } = SIGNATURE_HOLDER; // sanity: ensures creds are usable at boot
+void _sigAtLoad;
 
 const getPartnerEmployerAccounts = async (req, res) => {
 	try {
@@ -68,7 +78,7 @@ const getPartnerEmployerAccounts = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 			},
 		});
 
@@ -88,7 +98,7 @@ const getVopayAccountOnboardingUrl = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				VopayAccountID: vopayAccountId,
 			},
 		});
@@ -115,7 +125,7 @@ const getAccountWebHooks = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 			},
 		});
 
@@ -124,7 +134,7 @@ const getAccountWebHooks = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 			},
 		});
 
@@ -133,7 +143,7 @@ const getAccountWebHooks = async (req, res) => {
 		// 	data: {
 		// 		AccountID: ACCOUNT_ID,
 		// 		Key: SHARED_KEY,
-		// 		Signature: SIGNATURE,
+		// 		Signature: SIGNATURE_HOLDER.value,
 		// 	},
 		// });
 		if (!allWebHooks.Success) {
@@ -142,7 +152,7 @@ const getAccountWebHooks = async (req, res) => {
 				data: {
 					AccountID: ACCOUNT_ID,
 					Key: SHARED_KEY,
-					Signature: SIGNATURE,
+					Signature: SIGNATURE_HOLDER.value,
 					WebHookUrl: "https://businessn-erp.com/payroll/webhooks",
 				},
 			});
@@ -188,7 +198,7 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs) => {
 					data: {
 						AccountID: ACCOUNT_ID,
 						Key: SHARED_KEY,
-						Signature: SIGNATURE,
+						Signature: SIGNATURE_HOLDER.value,
 						DebitorClientAccountID,
 						RecipientClientAccountIDSplit: JSON.stringify(recipientSplit),
 						Amount: fundTotals?.totalEmpPaymentRemitCost.toFixed(2),
@@ -216,7 +226,7 @@ const partnerAccountTransfer = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				DebitorAccountID: "cornerstonemaintenancegroupltd",
 				RecipientAccountID: "businessn1",
 				Amount: 0,
@@ -245,7 +255,7 @@ const transferWithdraw = async (req, res) => {
 				data: {
 					AccountID: ACCOUNT_ID,
 					Key: SHARED_KEY,
-					Signature: SIGNATURE,
+					Signature: SIGNATURE_HOLDER.value,
 					DebitorClientAccountID,
 					RecipientClientAccountID,
 					Amount,
@@ -274,7 +284,7 @@ const fundEmployerWallet = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				ClientAccountID,
 				CompanyName,
 				Address1,
@@ -321,7 +331,7 @@ const createClientAccountEmployee = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				ClientAccountID,
 				FirstName,
 				LastName,
@@ -346,11 +356,20 @@ const createClientAccountEmployee = async (req, res) => {
 	}
 };
 
+const safeEqual = (a, b) => {
+	if (typeof a !== "string" || typeof b !== "string") return false;
+	const bufA = Buffer.from(a);
+	const bufB = Buffer.from(b);
+	if (bufA.length !== bufB.length) return false;
+	return crypto.timingSafeEqual(bufA, bufB);
+};
+
 const receiveWebhook = (io) => (req, res) => {
 	const signature = req.headers["x-vopay-signature"];
-	const expected = SIGNATURE;
+	const expected = SIGNATURE_HOLDER.value;
 
-	if (signature !== expected) {
+	// FIX (AUD-007): constant-time comparison; reject when header is missing.
+	if (!safeEqual(signature, expected)) {
 		return res.status(401).send("Invalid signature");
 	}
 	// const data = await apiFetch(`${BASE_URL}iq11/generate-embed-url`, {
@@ -358,7 +377,7 @@ const receiveWebhook = (io) => (req, res) => {
 	//const  data: {
 	//const  	AccountID: ACCOUNT_ID,
 	//const  	Key: SHARED_KEY,
-	//const  	Signature: SIGNATURE,
+	//const  	Signature: SIGNATURE_HOLDER.value,
 	//const  	ClientAccountID: clientAccountId,
 	//const  	RedirectURL: "https://businessn.com/",
 	//const  },
@@ -368,7 +387,7 @@ const receiveWebhook = (io) => (req, res) => {
 	// 	data: {
 	//const  AccountID: ACCOUNT_ID,
 	//const  Key: SHARED_KEY,
-	//const  Signature: SIGNATURE,
+	//const  Signature: SIGNATURE_HOLDER.value,
 	//const  VopayAccountID: vopayAccountId,
 	// 	},
 	// });
@@ -422,7 +441,7 @@ const createPartnerEmployerAccount = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				Name: name,
 				Country: country,
 				EmailAddress: email,
@@ -444,7 +463,7 @@ const getTransactions = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				ClientAccountID: clientAccountId,
 				StartDateTime: moment().subtract(1, "month").format("YYYY-MM-DD"),
 				EndDateTime: moment().format("YYYY-MM-DD"),
@@ -466,7 +485,7 @@ const getEmployeeBankEmbedUrl = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				ClientAccountID: clientAccountId,
 				RedirectURL: "https://businessn.com/",
 			},
@@ -503,7 +522,7 @@ const submitEmployerInfo = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				Address: address,
 				City: city,
 				Province: province,
@@ -537,7 +556,7 @@ const getLinkedBankAccounts = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				ClientAccountID: accountId,
 			},
 		});
@@ -560,7 +579,7 @@ const getClientDefaultBankAccount = async (req, res) => {
 			data: {
 				AccountID: accountId,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 			},
 		});
 		res.status(200).json(data);
@@ -578,7 +597,7 @@ const getClientAccountWallet = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				ClientAccountID: clientAccountId,
 			},
 		});
@@ -596,7 +615,7 @@ const getClientAccountWallets = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 			},
 		});
 
@@ -616,7 +635,7 @@ const setBankAccount = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				Token,
 				SetAsDefault: true,
 				ClientAccountID,
@@ -639,7 +658,7 @@ const fundBankAccount = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				ClientAccountID,
 				Amount,
 			},
@@ -682,7 +701,7 @@ const getAccountBalance = async (req, res) => {
 			data: {
 				AccountID: ACCOUNT_ID,
 				Key: SHARED_KEY,
-				Signature: SIGNATURE,
+				Signature: SIGNATURE_HOLDER.value,
 				Currency: "CAD",
 			},
 		});

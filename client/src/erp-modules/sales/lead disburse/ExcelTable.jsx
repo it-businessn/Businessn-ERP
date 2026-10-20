@@ -18,7 +18,7 @@ import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { generateLighterShade } from "utils";
-import * as XLSX from "xlsx";
+import XLSX from "utils/xlsxShim"; // replaced xlsx (CVE) with safe exceljs shim
 
 const LeadsDocket = () => {
 	const [checkedRows, setCheckedRows] = useState([]);
@@ -42,9 +42,10 @@ const LeadsDocket = () => {
 		if (file) {
 			const reader = new FileReader();
 
-			reader.onload = (e) => {
+			reader.onload = async (e) => {
 				try {
-					const workbook = XLSX.read(e.target.result, { type: "binary" });
+					// Use ArrayBuffer (readAsArrayBuffer below) — works with exceljs shim
+					const workbook = await XLSX.read(e.target.result);
 					const sheetName = workbook.SheetNames[0];
 					const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 					const formattedData = excelData.map((row) => ({
@@ -53,7 +54,6 @@ const LeadsDocket = () => {
 					}));
 
 					setData(formattedData);
-					// setData(excelData);
 					toast({
 						title: "File Uploaded",
 						description: "Excel sheet data has been loaded successfully.",
@@ -73,7 +73,7 @@ const LeadsDocket = () => {
 				}
 			};
 
-			reader.readAsBinaryString(file);
+			reader.readAsArrayBuffer(file);
 		}
 	};
 
@@ -105,7 +105,7 @@ const LeadsDocket = () => {
 				</Thead>
 				<Tbody>
 					{(!data || data?.length === 0) && (
-						<EmptyRowRecord data={data} colSpan={Object.keys(data[0])?.length + 1} />
+						<EmptyRowRecord data={data} colSpan={Object.keys(data[0] ?? {})?.length + 1} />
 					)}
 					{data?.map((row, rowIndex) => (
 						<Tr key={rowIndex}>

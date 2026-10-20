@@ -15,6 +15,8 @@ const Sidebar = ({
 	onClose,
 	consoleAccess,
 	ticketAccess,
+	modules,
+	onModuleClick,
 }) => {
 	const menuList = activeMenu?.children?.filter((item) => item?.permissions);
 	const [isCollapsed, setIsCollapsed] = useState(false);
@@ -30,6 +32,16 @@ const Sidebar = ({
 			activeMenu={activeMenu}
 			handleMenuItemClick={handleMenuItemClick}
 			menuList={menuList}
+			modules={modules}
+			onModuleClick={onModuleClick}
+			quickLinks={[
+				...(ticketAccess
+					? [{ path: "tickets", name: "Tickets", children: [], icon: <IoDocumentTextOutline />, navigatePath: "/tickets" }]
+					: []),
+				...(ticketAccess && consoleAccess
+					? [{ path: adminConsolePath, name: "Admin Console", children: [], icon: <IoSettingsOutline />, navigatePath: adminConsolePath }]
+					: []),
+			]}
 		/>
 	) : (
 		<Flex

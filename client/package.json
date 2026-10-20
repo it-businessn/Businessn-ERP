@@ -13,52 +13,53 @@
 		"build": "env-cmd -f .env.production react-scripts build"
 	},
 	"dependencies": {
-		"@chakra-ui/icons": "^2.0.19",
+		"@chakra-ui/icons": "^2.2.4",
 		"@chakra-ui/pro-theme": "^0.4.0",
-		"@chakra-ui/react": "^2.8.2",
+		"@chakra-ui/react": "^2.10.10",
 		"@emotion/react": "^11.11.0",
 		"@emotion/styled": "^11.11.0",
 		"@fortawesome/fontawesome-svg-core": "^6.5.1",
 		"@fortawesome/free-regular-svg-icons": "^6.5.1",
 		"@fortawesome/react-fontawesome": "^0.2.0",
-		"@testing-library/jest-dom": "^5.16.5",
+		"@testing-library/jest-dom": "^5.17.0",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
-		"axios": "^1.4.0",
+		"axios": "^1.9.0",
 		"bootstrap": "^5.3.3",
-		"country-state-city": "^3.1.4",
-		"date-fns": "^3.6.0",
+		"chart.js": "^4.5.1",
+		"country-state-city": "^3.2.1",
+		"date-fns": "^4.1.0",
 		"daterangepicker": "^3.1.0",
 		"env-cmd": "^10.1.0",
-		"formik": "^2.2.9",
-		"framer-motion": "^10.12.12",
-		"gsap": "^3.12.7",
+		"exceljs": "^4.4.0",
+		"formik": "^2.4.6",
+		"framer-motion": "^11.18.2",
+		"gsap": "^3.15.0",
 		"jquery": "^3.7.1",
-		"moment": "^2.29.4",
-		"moment-timezone": "^0.5.47",
-		"primereact": "^9.6.0",
+		"moment": "^2.30.1",
+		"moment-timezone": "^0.5.48",
+		"primereact": "^9.6.5",
 		"react": "^18.3.1",
 		"react-beautiful-dnd": "^13.1.1",
-		"react-big-calendar": "^1.8.5",
+		"react-big-calendar": "^1.20.0",
 		"react-calendar-timeline": "^0.28.0",
-		"react-chartjs-2": "^3.0.4",
-		"react-datepicker": "^4.12.0",
+		"react-chartjs-2": "^5.3.1",
+		"react-datepicker": "^8.3.0",
 		"react-dnd": "^16.0.1",
 		"react-dnd-html5-backend": "^16.0.1",
-		"react-dom": "^18.2.0",
+		"react-dom": "^18.3.1",
 		"react-gauge-chart": "^0.4.1",
-		"react-icons": "^4.10.1",
-		"react-router-dom": "^6.11.1",
+		"react-icons": "^5.5.0",
+		"react-router-dom": "^6.30.6",
 		"react-scripts": "5.0.1",
-		"react-select": "^5.7.3",
-		"react-spring": "^9.7.4",
-		"react-to-print": "^2.15.1",
+		"react-select": "^5.10.2",
+		"react-spring": "^9.7.5",
+		"react-to-print": "^3.1.0",
 		"react-with-gesture": "^4.0.8",
-		"recharts": "^2.10.1",
-		"socket.io-client": "^4.8.1",
+		"recharts": "^2.15.3",
+		"socket.io-client": "^4.8.3",
 		"to-words": "^4.1.0",
-		"xlsx": "^0.18.5",
-		"yup": "^1.4.0"
+		"yup": "^1.6.1"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -67,7 +68,7 @@
 		]
 	},
 	"engines": {
-		"node": ">=14.20.1"
+		"node": ">=18.0.0"
 	},
 	"browserslist": {
 		"production": [
@@ -83,6 +84,18 @@
 	},
 	"devDependencies": {
 		"babel-plugin-transform-remove-console": "^6.9.4",
-		"caniuse-lite": "^1.0.30001713"
+		"caniuse-lite": "^1.0.30001718"
+	},
+	"overrides": {
+		"react-router": "^6.30.6",
+		"react-router-dom": "^6.30.6",
+		"axios": "^1.9.0",
+		"uuid": ">=11.1.1",
+		"bfj": ">=8.0.0"
+	},
+	"jest": {
+		"moduleNameMapper": {
+			"^@chakra-ui/utils/(.*)$": "<rootDir>/node_modules/@chakra-ui/utils/dist/cjs/$1.cjs"
+		}
 	}
 }

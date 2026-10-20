@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 
 const Resource = require("../models/CompanyResource");
 
@@ -100,6 +101,9 @@ const createResource = async (req, res) => {
 	const { fileType, uploadedBy, company } = req.body;
 
 	const fileData = req.file;
+	if (!fileData) {
+		return res.status(400).json({ message: "A file is required" });
+	}
 
 	const { mimetype, originalname, path } = fileData;
 
@@ -118,31 +122,44 @@ const createResource = async (req, res) => {
 		const file = await newResource.save();
 		return res.status(201).json({ file, message: "File uploaded successfully!" });
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("createResource error:", error.message);
+		return res.status(500).json({ message: "Internal Server Error" });
+	} finally {
+		// The bytes live in MongoDB; the multer temp file is no longer needed (REV-006).
+		fs.unlink(path, () => {});
 	}
 };
 
 const downloadResource = async (req, res) => {
 	try {
 		const { filename } = req.params;
-		const resource = await Resource.find({ originalname: filename });
-		if (!resource) {
+		// FIX: Model.find() returns an array, so `!resource` was never true and a
+		// missing file crashed with a TypeError (500) instead of a 404.
+		const resource = await Resource.findOne({ originalname: filename });
+		if (!resource?.file?.data) {
 			return res.status(404).json({ message: "Resource not found" });
 		}
-		const file = filePath(filename);
-		fs.writeFileSync(file, resource[0].file.data);
+		// Unique temp name: two concurrent downloads of the same resource must not
+		// unlink each other's file mid-stream (REV-007).
+		const file = filePath(`${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}-${filename}`);
+		fs.writeFileSync(file, resource.file.data);
 
 		res.setHeader("Content-Type", fileContentType(file));
 
-		res.download(file, filename, (err) => {
-			fs.unlinkSync(file);
-			if (err) {
+		res.download(file, path.basename(filePath(filename)), (err) => {
+			try {
+				fs.unlinkSync(file);
+			} catch (_) {
+				/* already removed */
+			}
+			if (err && !res.headersSent) {
 				console.error("Error downloading file:", err);
 				return res.status(404).json({ message: "File not found" });
 			}
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("downloadResource error:", error.message);
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 

@@ -33,8 +33,8 @@ const comparePassword = async (plainPassword, hashedPassword) => {
 	try {
 		return await bcrypt.compare(plainPassword, hashedPassword);
 	} catch (error) {
+		// FIX: Removed unreachable "return false" after throw
 		throw new Error(`Password comparison failed: ${error.message}`);
-		return false;
 	}
 };
 

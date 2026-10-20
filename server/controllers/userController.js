@@ -1,4 +1,5 @@
 const path = require("path");
+const mongoose = require("mongoose");
 
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
@@ -18,6 +19,7 @@ const {
 	addEmployee,
 	findCompany,
 	findEmployee,
+	findEmploymentInfoByEmpIds,
 	filterResultByPaygroupOption,
 	filterResultByDepartment,
 	getShadowUserIds,
@@ -38,14 +40,20 @@ const getAllEmployees = async (req, res) => {
 		});
 		return res.status(200).json(result);
 	} catch (err) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
 const getUserActivity = async (req, res) => {
 	const currentDate = new Date();
 
-	const today = new Date(
+	// FIX: Build correct start/end of today range (was using same value for $gte and $lt)
+	const startOfToday = new Date(
+		currentDate.getFullYear(),
+		currentDate.getMonth(),
+		currentDate.getDate(),
+	);
+	const startOfTomorrow = new Date(
 		currentDate.getFullYear(),
 		currentDate.getMonth(),
 		currentDate.getDate() + 1,
@@ -54,13 +62,13 @@ const getUserActivity = async (req, res) => {
 	try {
 		const result = await UserActivity.find({
 			loginTime: {
-				$gte: today,
-				$lt: today,
+				$gte: startOfToday,
+				$lt: startOfTomorrow,
 			},
 		});
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -75,8 +83,8 @@ const getPayrollActiveCompanyEmployeesCount = async (req, res) => {
 		});
 
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -85,8 +93,8 @@ const getPayrollActiveCompanyEmployees = async (req, res) => {
 	try {
 		const result = await getPayrollActiveEmployees(companyName, deptName, payGroup);
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -95,8 +103,8 @@ const getPayrollInActiveCompanyEmployees = async (req, res) => {
 	try {
 		const result = await getPayrollInActiveEmployees(companyName, deptName, payGroup);
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -105,8 +113,8 @@ const getPayrollTerminatedCompanyEmployees = async (req, res) => {
 	try {
 		const result = await getPayrollTerminatedEmployees(companyName, deptName, payGroup);
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -126,8 +134,8 @@ const getCompanyUsers = async (req, res) => {
 			select: ["empId", "fullName"],
 		});
 		return res.status(200).json(sortByEmpFullName(result));
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -136,8 +144,8 @@ const getCompanyEmpEmployees = async (req, res) => {
 	try {
 		const result = await getUserEmploymentRoleInfo(companyName);
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -162,20 +170,20 @@ const getCompanyNonSalariedEmployees = async (req, res) => {
 
 		result = result?.filter((_) => _?.empId);
 
-		let updatedResult = await Promise.all(
-			result.map(async (emp) => {
-				const empInfo = await EmployeeEmploymentInfo.findOne({
-					companyName,
-					empId: emp?.empId?._id,
-					payrollStatus: "Payroll Active",
-				}).select("positions");
-
-				return {
-					empId: emp?.empId,
-					positions: empInfo?.positions,
-				};
-			}),
+		// F-05: one query for all employees instead of one per employee.
+		const empInfoById = await findEmploymentInfoByEmpIds(
+			companyName,
+			result.map((emp) => emp?.empId?._id),
+			{ payrollStatus: "Payroll Active" },
+			"empId positions",
 		);
+		let updatedResult = result.map((emp) => {
+			const empInfo = empInfoById.get(String(emp?.empId?._id));
+			return {
+				empId: emp?.empId,
+				positions: empInfo?.positions,
+			};
+		});
 
 		if (payGroup) {
 			updatedResult = filterResultByPaygroupOption(updatedResult, payGroup);
@@ -185,8 +193,8 @@ const getCompanyNonSalariedEmployees = async (req, res) => {
 			updatedResult = filterResultByDepartment(updatedResult, deptName);
 		}
 		return res.status(200).json(sortByEmpFullName(updatedResult));
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -205,22 +213,23 @@ const getCompanyEmployees = async (req, res) => {
 			model: "Employee",
 			select: ["fullName", "email", "baseModule", "group"],
 		});
-		let updatedResult = await Promise.all(
-			result.map(async (emp) => {
-				const empInfo = await EmployeeEmploymentInfo.findOne({
-					companyName,
-					empId: emp?.empId?._id,
-				}).select("employeeNo employmentRole payrollStatus positions");
-
-				return {
-					empId: emp?.empId,
-					employeeNo: empInfo?.employeeNo,
-					employmentRole: empInfo?.employmentRole,
-					payrollStatus: empInfo?.payrollStatus,
-					positions: empInfo?.positions,
-				};
-			}),
+		// F-05: one query for all employees instead of one per employee.
+		const empInfoById = await findEmploymentInfoByEmpIds(
+			companyName,
+			result.map((emp) => emp?.empId?._id),
+			{},
+			"empId employeeNo employmentRole payrollStatus positions",
 		);
+		let updatedResult = result.map((emp) => {
+			const empInfo = empInfoById.get(String(emp?.empId?._id));
+			return {
+				empId: emp?.empId,
+				employeeNo: empInfo?.employeeNo,
+				employmentRole: empInfo?.employmentRole,
+				payrollStatus: empInfo?.payrollStatus,
+				positions: empInfo?.positions,
+			};
+		});
 
 		if (companyName !== COMPANIES.BUSINESSN_ORG && shadowEmpIds?.length > 0 && payGroup) {
 			updatedResult = filterResultByPaygroupOption(updatedResult, payGroup);
@@ -231,8 +240,8 @@ const getCompanyEmployees = async (req, res) => {
 		}
 
 		return res.status(200).json(sortByEmpFullName(updatedResult));
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -246,8 +255,8 @@ const getCompanyEmployeesCount = async (req, res) => {
 		});
 
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -268,8 +277,8 @@ const groupEmployeesByRole = async (req, res) => {
 			return acc;
 		}, {});
 		return res.status(200).json(grouped);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -281,8 +290,8 @@ const getAllGroupMembers = async (req, res) => {
 			companyName,
 		}).select("name modules members");
 		return res.status(200).json(group);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -298,8 +307,8 @@ const getAllCompManagers = async (req, res) => {
 		});
 
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 const getAllAdmin = async (req, res) => {
@@ -313,8 +322,8 @@ const getAllAdmin = async (req, res) => {
 			},
 		});
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 const getAllManagers = async (req, res) => {
@@ -328,8 +337,8 @@ const getAllManagers = async (req, res) => {
 			},
 		});
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -344,8 +353,8 @@ const getAllSalesAgentsList = async (req, res) => {
 			},
 		});
 		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -368,8 +377,8 @@ const getAllSalesAgents = async (req, res) => {
 
 		result = result?.filter((emp) => emp?.empId);
 		return res.status(200).json(sortByEmpFullName(result));
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -433,8 +442,8 @@ const sendMailPaystub = async (req, res) => {
 			}
 		}
 		return res.status(201).json({ message: "Email sent successfully" });
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -446,10 +455,10 @@ const sendMailCreds = async (req, res) => {
 				.sort({
 					createdOn: -1,
 				})
-				?.select("email firstName fullName");
+				?.select("email firstName fullName password");
 			if (user) {
 				const { _id, email } = user;
-				const resetLink = getResetPasswordLink({ _id });
+				const resetLink = getResetPasswordLink({ _id }, user.password);
 
 				if (resetLink)
 					await sendEmail(
@@ -539,8 +548,8 @@ const sendMailCreds = async (req, res) => {
 		}
 
 		return res.status(201).json({ message: "Email sent successfully" });
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -579,8 +588,8 @@ const createMasterUser = async (req, res) => {
 			personalPhoneNum: phoneNumber,
 		});
 		return res.status(201).json(employee);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -598,8 +607,8 @@ const updateMasterUser = async (req, res) => {
 			);
 			return res.status(201).json(updatedUser);
 		}
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -628,11 +637,20 @@ const updateCompanyEmployee = async (companyName, userId, role) => {
 	return existingCompany._id;
 };
 
+// Fields that must never be set through the generic profile update endpoint.
+// FIX (AUD-004): req.body was $set verbatim, so any authenticated user could
+// overwrite another user's password hash (account takeover). Email stays editable
+// because the admin "Edit user" screen legitimately changes it.
+const PROTECTED_USER_FIELDS = ["password", "otp", "_id", "createdOn", "updatedOn"];
+
 const updateUser = async (req, res) => {
 	const { userId } = req.params;
-	const { role, companyId, assignedCompanies, unassignedCompanies } = req.body;
+	const { role, companyId, assignedCompanies, unassignedCompanies } = req.body || {};
 
 	try {
+		if (!mongoose.isValidObjectId(userId)) {
+			return res.status(400).json({ message: "Invalid user id" });
+		}
 		const compArr = [];
 
 		if (Array.isArray(assignedCompanies) && assignedCompanies.length > 0) {
@@ -656,13 +674,18 @@ const updateUser = async (req, res) => {
 					return existingCompany.save();
 				}),
 			);
-		} else {
+		} else if (companyId?.name) {
 			const result = await updateCompanyEmployee(companyId.name, userId, role);
 			compArr.push(result);
 		}
 
-		const { _id, ...updateData } = req.body;
-		updateData.companyId = compArr;
+		const updateData = { ...req.body };
+		for (const field of PROTECTED_USER_FIELDS) delete updateData[field];
+		// Preserved from the original implementation: companyId mirrors the companies
+		// touched in this request (becomes [] on an unassign-only request). Whether that
+		// should instead merge with existing memberships is an open business question
+		// (docs/application-audit.md AUD-019).
+		updateData.companyId = compArr.filter(Boolean);
 		const updatedUser = await Employee.findByIdAndUpdate(
 			userId,
 			{ $set: updateData },
@@ -672,8 +695,8 @@ const updateUser = async (req, res) => {
 		);
 
 		return res.status(201).json(updatedUser);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
@@ -694,8 +717,8 @@ const updateUserAssignedLeads = async (req, res) => {
 			await Employee.findByIdAndUpdate(user._id, { $set: { assignedLeads } }, { new: true });
 		}
 		return res.status(200).json({ message: "Leads assignee updated successfully" });
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 

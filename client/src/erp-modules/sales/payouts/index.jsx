@@ -27,7 +27,7 @@ import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { TIMESHEET_STATUS_LABEL } from "erp-modules/payroll/timesheets/data";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
 import { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar } from "components/ui/charts";
 import { CiPercent } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";

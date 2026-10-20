@@ -362,10 +362,38 @@ button:active {
 }
 
 @media only screen and (max-width: 767px) {
+	:root {
+		/* fixed header on phones: hamburger + avatar (3rem) + padding */
+		--mobile_base: 100vh - 4.25em;
+	}
 	.main_content {
 		width: 100vw;
-		margin-top: 3.5em;
+		min-width: 0;
+		margin-top: 4.25em;
+		height: calc(var(--mobile_base));
 		max-height: calc(var(--mobile_base));
+	}
+	/* F-07: 50 of 76 tables render without a scroll wrapper. On phones let every
+	   table scroll horizontally inside its own box instead of clipping columns. */
+	.chakra-table {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	.chakra-table th,
+	.chakra-table td {
+		white-space: nowrap;
+	}
+	/* avoid the double scroll-wrapper case (TableLayout already scrolls) */
+	.chakra-table .chakra-table {
+		display: table;
+	}
+	/* give form controls a finger-friendly hit area */
+	.chakra-button:not(.chakra-menu__menuitem),
+	.chakra-input,
+	.chakra-select {
+		min-height: 2.5rem;
 	}
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {

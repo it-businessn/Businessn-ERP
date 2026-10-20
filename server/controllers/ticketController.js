@@ -148,24 +148,33 @@ const generateTicketNumber = (customerPrefix) => {
 const downloadResource = async (req, res) => {
 	try {
 		const { filename } = req.params;
-		const resource = await SupportTicket.find({ originalname: filename });
-		if (!resource) {
+		// FIX: Model.find() returns an array, so `!resource` was never true and a
+		// missing file crashed with a TypeError (500) instead of a 404.
+		const resource = await SupportTicket.findOne({ originalname: filename });
+		if (!resource?.file?.data) {
 			return res.status(404).json({ message: "Resource not found" });
 		}
-		const file = filePath(filename);
-		fs.writeFileSync(file, resource[0].file.data);
+		// Unique temp name: two concurrent downloads of the same resource must not
+		// unlink each other's file mid-stream (REV-007).
+		const file = filePath(`${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}-${filename}`);
+		fs.writeFileSync(file, resource.file.data);
 
 		res.setHeader("Content-Type", fileContentType(file));
 
-		res.download(file, filename, (err) => {
-			fs.unlinkSync(file);
-			if (err) {
+		res.download(file, path.basename(filePath(filename)), (err) => {
+			try {
+				fs.unlinkSync(file);
+			} catch (_) {
+				/* already removed */
+			}
+			if (err && !res.headersSent) {
 				console.error("Error downloading file:", err);
 				return res.status(404).json({ message: "File not found" });
 			}
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error });
+		console.error("downloadResource error:", error.message);
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 
@@ -336,9 +345,35 @@ const createLeadTicket = async (req, res) => {
 	}
 };
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const isNonEmptyString = (v, max = 500) =>
+	typeof v === "string" && v.trim().length > 0 && v.length <= max;
+
+// FIX (AUD-016): public endpoint destructured nested objects without checks and
+// crashed (500) on any malformed payload. Validate up front and answer 400.
+const validateSupportTicket = (body) => {
+	const { companyInfo, contactInfo, queryInfo } = body || {};
+	if (!companyInfo || typeof companyInfo !== "object") return "companyInfo is required";
+	if (!contactInfo || typeof contactInfo !== "object") return "contactInfo is required";
+	if (!queryInfo || typeof queryInfo !== "object") return "queryInfo is required";
+	if (!isNonEmptyString(companyInfo.companyName, 200)) return "companyInfo.companyName is required";
+	if (!isNonEmptyString(contactInfo.clientFirstName, 100))
+		return "contactInfo.clientFirstName is required";
+	if (!isNonEmptyString(contactInfo.clientLastName, 100))
+		return "contactInfo.clientLastName is required";
+	if (!isNonEmptyString(contactInfo.clientEmail, 254) || !EMAIL_RE.test(contactInfo.clientEmail))
+		return "contactInfo.clientEmail must be a valid email";
+	if (!isNonEmptyString(queryInfo.issue, 5000)) return "queryInfo.issue is required";
+	return null;
+};
+
 const createSupportTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
+		const validationError = validateSupportTicket(newTicket);
+		if (validationError) {
+			return res.status(400).json({ message: validationError });
+		}
 		const { companyInfo, contactInfo, queryInfo } = newTicket;
 
 		const { companyName, clientId } = companyInfo;

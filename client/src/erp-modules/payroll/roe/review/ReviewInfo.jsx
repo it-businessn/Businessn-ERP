@@ -60,10 +60,9 @@ const ReviewInfo = ({ formData, handleFieldChange, setFormData }) => {
 	}, []);
 
 	const handlePrint = useReactToPrint({
-		content: () => componentRef.current,
-		onBeforeGetContent: () => {
-			document.title = reportFileName;
-		},
+		// react-to-print v3: `content` -> `contentRef`, `onBeforeGetContent` -> `documentTitle`
+		contentRef: componentRef,
+		documentTitle: reportFileName,
 	});
 
 	const handleClick = () => {

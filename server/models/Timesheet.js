@@ -31,7 +31,8 @@ const timesheetSchema = new mongoose.Schema(
 		companyName: { type: String, ref: "Company" },
 		positions: { type: Array, default: [] },
 		regPay: String,
-		totalBreaks: { type: Number, default: "0" },
+		// FIX: default changed from string "0" to number 0 to match type Number
+		totalBreaks: { type: Number, default: 0 },
 		overTimePay: String,
 		dblOverTimePay: String,
 		statWorkPay: String,
@@ -67,6 +68,11 @@ const timesheetSchema = new mongoose.Schema(
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
+
+// Performance (F-04): indexes for the query shapes used by the controllers.
+// Fields are unchanged; Mongoose builds these in the background on startup.
+timesheetSchema.index({ companyName: 1, deleted: 1, clockIn: 1 });
+timesheetSchema.index({ companyName: 1, employeeId: 1, clockIn: 1 });
 
 const Timesheet = mongoose.model("Timesheet", timesheetSchema);
 

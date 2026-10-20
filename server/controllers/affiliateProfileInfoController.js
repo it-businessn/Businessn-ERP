@@ -1,4 +1,14 @@
-const { nanoid } = require("nanoid");
+const crypto = require("crypto");
+
+// FIX (AUD-020): nanoid v5 is ESM-only and cannot be require()d on Node 18/20.
+// Equivalent URL-safe random id built on the standard library.
+const NANO_ALPHABET = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
+const nanoid = (size = 21) => {
+	const bytes = crypto.randomBytes(size);
+	let id = "";
+	for (let i = 0; i < size; i++) id += NANO_ALPHABET[bytes[i] & 63];
+	return id;
+};
 
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");

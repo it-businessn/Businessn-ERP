@@ -4,30 +4,37 @@ const router = express.Router();
 const { storageSpace } = require("../services/fileService");
 const resourceController = require("../controllers/resourceController");
 const { authenticateToken } = require("../middleware/auth");
+const {
+	authorizeMultipartCompany,
+	applyCompanyParamGuards,
+} = require("../middleware/authorize");
 
-router.get("/", authenticateToken, resourceController.getResources);
+// All resource routes require authentication (REV-002: previously per-route, which
+// left the :companyName params without a tenant guard).
+router.use(authenticateToken);
+applyCompanyParamGuards(router);
 
+router.get("/", resourceController.getResources);
+
+// FIX (AUD-009): resource download was public.
 router.get("/download/:filename", resourceController.downloadResource);
 
-router.get(
-	"/type/:fileType/:companyName",
-	authenticateToken,
-	resourceController.getCompanyResources,
-);
+router.get("/type/:fileType/:companyName", resourceController.getCompanyResources);
 
-router.get("/:fileType", authenticateToken, resourceController.getResource);
+router.get("/:fileType", resourceController.getResource);
 
-router.get("/:companyName", authenticateToken, resourceController.getResourcesByCompany);
+// NOTE: unreachable — "/:fileType" above matches first (pre-existing, AUD-032).
+router.get("/:companyName", resourceController.getResourcesByCompany);
 
 router.post(
 	"/upload",
-	authenticateToken,
 	storageSpace.single("file"),
+	authorizeMultipartCompany,
 	resourceController.createResource,
 );
 
-router.put("/:id", authenticateToken, resourceController.updateResource);
+router.put("/:id", resourceController.updateResource);
 
-router.delete("/:id", authenticateToken, resourceController.deleteResource);
+router.delete("/:id", resourceController.deleteResource);
 
 module.exports = router;

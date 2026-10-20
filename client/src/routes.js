@@ -4,10 +4,16 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "components/Home";
 import Loader from "components/Loader";
 import Login from "features/login";
-import Support from "features/support";
-import AffiliateSignup from "features/support/AffiliateSignup";
-import CustomerInfo from "features/support/CustomerInfo";
 import PageNotFound from "./components/PageNotFound";
+
+// F-08: public pages are lazy so framer-motion and the support/signup forms
+// stay out of the main bundle that every login has to download.
+const Support = lazy(() => import("features/support"));
+const AffiliateSignup = lazy(() => import("features/support/AffiliateSignup"));
+const CustomerInfo = lazy(() => import("features/support/CustomerInfo"));
+
+// Top-level lazy routes render outside Home's <Suspense>, so give them their own.
+const withSuspense = (element) => <Suspense fallback={<Loader />}>{element}</Suspense>;
 
 // login
 const ForgotPassword = lazy(() => import("./features/login/ForgotPassword"));
@@ -494,25 +500,25 @@ export const router = createBrowserRouter([
 		path: ROUTE_PATH.LOGIN,
 		element: <Login />,
 	},
-	{ path: "/support", element: <Support /> },
+	{ path: "/support", element: withSuspense(<Support />) },
 	// { path: "/info", element: <CustomerInfo /> },
 	{
 		path: ROUTE_PATH.FORGOT_PWD,
-		element: <ForgotPassword />,
+		element: withSuspense(<ForgotPassword />),
 	},
 	{
 		path: ROUTE_PATH.SIGNUP,
 		// element: <SignUp />,
-		element: <CustomerInfo />,
+		element: withSuspense(<CustomerInfo />),
 	},
 	{
 		path: "/portal/signup",
 		// element: <SignUp />,
-		element: <AffiliateSignup />,
+		element: withSuspense(<AffiliateSignup />),
 	},
 	{
 		path: ROUTE_PATH.VERIFY_EMAIL,
-		element: <VerifyEmail />,
+		element: withSuspense(<VerifyEmail />),
 	},
 	{
 		path: "*",

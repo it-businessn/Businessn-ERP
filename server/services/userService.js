@@ -16,8 +16,11 @@ const addEmployee = async (name, data) => {
 			{ new: true, upsert: true },
 		);
 		if (employee && existingCompany) {
-			existingCompany.employees.push(employee._id);
-			await existingCompany.save();
+			// FIX: Use $addToSet to prevent duplicate employee IDs in company array
+			if (!existingCompany.employees.includes(employee._id)) {
+				existingCompany.employees.push(employee._id);
+				await existingCompany.save();
+			}
 		}
 		return employee;
 	} catch (error) {
@@ -29,6 +32,30 @@ const addEmployee = async (name, data) => {
 		});
 		throw error;
 	}
+};
+
+/**
+ * Performance (F-05): fetch employment info for many employees in ONE query and
+ * return a Map keyed by empId string. Controllers previously issued one
+ * `findOne` per employee (N+1). The first document per empId wins, which is
+ * what `findOne` returned (natural order), so results are unchanged.
+ */
+const findEmploymentInfoByEmpIds = async (companyName, empIds, extraFilter = {}, select = "") => {
+	const ids = (empIds || []).filter(Boolean);
+	const byEmp = new Map();
+	if (ids.length === 0) return byEmp;
+	const docs = await EmployeeEmploymentInfo.find({
+		companyName,
+		empId: { $in: ids },
+		...extraFilter,
+	})
+		.select(select)
+		.lean();
+	for (const doc of docs) {
+		const key = String(doc.empId);
+		if (!byEmp.has(key)) byEmp.set(key, doc);
+	}
+	return byEmp;
 };
 
 const findCompany = async (key, value) => await Company.findOne({ [key]: value });
@@ -183,6 +210,7 @@ module.exports = {
 	addEmployee,
 	findCompany,
 	findEmployee,
+	findEmploymentInfoByEmpIds,
 	filterResultByPaygroupOption,
 	filterResultByDepartment,
 	getShadowUserIds,

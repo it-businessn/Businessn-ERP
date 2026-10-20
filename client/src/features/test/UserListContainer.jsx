@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import UserList from "../components/UserList";
+import UserList from "./UserList";
 
 const UserListContainer = () => {
 	const [users, setUsers] = useState([]);

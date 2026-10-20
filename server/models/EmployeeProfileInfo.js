@@ -40,10 +40,17 @@ const employeeProfileInfoSchema = new mongoose.Schema(
 		linkedIn: String,
 		tiktok: String,
 		youtube: String,
-		affiliateCode: { type: String, unique: true },
+		// FIX (AUD-014): `unique` without `sparse` indexes missing values as null, so
+		// the second profile created without an affiliate code fails with E11000.
+		// Requires dropping the old index once: see docs/application-audit.md.
+		affiliateCode: { type: String, unique: true, sparse: true },
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
+
+// Performance (F-04): indexes for the query shapes used by the controllers.
+// Fields are unchanged; Mongoose builds these in the background on startup.
+employeeProfileInfoSchema.index({ companyName: 1, empId: 1 });
 
 const EmployeeProfileInfo = mongoose.model("EmployeeProfileInfo", employeeProfileInfoSchema);
 

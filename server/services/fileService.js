@@ -2,21 +2,41 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
+const UPLOADS_DIR = path.join(__dirname, "../", "uploads");
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB
+
+/**
+ * FIX (AUD-008): user-supplied file names were written to disk verbatim and
+ * later joined into a path for download, allowing traversal ("../../index.js").
+ * Keep only the base name and strip any character that is not safe for a path.
+ */
+const sanitizeFilename = (name) => {
+	if (typeof name !== "string") return "";
+	const base = path.basename(name.replace(/\\/g, "/")).trim();
+	const cleaned = base.replace(/[^A-Za-z0-9._ \-()]/g, "_").replace(/^\.+/, "");
+	return cleaned.slice(0, 200);
+};
+
 const storage = multer.diskStorage({
 	destination(req, file, cb) {
-		cb(null, "uploads/");
+		fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+		cb(null, UPLOADS_DIR);
 	},
 	filename(req, file, cb) {
-		const uniqueFileName = file.originalname;
-
-		cb(null, uniqueFileName);
+		const safe = sanitizeFilename(file.originalname);
+		if (!safe) return cb(new Error("Invalid file name"));
+		cb(null, safe);
 	},
 });
 
-const storageSpace = multer({ storage });
+const storageSpace = multer({ storage, limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 } });
 
 const filePath = (filename) => {
-	return path.join(__dirname, "../", "uploads", filename);
+	const safe = sanitizeFilename(filename);
+	if (!safe) throw new Error("Invalid file name");
+	const resolved = path.resolve(UPLOADS_DIR, safe);
+	if (!resolved.startsWith(UPLOADS_DIR + path.sep)) throw new Error("Invalid file name");
+	return resolved;
 };
 
 const fileContentType = (file) => {
@@ -55,4 +75,11 @@ const saveKeyToEnv = (keyName, newKey) => {
 	}
 };
 
-module.exports = { storageSpace, filePath, fileContentType, saveKeyToEnv };
+module.exports = {
+	storageSpace,
+	filePath,
+	fileContentType,
+	saveKeyToEnv,
+	sanitizeFilename,
+	MAX_UPLOAD_BYTES,
+};

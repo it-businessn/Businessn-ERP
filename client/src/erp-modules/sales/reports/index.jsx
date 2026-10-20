@@ -22,7 +22,7 @@ import { callsMadeBarData } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar } from "components/ui/charts";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -60,10 +60,13 @@ const SalesReport = () => {
 		scales: {
 			y: {
 				beginAtZero: true,
+				// chart.js v4: grid.drawBorder -> border.display, grid.borderDash -> border.dash
 				grid: {
 					color: "rgba(0, 0, 0, 0.1)",
-					borderDash: [3, 3],
-					drawBorder: false,
+				},
+				border: {
+					display: false,
+					dash: [3, 3],
 				},
 				ticks: {
 					font: {
@@ -93,8 +96,12 @@ const SalesReport = () => {
 				bottom: 0,
 			},
 		},
-		legend: {
-			display: false,
+		// Legend options live under `plugins` since chart.js v3; the previous
+		// top-level `legend` was ignored, so the legend was always shown.
+		plugins: {
+			legend: {
+				display: false,
+			},
 		},
 	};
 

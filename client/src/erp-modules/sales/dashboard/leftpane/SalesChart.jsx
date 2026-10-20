@@ -6,7 +6,7 @@ import SelectCustomer from "erp-modules/sales/activities/SelectCustomer";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Bar } from "react-chartjs-2";
+import { Bar } from "components/ui/charts";
 import ActivityService from "services/ActivityService";
 
 const SalesChart = ({ company, selectedUser, user }) => {
@@ -73,10 +73,13 @@ const SalesChart = ({ company, selectedUser, user }) => {
 		scales: {
 			y: {
 				beginAtZero: true,
+				// chart.js v4: grid.drawBorder -> border.display, grid.borderDash -> border.dash
 				grid: {
 					color: "rgba(0, 0, 0, 0.1)",
-					borderDash: [3, 3],
-					drawBorder: false,
+				},
+				border: {
+					display: false,
+					dash: [3, 3],
 				},
 				ticks: {
 					font: {

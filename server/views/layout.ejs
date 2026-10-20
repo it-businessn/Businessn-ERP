@@ -98,13 +98,29 @@
 				<h1>Set Your Password</h1>
 			</section>
 
+			<% if (typeof message !== "undefined" && message) { %>
+			<p role="alert" style="color: #b00020; text-align: center"><%= message %></p>
+			<% } %>
+			<% if (status !== "Expired") { %>
 			<form class="form-content" action="" method="post">
-				<label>Email : <%= email%></label>
+				<label for="password">Email : <%= email%></label>
 
-				<input type="text" name="password" id="password" placeholder="New Password" />
+				<input
+					type="password"
+					name="password"
+					id="password"
+					placeholder="New Password (min 8 characters)"
+					minlength="8"
+					maxlength="128"
+					required
+					autocomplete="new-password"
+				/>
 				<br />
 				<button>Reset password</button>
 			</form>
+			<% } else { %>
+			<p style="text-align: center">Please request a new reset link from the login page.</p>
+			<% } %>
 		</section>
 	</section>
 	<!-- &copy; ${CURRENT_YEAR} ${COMPANIES.BUSINESSN_ORG}. All rights reserved. -->

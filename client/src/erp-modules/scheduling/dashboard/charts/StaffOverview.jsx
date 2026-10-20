@@ -1,17 +1,21 @@
 import { Box } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Line } from "react-chartjs-2";
+
+import { Line } from "components/ui/charts";
 
 const StaffOverview = ({ avgHeadCountTotals }) => {
 	const options = {
 		scales: {
 			y: {
 				beginAtZero: true,
+				// chart.js v4: grid.drawBorder -> border.display, grid.borderDash -> border.dash
 				grid: {
 					color: "rgba(0, 0, 0, 0.1)",
-					borderDash: [3, 3],
-					drawBorder: false,
+				},
+				border: {
+					display: false,
+					dash: [3, 3],
 				},
 				ticks: {
 					font: {

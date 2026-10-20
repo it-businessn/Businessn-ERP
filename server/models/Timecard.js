@@ -21,6 +21,10 @@ const timecardSchema = new mongoose.Schema(
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
 
+// Performance (F-04): indexes for the query shapes used by the controllers.
+// Fields are unchanged; Mongoose builds these in the background on startup.
+timecardSchema.index({ companyName: 1, badge_id: 1, clockIn: -1 });
+
 const Timecard = mongoose.model("Timecard", timecardSchema);
 
 module.exports = Timecard;

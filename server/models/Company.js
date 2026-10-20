@@ -59,6 +59,11 @@ const companySchema = new mongoose.Schema(
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
 
+// Performance (F-04): indexes for the query shapes used by the controllers.
+// Fields are unchanged; Mongoose builds these in the background on startup.
+companySchema.index({ employees: 1 });
+companySchema.index({ registration_number: 1 });
+
 const Company = mongoose.model("Company", companySchema);
 
 module.exports = Company;

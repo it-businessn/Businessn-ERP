@@ -657,8 +657,37 @@ const updatePayStub = async (id, data) =>
 		},
 	);
 
+// REV-009: in-process guard against concurrent duplicate pay runs for the same
+// company/period (double-click, retry storm). Single-instance only — a cluster
+// needs a lock document in MongoDB (see docs/application-audit.md AUD-015).
+const runsInProgress = new Set();
+const payRunKey = (companyName, period) =>
+	`${companyName}|${period?.payPeriod}|${period?.isExtraRun ? "extra" : "regular"}|${period?.frequency}`;
+
 const addEmployeePayStubInfo = async (req, res) => {
-	const { companyName, currentPayPeriod, selectedPayGroupOption } = req.body;
+	const { companyName, currentPayPeriod, selectedPayGroupOption } = req.body || {};
+	// FIX (AUD-015, partial): reject malformed payroll runs with 400 instead of a
+	// TypeError 500 while destructuring. Idempotency/transactions remain open.
+	if (typeof companyName !== "string" || !companyName.trim()) {
+		return res.status(400).json({ message: "companyName is required" });
+	}
+	if (!currentPayPeriod || typeof currentPayPeriod !== "object") {
+		return res.status(400).json({ message: "currentPayPeriod is required" });
+	}
+	if (!currentPayPeriod.payPeriodStartDate || !currentPayPeriod.payPeriodEndDate) {
+		return res.status(400).json({ message: "payPeriodStartDate and payPeriodEndDate are required" });
+	}
+	if (currentPayPeriod.isExtraRun && !Array.isArray(currentPayPeriod.selectedEmp)) {
+		return res.status(400).json({ message: "selectedEmp must be an array for an extra pay run" });
+	}
+	const lockKey = payRunKey(companyName, currentPayPeriod);
+	if (runsInProgress.has(lockKey)) {
+		return res.status(409).json({
+			message: "A pay run for this company and pay period is already being processed",
+			code: "PAYRUN_IN_PROGRESS",
+		});
+	}
+	runsInProgress.add(lockKey);
 	try {
 		// const y = await EmployeePayStub.deleteMany({
 		// 	payPeriodNum: "6",
@@ -760,7 +789,10 @@ const addEmployeePayStubInfo = async (req, res) => {
 			message: error.message,
 			stack: error.stack,
 		});
-		return res.status(500).json({ message: "Internal Server Error", error });
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+	finally {
+		runsInProgress.delete(lockKey);
 	}
 };
 

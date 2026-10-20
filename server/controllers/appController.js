@@ -7,18 +7,24 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const { hashPassword, comparePassword } = require("../services/passwordService");
 const { generateAccessToken, generateRefreshToken, verifyToken } = require("../middleware/auth");
 const CONFIG = require("../config/app.config");
-const { addEmployee, findCompany } = require("../services/userService");
+const { addEmployee } = require("../services/userService");
 
 const login = async (req, res) => {
 	const { email, password, companyId } = req.body;
+
+	if (!email || !password || !companyId) {
+		return res.status(400).json({ message: "Email, password, and company ID are required" });
+	}
 
 	try {
 		const user = await Employee.findOne({ email }).select(
 			"firstName lastName middleName fullName email password phoneNumber primaryAddress manager",
 		);
 		if (!user) {
-			return res.status(404).json({ message: "User does not exist" });
+			// Consistent message to prevent user enumeration
+			return res.status(401).json({ message: "Invalid credentials. Please reset your password!" });
 		}
+
 		const { _id, firstName, lastName, middleName, fullName, phoneNumber, primaryAddress, manager } =
 			user;
 
@@ -28,61 +34,58 @@ const login = async (req, res) => {
 		}).select("name registration_number address");
 
 		if (!existingCompanyUser) {
-			return res.status(404).json({ message: "User does not exist for the company" });
+			return res.status(401).json({ message: "Invalid credentials. Please reset your password!" });
 		}
-		// const existingCompany = await findCompany("registration_number", companyId);
 
 		const empInfo = await EmployeeEmploymentInfo.findOne({
 			companyName: existingCompanyUser.name,
 			empId: user._id,
 		}).select("positions employeeNo payrollStatus employmentRole");
 
-		const existingProfileInfo = await EmployeeProfileInfo.findOne({
-			password,
-			companyName: existingCompanyUser.name,
-			$or: [{ useremail: email }, { businessEmail: email }, { businessemail: email }],
-		});
-
-		const profilePwdMatch = existingProfileInfo?.password
-			? await comparePassword(password, user?.password)
-			: false;
-
-		const match = user?.password ? await comparePassword(password, user?.password) : false;
-
-		if (match || profilePwdMatch) {
-			const accessToken = generateAccessToken({ id: _id, fullName });
-			const refreshToken = generateRefreshToken({ id: _id, fullName });
-
-			logUserLoginActivity(_id);
-			return res.json({
-				message: "Logged in successfully",
-				user: {
-					_id,
-					firstName,
-					lastName,
-					middleName,
-					fullName,
-					email,
-					role: empInfo?.employmentRole,
-					department: empInfo?.positions?.[0]?.employmentDepartment,
-					employmentType: empInfo?.employmentRole,
-					employeeId: empInfo?.employeeNo,
-					payrollStatus: empInfo?.payrollStatus,
-					phoneNumber,
-					primaryAddress,
-					manager,
-				},
-				existingCompanyUser,
-				accessToken,
-				refreshToken,
-			});
+		// FIX: Compare password against Employee.password (hashed) only.
+		// Previously the code also queried EmployeeProfileInfo by plaintext password
+		// which stored unhashed passwords — a critical security vulnerability.
+		if (!user.password) {
+			return res.status(401).json({ message: "Invalid credentials. Please reset your password!" });
 		}
-		return res.status(401).json({ message: "Invalid credentials. Please reset your password!" });
+
+		const match = await comparePassword(password, user.password);
+
+		if (!match) {
+			return res.status(401).json({ message: "Invalid credentials. Please reset your password!" });
+		}
+
+		const accessToken = generateAccessToken({ id: _id, fullName });
+		const refreshToken = generateRefreshToken({ id: _id, fullName });
+
+		logUserLoginActivity(_id);
+
+		return res.json({
+			message: "Logged in successfully",
+			user: {
+				_id,
+				firstName,
+				lastName,
+				middleName,
+				fullName,
+				email,
+				role: empInfo?.employmentRole,
+				department: empInfo?.positions?.[0]?.employmentDepartment,
+				employmentType: empInfo?.employmentRole,
+				employeeId: empInfo?.employeeNo,
+				payrollStatus: empInfo?.payrollStatus,
+				phoneNumber,
+				primaryAddress,
+				manager,
+			},
+			existingCompanyUser,
+			accessToken,
+			refreshToken,
+		});
 	} catch (error) {
 		console.error("❌ Login error:", {
 			message: error.message,
 			stack: error.stack,
-			body: req.body,
 		});
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
@@ -160,24 +163,22 @@ const refreshToken = async (req, res) => {
 		if (!refreshToken) {
 			return res.status(401).json({ message: "Refresh token is required" });
 		}
-		const user = verifyToken(refreshToken, CONFIG.REFRESH_TOKEN_SECRET);
-		if (!user || !user._id) {
+		// FIX: Token payload uses `id` key, not `_id`. Corrected check.
+		const decoded = verifyToken(refreshToken, CONFIG.REFRESH_TOKEN_SECRET);
+		if (!decoded || !decoded.id) {
 			return res.status(403).json({ message: "Invalid refresh token payload" });
 		}
 		const newAccessToken = generateAccessToken({
-			id: user?._id,
-			username: user?.username,
+			id: decoded.id,
+			fullName: decoded.fullName,
 		});
 		return res.json({ accessToken: newAccessToken });
 	} catch (error) {
-		if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
-			return res.status(403).json({ message: "Invalid or expired refresh token" });
-		}
 		console.error("Error verifying refresh token:", {
 			message: error.message,
 			stack: error.stack,
 		});
-		return res.status(500).json({ message: "Internal Server Error" });
+		return res.status(403).json({ message: "Invalid or expired refresh token" });
 	}
 };
 
@@ -199,13 +200,12 @@ const signUp = async (req, res) => {
 	} = req.body;
 	const { streetNumber, city, state, postalCode, country } = primaryAddress || {};
 
-	// const updatedData = { companyId: "6646b03e96dcdc0583fb5dca" };for fd
-	// const updatedLeads = await Employee.updateMany({}, { $set: updatedData });
-	// console.log(updatedLeads);
-
 	try {
 		if (!email || !password) {
 			return res.status(400).json({ message: "Email and password are required" });
+		}
+		if (password.length < 8) {
+			return res.status(400).json({ message: "Password must be at least 8 characters" });
 		}
 		const existingUser = await Employee.findOne({ email });
 		if (existingUser) {

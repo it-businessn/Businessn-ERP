@@ -1,4 +1,4 @@
-import { Bar } from "react-chartjs-2";
+import { Bar } from "components/ui/charts";
 
 const HorizontalBarChart = ({ data, label, target }) => {
 	const chartData = {

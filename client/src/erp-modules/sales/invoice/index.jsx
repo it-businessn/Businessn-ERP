@@ -20,7 +20,7 @@ import {
 import { activityChartData, doughnutOptions } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "components/ui/charts";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
