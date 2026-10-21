@@ -3,6 +3,12 @@ const router = express.Router();
 
 const scheduleController = require("../controllers/scheduleController");
 const { storageSpace } = require("../services/fileService");
+const { requireCompanyNameParam } = require("../middleware/authorize");
+
+// SEC-01: on these routes :name is the COMPANY (controllers filter
+// companyName: name). Since F-14 ":name" is no longer guarded app-wide (it is a
+// crew name on /work-emp-shift), so each company-valued :name is guarded here.
+const companyFromName = requireCompanyNameParam("name");
 
 router.get("/", scheduleController.getShifts);
 
@@ -17,17 +23,17 @@ router.get(
 	scheduleController.getCrewRolesMonthlyTotals,
 );
 
-router.get("/:id/:name", scheduleController.getShiftByDate);
+router.get("/:id/:name", companyFromName, scheduleController.getShiftByDate);
 
-router.get("/work/:date/:location/:empName/:name", scheduleController.getWorkShiftByDate);
+router.get("/work/:date/:location/:empName/:name", companyFromName, scheduleController.getWorkShiftByDate);
 
-router.get("/work-week/:date/:location/:empName/:name", scheduleController.getWorkShiftByWeek);
+router.get("/work-week/:date/:location/:empName/:name", companyFromName, scheduleController.getWorkShiftByWeek);
 
 router.get("/email-logs/:companyName/:scheduleWeek", scheduleController.getScheduleEmailLogs);
 
 router.get("/work-emp-shift/:date/:companyName/:name", scheduleController.getWorkWeekEmpShifts);
 
-router.get("/work/emp/:date/:location/:empName/:name", scheduleController.getEmpWorkShiftByDate);
+router.get("/work/emp/:date/:location/:empName/:name", companyFromName, scheduleController.getEmpWorkShiftByDate);
 
 router.post("/", scheduleController.addShifts);
 

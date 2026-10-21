@@ -51,6 +51,11 @@ export const ROLE_ACCESS = {
 	],
 };
 
+// Public marketing site the support / affiliate pages close to. CRA only exposes
+// REACT_APP_* variables to the browser: process.env.REACT_APP_WEBSITE was always undefined,
+// so the close buttons navigated to "/undefined".
+export const WEBSITE_URL = process.env.REACT_APP_WEBSITE || "https://www.businessn.com";
+
 export const ALERTS_TYPE = { BANK: "bank", SIN: "SIN", WAGE: "wage" };
 export const EMAIL_TYPE = { LOGIN_CREDENTIAL: "CREDS", PAYSTUB: "Paystub" };
 

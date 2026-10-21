@@ -2,6 +2,20 @@ const moment = require("moment");
 const EmployeeLeave = require("../models/EmployeeLeave");
 const Timesheet = require("../models/Timesheet");
 const { setTime } = require("./timesheetController");
+const { isScalar } = require("../helpers/requestFields");
+
+// NEW-13: leave-hour fields of models/Timesheet.js that the client can send, plus
+// "Unpaid" (no timesheet rows) and "Other" (rows without an hours field, as before).
+const LEAVE_HOURS_FIELDS = [
+	"sickPayHours",
+	"vacationPayHours",
+	"bereavementPayHours",
+	"personalPayHours",
+];
+const UNPAID = "Unpaid";
+const OTHER = "Other";
+const LEAVE_PARAM_HOURS = new Set([...LEAVE_HOURS_FIELDS, UNPAID, OTHER]);
+const MAX_LEAVE_DAYS = 366;
 
 const calculateLeaveDays = (clockIn, clockOut) => {
 	const inDate = moment(clockIn).startOf("day");
@@ -65,6 +79,22 @@ const updateLeaveRequest = async (req, res) => {
 const createLeaveRequest = async (req, res) => {
 	let { company, type, leaveType, startDate, endDate, employeeId, param_hours, source } = req.body;
 
+	// NEW-13: param_hours named the timesheet field to write and the day loop had
+	// no bound. Only the leave-hour fields the client sends (AddLeave.jsx via
+	// PAY_TYPES) plus the "Unpaid"/"Other" markers are accepted, and the range is capped.
+	const scalars = { type, leaveType, startDate, endDate, employeeId, source };
+	if (Object.values(scalars).some((v) => !isScalar(v))) {
+		return res.status(400).json({ message: "Invalid leave request" });
+	}
+	if (typeof param_hours !== "string" || !LEAVE_PARAM_HOURS.has(param_hours)) {
+		return res.status(400).json({ message: "Invalid leave type" });
+	}
+	if (calculateLeaveDays(startDate, endDate).leaveDays > MAX_LEAVE_DAYS) {
+		return res
+			.status(400)
+			.json({ message: `A leave request cannot exceed ${MAX_LEAVE_DAYS} days` });
+	}
+
 	try {
 		const newRequest = {
 			employeeId,
@@ -82,7 +112,7 @@ const createLeaveRequest = async (req, res) => {
 		newRequest.totalLeaveDays = leaveDays;
 		const result = await EmployeeLeave.create(newRequest);
 
-		if (param_hours !== "Unpaid") {
+		if (param_hours !== UNPAID) {
 			const timesheetEntries = [];
 
 			for (let i = 0; i < leaveDays; i++) {
@@ -96,7 +126,8 @@ const createLeaveRequest = async (req, res) => {
 					clockOut,
 					payType: type,
 					source,
-					[param_hours]: 8,
+					// NEW-13: "Other" has no hours field (the old `Other: 8` was dropped by the schema).
+					...(param_hours === OTHER ? {} : { [param_hours]: 8 }),
 				});
 			}
 			await Timesheet.insertMany(timesheetEntries);

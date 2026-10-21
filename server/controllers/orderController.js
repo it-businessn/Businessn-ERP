@@ -53,6 +53,8 @@ const updateOrder = async (req, res) => {
 			await order.save();
 			return res.status(201).json(order);
 		}
+		// API-04: unknown id used to leave the request hanging.
+		return res.status(404).json({ message: "Order not found" });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}

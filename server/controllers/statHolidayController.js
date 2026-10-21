@@ -33,7 +33,9 @@ const addStatHolidayDefaultTimesheet = async (employeeId, companyName) => {
 		companyName,
 	);
 	const statPayAmount = numberOfDaysWorked ? employeeEarnings / numberOfDaysWorked : 0;
-	const statHours = statPayAmount / safeNum(statPayRate);
+	// NEW-16: a pay rate of 0 gave NaN hours (0/0) and the timesheet insert failed.
+	const rate = safeNum(statPayRate);
+	const statHours = rate > 0 && Number.isFinite(statPayAmount / rate) ? statPayAmount / rate : 0;
 
 	const startTime = moment().set({
 		hour: 13,
@@ -145,11 +147,22 @@ const getStatHoliday = async (req, res) => {
 const addStatHoliday = async (req, res) => {
 	const { name, date, company } = req.body;
 
+	// NEW-16: the duplicate check used the current year, so the same holiday could
+	// be added twice for another year and a next-year holiday was reported as a
+	// duplicate of this year's. Use the year of `date` (as the create below does).
+	const holidayDate = typeof date === "string" || typeof date === "number" ? moment(date) : null;
+	if (!holidayDate?.isValid()) {
+		return res.status(400).json({ message: "A valid holiday date is required" });
+	}
+	if (typeof name !== "string") {
+		return res.status(400).json({ message: "Holiday name is required" });
+	}
+
 	try {
 		const data = {
 			name,
 			companyName: company,
-			year: moment().format("YYYY"),
+			year: holidayDate.format("YYYY"),
 		};
 
 		const existingRecord = await Holiday.findOne(data);

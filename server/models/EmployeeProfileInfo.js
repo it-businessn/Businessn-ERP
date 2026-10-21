@@ -42,7 +42,7 @@ const employeeProfileInfoSchema = new mongoose.Schema(
 		youtube: String,
 		// FIX (AUD-014): `unique` without `sparse` indexes missing values as null, so
 		// the second profile created without an affiliate code fails with E11000.
-		// Requires dropping the old index once: see docs/application-audit.md.
+		// Requires dropping the old index once: see docs/CHANGES.md.
 		affiliateCode: { type: String, unique: true, sparse: true },
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },

@@ -7,16 +7,20 @@ const WorkShift = require("../models/WorkShift");
 const Crew = require("../models/Crew");
 const DailyTotals = require("../models/DailyTotals");
 const { sendEmail } = require("../services/emailService");
+// AUD-016: request data is HTML-escaped in e-mail bodies.
+const { escapeHtml } = require("../helpers/escapeHtml");
 const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const BudgetAccount = require("../models/BudgetAccount");
 const { safeNum } = require("../utils/time.util");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const currentYear = new Date().getFullYear();
 
 const getShifts = async (req, res) => {
 	try {
-		const shifts = await EmployeeShift.find({}).sort({ createdOn: -1 });
+		// NEW-06: was EmployeeShift.find({}) — every tenant's shifts.
+		const shifts = await EmployeeShift.find(await companyScopeFilter(req)).sort({ createdOn: -1 });
 		return res.status(200).json(shifts);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -614,7 +618,7 @@ const emailWorkShifts = async (req, res) => {
 						class="category"
 						style="color: #e8ccb7; font-weight: bold; margin: 0"
 					>
-						${location}
+						${escapeHtml(location)}
 					</p>
 					<p
 						class="topic"
@@ -638,12 +642,12 @@ const emailWorkShifts = async (req, res) => {
 						font-size: 14px;
 					"
 				>
-					<h3 style="margin: 0; margin-bottom: 1em">Hi ${fullName},</h3>
+					<h3 style="margin: 0; margin-bottom: 1em">Hi ${escapeHtml(fullName)},</h3>
 				 
 
 					<p style="font-weight: bold; margin: 5px 0"> ${
 						attachment
-							? `Please see your schedule for the week of ${week}. The attached file contains the details for your reference.`
+							? `Please see your schedule for the week of ${escapeHtml(week)}. The attached file contains the details for your reference.`
 							: ""
 					}</p>
 
@@ -678,6 +682,10 @@ const emailWorkShifts = async (req, res) => {
 		return res.status(404).json({ message: "Weekly schedule attachment not found." });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
+	} finally {
+		// NEW-16: the attachment has been e-mailed; remove the multer temp file
+		// (same as resourceController, REV-006).
+		if (req.file?.path) fs.unlink(req.file.path, () => {});
 	}
 };
 

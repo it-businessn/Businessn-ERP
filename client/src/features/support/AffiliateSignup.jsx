@@ -26,6 +26,7 @@ import { useState } from "react";
 import { FaInstagram, FaLinkedin, FaTiktok, FaYoutube } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
 import MotionCover from "./MotionCover";
+import { WEBSITE_URL } from "constant";
 
 export default function AffiliateSignup() {
 	const toast = useToast();
@@ -53,7 +54,7 @@ export default function AffiliateSignup() {
 	};
 
 	const goToHome = () => {
-		window.location.href = process.env.WEBSITE;
+		window.location.href = WEBSITE_URL;
 	};
 
 	const handleSubmit = async (e) => {

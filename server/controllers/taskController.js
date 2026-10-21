@@ -3,10 +3,12 @@ const moment = require("moment");
 const Activity = require("../models/Activity");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getTasks = async (req, res) => {
 	try {
-		const tasks = await Task.find({}).sort({
+		// NEW-06: was Task.find({}) — every tenant's tasks.
+		const tasks = await Task.find(await companyScopeFilter(req)).sort({
 			createdOn: -1,
 		});
 		return res.status(200).json(tasks);
@@ -61,7 +63,9 @@ const isAllTaskComplete = async (savedTask) => {
 };
 
 const updateTask = async (req, res) => {
-	const { taskId } = req.params;
+	// API-13: shared by PUT /status/:taskId and PUT /:id; the latter has no
+	// :taskId, so it used to update nothing.
+	const taskId = req.params.taskId ?? req.params.id;
 	const { isOpen } = req.body;
 
 	try {

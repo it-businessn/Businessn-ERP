@@ -13,6 +13,11 @@ const { COMPANIES } = require("../constants/constant");
 const { PAYRUN_TYPE } = require("../constants/pay.constants");
 const { sortByEmpFullName } = require("../services/userService");
 const { safeNum } = require("../utils/time.util");
+const {
+	payDateYearWindow,
+	payDateDayWindow,
+	latestPayYearWindow,
+} = require("../utils/payYear.util");
 
 const buildFundingTotalsReport = async (
 	fundingTotal,
@@ -20,6 +25,7 @@ const buildFundingTotalsReport = async (
 	isExtraRun = false,
 	isCornerStone,
 	scheduleFrequency,
+	options = {}, // AUD-015: { session, afterCommit: [] }
 ) => {
 	try {
 		fundingTotal.totalCPP_Contr =
@@ -56,29 +62,41 @@ const buildFundingTotalsReport = async (
 
 		if (isExtraRun) fundingTotal.isExtraRun = isExtraRun;
 
-		const existsFundDetails = await FundingTotalsPay.findOne({
-			companyName: fundingTotal.companyName,
-			payPeriodNum: fundingTotal.payPeriodNum,
-			isExtraRun,
-			payPeriodPayDate: moment.utc(fundingTotal.payPeriodPayDate).startOf("day").toDate(),
-			scheduleFrequency,
-		}).sort({
-			createdOn: -1,
-		});
-		let result;
-		if (existsFundDetails) {
-			await FundingTotalsPay.findByIdAndUpdate(
-				existsFundDetails._id,
-				{ $set: fundingTotal },
-				{
-					new: true,
-				},
-			);
-		} else {
-			result = await FundingTotalsPay.create(fundingTotal);
-			createJournalEntry(result._id, fundingTotal.companyName, scheduleFrequency).catch((err) =>
-				console.error("Journal entry failed:", err),
-			);
+		// AUD-015: one atomic upsert on the natural key (unique index
+		// uniq_funding_totals_run) instead of findOne + create, which could
+		// double-create funding totals and journal entries. The pay date is stored
+		// at UTC start of day, the form this lookup and every reader use.
+		const payPeriodPayDate = fundingTotal.payPeriodPayDate
+			? moment.utc(fundingTotal.payPeriodPayDate).startOf("day").toDate()
+			: null;
+		const raw = await FundingTotalsPay.findOneAndUpdate(
+			{
+				companyName: fundingTotal.companyName,
+				payPeriodNum: fundingTotal.payPeriodNum,
+				isExtraRun,
+				payPeriodPayDate,
+				scheduleFrequency,
+			},
+			{ $set: { ...fundingTotal, payPeriodPayDate } },
+			{
+				upsert: true,
+				new: true,
+				sort: { createdOn: -1 },
+				includeResultMetadata: true,
+				session: options.session || undefined,
+			},
+		);
+		const created = raw?.lastErrorObject?.updatedExisting === false;
+		if (created && raw?.value?._id) {
+			const result = raw.value;
+			// Journal entry only for a new run. Inside a transaction it must wait
+			// for the commit (it reads the record outside the session).
+			const journal = () =>
+				createJournalEntry(result._id, fundingTotal.companyName, scheduleFrequency).catch((err) =>
+					console.error("Journal entry failed:", err),
+				);
+			if (Array.isArray(options.afterCommit)) options.afterCommit.push(journal);
+			else journal();
 			return result;
 		}
 	} catch (error) {
@@ -131,15 +149,18 @@ const createJournalEntry = async (fundingTotalReportId, companyName) => {
 			payPeriodNum,
 			isExtraRun,
 			payPeriodProcessingDate,
+			payPeriodPayDate,
 			scheduleFrequency,
 		} = existsFundDetails;
 
-		const currentPayStubs = await EmployeePayStub.find({
-			companyName,
-			payPeriodNum,
-			isExtraRun,
-			scheduleFrequency,
-		}).select(
+		// PAYYEAR-01: period numbers restart every year -> only this run's pay-date
+		// year (funding totals carry the pay date; else the most recent year).
+		const stubFilter = { companyName, payPeriodNum, isExtraRun, scheduleFrequency };
+		const payYear =
+			payDateYearWindow(payPeriodPayDate) ||
+			(await latestPayYearWindow(EmployeePayStub, stubFilter));
+		if (payYear) stubFilter.payPeriodPayDate = payYear;
+		const currentPayStubs = await EmployeePayStub.find(stubFilter).select(
 			"empId currentGrossPay currentCPPDeductions currentRegPayTotal2 currentEmployerCPPDeductions currentEmployerEIDeductions currentEmployeeEIDeductions currentIncomeTaxDeductions",
 		);
 		const empIds = currentPayStubs.map((e) => e.empId);
@@ -283,21 +304,72 @@ const updatePayrollProcess = async (req, res) => {
 			scheduleFrequency,
 		};
 
-		const fundTotalsReport = await FundingTotalsPay.findOne(searchObj).select(
-			"totalFundingWithDrawals totalEmpPaymentRemitCost totalGovtContr totalServiceCharges",
+		// SUBMIT-01: funding totals are stored at UTC start of day; match the whole
+		// pay day instead of the exact request timestamp (which found nothing when
+		// the client sent a time component).
+		const fundSearch = { ...searchObj };
+		const payDay = payDateDayWindow(payPeriodPayDate);
+		if (payDay) fundSearch.payPeriodPayDate = payDay;
+		const fundTotalsReport = await FundingTotalsPay.findOne(fundSearch).select(
+			"totalFundingWithDrawals totalEmpPaymentRemitCost totalGovtContr totalServiceCharges fundTransferStatus",
 		);
 
-		searchObj.isProcessed = true;
+		// PAYYEAR-01: stubs are matched by this run's pay-date year (period numbers
+		// restart every year; stub pay dates are stored at UTC start of day, so the
+		// raw request date is not compared for equality).
+		const stubSearch = { ...searchObj, isProcessed: true };
+		const payYear =
+			payDateYearWindow(payPeriodPayDate) ||
+			(await latestPayYearWindow(EmployeePayStub, { ...searchObj, isProcessed: true }));
+		if (payYear) stubSearch.payPeriodPayDate = payYear;
+		else delete stubSearch.payPeriodPayDate;
 
-		const employeePayStubs = await EmployeePayStub.find(searchObj).select("empId currentNetPay");
+		const employeePayStubs = await EmployeePayStub.find(stubSearch).select("empId currentNetPay");
 		const employeesToReceivePayment = employeePayStubs.filter((rec) => rec.currentNetPay > 0);
 
+		// NEW-04: a failed VoPay transfer was only logged and the submit still looked
+		// fully successful. The status code is unchanged (the pay run IS saved);
+		// the outcome is reported in the additive `fundTransfer` field.
+		let fundTransfer = { status: "skipped", reason: "NO_FUND_TOTALS" };
 		if (fundTotalsReport) {
-			await vopayFundTransfer(companyName, fundTotalsReport, employeesToReceivePayment);
+			// SUBMIT-01: submitting the same run twice (double click, retry, second
+			// admin) sent a second real transfer. Claim the run atomically first;
+			// only a run that was never sent (or whose transfer failed / was skipped)
+			// can be claimed. A crash while "in_progress" needs a manual check in
+			// VoPay before resetting fundTransferStatus.
+			const claimed = await FundingTotalsPay.findOneAndUpdate(
+				{ _id: fundTotalsReport._id, fundTransferStatus: { $nin: ["in_progress", "sent"] } },
+				{ $set: { fundTransferStatus: "in_progress", fundTransferAt: new Date() } },
+				{ new: true },
+			);
+			if (!claimed) {
+				const current = await FundingTotalsPay.findById(fundTotalsReport._id).select(
+					"fundTransferStatus fundTransferAt",
+				);
+				fundTransfer = {
+					status: "skipped",
+					reason: current?.fundTransferStatus === "sent" ? "ALREADY_SENT" : "IN_PROGRESS",
+				};
+			} else {
+				fundTransfer = await vopayFundTransfer(companyName, fundTotalsReport, employeesToReceivePayment);
+				await FundingTotalsPay.updateOne(
+					{ _id: fundTotalsReport._id },
+					{ $set: { fundTransferStatus: fundTransfer?.status || "failed", fundTransferAt: new Date() } },
+				);
+			}
 			// createNewOrder(fundTotalsReport._id, companyName, employeesToReceivePayment?.length);
 		}
+		if (fundTransfer?.status === "failed") {
+			console.error("Payroll submitted but VoPay fund transfer failed", {
+				payGroupId: id,
+				companyName,
+				payPeriod,
+				payPeriodPayDate,
+				error: fundTransfer.error,
+			});
+		}
 
-		return res.status(200).json({ employeePayStubs, fundTotalsReport });
+		return res.status(200).json({ employeePayStubs, fundTotalsReport, fundTransfer });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}

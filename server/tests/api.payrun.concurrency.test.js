@@ -37,6 +37,10 @@ describe("REV-009 concurrent pay runs", () => {
 		jest.doMock("../models/Company");
 		const CompanyM = require("../models/Company");
 		CompanyM.find.mockImplementation(() => query([{ name: "Acme" }]));
+		// AUD-028: POST /payroll/process now needs Manager or above in the company
+		jest.doMock("../models/EmployeeEmploymentInfo");
+		const EmploymentInfoM = require("../models/EmployeeEmploymentInfo");
+		EmploymentInfoM.findOne.mockImplementation(() => query({ employmentRole: "Authorizing Admin" }));
 		const { buildApp } = require("../app");
 		const app = buildApp({ emit: jest.fn() });
 		const { generateAccessToken } = require("../middleware/auth");

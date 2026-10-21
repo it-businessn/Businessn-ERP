@@ -519,10 +519,12 @@ const calcTotalHours = (data) => {
 	const break1End = hasEndBreak && momentTime(data?.endBreaks[0]);
 
 	const break2Start = hasStartBreak > 1 && momentTime(data?.startBreaks[1]);
-	const break2End = hasEndBreak > 1 && momentTime(data?.startBreaks[1]);
+	// BUG-01: break 2/3 end times were read from startBreaks, so those breaks
+	// always lasted 0 minutes and worked hours were overstated.
+	const break2End = hasEndBreak > 1 && momentTime(data?.endBreaks[1]);
 
 	const break3Start = hasStartBreak > 2 && momentTime(data?.startBreaks[2]);
-	const break3End = hasEndBreak > 2 && momentTime(data?.startBreaks[2]);
+	const break3End = hasEndBreak > 2 && momentTime(data?.endBreaks[2]);
 
 	const break1Duration = momentDuration(break1Start, break1End);
 	const break2Duration = momentDuration(break2Start, break2End);

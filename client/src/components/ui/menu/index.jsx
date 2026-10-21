@@ -4,7 +4,7 @@ import TextTitle from "../text/TextTitle";
 
 const Menu = ({ icon, textTransform, handleClick, variant, menu }) => (
 	<NavLink to={menu?.path} activeclassname="active" className="navbarMenu">
-		<Stack ml={{ base: "0", md: "0.7em" }}>
+		<Stack ml={{ base: "0", md: "0.5em" }} flexShrink={0}>
 			<Button
 				variant={variant ? variant : "ghost"}
 				onClick={() => handleClick(menu)}
@@ -12,9 +12,11 @@ const Menu = ({ icon, textTransform, handleClick, variant, menu }) => (
 				display="flex"
 				alignItems="center"
 				borderRadius="6px"
-				w="130px"
+				// UI-01: was a fixed 130px; rem-based so it follows the desktop density
+				minW={{ md: "6.5rem", "2xl": "8rem" }}
+				px={3}
 				justifyContent="center"
-				h="3rem"
+				h="2.75rem"
 				outline="none"
 				transition="all 0.3s ease"
 				_hover={{ bg: "rgba(255, 255, 255, 0.15)" }}

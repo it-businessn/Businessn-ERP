@@ -36,7 +36,8 @@ const CRMDashboard = () => {
 			title={`CRM ${isManagerRole ? "Manager " : ""}Dashboard`}
 			data={employees}
 			selectedValue={selectedUser?.fullName || ""}
-			p={"4em 8em"}
+			// UI-01: fixed 4em 8em gutters wasted ~250px of width on laptop screens
+			p={{ base: "0.5em", md: "1.5em", xl: "2em 2.5em", "2xl": "3em 5em" }}
 		>
 			<SimpleGrid
 				columns={{ base: 1, md: 1, lg: 2 }}

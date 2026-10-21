@@ -25,7 +25,7 @@ const MobilePayStub = ({ reportData, isOpen, onClose, title }) => {
 					<TextTitle
 						align={"center"}
 						color={"var(--nav_color)"}
-						size={"lg"}
+						size={"md"}
 						title={"EARNINGS STATEMENT"}
 					/>
 					<ModalCloseButton sx={{ marginTop: "14px" }} />

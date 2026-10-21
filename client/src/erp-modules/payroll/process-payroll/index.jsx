@@ -95,6 +95,16 @@ const ProcessPayroll = () => {
 					duration: 1000,
 					isClosable: true,
 				});
+				// NEW-04: the server reports a failed VoPay fund transfer in an additive field.
+				if (payrollProcessed.data?.fundTransfer?.status === "failed") {
+					toast({
+						title: "Payroll saved, but the VoPay fund transfer failed.",
+						description: "Employees have not been paid through VoPay. Contact support.",
+						status: "warning",
+						duration: 8000,
+						isClosable: true,
+					});
+				}
 				setTimeout(() => {
 					navigate(workViewPath);
 				}, 1000);

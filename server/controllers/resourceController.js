@@ -4,17 +4,21 @@ const path = require("path");
 const Resource = require("../models/CompanyResource");
 
 const { filePath, fileContentType } = require("../services/fileService");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getResources = async (req, res) => {
 	try {
-		const resources = await Resource.find();
+		// NEW-06: was Resource.find() — every tenant's files.
+		const resources = await Resource.find(await companyScopeFilter(req));
 		return res.status(200).json(resources);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
-const getResourcesByCompany = () => async (req, res) => {
+// CHANGES.md API #1: was a factory (`() => async (req, res)`), so once the route became
+// reachable it would never have responded.
+const getResourcesByCompany = async (req, res) => {
 	const { companyName } = req.params;
 	try {
 		const resources = await Resource.find({ companyName });
@@ -135,7 +139,11 @@ const downloadResource = async (req, res) => {
 		const { filename } = req.params;
 		// FIX: Model.find() returns an array, so `!resource` was never true and a
 		// missing file crashed with a TypeError (500) instead of a 404.
-		const resource = await Resource.findOne({ originalname: filename });
+		// NEW-06 (CHANGES.md API #11): look the file up within the caller's companies only.
+		const resource = await Resource.findOne({
+			originalname: filename,
+			...(await companyScopeFilter(req)),
+		});
 		if (!resource?.file?.data) {
 			return res.status(404).json({ message: "Resource not found" });
 		}

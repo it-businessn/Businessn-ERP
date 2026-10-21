@@ -22,6 +22,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TicketService from "services/TicketService";
 import logoImgSrc from "../../assets/logos/logoCover.png";
+import { WEBSITE_URL } from "constant";
 
 export default function CustomerInfo() {
 	const INTERESTS = {
@@ -65,7 +66,7 @@ export default function CustomerInfo() {
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
-	const handleRedirect = () => (window.location.href = process.env.WEBSITE);
+	const handleRedirect = () => (window.location.href = WEBSITE_URL);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

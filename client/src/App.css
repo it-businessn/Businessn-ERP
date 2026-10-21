@@ -100,6 +100,24 @@ html {
 	background: var(--lead_cards_bg);
 }
 
+/* UI-01: the desktop UI was sized for a 1920px-wide viewport at 100% zoom.
+   A 1080p laptop with 125-150% OS scaling gives the browser only 1280-1536 CSS
+   px, so everything looked magnified and the header overflowed. Chakra sizes
+   (fonts, spacing, controls) are rem-based, so scaling the root font size
+   tightens the whole desktop UI. Phones (<768px) keep 16px (smaller inputs
+   would trigger iOS zoom). Media queries use em of the browser default, so the
+   Chakra breakpoints themselves do not move. */
+@media (min-width: 768px) and (max-width: 1699.98px) {
+	html {
+		font-size: 14px;
+	}
+}
+@media (min-width: 1700px) and (max-width: 2199.98px) {
+	html {
+		font-size: 15px;
+	}
+}
+
 * {
 	font-family: Arial, Helvetica, sans-serif !important;
 }
@@ -285,7 +303,9 @@ button:active {
   top: 3px;
 } */
 .main_content {
-	min-width: 86vw;
+	/* UI-01: was min-width: 86vw, which assumed a 14vw sidebar; with the
+	   rem-based sidebar it pushed pages ~30px past the right edge. */
+	min-width: 0;
 	overflow: auto;
 	width: 100vw;
 	display: flex;

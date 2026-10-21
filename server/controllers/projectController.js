@@ -6,6 +6,7 @@ const SubTask = require("../models/SubTask");
 const Activity = require("../models/Activity");
 const ProjectFile = require("../models/ProjectFile");
 const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const PREV_DAY = moment.utc().subtract(1, "days");
 
@@ -47,7 +48,8 @@ const findProject = async (projects) =>
 
 const getProjects = async (req, res) => {
 	try {
-		const projects = await Project.find({}).sort({ createdOn: -1 });
+		// NEW-06: was Project.find({}) — every tenant's projects.
+		const projects = await Project.find(await companyScopeFilter(req)).sort({ createdOn: -1 });
 		const populatedProjects = await findProject(projects);
 		return res.status(200).json(populatedProjects);
 	} catch (error) {

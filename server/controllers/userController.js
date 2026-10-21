@@ -9,10 +9,19 @@ const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const UserActivity = require("../models/UserActivity");
 const { sendEmail } = require("../services/emailService");
+// AUD-016: user-editable names are HTML-escaped in e-mail bodies.
+const { escapeHtml } = require("../helpers/escapeHtml");
 const { getResetPasswordLink } = require("../services/tokenService");
 
 const { findGroupEmployees } = require("./setUpController");
 const { setInitialPermissions } = require("./permissionController");
+const {
+	getUserCompanyNames,
+	getUserCompanyIds,
+	getScopedCompanyNames,
+	companyScopeFilter,
+} = require("../middleware/authorize");
+const { findRoleAssignmentDenials, denyRoleAssignment } = require("../middleware/rbac");
 const { COMPANIES } = require("../constants/constant");
 const { ROLES } = require("../constants/roles.constants");
 const {
@@ -33,10 +42,12 @@ const {
 
 const getAllEmployees = async (req, res) => {
 	try {
+		// NEW-06: listed every tenant's employees. (It also called .sort() on the
+		// Promise returned by findEmployee, so it always answered 500; findEmployee
+		// already sorts by full name.)
 		const result = await findEmployee({
 			empId: { $exists: true },
-		}).sort({
-			firstName: 1,
+			...(await companyScopeFilter(req)),
 		});
 		return res.status(200).json(result);
 	} catch (err) {
@@ -60,11 +71,20 @@ const getUserActivity = async (req, res) => {
 	);
 
 	try {
+		// NEW-06: returned every tenant's logins. UserActivity has no company field,
+		// so restrict to members of the caller's companies.
+		const companies = await Company.find({ name: { $in: await getScopedCompanyNames(req) } })
+			.select("employees")
+			.lean();
+		const memberIds = [
+			...new Set((companies || []).flatMap((c) => (c.employees || []).map(String))),
+		];
 		const result = await UserActivity.find({
 			loginTime: {
 				$gte: startOfToday,
 				$lt: startOfTomorrow,
 			},
+			userID: { $in: memberIds },
 		});
 		return res.status(200).json(result);
 	} catch (err) {
@@ -382,16 +402,49 @@ const getAllSalesAgents = async (req, res) => {
 	}
 };
 
-const sendMailPaystub = async (req, res) => {
-	const { employees } = req.body;
+// NEW-05: full names are only unique within a company. Look-ups by name are
+// restricted to the member ids (Company.employees) of the relevant companies.
+const getCompanyMemberIds = async (companyNames) => {
+	const companies = await Company.find({ name: { $in: companyNames } })
+		.select("employees")
+		.lean();
+	return (companies || []).flatMap((c) => c?.employees || []);
+};
 
+const isCompanyNameValue = (v) =>
+	typeof v === "string" && v.trim() !== "" && !["null", "undefined"].includes(v.trim());
+
+// NEW-05: e-mail recipients are resolved by name inside body.companyName (already
+// checked by authorizeCompanyAccess) or, when it is absent, inside the caller's
+// own companies. Names that match no member are reported in `notFound`.
+const resolveMailRecipients = async (req, select) => {
+	const { employees, companyName } = req.body || {};
+	if (!Array.isArray(employees) || employees.some((n) => typeof n !== "string")) {
+		return { error: "employees must be a list of names" };
+	}
+	const companyNames = isCompanyNameValue(companyName)
+		? [companyName.trim()]
+		: [...(await getUserCompanyNames(String(req.user?.id)))];
+	const memberIds = companyNames.length ? await getCompanyMemberIds(companyNames) : [];
+	const users = [];
+	const notFound = [];
+	for (const fullName of employees) {
+		const user = memberIds.length
+			? await Employee.findOne({ fullName, _id: { $in: memberIds } })
+					.sort({ createdOn: -1 })
+					.select(select)
+			: null;
+		if (user) users.push(user);
+		else notFound.push(fullName);
+	}
+	return { users, notFound };
+};
+
+const sendMailPaystub = async (req, res) => {
 	try {
-		for (const fullName of employees) {
-			const user = await Employee.findOne({ fullName })
-				.sort({
-					createdOn: -1,
-				})
-				?.select("email fullName");
+		const { users, notFound, error } = await resolveMailRecipients(req, "email fullName");
+		if (error) return res.status(400).json({ message: error });
+		for (const user of users) {
 			if (user) {
 				const { email, fullName } = user;
 
@@ -410,7 +463,7 @@ const sendMailPaystub = async (req, res) => {
 								gap: 1em;
 								font-size: 14px;
 							">
-			<p> Dear ${fullName},
+			<p> Dear ${escapeHtml(fullName)},
 			</p>
 			<p>
 				Your most recent paystub is now available.</p>
@@ -441,21 +494,20 @@ const sendMailPaystub = async (req, res) => {
 				);
 			}
 		}
-		return res.status(201).json({ message: "Email sent successfully" });
+		return res.status(201).json({ message: "Email sent successfully", notFound });
 	} catch (err) {
 		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
 };
 
 const sendMailCreds = async (req, res) => {
-	const { employees } = req.body;
 	try {
-		for (const fullName of employees) {
-			const user = await Employee.findOne({ fullName })
-				.sort({
-					createdOn: -1,
-				})
-				?.select("email firstName fullName password");
+		const { users, notFound, error } = await resolveMailRecipients(
+			req,
+			"email firstName fullName password",
+		);
+		if (error) return res.status(400).json({ message: error });
+		for (const user of users) {
 			if (user) {
 				const { _id, email } = user;
 				const resetLink = getResetPasswordLink({ _id }, user.password);
@@ -511,7 +563,7 @@ const sendMailCreds = async (req, res) => {
 								font-size: 14px;
 							"
 						>
-				      <h2 style="margin: 5px 0">Hello ${user.firstName},</h2>
+				      <h2 style="margin: 5px 0">Hello ${escapeHtml(user.firstName)},</h2>
        <p>  Your account has been successfully created. For your security, please
         set your password by clicking the link below.</p> 
 		<p>
@@ -547,7 +599,7 @@ const sendMailCreds = async (req, res) => {
 			}
 		}
 
-		return res.status(201).json({ message: "Email sent successfully" });
+		return res.status(201).json({ message: "Email sent successfully", notFound });
 	} catch (err) {
 		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
@@ -607,6 +659,8 @@ const updateMasterUser = async (req, res) => {
 			);
 			return res.status(201).json(updatedUser);
 		}
+		// NEW-08: unknown user used to leave the request hanging.
+		return res.status(404).json({ message: "User not found" });
 	} catch (err) {
 		return res.status(500).json({ message: "Internal Server Error", error: err });
 	}
@@ -651,6 +705,39 @@ const updateUser = async (req, res) => {
 		if (!mongoose.isValidObjectId(userId)) {
 			return res.status(400).json({ message: "Invalid user id" });
 		}
+		// NEW-01: company (un)assignment names companies in arrays / nested
+		// objects the tenant guard cannot see. Without this check any user could
+		// add themselves (or anyone) to any company, or remove members from it.
+		const unassignIds = Array.isArray(unassignedCompanies) ? unassignedCompanies : [];
+		const assignNames = Array.isArray(assignedCompanies) ? [...assignedCompanies] : [];
+		// mirrors the `else if (companyId?.name)` branch below
+		if (unassignIds.length === 0 && companyId?.name) assignNames.push(companyId.name);
+		if (assignNames.length || unassignIds.length) {
+			const callerId = String(req.user?.id);
+			const [allowedNames, allowedIds] = await Promise.all([
+				getUserCompanyNames(callerId),
+				getUserCompanyIds(callerId),
+			]);
+			const denied = [
+				...assignNames.filter((n) => typeof n !== "string" || !allowedNames.has(n)),
+				...unassignIds.filter((id) => !allowedIds.has(String(id))),
+			];
+			if (denied.length) {
+				return res.status(403).json({
+					message: "You do not have access to this company",
+					code: "COMPANY_ACCESS_DENIED",
+				});
+			}
+			// AUD-028: `role` becomes the user's employmentRole in every assigned
+			// company; it must be one the caller may grant there (client ROLE_ACCESS).
+			const roleDenials = await findRoleAssignmentDenials({
+				callerId,
+				targetUserId: userId,
+				role,
+				companyNames: assignNames,
+			});
+			if (roleDenials.length && denyRoleAssignment(req, res, roleDenials)) return;
+		}
 		const compArr = [];
 
 		if (Array.isArray(assignedCompanies) && assignedCompanies.length > 0) {
@@ -684,7 +771,7 @@ const updateUser = async (req, res) => {
 		// Preserved from the original implementation: companyId mirrors the companies
 		// touched in this request (becomes [] on an unassign-only request). Whether that
 		// should instead merge with existing memberships is an open business question
-		// (docs/application-audit.md AUD-019).
+		// (docs/CHANGES.md AUD-019).
 		updateData.companyId = compArr.filter(Boolean);
 		const updatedUser = await Employee.findByIdAndUpdate(
 			userId,
@@ -702,7 +789,7 @@ const updateUser = async (req, res) => {
 
 const updateUserAssignedLeads = async (req, res) => {
 	try {
-		const { totalLeadsDisbursed, totalWeight, activeUsers } = await getActiveUsers();
+		const { totalLeadsDisbursed, totalWeight, activeUsers } = await getActiveUsers(req.user?.id);
 		console.log(
 			"updateUserAssignedLeads",
 			req.params,
@@ -711,9 +798,13 @@ const updateUserAssignedLeads = async (req, res) => {
 			activeUsers,
 		);
 		for (const user of activeUsers) {
-			const assignedLeads = Math.round(
-				(user.assignedWeight / totalWeight) * totalLeadsDisbursed.length,
-			);
+			// NEW-10: a zero total weight used to give NaN.
+			const assignedLeads =
+				totalWeight > 0
+					? Math.round(
+							((Number(user.assignedWeight) || 0) / totalWeight) * totalLeadsDisbursed.length,
+						)
+					: 0;
 			await Employee.findByIdAndUpdate(user._id, { $set: { assignedLeads } }, { new: true });
 		}
 		return res.status(200).json({ message: "Leads assignee updated successfully" });
@@ -722,20 +813,49 @@ const updateUserAssignedLeads = async (req, res) => {
 	}
 };
 
-const getActiveUsers = async () => {
+// NEW-10: isActive / assignedWeight / assignedLeads exist only on Employee. The
+// query used to run against EmployeeEmploymentInfo (findEmployee), matched nothing
+// and would have updated EmploymentInfo ids. It now reads Employee directly and is
+// limited to the caller's companies (members and leads), like the other lead routes.
+const getActiveUsers = async (userId) => {
+	const companyNames = [...(await getUserCompanyNames(String(userId)))];
+	const memberIds = companyNames.length ? await getCompanyMemberIds(companyNames) : [];
 	const totalLeadsDisbursed = await Lead.find({
 		isDisbursed: true,
 		isDisbursedConfirmed: false,
-	});
-	const activeUsers = await findEmployee({ isActive: true, empId: { $exists: true } });
-	const totalWeight = activeUsers.reduce((sum, item) => sum + item.assignedWeight, 0);
-	return { totalLeadsDisbursed, totalWeight, activeUsers };
+		companyName: { $in: companyNames },
+	})
+		.select("_id")
+		.lean();
+	const activeUsers = await Employee.find({ isActive: true, _id: { $in: memberIds } })
+		.select("_id assignedWeight")
+		.lean();
+	const totalWeight = (activeUsers || []).reduce(
+		(sum, item) => sum + (Number(item.assignedWeight) || 0),
+		0,
+	);
+	return { totalLeadsDisbursed: totalLeadsDisbursed || [], totalWeight, activeUsers: activeUsers || [] };
 };
 
-const getEmployeeId = async (empList) => {
+// NEW-05: extra pay runs store the selected employees by full name. Resolve each
+// name only among the members of `companyName`; names that match no member are
+// skipped (logged) instead of producing an entry without an employee id.
+const getEmployeeId = async (empList, companyName) => {
+	if (!isCompanyNameValue(companyName)) {
+		throw new Error("getEmployeeId: companyName is required");
+	}
+	const names = (Array.isArray(empList) ? empList : []).filter((n) => typeof n === "string" && n);
+	if (names.length === 0) return [];
+	const memberIds = await getCompanyMemberIds([companyName]);
 	const list = [];
-	for (const fullName of empList) {
-		const employee = await Employee.findOne({ fullName });
+	for (const fullName of names) {
+		const employee = memberIds.length
+			? await Employee.findOne({ fullName, _id: { $in: memberIds } })
+			: null;
+		if (!employee) {
+			console.warn("NEW-05: extra-run employee not found in company", { companyName, fullName });
+			continue;
+		}
 		list.push({ empId: employee });
 	}
 	return list;
@@ -752,7 +872,7 @@ const fetchActiveEmployees = async (
 	const employees = isExtraPayRun ? await findGroupEmployees(groupId, payDate) : null;
 
 	return isExtraPayRun
-		? await getEmployeeId(employees)
+		? await getEmployeeId(employees, companyName)
 		: await getPayrollActiveEmployees(companyName, deptName, selectedPayGroupOption);
 };
 

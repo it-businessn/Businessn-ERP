@@ -1,6 +1,7 @@
 const AccountLedger = require("../models/AccountLedger");
 const BudgetAccount = require("../models/BudgetAccount");
 const GeneralJournal = require("../models/GeneralJournal");
+const { pickJournalEntry } = require("../helpers/requestFields");
 
 const addAccountsJournalEntry = async (req, res) => {
 	try {
@@ -13,13 +14,18 @@ const addAccountsJournalEntry = async (req, res) => {
 
 		// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
 
-		const existingRecord = await GeneralJournal.findOne(req.body);
+		// NEW-12: the raw body was the duplicate filter and the new document, so
+		// operators and arbitrary fields reached Mongo. Use the allow-listed entry.
+		const { data: entry, error } = pickJournalEntry(req.body);
+		if (error) return res.status(400).json({ message: error });
+
+		const existingRecord = await GeneralJournal.findOne(entry);
 
 		if (existingRecord) {
 			return res.status(409).json({ message: "Entry already exists" });
 		}
 
-		const newEntry = await GeneralJournal.create(req.body);
+		const newEntry = await GeneralJournal.create(entry);
 
 		return res.status(201).json(newEntry);
 	} catch (error) {

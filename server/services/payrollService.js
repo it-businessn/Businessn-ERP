@@ -5,6 +5,7 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 const { TIMESHEET_STATUS } = require("../constants/timesheet.constants");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
 const { getSumRegHrs, safeNum } = require("../utils/time.util");
+const { payDateDayWindow } = require("../utils/payYear.util");
 
 const findEmployeeBenefitInfo = async (empId, companyName) =>
 	await EmployeeBalanceInfo.findOne({
@@ -12,10 +13,12 @@ const findEmployeeBenefitInfo = async (empId, companyName) =>
 		companyName,
 	});
 
+// PAYYEAR-01: processed stubs store the pay date at UTC start of day, older
+// ones / placeholders the raw date: match the whole UTC day, not one instant.
 const findEmployeePayStub = async (empId, payPeriodPayDate, companyName) =>
 	await EmployeePayStub.findOne({
 		empId,
-		payPeriodPayDate,
+		payPeriodPayDate: payDateDayWindow(payPeriodPayDate),
 		companyName,
 	}).sort({
 		payPeriodProcessingDate: -1,
@@ -24,7 +27,7 @@ const findEmployeePayStub = async (empId, payPeriodPayDate, companyName) =>
 const findEmpPayStubDetail = async (empId, payPeriodPayDate, companyName) =>
 	await EmployeePayStub.findOne({
 		empId,
-		payPeriodPayDate,
+		payPeriodPayDate: payDateDayWindow(payPeriodPayDate), // PAYYEAR-01
 		companyName,
 	})
 		.populate({

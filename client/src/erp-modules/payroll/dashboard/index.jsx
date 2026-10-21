@@ -37,7 +37,7 @@ const PayrollDashboard = () => {
       handleChange={handleChange}
       // Responsive gutters: the fixed 7rem padding squeezed the three panes on
       // laptop widths and clipped the "Next Payroll" cards.
-      p={{ base: "0.5rem", md: "1rem 1.5rem", "2xl": "1rem 7rem" }}
+      p={{ base: "0.5rem", md: "1rem 1.5rem", "2xl": "1rem 4rem" }}
     >
       <SimpleGrid
         h={"100%"}

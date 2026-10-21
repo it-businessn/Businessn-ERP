@@ -1,6 +1,7 @@
 const AccountLedger = require("../models/AccountLedger");
 const BudgetAccount = require("../models/BudgetAccount");
 const GeneralJournal = require("../models/GeneralJournal");
+const { pickJournalEntry } = require("../helpers/requestFields");
 
 const addAccountsJournalEntry = async (req, res) => {
 	// const { companyName } = req.body;
@@ -13,11 +14,14 @@ const addAccountsJournalEntry = async (req, res) => {
 	// req.body.journalEntryNum = recentJournalEntryNum ? recentJournalEntryNum?.journalEntryNum + 1 : 1;
 
 	try {
-		const existingRecord = await GeneralJournal.findOne(req.body);
+		// NEW-12: allow-listed entry instead of the raw body (see accountingController).
+		const { data: entry, error } = pickJournalEntry(req.body);
+		if (error) return res.status(400).json({ message: error });
+		const existingRecord = await GeneralJournal.findOne(entry);
 		if (existingRecord) {
 			return res.status(409).json({ message: "Entry already exists" });
 		}
-		const newEntry = await GeneralJournal.create(req.body);
+		const newEntry = await GeneralJournal.create(entry);
 		return res.status(201).json(newEntry);
 	} catch (error) {
 		console.error(error);

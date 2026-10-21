@@ -1,8 +1,12 @@
 const Questionnaire = require("../models/Questionnaire");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getQuestionnaires = async (req, res) => {
 	try {
-		const questionnaires = await Questionnaire.find({}).sort({ createdOn: -1 });
+		// NEW-06: was Questionnaire.find({}) — every tenant's questionnaires.
+		const questionnaires = await Questionnaire.find(await companyScopeFilter(req)).sort({
+			createdOn: -1,
+		});
 		return res.status(200).json(questionnaires);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

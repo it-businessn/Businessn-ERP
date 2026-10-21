@@ -15,7 +15,11 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Payout = require("../models/Payout");
 
 const { decryptData, shouldDecrypt } = require("../services/encryptDataService");
-const { findEmployeeProfileInfo, updateProfileInfo } = require("./profileInfoController");
+const {
+	findEmployeeProfileInfo,
+	updateProfileInfo,
+	isCompanyMember,
+} = require("./profileInfoController");
 const CONFIG = require("../config/app.config");
 const { COMPANIES } = require("../constants/constant");
 const { addEmployee } = require("../services/userService");
@@ -48,6 +52,11 @@ const getEmployeeProfileInfo = async (req, res) => {
 		let result = await findEmployeeProfileInfo(empId, companyName);
 
 		if (!result) {
+			// LEFT-04 (as NEW-14): fall back to the bare Employee record only for a
+			// member of the requested company; any employee id used to be readable here.
+			if (!(await isCompanyMember(companyName, empId))) {
+				return res.status(404).json({ message: "User not found" });
+			}
 			const user = await Employee.findById(empId)
 				.select("firstName middleName lastName email phoneNumber")
 				.lean();

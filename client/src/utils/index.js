@@ -90,7 +90,8 @@ export const calculateTaskCompletion = (task) => {
 			}
 		}
 	}
-	const completionPercentage = Math.floor(completedTaskHours / totalTaskHours) * 100 || 0;
+	// BUG-02: was Math.floor(ratio) * 100, which only ever yielded 0 or 100.
+	const completionPercentage = Math.floor((completedTaskHours / totalTaskHours) * 100) || 0;
 	return { totalTaskHours, completedTaskHours, completionPercentage };
 	// const totalSubTasks =
 	// 	task?.subtasks?.length > 0 ? Object.keys(task?.subtasks)?.length : 0;
@@ -115,7 +116,7 @@ export const calculateProjectCompletion = (project) => {
 		totalHours += totalTaskHours;
 		completedHours += completedTaskHours;
 	}
-	const completionPercentage = Math.floor(completedHours / totalHours) * 100;
+	const completionPercentage = Math.floor((completedHours / totalHours) * 100);
 
 	// Update project status based on completion percentage
 	// if (completionPercentage === 100) {

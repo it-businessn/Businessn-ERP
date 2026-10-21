@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, IconButton, Spacer, Stack } from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Stack } from "@chakra-ui/react";
 import { HiOutlineMenu } from "react-icons/hi";
 import { redirectLogin } from "api";
 import { Menu, UserProfile } from "components";
@@ -45,7 +45,10 @@ const Navbar = ({
 						ml={2}
 					/>
 				)}
-				<Logo />
+				{/* UI-01: never let the module bar squeeze the logo to zero width */}
+				<Box flexShrink={0}>
+					<Logo />
+				</Box>
 				<Flex
 					w="100%"
 					// backgroundImage={navBarImg}
@@ -61,11 +64,19 @@ const Navbar = ({
 						justifyContent={"start"}
 						color="var(--main_color)"
 					>
-						<Stack minW={isMobile ? "auto" : "320px"} spacing={0}>
+						<Stack minW={isMobile ? "auto" : "10rem"} maxW="20rem" flexShrink={0} spacing={0}>
 							<TextTitle size={isMobile ? "sm" : "lg"} title={companyName} />
 							{!isMobile && <TextTitle size={"lg"} title={companyId} />}
 						</Stack>
-						<HStack w="100%" h={"30"}>
+						{/* UI-01: modules shrink first, then scroll sideways; they no longer push
+						    the profile menu off-screen on 1280-1536px wide viewports. */}
+						<HStack
+							flex="1"
+							minW={0}
+							h="auto"
+							overflowX="auto"
+							css={{ scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" } }}
+						>
 							{!isMobile &&
 								menuListWithPermissions?.map((menu) =>
 									menu.permissions?.canAccessModule ? (
@@ -73,7 +84,6 @@ const Navbar = ({
 									) : null,
 								)}
 						</HStack>
-						<Spacer />
 						<UserProfile
 							user={user}
 							isMobile={isMobile}

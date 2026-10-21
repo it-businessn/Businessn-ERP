@@ -6,7 +6,7 @@ const SECRET_KEY = CONFIG.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = CONFIG.REFRESH_TOKEN_SECRET;
 
 // NOTE: Refresh token revocation requires a persistent store (Redis or DB).
-// This is documented in PRODUCTION_READINESS.md as a required pre-launch step.
+// This is listed in docs/CHANGES.md (open issues, AUD-029) as a required pre-launch step.
 // For now tokens are validated by signature + expiry only.
 
 function generateAccessToken(user) {

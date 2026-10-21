@@ -1,4 +1,5 @@
 const moment = require("moment");
+const mongoose = require("mongoose");
 const Employee = require("../models/Employee");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
@@ -179,14 +180,16 @@ const updateEmploymentInfo = async (id, data) =>
 		},
 	);
 
+// LEFT-01: this helper has no `res`; it used `res.status(...)` on every path, so
+// the ReferenceError made POST /api/payroll/employmentInfo answer 500 every time.
+// It now returns the employee (null if unknown) and lets errors reach the caller.
 const updateEmployee = async (empId, data) => {
 	const { payrollStatus, employeeNo, employmentRole } = data;
 	try {
 		const employee = await Employee.findById(empId);
 		if (!employee) {
-			return res.status(404).json({
-				message: "Employee not found",
-			});
+			console.warn("updateEmployee: employee not found", { empId: String(empId) });
+			return null;
 		}
 
 		const updateFields = {};
@@ -209,17 +212,14 @@ const updateEmployee = async (empId, data) => {
 			await employee.save();
 		}
 
-		return res.status(200).json(employee);
+		return employee;
 	} catch (error) {
 		console.error("❌ updateEmployee update error:", {
 			message: error.message,
 			stack: error.stack,
 			empId,
 		});
-
-		return res.status(500).json({
-			message: "Internal server error",
-		});
+		throw error;
 	}
 };
 
@@ -236,6 +236,11 @@ const addEmployeeEmploymentInfo = async (req, res) => {
 		employmentCountry,
 		employmentRegion,
 	} = req.body;
+	// LEFT-01: both identify the record; without them the lookups below matched
+	// an arbitrary record (Mongoose drops undefined filter values).
+	if (!mongoose.isValidObjectId(empId) || typeof companyName !== "string" || !companyName.trim()) {
+		return res.status(400).json({ message: "A valid empId and companyName are required" });
+	}
 	try {
 		const data = {
 			payrollStatus,

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { logIndexErrors } = require("../utils/db.util");
 
 const employeePayStubSchema = new mongoose.Schema(
 	{
@@ -220,6 +221,30 @@ const employeePayStubSchema = new mongoose.Schema(
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
 
+// AUD-015: one processed stub per employee, pay period, run type, frequency and
+// cheque type (the keys payStubController looks a stub up by before updating
+// it). Partial: the unprocessed amount-allocation placeholders from
+// getRecordId() carry no payPeriodNum and are excluded.
+// PAYYEAR-01: period numbers restart every payroll year, so the key now includes
+// payPeriodPayDate (written at UTC start of day by upsertProcessedPayStub) and the
+// index is renamed uniq_processed_paystub_v2. The yearless index blocked a second
+// year's stubs; where it was built, drop it by hand (see scripts/check-duplicates.js):
+//   db.employeepaystubs.dropIndex("uniq_processed_paystub")
+employeePayStubSchema.index(
+	{
+		companyName: 1,
+		empId: 1,
+		payPeriodNum: 1,
+		isExtraRun: 1,
+		scheduleFrequency: 1,
+		reportType: 1,
+		payPeriodPayDate: 1,
+	},
+	{ unique: true, partialFilterExpression: { isProcessed: true }, name: "uniq_processed_paystub_v2" },
+);
+
 const EmployeePayStub = mongoose.model("EmployeePayStub", employeePayStubSchema);
+// AUD-015: a failed unique-index build (existing duplicates) is logged, not fatal.
+logIndexErrors(EmployeePayStub);
 
 module.exports = EmployeePayStub;

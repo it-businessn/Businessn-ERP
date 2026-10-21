@@ -12,7 +12,9 @@ const TabsButtonGroup = ({ isOutlineTab, tabs, setViewMode, viewMode, mt, w, mb 
 
 	return (
 		<Box mb={mb} mt={mt} bg={"var(--primary_bg)"} borderRadius={"1em"} px="5px" w={w}>
-			<ButtonGroup variant="solid" p={0} m={0}>
+			{/* UI-01: wrap instead of overflowing the card on narrow panes (a scroll
+			    container would clip the Tickets count badge that sits above it) */}
+			<ButtonGroup variant="solid" p={0} m={0} flexWrap="wrap" rowGap={1}>
 				{tabs?.map(({ type, count, icon, highlightColor }) =>
 					type === "Tickets" ? (
 						<Box key={type} display="flex" alignItems="center" gap="0">

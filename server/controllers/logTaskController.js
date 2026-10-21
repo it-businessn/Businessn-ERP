@@ -1,9 +1,11 @@
 const Contact = require("../models/Contact");
 const LogTask = require("../models/LogTask");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getTasks = async (req, res) => {
 	try {
-		const tasks = await LogTask.find({}).sort({
+		// NEW-06: was LogTask.find({}) — every tenant's logged tasks.
+		const tasks = await LogTask.find(await companyScopeFilter(req)).sort({
 			createdOn: -1,
 		});
 		return res.status(200).json(tasks);

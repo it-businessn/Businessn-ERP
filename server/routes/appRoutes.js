@@ -12,7 +12,8 @@ router.post("/refresh-token", appController.refreshToken);
 router.post("/login", appController.login);
 
 // Protected auth routes
-router.get("/logout/:id", authenticateToken, appController.logOut);
+// CHANGES.md API #19: a caller may only close their own activity record.
+router.get("/logout/:id", authenticateToken, requireSelf("id"), appController.logOut);
 
 // Password reset (public — user is not logged in during reset)
 router.get("/reset-password/:id/:token", passwordController.resetPassword);

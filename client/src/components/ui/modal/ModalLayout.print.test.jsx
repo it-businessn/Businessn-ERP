@@ -31,7 +31,9 @@ test("C-PRINT-01 hook receives the react-to-print v3 options", () => {
 	expect(opts.onBeforeGetContent).toBeUndefined();
 	expect(opts.documentTitle).toBe("stub.pdf");
 	expect(opts.pageStyle).toMatch(/\.print-root[^}]*overflow: visible/);
-	// the printed node must carry the class the pageStyle targets
+	// the printed node must carry the class the pageStyle targets (a CSS hook,
+	// so there is no role/label query for it)
+	// eslint-disable-next-line testing-library/no-node-access
 	expect(document.querySelector(".print-root")).not.toBeNull();
 });
 

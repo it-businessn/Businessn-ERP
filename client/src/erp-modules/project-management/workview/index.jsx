@@ -9,8 +9,15 @@ const WorkView = ({ isDashboard = false }) => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const managers = useManager(company);
 
+	// UI-01: fixed 4em 8em gutters wasted ~250px of width on laptop screens
 	return (
-		<PageLayout pr={0} p={"4em 8em"} title={"File Overview"} showBgLayer overflowY="hidden">
+		<PageLayout
+			pr={0}
+			p={{ base: "0.5em", md: "1.5em", xl: "2em 2.5em", "2xl": "3em 5em" }}
+			title={"File Overview"}
+			showBgLayer
+			overflowY="hidden"
+		>
 			<Box
 				p={0}
 				bg={"var(--primary_bg)"}

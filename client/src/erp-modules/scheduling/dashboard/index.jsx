@@ -180,8 +180,12 @@ const SchedulingDashboard = () => {
 		} catch (error) {}
 	};
 
+	// UI-01: fixed 4em 8em gutters wasted ~250px of width on laptop screens
 	return (
-		<PageLayout title={""} p={"4em 8em"}>
+		<PageLayout
+			title={""}
+			p={{ base: "0.5em", md: "1.5em", xl: "2em 2.5em", "2xl": "3em 5em" }}
+		>
 			<HStack pb={3} alignItems={"center"} justifyContent={"space-between"} spacing={4}>
 				<HStack flex={0.7} alignItems={"center"} justifyContent={"space-between"}>
 					<TextTitle ml={3} title={"Dashboard"} />

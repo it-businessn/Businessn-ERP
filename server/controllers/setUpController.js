@@ -11,7 +11,7 @@ const Module = require("../models/Module");
 const Setup = require("../models/Setup");
 const WorkShift = require("../models/WorkShift");
 const { getShadowUserIds } = require("../services/userService");
-const { CURRENT_YEAR } = require("../utils/date.util");
+const { getCurrentYear } = require("../utils/date.util");
 
 const getAllSetup = async (req, res) => {
 	try {
@@ -450,7 +450,17 @@ const addGroup = async (req, res) => {
 				scheduleFrequency: req.body?.payFrequency,
 			});
 			if (payrollActivated) {
-				await addPaygroupSchedules(newModule._id, req.body?.payFrequency);
+				// NEW-11: the helper now throws. Creating the group keeps its previous
+				// behaviour (201 even if the schedule could not be generated); the
+				// schedule can be regenerated with PUT /groups/paycycle/:id.
+				try {
+					await addPaygroupSchedules(newModule._id, req.body?.payFrequency);
+				} catch (scheduleErr) {
+					console.error("addGroup: pay schedule not generated", {
+						groupId: newModule._id,
+						message: scheduleErr.message,
+					});
+				}
 			}
 			return res.status(201).json(newModule);
 		}
@@ -460,14 +470,22 @@ const addGroup = async (req, res) => {
 	}
 };
 
-const START_DATES = {
-	2024: "2023-12-18",
-	2025: "2024-12-16",
-	2026: "2025-12-15",
-	2027: "2026-12-08",
-};
+// NEW-07: the table had 2027 -> "2026-12-08" (a Tuesday, overlapping the last
+// 2026 bi-weekly period ending 2026-12-13) and fell back to 2024 for any other
+// year. Each pay year is 26 bi-weekly periods = 364 days, so the start is
+// computed: 2023-12-18 + 364 * (year - 2024) days (UTC midnight, same as the
+// old `new Date("YYYY-MM-DD")`). 2024-2026 are unchanged; 2027 -> 2026-12-14.
+const FIRST_PAY_YEAR = 2024;
+const FIRST_PAY_YEAR_START_UTC = Date.UTC(2023, 11, 18);
+const PAY_YEAR_MS = 364 * 24 * 60 * 60 * 1000;
 
-const getStartDate = (year) => new Date(START_DATES[year] || START_DATES[2024]);
+const getStartDate = (year) => {
+	const y = Number(year);
+	if (year === null || year === "" || !Number.isInteger(y) || y < FIRST_PAY_YEAR) {
+		throw new RangeError(`No pay calendar for year: ${year}`);
+	}
+	return new Date(FIRST_PAY_YEAR_START_UTC + (y - FIRST_PAY_YEAR) * PAY_YEAR_MS);
+};
 
 function addDays(date, days) {
 	const result = new Date(date);
@@ -483,11 +501,17 @@ function addMonths(date, months) {
 
 const groupPaySchedules = async (groupID) => await Group.findById(groupID).select("yearSchedules");
 
+// NEW-11: errors carry an HTTP status so callers can map them (404 / 400 / 500).
+const scheduleError = (statusCode, message) => Object.assign(new Error(message), { statusCode });
+
 const addPaygroupSchedules = async (groupID, frequency) => {
 	try {
 		const groupSchedules = await groupPaySchedules(groupID);
+		if (!groupSchedules) throw scheduleError(404, "Group not found");
+
 		const yearSchedules = groupSchedules.yearSchedules || [];
 
+		const CURRENT_YEAR = getCurrentYear(); // NEW-07: per call, not at module load
 		const startDate = getStartDate(CURRENT_YEAR);
 		const payPeriods = [];
 
@@ -520,7 +544,7 @@ const addPaygroupSchedules = async (groupID, frequency) => {
 				numberOfPeriods = 1;
 				break;
 			default:
-				throw new Error("Unsupported frequency: " + frequency);
+				throw scheduleError(400, "Unsupported frequency: " + frequency);
 		}
 		let currentStart = new Date(startDate);
 
@@ -599,6 +623,8 @@ const addPaygroupSchedules = async (groupID, frequency) => {
 		});
 	} catch (error) {
 		console.log(error);
+		// NEW-11: rethrow; swallowing made PUT /groups/paycycle/:id report 201 on failure.
+		throw error;
 	}
 };
 
@@ -623,8 +649,18 @@ const updateGroupPaySchedule = async (req, res) => {
 	const { id } = req.params;
 	let { scheduleFrequency } = req.body;
 	scheduleFrequency = scheduleFrequency === "bi-weekly" ? "Biweekly" : scheduleFrequency;
-	await addPaygroupSchedules(id, scheduleFrequency);
-	return res.status(201).json("Added schedules");
+	// API-05: a rejection here was not caught (Express 4) and the request hung.
+	try {
+		await addPaygroupSchedules(id, scheduleFrequency);
+		return res.status(201).json("Added schedules");
+	} catch (error) {
+		// NEW-11: unknown group -> 404, unsupported frequency -> 400, anything else -> 500.
+		if (error?.statusCode === 404 || error?.name === "CastError") {
+			return res.status(404).json({ message: "Group not found" });
+		}
+		if (error?.statusCode === 400) return res.status(400).json({ message: error.message });
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
 };
 
 const updateGroup = async (req, res) => {
@@ -769,4 +805,5 @@ module.exports = {
 	deleteModule,
 	updateGroupPaySchedule,
 	updatePayGroup,
+	getStartDate,
 };

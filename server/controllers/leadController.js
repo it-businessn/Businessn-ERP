@@ -2,6 +2,9 @@ const Contact = require("../models/Contact");
 const Employee = require("../models/Employee");
 const Lead = require("../models/Lead");
 const LeadCompany = require("../models/LeadCompany");
+const Company = require("../models/Company");
+const mongoose = require("mongoose");
+const { getScopedCompanyNames } = require("../middleware/authorize");
 
 const getGroupedOpportunities = async (req, res) => {
 	try {
@@ -115,13 +118,15 @@ const getOpportunities = async (req, res) => {
 const getDisbursedLeads = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const leads = (
-			await Lead.find({
-				companyName,
-				isDisbursed: true,
-				isDisbursedConfirmed: false,
-			}).select("_id")
-		).sort({ createdOn: -1 });
+		// NEW-09: .sort() was applied to the resolved array (Array.prototype.sort
+		// with an object -> TypeError), so this endpoint always answered 500.
+		const leads = await Lead.find({
+			companyName,
+			isDisbursed: true,
+			isDisbursedConfirmed: false,
+		})
+			.select("_id")
+			.sort({ createdOn: -1 });
 		return res.status(200).json(leads);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -207,8 +212,13 @@ const getLead = async (req, res) => {
 	}
 };
 const updateLeadCompany = async (name, companyName) => {
+	// NEW-16: the lookup was by name only, so another tenant's record with the same
+	// name was returned (and none was created for this tenant). Without a company
+	// the filter would match any tenant, so nothing is looked up or created.
+	if (typeof companyName !== "string" || !companyName.trim()) return null;
 	const existingRecord = await LeadCompany.findOne({
 		name,
+		companyName,
 	});
 
 	if (!existingRecord) {
@@ -286,6 +296,9 @@ const createLeadOpportunity = async (req, res) => {
 };
 const createLeadCompany = async (req, res) => {
 	const { name, companyName } = req.body;
+	if (typeof companyName !== "string" || !companyName.trim()) {
+		return res.status(400).json({ message: "companyName is required" });
+	}
 
 	try {
 		const newLeadCompany = await updateLeadCompany(name, companyName);
@@ -298,6 +311,11 @@ const createLeadCompany = async (req, res) => {
 const createMultipleLeadOpportunity = async (req, res) => {
 	const { newRecord, companyName } = req.body;
 	let leadsCreated = 0;
+	// NEW-06: without a company the leads were created company-less and the
+	// response listed every tenant's undisbursed leads.
+	if (typeof companyName !== "string" || !companyName.trim() || !Array.isArray(newRecord)) {
+		return res.status(400).json({ message: "companyName and newRecord[] are required" });
+	}
 
 	try {
 		for (const rowData of newRecord) {
@@ -320,7 +338,8 @@ const createMultipleLeadOpportunity = async (req, res) => {
 			}
 		}
 
-		const leads = await Lead.find({ isDisbursed: false }).sort({
+		// NEW-06: was { isDisbursed: false } — every tenant's leads.
+		const leads = await Lead.find({ isDisbursed: false, companyName }).sort({
 			createdOn: -1,
 		});
 		return res.status(200).json(leads);
@@ -386,14 +405,47 @@ const disburseLeads = async (req, res) => {
 
 const confirmDisburseLeads = async (req, res) => {
 	const distributedLeadIDs = req.body;
+	if (!Array.isArray(distributedLeadIDs)) {
+		return res.status(400).json({ message: "An array of assignments is required" });
+	}
 
 	try {
+		// NEW-06: leads were taken from every tenant and could be assigned to any
+		// tenant's employee; a missing employee crashed (500). Validate every
+		// assignment before writing anything.
+		const allowed = await getScopedCompanyNames(req);
+		const plan = [];
 		for (const id of distributedLeadIDs) {
+			const companies = typeof id?.companyName === "string" ? [id.companyName] : allowed;
+			if (companies.length === 0 || companies.some((c) => !allowed.includes(c))) {
+				return res.status(403).json({
+					message: "You do not have access to this company",
+					code: "COMPANY_ACCESS_DENIED",
+				});
+			}
+			if (!mongoose.isValidObjectId(id?._id)) {
+				return res.status(400).json({ message: "Invalid employee id" });
+			}
+			const employee = await Employee.findById(id._id);
+			if (!employee) return res.status(404).json({ message: "Employee not found" });
+			const shared = await Company.find({ name: { $in: companies }, employees: String(employee._id) })
+				.select("name")
+				.lean();
+			if (!shared?.length) {
+				return res.status(403).json({
+					message: "Employee does not belong to this company",
+					code: "COMPANY_ACCESS_DENIED",
+				});
+			}
+			plan.push({ id, employee, companies: shared.map((c) => c.name) });
+		}
+
+		for (const { id, employee, companies } of plan) {
 			const leads = await Lead.find({
 				isDisbursedConfirmed: false,
 				isDisbursed: true,
+				companyName: { $in: companies },
 			});
-			const employee = await Employee.findById(id._id);
 			const slicedLeads = leads.slice(0, id.assignedLeads);
 			employee.leads = leads.slice(0, id.assignedLeads).map((lead) => lead._id);
 
@@ -401,6 +453,7 @@ const confirmDisburseLeads = async (req, res) => {
 
 			for (const id of slicedLeads) {
 				const lead = await Lead.findById(id._id);
+				if (!lead) continue;
 				lead.isDisbursedConfirmed = true;
 				lead.stage = "L1";
 				lead.primaryAssignee = employee.fullName;

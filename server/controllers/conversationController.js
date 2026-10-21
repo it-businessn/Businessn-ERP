@@ -1,7 +1,10 @@
+const mongoose = require("mongoose");
+
 const Announcement = require("../models/Announcement");
 const Conversation = require("../models/Conversation");
 const Employee = require("../models/Employee");
 const Message = require("../models/Message");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getMessage = async (req, res) => {
 	const { id } = req.params;
@@ -133,9 +136,9 @@ const createGroupConversation = async (req, res) => {
 const getAnnouncement = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const announcements = await Announcement.find({
-			// companyName,
-		})
+		// NEW-06: the company filter was commented out, so every tenant's
+		// announcements were returned to any company's members.
+		const announcements = await Announcement.find({ companyName })
 			.sort({ createdOn: -1 })
 			.lean();
 
@@ -148,8 +151,11 @@ const getAnnouncement = async (req, res) => {
 
 const getAllGroupMessages = async (req, res) => {
 	try {
+		// NEW-06: returned every tenant's group chats. createGroupConversation does
+		// not store companyName, so groups the caller participates in also count.
 		const conversations = await Conversation.find({
 			conversationType: "group",
+			$or: [await companyScopeFilter(req), { participants: req.user.id }],
 		}).populate("groupMessages");
 		return res.status(200).json(conversations);
 	} catch (error) {
@@ -191,7 +197,12 @@ const getConversations = async (id, path, populate) => {
 };
 
 const getConversationHistory = async (req, res) => {
-	const { id, type } = req.params;
+	// CHANGES.md API #13: the route is POST /history without params; the client
+	// (ChatHistory.jsx) sends { id, type } in the body. req.params gave undefined.
+	const { id, type } = req.body || {};
+	if (typeof id !== "string" || !mongoose.isValidObjectId(id)) {
+		return res.status(400).json({ message: "A valid conversation id is required" });
+	}
 
 	try {
 		// if (type === "group") {
@@ -228,6 +239,9 @@ const getConversationHistory = async (req, res) => {
 			},
 		);
 
+		if (!conversation) {
+			return res.status(404).json({ message: "Conversation not found" });
+		}
 		const messages = type === "group" ? conversation.groupMessages : conversation.messages;
 
 		const result = (messages || []).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));

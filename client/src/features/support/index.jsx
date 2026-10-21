@@ -12,9 +12,9 @@ import { FaChevronLeft, FaChevronRight, FaSave } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TicketService from "services/TicketService";
 import logoImgSrc from "../../assets/logos/logoCover.png";
+import { WEBSITE_URL } from "constant";
 
 const Support = () => {
-	const WEB = process.env.WEBSITE;
 	const toast = useToast();
 	const ticketBasicInfo = {
 		companyInfo: {
@@ -49,7 +49,12 @@ const Support = () => {
 	];
 	const isLastStep = tabIndex === SUPPORT_TABS.length - 1;
 
-	const handleRedirect = () => window.history.back() || WEB;
+	// `history.back() || WEB` never used the website (back() returns undefined
+	// and a bare string does not navigate): go back if possible, else to the site.
+	const handleRedirect = () => {
+		if (window.history.length > 1) window.history.back();
+		else window.location.href = WEBSITE_URL;
+	};
 
 	const handleSubmit = async () => {
 		try {

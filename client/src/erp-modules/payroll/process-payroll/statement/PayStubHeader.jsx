@@ -23,7 +23,7 @@ const PayStubHeader = ({ companyInfo, flex, isMobile }) => {
 					<TextTitle
 						align={"center"}
 						color={"var(--nav_color)"}
-						size={"lg"}
+						size={"md"}
 						title={"EARNINGS STATEMENT"}
 					/>
 				</>

@@ -7,8 +7,9 @@ const expressLayouts = require("express-ejs-layouts");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
 
-const { authenticateToken, errorHandler } = require("./middleware/auth");
+const { authenticateToken, errorHandler, verifyToken } = require("./middleware/auth");
 const { authorizeCompanyAccess, applyCompanyParamGuards } = require("./middleware/authorize");
+const { warnIfDeviceKeysUnset } = require("./middleware/deviceAuth");
 
 const accountingRoutes = require("./routes/accountingRoutes");
 const budgetingRoutes = require("./routes/budgetingRoutes");
@@ -59,6 +60,19 @@ const vopayRoutes = require("./routes/vopayRoutes");
 const vopayWebHookRoutes = require("./routes/vopayWebHookRoutes");
 const CONFIG = require("./config/app.config");
 
+// CHANGES.md API #18: cheap token check for choosing the global rate-limit tier. Same
+// header parsing and validation as authenticateToken (signature + expiry + id).
+const hasValidAccessToken = (req) => {
+	const header = req.headers?.authorization;
+	const token = typeof header === "string" ? header.split(" ")[1] : undefined;
+	if (!token) return false;
+	try {
+		return Boolean(verifyToken(token, CONFIG.ACCESS_TOKEN_SECRET)?.id);
+	} catch (_) {
+		return false;
+	}
+};
+
 // The express app is built here so it can be imported by tests without opening
 // a database connection or listening on a port (see index.js for bootstrapping).
 // `io` is injected by index.js (socket.io is bound to the http server there).
@@ -69,9 +83,10 @@ const app = express();
 // Previously: app.use("/api/timecard", timecardRoutes, apiLimiter) — limiter ran after routes.
 const globalLimiter = rateLimit({
 	windowMs: 60 * 1000,
-	max: (req) => {
-		return req.user ? 500 : 200;
-	},
+	// CHANGES.md API #18: this limiter runs before authenticateToken, so req.user was never
+	// set and every caller got 200/min. Check the bearer token here (signature and
+	// expiry only, no DB); an invalid or missing token gets the anonymous tier.
+	max: (req) => (req.user || hasValidAccessToken(req) ? 500 : 200),
 	standardHeaders: true,
 	legacyHeaders: false,
 	handler: (req, res) => {
@@ -178,9 +193,11 @@ app.use(["/api/login", "/api/forgot-password", "/api/reset-password", "/api/refr
 app.use("/api", appRoutes);
 
 // FIX: Timecard rate limiter applied BEFORE route handler
-// NOTE: timecard routes are intentionally unauthenticated (time & attendance devices post here).
-// See docs/application-audit.md AUD-013 — device authentication is an open requirement.
-app.use("/api/timecard", timecardLimiter, timecardRoutes);
+// AUD-013: mounted before authenticateToken because devices post punches here
+// (POST /api/timecard, device key via TIMECARD_DEVICE_KEYS); the router itself
+// requires a user token + tenant guard on every other time-card route.
+warnIfDeviceKeysUnset();
+app.use("/api/timecard", timecardLimiter, applyCompanyParamGuards(timecardRoutes));
 
 app.use("/api/ticket", ticketRoutes);
 app.use("/api/resource", resourceRoutes);

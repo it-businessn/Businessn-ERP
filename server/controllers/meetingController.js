@@ -1,9 +1,11 @@
 const Contact = require("../models/Contact");
 const Meeting = require("../models/Meeting");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getMeetings = async (req, res) => {
 	try {
-		const meetings = await Meeting.find({}).sort({
+		// NEW-06: was Meeting.find({}) — every tenant's meetings.
+		const meetings = await Meeting.find(await companyScopeFilter(req)).sort({
 			createdOn: -1,
 		});
 		return res.status(200).json(meetings);

@@ -58,8 +58,8 @@ const SendEmailList = ({ title, company, isOpen, onClose, selectedPayGroupOption
 		try {
 			const payStubEmail = title.includes(EMAIL_TYPE.PAYSTUB);
 			const { data } = payStubEmail
-				? await UserService.sendEmailPaystubs({ employees: selectedOptions })
-				: await UserService.sendEmailLoginCreds({ employees: selectedOptions });
+				? await UserService.sendEmailPaystubs({ employees: selectedOptions, companyName: company })
+				: await UserService.sendEmailLoginCreds({ employees: selectedOptions, companyName: company });
 			toast({
 				title: "Success",
 				description: data.message,

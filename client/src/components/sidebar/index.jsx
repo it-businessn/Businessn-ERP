@@ -46,9 +46,10 @@ const Sidebar = ({
 	) : (
 		<Flex
 			boxShadow="md"
-			maxW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "14vw" }}
+			// UI-01: rem-based so labels fit at every desktop width (14vw was 179px at 1280px)
+			maxW={isCollapsed ? "4rem" : { md: "24vw", lg: "15rem", "2xl": "16rem" }}
 			p={0}
-			minW={isCollapsed ? "4rem" : { md: "24vw", lg: "18vw", xl: "14vw" }}
+			minW={isCollapsed ? "4rem" : { md: "24vw", lg: "15rem", "2xl": "16rem" }}
 			mt="6em"
 			maxHeight={`calc(var(--custom_height))`}
 			overflowY="auto"

@@ -152,7 +152,13 @@ const createTimecard = async (req, res) => {
 
 		const dateThreshold = moment("2024-10-20");
 
-		data?.map(async (entry) => {
+		// NEW-03: entries were processed in un-awaited async callbacks: a bad
+		// entry (e.g. null) threw outside the try/catch as an unhandled rejection,
+		// and mapTimecardRawToTimecard ran before the punches were stored.
+		if (!Array.isArray(data) || data.some((e) => !e || typeof e !== "object")) {
+			return res.status(400).json({ message: "Expected an array of punch entries" });
+		}
+		await Promise.all(data.map(async (entry) => {
 			entry.timestamp = getUTCTime(entry.timestamp, entry?.isNotDevice);
 			const { user_id, timestamp, punch } = entry;
 			if (user_id) {
@@ -164,7 +170,7 @@ const createTimecard = async (req, res) => {
 					}
 				}
 			}
-		});
+		}));
 		await mapTimecardRawToTimecard();
 		return res.status(201).json("Timecard entries added successfully");
 	} catch (error) {
@@ -231,6 +237,7 @@ const mapTimecardRawToTimecard = async () => {
 				});
 				await updateTimecardEntry({
 					badge_id: user_id,
+					companyName: sameClockInTimeEntryExists.companyName, // LEFT-03: the time card's company
 					clockIn: sameClockInTimeEntryExists.clockIn,
 					startBreaks: sameClockInTimeEntryExists.startBreaks,
 					endBreaks: sameClockInTimeEntryExists.endBreaks,
@@ -269,7 +276,7 @@ const findRecentClockInRecord = async (badge_id, timestamp) => {
 const addTimecardEntry = async (entry, isBreak) => {
 	// const updatedTimecard = await Timecard.updateMany({}, { $set: { processedForTimesheet: true } });
 	const { badge_id, clockIn, notDevice } = entry;
-	const empRec = await findEmployeeTADByBadgeId(badge_id);
+	const empRec = await findEmployeeTADByBadgeId(badge_id, entry.companyName); // LEFT-03
 
 	if (empRec) {
 		entry.notDevice = notDevice;
@@ -313,7 +320,7 @@ const addTimecardEntry = async (entry, isBreak) => {
 const findTimesheet = async (record) => Timesheet.findOne(record);
 
 const updateTimecardEntry = async (entry, isBreakType) => {
-	const empRec = await findEmployeeTADByBadgeId(entry.badge_id);
+	const empRec = await findEmployeeTADByBadgeId(entry.badge_id, entry.companyName); // LEFT-03
 
 	const timesheetRecord = await findTimesheet({
 		deleted: false,
@@ -353,8 +360,14 @@ const updateTimecardEntry = async (entry, isBreakType) => {
 	}
 };
 
-const findEmployeeTADByBadgeId = async (timeManagementBadgeID) =>
-	await EmployeeEmploymentInfo.findOne({
+// LEFT-03: badge IDs are only unique within a company, but this matched the
+// first record of ANY tenant. With a company (time card / manual punch) the
+// lookup is limited to it. Device punches (TimecardRaw) carry no company: a
+// badge that matches records in more than one company is not attributed (warning
+// logged, raw punch kept) instead of being booked to an arbitrary tenant.
+const BADGE_MATCH_LIMIT = 50;
+const findEmployeeTADByBadgeId = async (timeManagementBadgeID, companyName) => {
+	const filter = {
 		payrollStatus: "Payroll Active",
 		employmentRole: { $ne: ROLES.SHADOW_ADMIN },
 		$or: [
@@ -362,25 +375,54 @@ const findEmployeeTADByBadgeId = async (timeManagementBadgeID) =>
 			{ timeManagementBadgeID },
 			{ employeeNo: timeManagementBadgeID },
 		],
-	})
-		.populate({
-			path: "empId",
-			model: "Employee",
-			select: "fullName",
-		})
-		.select("empId companyName");
+	};
+	const populateEmp = { path: "empId", model: "Employee", select: "fullName" };
+	if (typeof companyName === "string" && companyName) {
+		return await EmployeeEmploymentInfo.findOne({ ...filter, companyName })
+			.populate(populateEmp)
+			.select("empId companyName");
+	}
+	const matches = await EmployeeEmploymentInfo.find(filter)
+		.populate(populateEmp)
+		.select("empId companyName")
+		.limit(BADGE_MATCH_LIMIT);
+	const companies = [...new Set((matches || []).map((m) => m?.companyName))];
+	if (companies.length > 1) {
+		console.warn("LEFT-03: device badge matches several companies; punch not attributed", {
+			badgeId: String(timeManagementBadgeID),
+			companies,
+		});
+		return null;
+	}
+	return matches?.[0] ?? null;
+};
 
 const findPunchEntry = async (entry) => await TimecardRaw.findOne(entry);
 
 const addPunchEntry = async (entry) => await TimecardRaw.create(entry);
 
+// LEFT-02: a manual punch names the employee and the company it belongs to.
+const isManualEntry = (entry) =>
+	Boolean(entry?.isNotDevice && entry?.empId && typeof entry.companyName === "string" && entry.companyName);
+
 const createTimecardManual = async (req, res) => {
 	try {
 		const data = req.body;
-		// console.log("createTimecardManual", data);
-		await Promise.all(
-			(data || [])?.map(async (entry) => {
-				if (entry?.isNotDevice && entry?.empId) {
+		// LEFT-02: the response used to be sent inside the per-entry callback: no
+		// response for [] (request hung), one per entry for several entries.
+		// Validate first, process every entry, then answer exactly once.
+		if (
+			!Array.isArray(data) ||
+			data.some((e) => !e || typeof e !== "object") ||
+			!data.some(isManualEntry)
+		) {
+			return res.status(400).json({
+				message: "Expected an array of manual punch entries (isNotDevice, empId, companyName, punch)",
+			});
+		}
+		const settled = await Promise.allSettled(
+			data.map(async (entry) => {
+				if (isManualEntry(entry)) {
 					const { isNotDevice, companyName, empId, punch } = entry;
 
 					entry.notDevice = isNotDevice;
@@ -469,9 +511,21 @@ const createTimecardManual = async (req, res) => {
 				// 	companyName: "Cornerstone Maintenance Group Ltd.",
 				// });
 				// console.log(k, s);
-				return res.status(201).json("Timecard entries added manually");
+				return isManualEntry(entry) ? "ok" : "skipped";
 			}),
 		);
+		const results = settled.map((r, index) => ({
+			index,
+			status: r.status === "fulfilled" ? r.value : "failed",
+		}));
+		const failures = settled.filter((r) => r.status === "rejected");
+		if (failures.length) {
+			console.error("❌ createTimecardManual ERROR", {
+				failed: failures.map((r) => r.reason?.message),
+			});
+			return res.status(500).json({ message: "Internal Server Error", results });
+		}
+		return res.status(201).json("Timecard entries added manually");
 	} catch (error) {
 		console.error("❌ createTimecardManual ERROR", {
 			message: error.message,
@@ -549,4 +603,5 @@ module.exports = {
 	getTADUsers,
 	getFilteredTADUsers,
 	updateTADEmployee,
+	findEmployeeTADByBadgeId,
 };

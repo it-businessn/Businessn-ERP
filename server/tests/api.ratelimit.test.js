@@ -1,8 +1,10 @@
 const request = require("supertest");
 jest.mock("../models/Employee");
 jest.mock("../models/Company");
+jest.mock("../models/EmployeeEmploymentInfo");
 const Employee = require("../models/Employee");
 const Company = require("../models/Company");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { query, buildTestApp, auth } = require("./helpers");
 
 describe("AUD-005 credential endpoint rate limiting", () => {
@@ -86,6 +88,8 @@ describe("AUD-015 payroll process validation", () => {
 	])("T-PAY-02 %s -> 400", async (_l, body) => {
 		const app = buildTestApp();
 		Company.find.mockImplementation(() => query([{ name: "Acme" }]));
+		// AUD-028: POST /payroll/process now needs Manager or above in the company
+		EmployeeEmploymentInfo.findOne.mockImplementation(() => query({ employmentRole: "Manager" }));
 		const res = await request(app).post("/api/payroll/process").set(auth()).send(body);
 		expect(res.status).toBe(400);
 	});

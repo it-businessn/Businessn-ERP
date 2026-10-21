@@ -3,12 +3,16 @@ const mongoose = require("mongoose");
 
 const Employee = require("../models/Employee");
 const { sendEmail } = require("../services/emailService");
+// AUD-016: user-editable names are HTML-escaped in e-mail bodies.
+const { escapeHtml } = require("../helpers/escapeHtml");
 const { hashPassword, comparePassword } = require("../services/passwordService");
 const { getResetPasswordLink, verifyResetPasswordToken } = require("../services/tokenService");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_PASSWORD_LENGTH = 128;
+const FORGOT_PASSWORD_RESPONSE =
+	"If an account exists for this e-mail, a reset link has been sent. Please check your inbox.";
 
 const validatePassword = (password) => {
 	if (typeof password !== "string") return "Password is required";
@@ -42,7 +46,8 @@ const verifyResetRequest = async (id, token) => {
 
 const forgotPassword = async (req, res) => {
 	const { email } = req.body;
-	if (!email) {
+	// BUG-04: reject operator objects ({ "$ne": null }) that would match any user.
+	if (!email || typeof email !== "string") {
 		return res.status(400).json({ message: "Email is required" });
 	}
 	try {
@@ -50,9 +55,7 @@ const forgotPassword = async (req, res) => {
 
 		// FIX: Always return same response to prevent user enumeration
 		if (!user) {
-			return res.status(200).json({
-				message: "If the email exists, a reset link has been sent.",
-			});
+			return res.status(200).json({ message: FORGOT_PASSWORD_RESPONSE });
 		}
 
 		const resetLink = getResetPasswordLink({ _id: user._id }, user.password);
@@ -110,7 +113,7 @@ const forgotPassword = async (req, res) => {
 				font-size: 14px;
 			"
 		>
-      <p style="margin: 5px 0">Hello ${user.firstName},</p>
+      <p style="margin: 5px 0">Hello ${escapeHtml(user.firstName)},</p>
       <p>You requested a password reset.</p>
 	  <p>If you would still like to reset your password, please click the following link. </p>
       <p><a href="${resetLink}" target="_blank">Reset Password</a></p>
@@ -143,9 +146,9 @@ const forgotPassword = async (req, res) => {
 			],
 		);
 
-		return res.status(200).json({
-			message: "Please check your email inbox. A reset link has been sent to reset your password.",
-		});
+		// API-12: the success message used to differ from the "unknown e-mail"
+		// one, which revealed whether an address has an account.
+		return res.status(200).json({ message: FORGOT_PASSWORD_RESPONSE });
 	} catch (error) {
 		console.error("Reset Password Link error:", {
 			message: error.message,

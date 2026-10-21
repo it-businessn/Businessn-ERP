@@ -63,6 +63,10 @@ const companySchema = new mongoose.Schema(
 // Fields are unchanged; Mongoose builds these in the background on startup.
 companySchema.index({ employees: 1 });
 companySchema.index({ registration_number: 1 });
+// AUD-015 (docs/TECHNICAL.md U2/I5): tenant key lookups. Not unique: addCompany only
+// rejects an existing (name, registration_number) pair and updateCompany can
+// rename, so duplicate names are possible (see scripts/check-duplicates.js).
+companySchema.index({ name: 1 });
 
 const Company = mongoose.model("Company", companySchema);
 

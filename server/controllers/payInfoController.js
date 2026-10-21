@@ -22,7 +22,7 @@ const getAllPayInfo = async (req, res) => {
 			return res.status(404).json({ message: "Group not found" });
 		}
 		const activeEmployees = isExtraPayRun
-			? await getEmployeeId(employees)
+			? await getEmployeeId(employees, companyName) // NEW-05: scoped to this company
 			: await getPayrollActiveEmployees(companyName);
 		// console.log("📊 Payroll fetch start", {
 		// 	companyName,

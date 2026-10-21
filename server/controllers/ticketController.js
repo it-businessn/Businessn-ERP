@@ -11,12 +11,18 @@ const { filePath, fileContentType } = require("../services/fileService");
 const { COMPANIES } = require("../constants/constant");
 const { SUPPORT_ADMIN_CONTACT } = require("../constants/permissions.constants");
 const { TICKET_STATUS } = require("../constants/ticket.constants");
+const { companyScopeFilter } = require("../middleware/authorize");
+const { pickScalarFields } = require("../helpers/requestFields");
+// AUD-016: request data (incl. the public lead / support forms) is HTML-escaped in e-mail bodies.
+const { escapeHtml } = require("../helpers/escapeHtml");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
 	try {
+		// NEW-06 (CHANGES.md API #11): any :id returned that user's tickets in every tenant.
 		const tickets = await SupportTicket.find({
 			$or: [{ originator: id }, { assignee: id }],
+			...(await companyScopeFilter(req)),
 		}).sort({ priority: 1 });
 		return res.status(200).json(tickets);
 	} catch (error) {
@@ -150,7 +156,11 @@ const downloadResource = async (req, res) => {
 		const { filename } = req.params;
 		// FIX: Model.find() returns an array, so `!resource` was never true and a
 		// missing file crashed with a TypeError (500) instead of a 404.
-		const resource = await SupportTicket.findOne({ originalname: filename });
+		// NEW-06 (CHANGES.md API #11): look the attachment up within the caller's companies only.
+		const resource = await SupportTicket.findOne({
+			originalname: filename,
+			...(await companyScopeFilter(req)),
+		});
 		if (!resource?.file?.data) {
 			return res.status(404).json({ message: "Resource not found" });
 		}
@@ -202,9 +212,38 @@ const createNewFreshLead = async (lead) => {
 	return newLead;
 };
 
+// NEW-12: fields of the public website form (client CustomerInfo.jsx). The
+// public route used to pass the whole body to SupportTicket.create, so a caller
+// could set status, file, originator, etc.; operator objects reached Mongo.
+const LEAD_FORM_FIELDS = [
+	"firstName",
+	"lastName",
+	"title",
+	"email",
+	"phone",
+	"country",
+	"province",
+	"annualRevenue",
+	"totalEmployees",
+	"companyName",
+	"referrals",
+	"marketingComms",
+];
+
 const createLeadTicket = async (req, res) => {
 	try {
-		const data = req.body;
+		const { data, invalid } = pickScalarFields(req.body, LEAD_FORM_FIELDS);
+		const interests = req.body?.interests;
+		if (
+			invalid.length > 0 ||
+			(data.companyName != null && typeof data.companyName !== "string") ||
+			(interests !== undefined &&
+				interests !== null &&
+				(!Array.isArray(interests) || interests.some((i) => typeof i !== "string")))
+		) {
+			return res.status(400).json({ message: "Invalid lead form data" });
+		}
+		if (Array.isArray(interests)) data.interests = interests;
 		const lead = await createNewFreshLead(data);
 
 		const attachments = [
@@ -227,7 +266,16 @@ const createLeadTicket = async (req, res) => {
 		newInfo.topic = "New Lead: Website Contact Form Submission";
 		newInfo.issue = "A new lead has been generated from the website contact form.";
 
-		const ticket = await SupportTicket.create(newInfo);
+		// NEW-12: explicit document (the form fields are not ticket fields).
+		const ticket = await SupportTicket.create({
+			companyName: newInfo.companyName,
+			category: newInfo.category,
+			priority: newInfo.priority,
+			ticketNumber: newInfo.ticketNumber,
+			assignee: newInfo.assignee,
+			topic: newInfo.topic,
+			issue: newInfo.issue,
+		});
 
 		if (assigneeEmail?.email) {
 			await sendEmail(
@@ -265,7 +313,7 @@ const createLeadTicket = async (req, res) => {
 						class="category"
 						style="color: #e8ccb7; font-weight: bold; margin: 0"
 					>
-						${ticket?.category}
+						${escapeHtml(ticket?.category)}
 					</p>
 					<p
 						class="topic"
@@ -291,20 +339,20 @@ const createLeadTicket = async (req, res) => {
 				<h3 style="margin: 0; margin-bottom: 1em">Hello Jesse,</h3>
 				<p style="margin: 5px 0">
 					We are confirming that we have received ticket <span style="
-					background: #d5efe2;">${ticket?.ticketNumber}</span> assigned to
+					background: #d5efe2;">${escapeHtml(ticket?.ticketNumber)}</span> assigned to
 					you.
 				</p>
 
 				<p>You’ve got a new lead! Here are the basic details:</p>
 
 				<p style="font-weight: bold; margin: 0">Company Name:</p>
-				<p>${lead?.opportunityName}</p>
+				<p>${escapeHtml(lead?.opportunityName)}</p>
 				<p style="font-weight: bold; margin: 0">Customer Name:</p>
-				<p>${data?.firstName} ${data?.lastName}</p>
+				<p>${escapeHtml(data?.firstName)} ${escapeHtml(data?.lastName)}</p>
 				<p style="font-weight: bold; margin: 0">Email:</p>
-				<p>${data?.email}</p>
+				<p>${escapeHtml(data?.email)}</p>
 				<p style="font-weight: bold; margin: 0">Phone:</p>
-				<p>${data?.phone}</p>
+				<p>${escapeHtml(data?.phone)}</p>
 				<p style="font-weight: bold; margin: 0">View Ticket:</p>
 				<p style="margin: 5px 0">
 					To view the full ticket or add a reply, access your account via the link
@@ -445,7 +493,7 @@ const createSupportTicket = async (req, res) => {
 						class="category"
 						style="color: #e8ccb7; font-weight: bold; margin: 0"
 					>
-						${ticket?.category}
+						${escapeHtml(ticket?.category)}
 					</p>
 					<p
 						class="topic"
@@ -471,14 +519,14 @@ const createSupportTicket = async (req, res) => {
 				<h3 style="margin: 0; margin-bottom: 1em">Hello Jesse,</h3>
 				<p style="margin: 5px 0">
 					We are confirming that we have received ticket <span style="
-					background: #d5efe2;">${ticket?.ticketNumber}</span> assigned to
+					background: #d5efe2;">${escapeHtml(ticket?.ticketNumber)}</span> assigned to
 					you.
 				</p>
 
 				<p>You’ve got a new support ticket! Here are the basic details:</p>
 
 				<p style="font-weight: bold; margin: 0">Company Name:</p>
-				<p>${companyName}</p>
+				<p>${escapeHtml(companyName)}</p>
 				
 				<p style="font-weight: bold; margin: 0">View Ticket:</p>
 				<p style="margin: 5px 0">
@@ -589,7 +637,7 @@ const createTicket = async (req, res) => {
 					class="category"
 					style="color: #e8ccb7; font-weight: bold; margin: 0"
 				>
-					${newTask?.category}
+					${escapeHtml(newTask?.category)}
 				</p>
 				<p
 					class="topic"
@@ -612,10 +660,10 @@ const createTicket = async (req, res) => {
 				font-size: 14px;
 			"
 		>
-			<h3 style="margin: 0; margin-bottom: 1em">Hello ${newTask?.assignee},</h3>
+			<h3 style="margin: 0; margin-bottom: 1em">Hello ${escapeHtml(newTask?.assignee)},</h3>
 			<p style="margin: 5px 0">
 				We are confirming that we have received ticket <span style="
-				background: #d5efe2;">${newTask?.ticketNumber}</span> assigned to
+				background: #d5efe2;">${escapeHtml(newTask?.ticketNumber)}</span> assigned to
 				you. 
 			</p>
 			
@@ -624,13 +672,13 @@ const createTicket = async (req, res) => {
 			}</p>
 			
 			<p style="font-weight: bold; margin: 0">Topic:</p>
-			<p>${newTask?.topic}</p>
+			<p>${escapeHtml(newTask?.topic)}</p>
 			<p style="font-weight: bold; margin: 0">Description:</p>
-			<p>${newTask?.issue}</p>
+			<p>${escapeHtml(newTask?.issue)}</p>
 			<p style="font-weight: bold; margin: 0">Assignor:</p>
-			<p>${newTask?.originator}</p>
+			<p>${escapeHtml(newTask?.originator)}</p>
 			<p style="font-weight: bold; margin: 0">Channel:</p>
-			<p>${newTask?.category}</p>
+			<p>${escapeHtml(newTask?.category)}</p>
 			<p style="font-weight: bold; margin: 0">View Ticket:</p>
 			<p style="margin: 5px 0">
 				To view the full ticket or add a reply, access your account via the link
@@ -674,6 +722,10 @@ const createTicket = async (req, res) => {
 		return res.status(201).json(newTask);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
+	} finally {
+		// NEW-16: the bytes are stored in MongoDB and the e-mail has been sent; the
+		// multer temp file is no longer needed (same as resourceController, REV-006).
+		if (req.file?.path) fs.unlink(req.file.path, () => {});
 	}
 };
 

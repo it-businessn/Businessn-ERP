@@ -60,6 +60,9 @@ const normalizeFrequency = (frequency) => {
 		biweekly: "Biweekly",
 		"bi-weekly": "Biweekly",
 		semimonthly: "Semimonthly",
+		// BUG-03: hyphenated spelling (as used on the ROE screens) used to fall
+		// through to the Biweekly default and annualise with 26 periods.
+		"semi-monthly": "Semimonthly",
 		monthly: "Monthly",
 		quarterly: "Quarterly",
 		annually: "Annually",

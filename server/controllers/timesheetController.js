@@ -20,7 +20,7 @@ const {
 	PUNCH_CODE,
 	PARAM_HOURS,
 } = require("../constants/timesheet.constants");
-const { NEXT_DAY } = require("../utils/date.util");
+const { getNextDay } = require("../utils/date.util");
 const { safeNum } = require("../utils/time.util");
 
 const findByRecordTimesheets = async (record, skip, limit) => {
@@ -226,7 +226,8 @@ const getTimesheets = async (req, res) => {
 		const timesheets = await findByRecordTimesheets({
 			deleted: false,
 			companyName,
-			clockIn: { $lte: NEXT_DAY },
+			// NEW-07: computed per request (was frozen at server start + 1 day).
+			clockIn: { $lte: getNextDay() },
 		});
 
 		const payInfo = await getTimesheetResult(companyName);

@@ -22,6 +22,14 @@ const {
 } = require("../services/payrollService");
 const { getPayrollActiveEmployees } = require("../services/userService");
 const { safeNum } = require("../utils/time.util");
+const { runInTransaction } = require("../utils/db.util");
+const {
+	normalisePayDate,
+	payYearOf,
+	payYearWindow,
+	payDateYearWindow,
+	lastPayPeriodNum,
+} = require("../utils/payYear.util");
 
 const buildPayStub = (
 	empId,
@@ -489,13 +497,19 @@ const buildPayStubDetails = async (
 		scheduleFrequency,
 	);
 
+	// PAYYEAR-01: period numbers restart each payroll year (pay-date year), so the
+	// previous stub is looked up in this run's year; period 1 takes the last period
+	// of the previous year (26 bi-weekly, 12 monthly, ...). Extra runs: same period.
+	const payYear = payYearOf(payPeriodPayDate);
 	const prevPayPeriodNum = isExtraRun ? payPeriod : payPeriod - 1;
+	const prevIsLastYear = prevPayPeriodNum == 0;
 	let prevPayPayInfo = await findPayStub(
-		prevPayPeriodNum == 0 ? 26 : prevPayPeriodNum,
+		prevIsLastYear ? lastPayPeriodNum(scheduleFrequency) : prevPayPeriodNum,
 		companyName,
 		empId,
 		false,
 		scheduleFrequency,
+		payYear === null ? null : prevIsLastYear ? payYear - 1 : payYear,
 	);
 
 	const runBalances = async () => {
@@ -554,6 +568,8 @@ const buildPayStubDetails = async (
 					// isExtraRun:,
 					scheduleFrequency,
 					reportType: newPayStub.reportType,
+					// PAYYEAR-01: same payroll year only (runBalances is currently unused).
+					...(payYear === null ? {} : { payPeriodPayDate: payYearWindow(payYear) }),
 				});
 				if (separateChequeExists?.scheduleFrequency) {
 					newPayStub.scheduleFrequency = separateChequeExists.scheduleFrequency;
@@ -583,25 +599,77 @@ const buildPayStubDetails = async (
 		payStubInfoData,
 		prevPayPayInfo,
 	);
-	const currentPayInfo = await findPayStub(
-		payPeriod,
-		companyName,
-		empId,
-		isExtraRun ? isExtraRun : false,
-		scheduleFrequency,
-	);
-	if (currentPayInfo?.scheduleFrequency) {
-		updatedPayStub.scheduleFrequency = currentPayInfo.scheduleFrequency;
-		await updatePayStub(currentPayInfo._id, updatedPayStub);
-		return updatedPayStub;
-	}
+	// AUD-015: the stub is only computed here; addEmployeePayStubInfo writes all
+	// stubs of the run with upsertProcessedPayStub (find-then-create raced).
 	updatedPayStub.scheduleFrequency = scheduleFrequency;
-	await addPayStub(updatedPayStub);
 	return updatedPayStub;
 	// }
 };
 
-const findPayStub = async (payPeriodNum, companyName, empId, isExtra, scheduleFrequency) => {
+// AUD-015: natural key of a processed pay stub, backed by the unique index
+// uniq_processed_paystub_v2. Regular runs now match isExtraRun:false explicitly; the
+// old lookup omitted it and could overwrite the same period's extra-run stub.
+// PAYYEAR-01: + the pay-date year, so period N of this year no longer overwrites
+// period N of last year. A year window (not the exact date) also matches older
+// stubs whose pay date was stored with a time part.
+const processedPayStubKey = (
+	payPeriodNum,
+	companyName,
+	empId,
+	isExtraRun,
+	scheduleFrequency,
+	payPeriodPayDate,
+) => {
+	const key = {
+		companyName,
+		empId,
+		payPeriodNum,
+		isExtraRun: isExtraRun ? isExtraRun : false,
+		scheduleFrequency,
+		reportType: null,
+		isProcessed: true,
+	};
+	const payYear = payDateYearWindow(payPeriodPayDate);
+	if (payYear) key.payPeriodPayDate = payYear;
+	return key;
+};
+
+// AUD-015: atomic create-or-update (replaces findPayStub + create/findByIdAndUpdate).
+// PAYYEAR-01: the pay date is written at UTC start of day (the unique index key);
+// an upsert-insert takes it from $set (a range in the filter is not copied).
+const upsertProcessedPayStub = (stub, session) => {
+	const doc = stub?.payPeriodPayDate
+		? { ...stub, payPeriodPayDate: normalisePayDate(stub.payPeriodPayDate) }
+		: stub;
+	return EmployeePayStub.findOneAndUpdate(
+		processedPayStubKey(
+			doc.payPeriodNum,
+			doc.companyName,
+			doc.empId,
+			doc.isExtraRun,
+			doc.scheduleFrequency,
+			doc.payPeriodPayDate,
+		),
+		{ $set: doc },
+		{
+			upsert: true,
+			new: true,
+			sort: { payPeriodProcessingDate: -1 },
+			session: session || undefined,
+		},
+	);
+};
+
+// PAYYEAR-01: payYear scopes the lookup to that payroll year (pay-date year).
+// Without a year the most recent pay date wins (newest year's stub).
+const findPayStub = async (
+	payPeriodNum,
+	companyName,
+	empId,
+	isExtra,
+	scheduleFrequency,
+	payYear = null,
+) => {
 	const searchObj = isExtra
 		? {
 				payPeriodNum,
@@ -618,7 +686,14 @@ const findPayStub = async (payPeriodNum, companyName, empId, isExtra, scheduleFr
 				isProcessed: true,
 				scheduleFrequency,
 			};
-	return await EmployeePayStub.findOne(searchObj).sort({ payPeriodProcessingDate: -1 });
+	if (payYear !== null && payYear !== undefined) {
+		searchObj.payPeriodPayDate = payYearWindow(Number(payYear));
+		return await EmployeePayStub.findOne(searchObj).sort({ payPeriodProcessingDate: -1 });
+	}
+	return await EmployeePayStub.findOne(searchObj).sort({
+		payPeriodPayDate: -1,
+		payPeriodProcessingDate: -1,
+	});
 };
 
 const getRecordId = async (
@@ -659,10 +734,24 @@ const updatePayStub = async (id, data) =>
 
 // REV-009: in-process guard against concurrent duplicate pay runs for the same
 // company/period (double-click, retry storm). Single-instance only — a cluster
-// needs a lock document in MongoDB (see docs/application-audit.md AUD-015).
+// needs a lock document in MongoDB (see docs/CHANGES.md AUD-015).
 const runsInProgress = new Set();
 const payRunKey = (companyName, period) =>
 	`${companyName}|${period?.payPeriod}|${period?.isExtraRun ? "extra" : "regular"}|${period?.frequency}`;
+
+// AUD-015: T4 generation stays fire-and-forget, but a failure (sync throw or
+// rejection) is logged instead of becoming an unhandled rejection.
+// PAYYEAR-01: the pay date scopes the T4 data to this run's payroll year.
+const startT4Generation = (companyName, payPeriod, payPeriodEndDate, payPeriodPayDate) =>
+	Promise.resolve()
+		.then(() => generateT4Slip(companyName, payPeriod, payPeriodEndDate, payPeriodPayDate))
+		.catch((error) =>
+			console.error("❌ T4 generation failed:", {
+				companyName,
+				payPeriod,
+				message: error?.message,
+			}),
+		);
 
 const addEmployeePayStubInfo = async (req, res) => {
 	const { companyName, currentPayPeriod, selectedPayGroupOption } = req.body || {};
@@ -720,7 +809,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 		const scheduleFrequency = frequency === "bi-weekly" ? "Biweekly" : frequency;
 
 		const activeEmployees = isExtraRun
-			? await getEmployeeId(selectedEmp)
+			? await getEmployeeId(selectedEmp, companyName) // NEW-05: scoped to this company
 			: await getPayrollActiveEmployees(companyName, req.body?.deptName, selectedPayGroupOption);
 		const result = isExtraRun
 			? null
@@ -754,6 +843,9 @@ const addEmployeePayStubInfo = async (req, res) => {
 			totalEmpPaymentRemitCost: 0,
 		};
 
+		// AUD-015: compute every stub first (reads only), then write the whole run
+		// in one short transaction so a failure leaves no half-written pay run.
+		const payStubs = [];
 		for (const employee of activeEmployees) {
 			const empTimesheetData = result?.find(
 				(el) => el.empId?._id.toString() === employee?.empId?._id.toString(),
@@ -766,6 +858,7 @@ const addEmployeePayStubInfo = async (req, res) => {
 				employee?.empId?._id,
 				scheduleFrequency,
 			);
+			payStubs.push(payStubResult);
 			fundingTotal.totalIncomeTaxContr += safeNum(payStubResult?.currentIncomeTaxDeductions);
 			fundingTotal.totalCPP_EE_Contr += safeNum(payStubResult?.currentCPPDeductions);
 			fundingTotal.totalCPP_ER_Contr += safeNum(payStubResult?.currentCPPDeductions);
@@ -774,14 +867,24 @@ const addEmployeePayStubInfo = async (req, res) => {
 			fundingTotal.totalNetPay += safeNum(payStubResult?.currentNetPay);
 		}
 
-		await buildFundingTotalsReport(
-			fundingTotal,
-			activeEmployees?.length,
-			isExtraRun,
-			isCornerStone,
-			scheduleFrequency,
-		);
-		if (!isExtraRun) generateT4Slip(companyName, payPeriod, payPeriodEndDate);
+		let afterCommit = [];
+		await runInTransaction(async (session) => {
+			afterCommit = []; // the callback may be retried
+			for (const stub of payStubs) {
+				await upsertProcessedPayStub(stub, session);
+			}
+			await buildFundingTotalsReport(
+				fundingTotal,
+				activeEmployees?.length,
+				isExtraRun,
+				isCornerStone,
+				scheduleFrequency,
+				{ session, afterCommit },
+			);
+		});
+		// AUD-015: follow-up work (journal entry) reads committed data only.
+		afterCommit.forEach((task) => task());
+		if (!isExtraRun) startT4Generation(companyName, payPeriod, payPeriodEndDate, payPeriodPayDate);
 		return res.status(200).json({ message: "Paystub created successfully" });
 	} catch (error) {
 		console.error("❌ addEmployeePayStubInfo error:", {

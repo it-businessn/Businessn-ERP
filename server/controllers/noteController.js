@@ -4,10 +4,12 @@ const Project = require("../models/Project");
 const ProjectFile = require("../models/ProjectFile");
 const SubTask = require("../models/SubTask");
 const Task = require("../models/Task");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getNotes = async (req, res) => {
 	try {
-		const notes = await Note.find({}).sort({
+		// NEW-06: was Note.find({}) — every tenant's notes.
+		const notes = await Note.find(await companyScopeFilter(req)).sort({
 			createdOn: -1,
 		});
 		return res.status(200).json(notes);
@@ -84,6 +86,8 @@ const updateNotes = async (req, res) => {
 			const updatedTask = await SubTask.findByIdAndUpdate(id, { $set: updatedData }, { new: true });
 			return res.status(201).json(updatedTask);
 		}
+		// API-04: any other type used to leave the request hanging.
+		return res.status(400).json({ message: "Unsupported note type" });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}

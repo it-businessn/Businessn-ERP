@@ -14,17 +14,23 @@ const EmployeeT4 = require("../models/EmployeeT4");
 
 const { encryptData, decryptData, shouldDecrypt } = require("../services/encryptDataService");
 const CONFIG = require("../config/app.config");
-const { CURRENT_YEAR } = require("../utils/date.util");
+const { getCurrentYear } = require("../utils/date.util");
+const {
+	payYearOf,
+	payDateYearWindow,
+	latestPayYearWindow,
+} = require("../utils/payYear.util");
 
 const parser = new xml2js.Parser({ explicitArray: false });
 
-const getT4Slips = async (req, res) => {
-	const { companyName } = req.params;
-};
+// API-02: both handlers were empty and left the request hanging until the
+// client timed out. Answer 501 like the other unimplemented payroll stubs.
+const notImplemented = (res) =>
+	res.status(501).json({ message: "Not implemented", code: "NOT_IMPLEMENTED" });
 
-const getEmployeeT4Slip = async (req, res) => {
-	const { companyName } = req.params;
-};
+const getT4Slips = async (req, res) => notImplemented(res);
+
+const getEmployeeT4Slip = async (req, res) => notImplemented(res);
 
 const buildRecord = async (record) => {
 	const empProfileInfo = await EmployeeProfileInfo.findOne({
@@ -62,12 +68,14 @@ const buildRecord = async (record) => {
 	return { empProfileInfo, empEmploymentInfo, companyInfo, empGovtInfo, empT4Info };
 };
 
-const buildT4PayrollData = async (companyName, payPeriodNum) => {
-	const payrollData = await EmployeePayStub.find({
-		companyName,
-		payPeriodNum,
-		empId: { $exists: true },
-	})
+// PAYYEAR-01: period numbers restart every year, so only stubs of the run's
+// pay-date year are reported; without a pay date, the most recent pay year.
+const buildT4PayrollData = async (companyName, payPeriodNum, payPeriodPayDate) => {
+	const filter = { companyName, payPeriodNum, empId: { $exists: true } };
+	const payYear =
+		payDateYearWindow(payPeriodPayDate) || (await latestPayYearWindow(EmployeePayStub, filter));
+	if (payYear) filter.payPeriodPayDate = payYear;
+	const payrollData = await EmployeePayStub.find(filter)
 		.populate({
 			path: "empId",
 			model: "Employee",
@@ -134,7 +142,7 @@ if (!fs.existsSync(SAVE_FILE_OUTPUT_DIR)) {
 	fs.mkdirSync(SAVE_FILE_OUTPUT_DIR, { recursive: true });
 }
 
-const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
+const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate, payPeriodPayDate) => {
 	const root = xml.create("T4"); // Create root node
 
 	// const xml = create("T4SlipType");
@@ -144,7 +152,14 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	// 	}
 	// );
 
-	const payrollData = await buildT4PayrollData(companyName, payPeriodNum);
+	const payrollData = await buildT4PayrollData(companyName, payPeriodNum, payPeriodPayDate);
+
+	// AUD-015: with no stubs payrollData[0].companyInfo threw a TypeError from a
+	// fire-and-forget call (unhandled rejection). Nothing to report -> no file.
+	if (!payrollData.length) {
+		console.warn("T4 generation skipped: no pay stubs", { companyName, payPeriodNum });
+		return;
+	}
 
 	const companyRegdNum = payrollData[0]?.companyInfo?.registration_number;
 
@@ -283,7 +298,8 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	emprNameNode.up();
 
 	const emprAddressNode = t4summaryNode.ele("EMPR_ADDR");
-	const street = companyInfo?.address?.streetNumber;
+	// AUD-015: a company without a street address crashed on street.indexOf.
+	const street = companyInfo?.address?.streetNumber || "";
 	const firstSpaceIndex = street.indexOf(" ");
 	const houseNumber = street.substring(0, firstSpaceIndex);
 	const streetName = street.substring(firstSpaceIndex + 1);
@@ -305,7 +321,9 @@ const generateT4Slip = async (companyName, payPeriodNum, payPeriodEndDate) => {
 	cntcNode.ele("cntc_extn_nbr").up();
 	cntcNode.up();
 
-	t4summaryNode.ele("tx_yr", CURRENT_YEAR).up();
+	// NEW-07: year computed per call (was frozen at server start).
+	// PAYYEAR-01: the tax year is the pay-date year of the run when known.
+	t4summaryNode.ele("tx_yr", payYearOf(payPeriodPayDate) ?? getCurrentYear()).up();
 	t4summaryNode.ele("slp_cnt", totalSlips).up();
 
 	const pptrNode = t4summaryNode.ele("PPRTR_SIN");
@@ -506,6 +524,7 @@ const readSecureXML = () => {
 module.exports = {
 	getT4Slips,
 	generateT4Slip,
+	buildT4PayrollData, // PAYYEAR-01: exported for tests
 	getEmployeeT4Slip,
 	convertxmltopdf,
 	SAVE_FILE_OUTPUT_DIR,

@@ -14,6 +14,7 @@ const socketio = require("socket.io");
 const CONFIG = require("./config/app.config");
 const { buildApp } = require("./app");
 const runStatHolidayJob = require("./jobs/statHoliday");
+const { attachSocketAuth } = require("./helpers/socketAuth");
 
 // FIX: Attach http server so Socket.io actually receives connections.
 const httpServer = http.createServer();
@@ -23,12 +24,29 @@ const io = socketio(httpServer, {
 		methods: CONFIG.corsOptions.methods,
 	},
 });
+// NEW-15 / CHANGES.md API #16: sockets must authenticate (auth.token = access JWT) and
+// only join rooms of their own companies; VoPay events are emitted per room.
+attachSocketAuth(io);
 
 const app = buildApp(io);
-httpServer.on("request", app);
+// socket.io hooks the server before this listener is added, so its own
+// /socket.io/ requests would also reach Express, which then tried to answer
+// an already-answered request (ERR_HTTP_HEADERS_SENT). Leave them to socket.io.
+httpServer.on("request", (req, res) => {
+	if (req.url && req.url.startsWith("/socket.io/")) return;
+	app(req, res);
+});
 
 const PORT = CONFIG.PORT;
 const MONGO_URI = CONFIG.MONGO_URI;
+
+// NEW-03: several controllers still start un-awaited async work (e.g. the
+// time-card mapping loop, fire-and-forget T4 generation). On Node >= 15 an
+// unhandled rejection from that work terminates the process; log it instead
+// so one bad record cannot take the API down for every tenant.
+process.on("unhandledRejection", (reason) => {
+	console.error("Unhandled promise rejection:", reason instanceof Error ? reason.stack : reason);
+});
 
 // Scheduler job
 runStatHolidayJob();

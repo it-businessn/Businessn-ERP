@@ -5,7 +5,12 @@ const { getShadowUserIds } = require("../services/userService");
 
 const getCompanies = async (req, res) => {
 	try {
-		const companies = await getAllCompanies();
+		// NEW-06: listed every tenant's company (with its employees array). Only the
+		// companies the caller is a member of are returned now (same rule as login).
+		const filter = { employees: req.user.id };
+		const requested = req.query?.companyName;
+		if (typeof requested === "string" && requested.trim()) filter.name = requested.trim();
+		const companies = await getAllCompanies(filter);
 		return res.status(200).json(companies);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -115,8 +120,9 @@ const addCompany = async (req, res) => {
 	}
 };
 
-const getAllCompanies = async () =>
-	await Company.find({})
+// The stat-holiday job calls this without a filter and still gets every company.
+const getAllCompanies = async (filter = {}) =>
+	await Company.find(filter)
 		.sort({
 			createdOn: -1,
 		})

@@ -125,6 +125,8 @@ describe("AUD-003 tenant scoping", () => {
 	test("T-TEN-16 (REV-005) PUT /api/company/:id for own company reaches the handler", async () => {
 		Company.find.mockImplementation(() => query([{ _id: "64a0000000000000000000aa", name: "Acme" }]));
 		Company.findByIdAndUpdate.mockImplementation(() => query({ _id: "64a0000000000000000000aa", name: "Acme" }));
+		// AUD-028: company info edit now needs Manager or above in that company
+		EmployeeEmploymentInfo.findOne.mockImplementation(() => query({ employmentRole: "Manager" }));
 		const res = await request(app).put("/api/company/64a0000000000000000000aa").set(auth()).send({ revenue: "1" });
 		expect(res.status).not.toBe(403);
 		expect(Company.findByIdAndUpdate).toHaveBeenCalled();
@@ -293,10 +295,12 @@ describe("AUD-004 updateUser mass assignment", () => {
 	test("T-USR-03 (AUD-012) PUT /api/user/assignLeads is no longer swallowed by /:userId", async () => {
 		// updateUserAssignedLeads redistributes leads across active users by weight.
 		Lead.find.mockImplementation(() => query([{ _id: "l1" }, { _id: "l2" }, { _id: "l3" }, { _id: "l4" }]));
-		EmployeeEmploymentInfo.find.mockImplementation(() =>
+		// NEW-10: active users and their weights come from Employee (the fields do
+		// not exist on EmployeeEmploymentInfo, which this test used to mock).
+		Employee.find.mockImplementation(() =>
 			query([
-				{ _id: "e1", assignedWeight: 1, empId: { fullName: "A" } },
-				{ _id: "e2", assignedWeight: 3, empId: { fullName: "B" } },
+				{ _id: "e1", assignedWeight: 1 },
+				{ _id: "e2", assignedWeight: 3 },
 			]),
 		);
 		Employee.findByIdAndUpdate.mockImplementation(() => query({}));

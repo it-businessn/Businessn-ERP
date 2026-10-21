@@ -1,9 +1,11 @@
 const Employee = require("../models/Employee");
 const Event = require("../models/Event");
+const { companyScopeFilter } = require("../middleware/authorize");
 
 const getEvents = async (req, res) => {
 	try {
-		const events = await Event.find({}).sort({ createdOn: -1 });
+		// NEW-06: was Event.find({}) — every tenant's events.
+		const events = await Event.find(await companyScopeFilter(req)).sort({ createdOn: -1 });
 		return res.status(200).json(events);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

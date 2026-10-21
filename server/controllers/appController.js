@@ -15,6 +15,11 @@ const login = async (req, res) => {
 	if (!email || !password || !companyId) {
 		return res.status(400).json({ message: "Email, password, and company ID are required" });
 	}
+	// BUG-04: a JSON body can carry objects such as { "$ne": null }, which
+	// Mongoose passes through as query operators. Only plain strings are valid.
+	if ([email, password, companyId].some((v) => typeof v !== "string")) {
+		return res.status(400).json({ message: "Email, password, and company ID must be text" });
+	}
 
 	try {
 		const user = await Employee.findOne({ email }).select(
@@ -204,6 +209,10 @@ const signUp = async (req, res) => {
 		if (!email || !password) {
 			return res.status(400).json({ message: "Email and password are required" });
 		}
+		// SIGNUP-01: same rule as login (BUG-04): operator objects are not e-mails.
+		if (typeof email !== "string" || typeof password !== "string") {
+			return res.status(400).json({ message: "Email and password must be text" });
+		}
 		if (password.length < 8) {
 			return res.status(400).json({ message: "Password must be at least 8 characters" });
 		}
@@ -229,7 +238,11 @@ const signUp = async (req, res) => {
 		};
 
 		const employee = await addEmployee(company, data);
-		return res.status(201).json(employee);
+		// SIGNUP-01: the 201 body used to include the bcrypt password hash (and otp).
+		const body = typeof employee?.toObject === "function" ? employee.toObject() : { ...employee };
+		delete body.password;
+		delete body.otp;
+		return res.status(201).json(body);
 	} catch (error) {
 		console.error("Create employee error:", {
 			message: error.message,

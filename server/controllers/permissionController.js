@@ -83,6 +83,8 @@ const addPermission = async (req, res) => {
 			const newPermissions = await user.save();
 			return res.status(201).json(newPermissions);
 		}
+		// NEW-08: this branch used to send nothing, leaving the request hanging.
+		return res.status(409).json({ message: "Permissions already exist for this user" });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}

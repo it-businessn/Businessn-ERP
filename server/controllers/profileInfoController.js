@@ -1,5 +1,7 @@
 const moment = require("moment");
+const mongoose = require("mongoose");
 
+const Company = require("../models/Company");
 const Employee = require("../models/Employee");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 
@@ -55,6 +57,11 @@ const getEmployeeProfileInfo = async (req, res) => {
 			// }
 			return res.status(200).json(result);
 		} else {
+			// NEW-14: fall back to the bare Employee record only for a member of the
+			// requested company; any employee id used to be readable here.
+			if (!(await isCompanyMember(companyName, empId))) {
+				return res.status(404).json({ message: "Employee not found" });
+			}
 			const user = await Employee.findById(empId)
 				.select("firstName middleName lastName email phoneNumber")
 				.sort({
@@ -74,6 +81,15 @@ const getEmployeeProfileInfo = async (req, res) => {
 			message: "Internal server error",
 		});
 	}
+};
+
+// NEW-14: membership is Company{name}.employees, as in middleware/authorize.js.
+const isCompanyMember = async (companyName, empId) => {
+	if (!mongoose.isValidObjectId(empId)) return false;
+	const company = await Company.findOne({ name: companyName, employees: empId })
+		.select("_id")
+		.lean();
+	return Boolean(company);
 };
 
 const findEmployeeProfileInfo = async (empId, companyName) =>
@@ -441,4 +457,5 @@ module.exports = {
 	updateEmployeeProfileInfo,
 	findEmployeeProfileInfo,
 	updateProfileInfo,
+	isCompanyMember,
 };
