@@ -121,7 +121,7 @@ const Activities = () => {
 		>
 			<FilterActivityTab selectedFilter={selectedFilter} handleFilterClick={handleFilterClick} />
 			{userActivities && (
-				<SimpleGrid columns={{ lg: 2 }} spacing={4} templateColumns={{ lg: "35% 65%" }}>
+				<SimpleGrid columns={{ lg: 2 }} spacing={4} templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 35fr) minmax(0, 65fr)" }}>
 					<LeftPane setShowSelectCustomer={setShowSelectCustomer} setLogType={setLogType} />
 					<RightPane setShowSelectCustomer={setShowSelectCustomer} />
 				</SimpleGrid>

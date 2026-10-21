@@ -49,8 +49,11 @@ const Navbar = ({
 				<Box flexShrink={0}>
 					<Logo />
 				</Box>
+				{/* flex/minW 0 instead of w=100%: next to the phone menu button a full-width
+				    row was 48px too wide and pushed the help icon off-screen */}
 				<Flex
-					w="100%"
+					flex="1"
+					minW={0}
 					// backgroundImage={navBarImg}
 					p={isMobile ? 2 : 3}
 					borderRadius={isMobile ? 0 : "10px"}
@@ -64,13 +67,24 @@ const Navbar = ({
 						justifyContent={"start"}
 						color="var(--main_color)"
 					>
-						<Stack minW={isMobile ? "auto" : "10rem"} maxW="20rem" flexShrink={0} spacing={0}>
+						{/* Long company names are cut with an ellipsis instead of pushing the
+						    profile menu off the header (phones: the name takes the free space). */}
+						<Stack
+							minW={isMobile ? 0 : "10rem"}
+							maxW={isMobile ? "none" : "20rem"}
+							flex={isMobile ? "1" : undefined}
+							flexShrink={isMobile ? 1 : 0}
+							overflow="hidden"
+							sx={{ "& > p": { overflow: "hidden", textOverflow: "ellipsis" } }}
+							spacing={0}
+						>
 							<TextTitle size={isMobile ? "sm" : "lg"} title={companyName} />
 							{!isMobile && <TextTitle size={"lg"} title={companyId} />}
 						</Stack>
 						{/* UI-01: modules shrink first, then scroll sideways; they no longer push
 						    the profile menu off-screen on 1280-1536px wide viewports. */}
 						<HStack
+							display={isMobile ? "none" : "flex"}
 							flex="1"
 							minW={0}
 							h="auto"

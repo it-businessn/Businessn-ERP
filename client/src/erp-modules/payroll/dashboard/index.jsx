@@ -44,7 +44,7 @@ const PayrollDashboard = () => {
         columns={{ base: 1, md: 1, lg: 2 }}
         spacing={{ base: 4, lg: 10 }}
         // minmax(0, 1fr) lets the left pane shrink instead of overflowing
-        templateColumns={{ lg: "minmax(0, 1fr) minmax(300px, 28%)" }}
+        templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 1fr) minmax(300px, 28%)" }}
       >
         <LeftPane
           company={company}

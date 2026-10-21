@@ -73,7 +73,7 @@ const PaygroupTable = ({
 			spacing="4"
 			my="4"
 			mr="4"
-			templateColumns={{ lg: "70% 30%" }}
+			templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 70fr) minmax(0, 30fr)" }}
 		>
 			<BoxCard>
 				<VStack spacing={1} w={"100%"} alignItems={"end"}>

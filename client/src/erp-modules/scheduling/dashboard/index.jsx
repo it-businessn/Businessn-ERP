@@ -227,7 +227,7 @@ const SchedulingDashboard = () => {
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
 				mr="4"
-				templateColumns={{ lg: "70% 30%" }}
+				templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 70fr) minmax(0, 30fr)" }}
 			>
 				<StaffOverview avgHeadCountTotals={avgHeadCountTotals} />
 				<StatsCard avgStats={avgStats} currentCost={currentCost} targetedCost={targetedCost} />
@@ -237,7 +237,7 @@ const SchedulingDashboard = () => {
 				spacing="4"
 				mt="4"
 				mr="4"
-				templateColumns={{ lg: "70% 30%" }}
+				templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 70fr) minmax(0, 30fr)" }}
 			>
 				<ProjectOverview expenseData={expenseData} />
 				<LocationGraph roleMonthlyTotals={roleMonthlyTotals} />

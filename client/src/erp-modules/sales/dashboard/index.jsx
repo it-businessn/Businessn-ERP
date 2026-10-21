@@ -43,7 +43,7 @@ const CRMDashboard = () => {
 				columns={{ base: 1, md: 1, lg: 2 }}
 				spacing="4"
 				mt="4"
-				templateColumns={{ lg: "70% 30%" }}
+				templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 70fr) minmax(0, 30fr)" }}
 			>
 				<LeftPane
 					selectedUser={selectedUser}

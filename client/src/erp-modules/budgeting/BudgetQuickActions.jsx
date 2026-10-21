@@ -23,7 +23,7 @@ const BudgetQuickActions = ({ selectedCrew, setShowModal, handleInputChange, acc
 			spacing="4"
 			my="4"
 			mr="4"
-			templateColumns={{ lg: "70% 30%" }}
+			templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 70fr) minmax(0, 30fr)" }}
 		>
 			<VStack>
 				<HStack w={"100%"} spacing={2} justifyContent={"space-between"}>

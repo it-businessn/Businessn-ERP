@@ -128,7 +128,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 					columns={{ base: 1, md: 1, lg: 1 }}
 					spacing="1em"
 					color={"var(--menu_item_color)"}
-					templateColumns={{ lg: "60% 40%" }}
+					templateColumns={{ base: "minmax(0, 1fr)", lg: "minmax(0, 60fr) minmax(0, 40fr)" }}
 				>
 					<BoxCard>
 						<TextTitle size={"sm"} title={"Earning Statement"} />

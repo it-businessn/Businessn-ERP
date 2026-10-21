@@ -39,3 +39,22 @@ describe("chart registration (react-chartjs-2 v5 / chart.js v4)", () => {
 		expect(errors.filter((e) => /not a registered/i.test(e))).toEqual([]);
 	});
 });
+
+describe("charts before their data has loaded", () => {
+	// Pages keep chart data in state that starts as null (e.g. the scheduling
+	// dashboard) and react-chartjs-2 v5 throws "Cannot read properties of null
+	// (reading 'labels')" for data={null}. The shared wrappers render an empty chart.
+	test.each([
+		["Bar", Bar],
+		["Line", Line],
+		["Doughnut", Doughnut],
+	])("C-CHART-03 %s with data null / undefined / no datasets renders without throwing", (_, Chart) => {
+		for (const data of [null, undefined, {}, { labels: ["a"] }]) {
+			expect(() => render(<Chart data={data} />)).not.toThrow();
+		}
+	});
+
+	test("C-CHART-04 real data is passed through unchanged", () => {
+		expect(() => render(<Bar data={bar} />)).not.toThrow();
+	});
+});
