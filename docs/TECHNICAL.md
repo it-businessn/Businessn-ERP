@@ -183,7 +183,7 @@ Every employee gets their earnings statement as a PDF by e-mail on the pay date.
 | Schedule: hourly 08:00-18:00 America/Vancouver | `jobs/payStubEmail.js` (started in `index.js`) |
 | Finding due stubs, sending, retries, net pay rule | `services/payStubEmailService.js` |
 | PDF: the printed `PayStubStatement`, A4, drawn on the server | `services/payStubPdfService.js`, `constants/paystub.constants.js` (copy of the client's `preview-reports/data.js` rows), `assets/paystub/` (logo, pre-faded watermark), libraries `pdfkit`, `to-words` |
-| E-mail body: period, pay date, net pay and a standard note to download the attached PDF; no links (values HTML-escaped by EJS) | `views/emails/paystub.ejs` |
+| E-mail body: period, pay date, net pay, a note that the bank deposit date may differ from the pay date on the stub (the VoPay transfer can be processed on another day), and a note to download the attached PDF; no links (values HTML-escaped by EJS) | `views/emails/paystub.ejs` |
 | Delivery log, one row per stub e-mail | `models/PayStubEmailLog.js` |
 | Send pay stub e-mail (Employees page) | `controllers/userController.js` `sendMailPaystub` |
 

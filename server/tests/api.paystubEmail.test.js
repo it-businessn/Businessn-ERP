@@ -139,8 +139,12 @@ describe("e-mail content", () => {
 			{ fullName: "<script>x</script> Jane", employeeNo: "E-104" },
 			{ company: { name: "Acme" } },
 		);
-		expect(mail.subject).toBe("Acme - Pay stub for pay period 7 (paid 23/10/2026)");
+		expect(mail.subject).toBe("Acme - Pay stub for pay period 7 (pay date 23/10/2026)");
 		expect(mail.text).toContain("Net pay: $1,550.00");
+		expect(mail.text).toContain("Pay date: 23/10/2026");
+		expect(mail.text).toContain("The date the funds arrive in your bank account may be different");
+		expect(mail.html).toContain("The date the funds arrive in your bank account may be");
+		expect(mail.text).not.toContain("was issued on");
 		expect(mail.html).toContain("&lt;script&gt;x&lt;/script&gt; Jane");
 		expect(mail.html).not.toContain("<script>x</script>");
 		expect(mail.html).toContain("Please download the attached PDF");
@@ -422,7 +426,7 @@ describe("Pay stub e-mail: manual send (POST /api/user/send-paystub)", () => {
 		});
 		const [to, subject, text, html, attachments] = sendEmail.mock.calls[0];
 		expect(to).toBe("jane@acme.test");
-		expect(subject).toBe("Acme - Pay stub for pay period 7 (paid 23/10/2026)");
+		expect(subject).toBe("Acme - Pay stub for pay period 7 (pay date 23/10/2026)");
 		expect(text).toContain("Net pay: $1,550.00");
 		expect(html).toContain("Your pay stub is attached");
 		expect(html).toContain("Please download the attached PDF");

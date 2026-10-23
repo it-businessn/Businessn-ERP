@@ -53,6 +53,12 @@ const isPayable = (stub) =>
 
 const money = (n) =>
 	new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD" }).format(Number(n) || 0);
+/** Shown in every pay stub e-mail (also in views/emails/paystub.ejs): the stub's pay
+ * date is the scheduled one; the bank deposit (VoPay transfer) can land on another day. */
+const PAY_DATE_NOTE =
+	"Please note: the pay date shown on your pay stub is the scheduled pay date for this pay period. " +
+	"The date the funds arrive in your bank account may be different, depending on when the payment " +
+	"is processed and on your bank's processing times.";
 const date = (d) => (d ? moment.utc(d).format("DD/MM/YYYY") : "-");
 const periodLabel = (stub) => `${stub.payPeriodNum}${stub.isExtraRun ? " (extra run)" : ""}`;
 
@@ -63,7 +69,7 @@ const periodLabel = (stub) => `${stub.payPeriodNum}${stub.isExtraRun ? " (extra 
 const buildPayStubEmail = async (stub, employee = {}, { company = {} } = {}) => {
 	const companyName = company?.name || stub.companyName;
 	const name = employee?.fullName || employee?.firstName || "there";
-	const subject = `${companyName} - Pay stub for pay period ${periodLabel(stub)} (paid ${date(
+	const subject = `${companyName} - Pay stub for pay period ${periodLabel(stub)} (pay date ${date(
 		stub.payPeriodPayDate,
 	)})`;
 	const fileName = payStubFileName(stub, employee);
@@ -81,10 +87,12 @@ const buildPayStubEmail = async (stub, employee = {}, { company = {} } = {}) => 
 
 	const text =
 		`Hi ${name},\n\n` +
-		`Your pay for pay period ${periodLabel(stub)} (${date(stub.payPeriodStartDate)} - ${date(
+		`Your pay stub for pay period ${periodLabel(stub)} (${date(stub.payPeriodStartDate)} - ${date(
 			stub.payPeriodEndDate,
-		)}) was issued on ${date(stub.payPeriodPayDate)}.\n\n` +
+		)}) is attached.\n\n` +
+		`Pay date: ${date(stub.payPeriodPayDate)}\n` +
 		`Net pay: ${money(stub.currentNetPay)}\n\n` +
+		`${PAY_DATE_NOTE}\n\n` +
 		`Your full earnings statement is attached (${fileName}).\n` +
 		"Please download the attached PDF to view, save or print your pay stub, and keep it for your records.\n";
 

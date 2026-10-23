@@ -11,15 +11,25 @@
     <div style="background:#fff;border:1px solid #e3e5f1;border-top:none;border-radius:0 0 10px 10px;padding:24px">
       <p style="margin:0 0 1em">Hi <%= name %>,</p>
       <p style="margin:0 0 1em">
-        Your pay for pay period <b><%= periodLabel %></b>
-        (<%= startDate %> &ndash; <%= endDate %>) was issued on <b><%= payDate %></b>.
+        Your pay stub for pay period <b><%= periodLabel %></b>
+        (<%= startDate %> &ndash; <%= endDate %>) is attached.
       </p>
       <table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 1em">
+        <tr>
+          <td style="padding:8px 10px">Pay date</td>
+          <td style="padding:8px 10px;text-align:right"><%= payDate %></td>
+        </tr>
         <tr style="background:#f4f8fa;font-weight:bold">
           <td style="padding:8px 10px">Net pay</td>
           <td style="padding:8px 10px;text-align:right"><%= net %></td>
         </tr>
       </table>
+      <p style="margin:0 0 1em;padding:10px 12px;background:#fff8e6;border-left:3px solid #e9a923;font-size:13px">
+        <b>Please note:</b> the pay date shown on your pay stub is the scheduled pay date
+        for this pay period. The date the funds arrive in your bank account may be
+        different, depending on when the payment is processed and on your bank's
+        processing times.
+      </p>
       <p style="margin:0 0 1em">
         The full earnings statement is attached as <b><%= fileName %></b>
         (earnings, deductions and year-to-date totals).
