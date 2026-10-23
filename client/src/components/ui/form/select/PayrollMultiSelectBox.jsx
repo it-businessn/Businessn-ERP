@@ -23,6 +23,16 @@ const PayrollMultiSelectBox = ({
 }) => {
 	const { onClose } = useDisclosure();
 
+	// One value per option for both the checked state and toggling. They used to
+	// differ (toggle added assignee[type], the check looked for fullName), so an
+	// option could be selected while its box stayed unchecked.
+	const optionValue = (option) =>
+		(type && option?.[type]) ||
+		option?.fullName ||
+		option?.empId?.fullName ||
+		option?.name ||
+		option;
+
 	const handleCheckboxChange = (value) => {
 		if (selectedOptions.includes(value)) {
 			setSelectedOptions(selectedOptions.filter((option) => option !== value));
@@ -65,29 +75,30 @@ const PayrollMultiSelectBox = ({
 					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
 				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"} w={w} css={tabScrollCss}>
-					{data?.map((assignee) => (
-						<MenuItem key={assignee?._id || assignee?.empId?._id}>
-							<Checkbox
-								colorScheme="facebook"
-								isChecked={
-									selectedOptions?.includes(
-										assignee.fullName || assignee?.empId?.fullName || assignee.name || assignee,
-									) ||
-									(type && selectedOptions?.find((_) => _[type] === assignee[type]))
-								}
-								onChange={() =>
-									handleCheckboxChange(
-										assignee[type] ||
-											assignee.fullName ||
-											assignee?.empId?.fullName ||
-											assignee.name,
-									)
-								}
+					{data?.map((assignee) => {
+						const value = optionValue(assignee);
+						const isChecked = Boolean(
+							selectedOptions?.includes(value) ||
+								(type && selectedOptions?.find((_) => _?.[type] === assignee[type])),
+						);
+						// The whole row toggles; the checkbox only shows the state (see MultiSelectBox).
+						return (
+							<MenuItem
+								key={assignee?._id || assignee?.empId?._id || value}
+								closeOnSelect={false}
+								onClick={() => handleCheckboxChange(value)}
 							>
-								{assignee[type] || assignee.fullName || assignee?.empId?.fullName || assignee.name}
-							</Checkbox>
-						</MenuItem>
-					))}
+								<Checkbox
+									colorScheme="facebook"
+									isChecked={isChecked}
+									pointerEvents="none"
+									tabIndex={-1}
+								>
+									{value}
+								</Checkbox>
+							</MenuItem>
+						);
+					})}
 				</Stack>
 			</MenuList>
 		</Menu>
