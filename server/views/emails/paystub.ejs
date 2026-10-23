@@ -1,0 +1,40 @@
+<%# Pay stub notification e-mail. Rendered by services/payStubEmailService.js
+    with: company, name, periodLabel, startDate, endDate, payDate, fileName,
+    net. All values are HTML-escaped by the escaped-output tag.
+    The footer logo is an inline attachment (cid:footerLogo). %>
+<body style="margin:0;font-family:Arial,Helvetica,sans-serif;background:#f9f9fb;color:#333">
+  <div style="max-width:640px;margin:0 auto;padding:24px">
+    <div style="background:#371f37;color:#fff;border-radius:10px 10px 0 0;padding:20px 24px">
+      <p style="margin:0;color:#e8ccb7;font-weight:bold"><%= company %></p>
+      <h2 style="margin:6px 0 0;font-size:20px">Your pay stub is attached</h2>
+    </div>
+    <div style="background:#fff;border:1px solid #e3e5f1;border-top:none;border-radius:0 0 10px 10px;padding:24px">
+      <p style="margin:0 0 1em">Hi <%= name %>,</p>
+      <p style="margin:0 0 1em">
+        Your pay for pay period <b><%= periodLabel %></b>
+        (<%= startDate %> &ndash; <%= endDate %>) was issued on <b><%= payDate %></b>.
+      </p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 1em">
+        <tr style="background:#f4f8fa;font-weight:bold">
+          <td style="padding:8px 10px">Net pay</td>
+          <td style="padding:8px 10px;text-align:right"><%= net %></td>
+        </tr>
+      </table>
+      <p style="margin:0 0 1em">
+        The full earnings statement is attached as <b><%= fileName %></b>
+        (earnings, deductions and year-to-date totals).
+      </p>
+      <p style="margin:0 0 1em">
+        Please download the attached PDF to view, save or print your pay stub,
+        and keep it for your records.
+      </p>
+      <p style="margin:2em 0 0;font-size:12px;color:#888">
+        This is an automated message from <%= company %> payroll. Please do not reply.
+        The attachment contains personal pay information; keep it private.
+      </p>
+    </div>
+    <div style="background:#371f37;text-align:center;padding:18px 0;margin-top:16px;border-radius:10px">
+      <img src="cid:footerLogo" width="160" style="width:160px;max-width:50%;height:auto" alt="BusinessN" />
+    </div>
+  </div>
+</body>

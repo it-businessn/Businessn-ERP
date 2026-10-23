@@ -25,6 +25,13 @@ jest.mock("../models/EmployeeScheduleEmailLog");
 jest.mock("../models/Conversation");
 jest.mock("../models/UserActivity");
 jest.mock("../services/emailService");
+// send-paystub: only recipient scoping is tested here; the pay stub e-mail
+// itself (PDF, log) is covered by api.paystubEmail.test.js (T-PSE-29..32)
+jest.mock("../services/payStubEmailService", () => ({
+	...jest.requireActual("../services/payStubEmailService"),
+	findLatestPayStub: jest.fn(),
+	emailPayStub: jest.fn(),
+}));
 jest.mock("../services/timecardService");
 
 const Company = require("../models/Company");
@@ -135,16 +142,20 @@ describe("NEW-05 employee look-ups by full name are scoped to the company", () =
 	});
 
 	test("T-FIX-04 send-paystub e-mails only members of companyName and reports names not found", async () => {
+		const { findLatestPayStub, emailPayStub } = require("../services/payStubEmailService");
+		findLatestPayStub.mockImplementation(async ({ empId }) => ({ _id: "stub1", empId, currentNetPay: 100 }));
+		emailPayStub.mockResolvedValue("SENT");
 		Employee.findOne.mockImplementation(findOneByName);
 		const res = await request(app)
 			.post("/api/user/send-paystub")
 			.set(auth())
 			.send({ employees: ["Alice", "Mallory"], companyName: "Acme" });
 		expect(res.status).toBe(201);
-		expect(res.body.message).toBe("Email sent successfully");
+		expect(res.body.message).toBe("Pay stub e-mailed to 1 of 2 employee(s); not found: Mallory");
 		expect(res.body.notFound).toEqual(["Mallory"]);
-		expect(sendEmail).toHaveBeenCalledTimes(1);
-		expect(sendEmail.mock.calls[0][0]).toBe("alice@acme.test");
+		expect(emailPayStub).toHaveBeenCalledTimes(1);
+		expect(findLatestPayStub.mock.calls[0][0]).toMatchObject({ companyNames: ["Acme"] });
+		expect(String(findLatestPayStub.mock.calls[0][0].empId)).toBe(String(ALICE_ID));
 	});
 
 	test("T-FIX-05 send-email (credentials) without companyName is scoped to the caller's companies", async () => {

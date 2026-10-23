@@ -12,6 +12,7 @@ const { sendEmail } = require("../services/emailService");
 // AUD-016: user-editable names are HTML-escaped in e-mail bodies.
 const { escapeHtml } = require("../helpers/escapeHtml");
 const { getResetPasswordLink } = require("../services/tokenService");
+const { emailPayStub, findLatestPayStub, isPayable } = require("../services/payStubEmailService");
 
 const { findGroupEmployees } = require("./setUpController");
 const { setInitialPermissions } = require("./permissionController");
@@ -437,66 +438,61 @@ const resolveMailRecipients = async (req, select) => {
 		if (user) users.push(user);
 		else notFound.push(fullName);
 	}
-	return { users, notFound };
+	return { users, notFound, companyNames };
 };
 
+/**
+ * POST /api/user/send-paystub {employees: [fullName], companyName}
+ * E-mails each employee their latest processed pay stub, only when its net pay is above $0.00
+ * (isPayable; $0.00 or negative net pay is never e-mailed). The e-mail is the pay stub e-mail
+ * (views/emails/paystub.ejs) with the full earnings statement attached as a PDF
+ * to download (services/payStubPdfService.js). Sends go through the pay stub
+ * delivery log (PayStubEmailLog, triggeredBy MANUAL), so the automatic pay-date
+ * e-mail does not send the same stub again.
+ */
 const sendMailPaystub = async (req, res) => {
 	try {
-		const { users, notFound, error } = await resolveMailRecipients(req, "email fullName");
+		const { users, notFound, companyNames, error } = await resolveMailRecipients(req, "email fullName");
 		if (error) return res.status(400).json({ message: error });
+		const sent = [];
+		const noPayStub = [];
+		const notPayable = [];
+		const failed = [];
+		// sequential: keeps the SMTP provider within its rate limits
 		for (const user of users) {
-			if (user) {
-				const { email, fullName } = user;
-
-				await sendEmail(
-					email,
-					"View Your Recent Paystub",
-					"",
-					`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
-		<div class="container" style="
-								background: #fdfdfd;
-								color: #371f37;
-								display: flex;
-								flex-direction: column;
-								align-items: self-start;
-								padding: 2em 3em;
-								gap: 1em;
-								font-size: 14px;
-							">
-			<p> Dear ${escapeHtml(fullName)},
-			</p>
-			<p>
-				Your most recent paystub is now available.</p>
-			<p>
-				Please log in to your employee portal to view or download your paystub:
-			</p>
-			<p><a class="button" href="https://businessn-erp.com/login" target="_blank">Login Here</a></p>
-		</div>
-		<div class="footer" style="
-								background-color: #371f37;
-								color: white;
-									text-align: center;
-								height: 150px;
-								display: flex;
-								align-items: center;
-							">
-			<img src="cid:footerLogo" style="margin: 0 auto;width:300px" alt="Footer Logo" />
-
-		</div>
-	</body>`,
-					[
-						{
-							filename: "BusinessN_dark1.png",
-							path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-							cid: "footerLogo",
-						},
-					],
-				);
+			const stub = await findLatestPayStub({ empId: user._id, companyNames });
+			if (!stub) {
+				noPayStub.push(user.fullName);
+				continue;
 			}
+			if (!isPayable(stub)) {
+				notPayable.push(user.fullName);
+				continue;
+			}
+			// force: the administrator asked for it, so re-send even if already e-mailed
+			const result = await emailPayStub(stub, { triggeredBy: "MANUAL", force: true });
+			(result === "SENT" ? sent : failed).push(user.fullName);
 		}
-		return res.status(201).json({ message: "Email sent successfully", notFound });
+		const problems = [
+			notFound.length && `not found: ${notFound.join(", ")}`,
+			noPayStub.length && `no processed pay stub: ${noPayStub.join(", ")}`,
+			notPayable.length && `net pay not above $0.00: ${notPayable.join(", ")}`,
+			failed.length && `could not be sent: ${failed.join(", ")}`,
+		].filter(Boolean);
+		const message = problems.length
+			? `Pay stub e-mailed to ${sent.length} of ${req.body.employees.length} employee(s); ${problems.join("; ")}`
+			: "Email sent successfully";
+		return res.status(sent.length || !problems.length ? 201 : 422).json({
+			message,
+			sent,
+			notFound,
+			noPayStub,
+			notPayable,
+			failed,
+		});
 	} catch (err) {
-		return res.status(500).json({ message: "Internal Server Error", error: err });
+		console.error("send-paystub failed", { message: err?.message });
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
 

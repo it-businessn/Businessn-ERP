@@ -113,6 +113,19 @@ Severity: P0 data loss, money or cross-tenant exposure · P1 high · P2 medium �
 
 **Compatibility.** No endpoint URL or successful response shape changed, except that payroll submit gained `fundTransfer` and sign-up no longer returns the password hash and OTP. New behaviour is limited to requests that used to hang, crash, leak data or silently do nothing (new 400/403/404/409/501 responses), the role gates, device keys, and the year-scoped pay stubs. New environment variables: `RBAC_MODE`, `PAYRUN_TRANSACTIONS`, `TIMECARD_DEVICE_KEYS`, `TRUST_PROXY`. New additive fields: `FundingTotalsPay.fundTransferStatus` and `fundTransferAt` (no backfill needed).
 
+### 1.2 Feature: automatic pay stub e-mails on the pay date (PAYSTUB-EMAIL)
+
+Each employee receives their earnings statement as a PDF by e-mail on the pay date. The attachment is the full printed `PayStubStatement` (same layout, rows and amount-in-words cheque part as Print in the app), drawn on the server. Off until `PAYSTUB_EMAIL_ENABLED=true` is set (details and environment variables: `docs/TECHNICAL.md` section 1.13; endpoints: section 2.2a).
+
+| Area | Change |
+|---|---|
+| New files | `jobs/payStubEmail.js`, `services/payStubEmailService.js`, `services/payStubPdfService.js`, `constants/paystub.constants.js`, `assets/paystub/logo.jpg`, `assets/paystub/cover.jpg`, `assets/paystub/email-logo.png`, `views/emails/paystub.ejs`, `models/PayStubEmailLog.js`, `tests/api.paystubEmail.test.js` |
+| Changed files | `index.js` (starts the job), `controllers/userController.js` (`sendMailPaystub`: the existing Send pay stub e-mail now sends the pay stub e-mail with the statement PDF instead of a "log in to view" notice), client `SendEmailList.jsx` (shows the server's message, e.g. who had no pay stub), `package.json` / `package-lock.json` (`pdfkit` 0.20.2 and `to-words` 4.1.0, the version the client uses; both pure JavaScript) |
+| Design | Opt-in switch; due = pay date today (Vancouver) plus 3 catch-up days; atomic claim on a delivery log keyed by pay date (never twice, also across server instances and years); failures logged and retried; only stubs with net pay above $0.00 are e-mailed; the app's Send Paystub uses the same e-mail, PDF and log |
+| Built on | A version of this feature in the earlier refactored archive. Changed from it: opt-in instead of on by default (staging points at production data), log keyed by pay date (its key had no year and would have skipped next year's stubs), atomic claim instead of check-then-send (two runs could both send), employee number from the company's employment record, recipient fallback to the profile e-mails, role gates |
+| Bug fix (all multi-select lists) | Ticked employees showed as unchecked: the theme had no `facebook` palette, so a checked box (`colorScheme="facebook"`, 59 places) had a transparent background and an invisible white tick. Added the palette to `client/src/config/themeConfig.js`. Also `MultiSelectBox.jsx` / `PayrollMultiSelectBox.jsx`: the whole row toggles (clicking beside the name did nothing), and the checked state uses the same value as the toggle (string options and the timesheet filter could be selected but never shown checked). Tests C-MSB-01..05 |
+| Tests | 32 automated (T-PSE-01..14, 23-31, 33, 34, 36: pay-date job, statement PDF, Send pay stub e-mail, net pay rule) plus an end-to-end run through the real nodemailer over TLS to a local capture server, and real server boots with the switch off and on |
+
 ## 2. Open issues
 
 Deduplicated from the changelog, the API issue list and the feature gap register, in priority order.
@@ -180,7 +193,8 @@ Only `api.payrun.concurrency.test.js` mocks service modules and resets the modul
 | `api.leftovers.test.js` | 15 | Employment-info save, manual time cards, badge tenancy, affiliate fallback, HTML escaping in e-mails | T-LEFT-01..15 |
 | `api.payyear.test.js` | 14 | Two years' period-N stubs coexist, year-scoped upsert and readers, previous period per frequency, index shape, whole-day matching | T-YEAR-01..14 |
 | `unit.resolveDuplicates.test.js` | 5 | Dry run writes nothing; `--apply` keeps the newest, backs up, repoints orders, deletes; informational groups untouched | T-DEDUP-01..05 |
-| **Server total** | **379** | | |
+| `api.paystubEmail.test.js` | 32 | Pay stub e-mails (pay-date job and Send pay stub e-mail): content and PDF (statement rows, totals, hidden cells, amount in words, payment method, superficial runs, one A4 page), escaping, switch, schedule, Vancouver day and catch-up, exactly-once (re-run, concurrent runs, new year), SMTP failure retry, no address, profile fallback, stuck send, Send Paystub (latest stub, re-send, not found / no stub / net pay not above $0.00 / SMTP down), net pay rule | T-PSE-01..14, 23-31, 33, 34, 36 |
+| **Server total** | **411** | | |
 | Client: 10 suites | 29 | Navbar, chart registry, print modal, change password, sign-in, Axios interceptor, UI components | C-NAV, C-CHART, C-PRINT, C-PWD, C-LOGIN, C-API |
 | Client: `src/utils/utils.test.js` | 12 | Formatting, role helpers, pay-period helpers, completion %, dates, bank validation | C-UTIL-01..10, C-VAL-01/02 |
 | **Client total** | **41** | | |
@@ -193,7 +207,7 @@ Node 22.22, npm 10.9.
 
 | Check | Baseline (`erp.zip`) | After pass 1 | **Final** |
 |---|---|---|---|
-| Server tests | 85 / 85 | 156 / 156 | **379 / 379**, 0 skipped, stable across repeated runs |
+| Server tests | 85 / 85 | 156 / 156 | **411 / 411**, 0 skipped, stable across repeated runs (379 + 32 pay stub e-mail tests) |
 | Client tests | 29 / 29 | 41 / 41 | **41 / 41** |
 | Client lint | 3 errors, 375 warnings | 0 errors, 350 warnings | **0 errors**, 350 warnings |
 | Client production build | passes, 8.5 MB | passes | **passes**, 8.5 MB, `main.js` 382 kB gzip |

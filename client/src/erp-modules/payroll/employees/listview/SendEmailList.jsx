@@ -60,21 +60,24 @@ const SendEmailList = ({ title, company, isOpen, onClose, selectedPayGroupOption
 			const { data } = payStubEmail
 				? await UserService.sendEmailPaystubs({ employees: selectedOptions, companyName: company })
 				: await UserService.sendEmailLoginCreds({ employees: selectedOptions, companyName: company });
+			// send-paystub lists employees it could not e-mail (no pay stub, not found)
+			const partial = data.message !== "Email sent successfully";
 			toast({
-				title: "Success",
+				title: partial ? "Sent with exceptions" : "Success",
 				description: data.message,
-				status: "success",
-				duration: 3000,
+				status: partial ? "warning" : "success",
+				duration: partial ? 8000 : 3000,
 				isClosable: true,
 			});
 			setIsLoading(false);
 			onClose();
 		} catch (error) {
+			setIsLoading(false);
 			toast({
 				title: "Something went wrong.",
-				description: "Please try again.",
+				description: error?.response?.data?.message || "Please try again.",
 				status: "error",
-				duration: 3000,
+				duration: 8000,
 				isClosable: true,
 			});
 		}

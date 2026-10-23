@@ -14,6 +14,7 @@ const socketio = require("socket.io");
 const CONFIG = require("./config/app.config");
 const { buildApp } = require("./app");
 const runStatHolidayJob = require("./jobs/statHoliday");
+const runPayStubEmailJob = require("./jobs/payStubEmail");
 const { attachSocketAuth } = require("./helpers/socketAuth");
 
 // FIX: Attach http server so Socket.io actually receives connections.
@@ -50,6 +51,8 @@ process.on("unhandledRejection", (reason) => {
 
 // Scheduler job
 runStatHolidayJob();
+// PAYSTUB-EMAIL: e-mail pay stubs on the pay date (only when PAYSTUB_EMAIL_ENABLED=true)
+runPayStubEmailJob();
 
 // Connect to MongoDB. The returned promise must be handled: an unreachable
 // database otherwise surfaces as an unhandled rejection and kills the process.

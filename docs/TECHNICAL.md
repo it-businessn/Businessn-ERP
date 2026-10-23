@@ -55,7 +55,8 @@ helpers/       payrollHelper (pay maths), percent, socketAuth, escapeHtml, reque
 utils/         db.util (runInTransaction, index-error logging), payYear.util, date.util, time.util
 middleware/    auth.js (JWT, errorHandler), authorize.js (tenancy, requireSelf), rbac.js (roles), deviceAuth.js
 models/        88 files; about 65 in active use (section 4)
-jobs/          statHoliday.js: daily cron adding stat-holiday timesheets per company
+jobs/          statHoliday.js: daily cron adding stat-holiday timesheets per company;
+               payStubEmail.js: hourly pay-date pay stub e-mails (section 1.13)
 views/         EJS pages for password reset
 scripts/       check-duplicates.js, resolve-duplicates.js
 ```
@@ -172,6 +173,35 @@ src/index.js -> App.js -> routes.js (createBrowserRouter; authenticated modules 
 | Database | MongoDB Atlas | replica set, so pay-run transactions are used; indexes built by `autoIndex` on every boot |
 
 Run **one** server instance. The rate-limit stores, the membership and role caches and the pay-run lock are in memory; more than one instance needs a shared store such as Redis (AUD-034). The unique indexes still prevent duplicate pay stubs across instances. Request logging prints every request to stdout.
+
+### 1.13 Pay stub e-mails on the pay date (PAYSTUB-EMAIL)
+
+Every employee gets their earnings statement as a PDF by e-mail on the pay date. The PDF is the full statement the app prints from `PayStubStatement` (Print in the pay stub viewer): header with logo, company and address; pay details, employee, Employer Paid Benefits and Vacation on the left; Earnings, Deductions and Net Pay Summary on the right; the cover watermark; and the cheque part with the amount in words and "THIS IS NOT A CHEQUE. DO NOT DEPOSIT."
+
+| Piece | File |
+|---|---|
+| Schedule: hourly 08:00-18:00 America/Vancouver | `jobs/payStubEmail.js` (started in `index.js`) |
+| Finding due stubs, sending, retries, net pay rule | `services/payStubEmailService.js` |
+| PDF: the printed `PayStubStatement`, A4, drawn on the server | `services/payStubPdfService.js`, `constants/paystub.constants.js` (copy of the client's `preview-reports/data.js` rows), `assets/paystub/` (logo, pre-faded watermark), libraries `pdfkit`, `to-words` |
+| E-mail body: period, pay date, net pay and a standard note to download the attached PDF; no links (values HTML-escaped by EJS) | `views/emails/paystub.ejs` |
+| Delivery log, one row per stub e-mail | `models/PayStubEmailLog.js` |
+| Send pay stub e-mail (Employees page) | `controllers/userController.js` `sendMailPaystub` |
+
+**How a run works:**
+1. **Switch.** The job does nothing unless `PAYSTUB_EMAIL_ENABLED=true`. It is always off with `NODE_ENV=development`. Opt-in is deliberate: these e-mails go to real employees, and a staging server pointed at production data must not send them.
+2. **What is due.** Processed stubs (`isProcessed: true`) whose pay date is today in Vancouver, plus the 3 days before (catch-up after an outage). Pay dates are compared as whole UTC days (stubs are stored at UTC start of day; older ones may carry a time part).
+3. **Exactly once.** Before sending, the stub is claimed in `PayStubEmailLog` (status `SENDING`). The log has a unique key on the stub's natural key **plus its pay date**, because period numbers restart every year. A second hourly run, a manual send or a second server instance cannot claim the same stub. A claim older than 30 minutes (server died mid-send) can be taken over.
+4. **Recipient.** `Employee.email` (the login e-mail, as used by Employees > Send pay stub e-mail). If it is empty: the payroll profile's `personalEmail`, then `businessEmail`. No address: the stub is logged `FAILED` with "Employee has no e-mail address" and retried every run, so it goes out once an address is added (within the catch-up window, otherwise send it manually).
+5. **PDF rules.** Rows, visibility and formats follow the client components: `EarningsTable` (Federal and Provincial Tax never listed; Regular, Gross and Net Pay always; others only with a current, YTD-hours or YTD value above 0), `ItemRow` (bold totals, rate hidden at 0, hours hidden on amount-only lines, `toFixed(2)` without `$`), `InformationSection` (benefit and vacation rows; Available Balance shows YTD only) and `ChequeDetails` (amount in words by `to-words` with the same settings; payment method "Manual" for report type 3, otherwise DIRECT DEPOSIT; a superficial balance run, type 4, shows 0). Long values are cut after 3 lines, so the statement is always one page. **When the statement layout or its rows change in the client, change `payStubPdfService.js` and `paystub.constants.js` too.**
+6. **Manual send from the app.** Employees > "Send pay stub e-mail" (`POST /api/user/send-paystub`, `userController.sendMailPaystub`) sends this same e-mail and PDF for each selected employee's latest processed pay stub. It goes through the delivery log (`triggeredBy: MANUAL`, re-sends when clicked again), so the pay-date run does not send that stub a second time. The response lists `sent`, `notFound`, `noPayStub` and `failed` names; the app shows its message.
+7. **Failures.** An SMTP error is logged `FAILED` with the message and retried on the next run (`attempts` counts tries). One failure never stops the batch. Sends are sequential to stay within the SMTP provider's limits.
+
+**Environment variables:**
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PAYSTUB_EMAIL_ENABLED` | off | `true` switches the pay-date e-mails on for this server |
+| `NODEMAILER_ZOHO_SMTP*` | existing | the SMTP account used by every other e-mail |
 
 ## 2. API reference
 
@@ -346,6 +376,12 @@ Header `x-vopay-signature: <hex>`, compared in constant time with `sha1(SHARED_K
 
 The signature is constant for a whole UTC day and not bound to the payload (API #16, open).
 
+### 2.2a Pay stub e-mail endpoint (PAYSTUB-EMAIL)
+
+`POST /api/user/send-paystub` (the app's Employees > "Send Paystub"): token and membership of `companyName`. Body `{employees: [fullName], companyName}`. Each employee gets their latest processed pay stub by e-mail with the statement PDF attached (section 1.13), only when its net pay is above $0.00. `201 {message, sent, notFound, noPayStub, notPayable, failed}` when at least one was sent or nothing went wrong, otherwise `422` with the same body; `400` for a bad `employees` list; `403` for a company the caller is not a member of. `message` is "Email sent successfully" or e.g. "Pay stub e-mailed to 1 of 2 employee(s); net pay not above $0.00: Sam".
+
+The pay-date e-mails have no endpoint: they are sent by the job (`jobs/payStubEmail.js`) when `PAYSTUB_EMAIL_ENABLED=true`. Delivery is recorded in the `paystubemaillogs` collection (`PayStubEmailLog`: status, error, attempts per stub).
+
 ### 2.3 Routers mounted before global auth
 
 | Mount (route file) | Covers | Auth / role | Notable endpoints |
@@ -491,6 +527,7 @@ All declared indexes (the implicit `_id` index is not listed). Only the first tw
 |---|---|---|
 | EmployeePayStub | `companyName, empId, payPeriodNum, isExtraRun, scheduleFrequency, reportType, payPeriodPayDate` | **unique**, partial `{isProcessed: true}`, name `uniq_processed_paystub_v2` |
 | FundingTotalsPay | `companyName, payPeriodNum, isExtraRun, payPeriodPayDate, scheduleFrequency` | **unique**, name `uniq_funding_totals_run` |
+| PayStubEmailLog | `companyName, empId, payPeriodNum, isExtraRun, reportType, payPeriodPayDate` | **unique**, name `uniq_paystub_email` (one e-mail per pay stub); also `companyName, payPeriodPayDate, status` |
 | Employee | `email` | **unique** (not sparse, not lower-cased: a second employee without e-mail fails on `null`) |
 | EmployeeProfileInfo | `affiliateCode` | **unique**, sparse |
 | Company | `employees`; `registration_number`; `name` | name not unique |
