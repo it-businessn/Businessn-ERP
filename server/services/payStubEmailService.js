@@ -1,5 +1,3 @@
-const path = require("path");
-const ejs = require("ejs");
 const moment = require("moment-timezone");
 const Company = require("../models/Company");
 const Employee = require("../models/Employee");
@@ -8,6 +6,7 @@ const EmployeePayStub = require("../models/EmployeePayStub");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const PayStubEmailLog = require("../models/PayStubEmailLog");
 const { sendEmail } = require("./emailService");
+const { render } = require("./emailTemplates");
 const { buildPayStubPdf, payStubFileName } = require("./payStubPdfService");
 const { PAYRUN_TYPE_CODE } = require("../constants/paystub.constants");
 const { normalisePayDate } = require("../utils/payYear.util");
@@ -18,9 +17,6 @@ const { normalisePayDate } = require("../utils/payYear.util");
  * by Send pay stub e-mail in the app (userController.sendMailPaystub).
  */
 
-const EMAIL_TEMPLATE = path.join(__dirname, "../views/emails/paystub.ejs");
-// assets/logos/BusinessN_dark1.png trimmed to the wordmark and resized for e-mail (12 KB)
-const FOOTER_LOGO = path.join(__dirname, "../assets/paystub/email-logo.png");
 const TIMEZONE = "America/Vancouver";
 /** Pay dates up to this many days back are re-checked, so a restart or outage on payday skips nobody. */
 const CATCH_UP_DAYS = 3;
@@ -53,7 +49,7 @@ const isPayable = (stub) =>
 
 const money = (n) =>
 	new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD" }).format(Number(n) || 0);
-/** Shown in every pay stub e-mail (also in views/emails/paystub.ejs): the stub's pay
+/** Shown in every pay stub e-mail: the stub's pay
  * date is the scheduled one; the bank deposit (VoPay transfer) can land on another day. */
 const PAY_DATE_NOTE =
 	"Please note: the pay date shown on your pay stub is the scheduled pay date for this pay period. " +
@@ -63,7 +59,7 @@ const date = (d) => (d ? moment.utc(d).format("DD/MM/YYYY") : "-");
 const periodLabel = (stub) => `${stub.payPeriodNum}${stub.isExtraRun ? " (extra run)" : ""}`;
 
 /**
- * Builds subject, plain text, HTML (views/emails/paystub.ejs, values escaped by
+ * Builds subject, plain text, HTML (views/emails/layout.ejs, values escaped by
  * EJS) and the PDF attachment for one stub. No I/O except the template read.
  */
 const buildPayStubEmail = async (stub, employee = {}, { company = {} } = {}) => {
@@ -74,33 +70,35 @@ const buildPayStubEmail = async (stub, employee = {}, { company = {} } = {}) => 
 	)})`;
 	const fileName = payStubFileName(stub, employee);
 
-	const html = await ejs.renderFile(EMAIL_TEMPLATE, {
-		company: companyName,
-		name,
-		periodLabel: periodLabel(stub),
-		startDate: date(stub.payPeriodStartDate),
-		endDate: date(stub.payPeriodEndDate),
-		payDate: date(stub.payPeriodPayDate),
-		net: money(stub.currentNetPay),
-		fileName,
+	// EMAIL-01: the shared e-mail layout (views/emails/layout.ejs), values escaped
+	const mail = await render(subject, {
+		preheader: `Your pay stub for pay period ${periodLabel(stub)} is attached.`,
+		eyebrow: companyName,
+		title: "Your pay stub is attached",
+		greeting: `Hi ${name},`,
+		paragraphs: [
+			`Your pay stub for pay period ${periodLabel(stub)} (${date(stub.payPeriodStartDate)} - ${date(
+				stub.payPeriodEndDate,
+			)}) is attached.`,
+			`Your full earnings statement (earnings, deductions and year-to-date totals) is attached as ${fileName}.`,
+			"Please download the attached PDF to view, save or print your pay stub, and keep it for your records.",
+		],
+		details: [
+			{ label: "Pay period", value: periodLabel(stub) },
+			{ label: "Pay date", value: date(stub.payPeriodPayDate) },
+			{ label: "Net pay", value: money(stub.currentNetPay) },
+		],
+		notice: { title: "Please note:", text: PAY_DATE_NOTE.replace(/^Please note: /, "") },
+		closing: ["Kind regards,", `${companyName} Payroll`],
+		footer: `This is an automated message from ${companyName} payroll. Please do not reply to this e-mail. The attachment contains personal pay information; please keep it private.`,
 	});
-
-	const text =
-		`Hi ${name},\n\n` +
-		`Your pay stub for pay period ${periodLabel(stub)} (${date(stub.payPeriodStartDate)} - ${date(
-			stub.payPeriodEndDate,
-		)}) is attached.\n\n` +
-		`Pay date: ${date(stub.payPeriodPayDate)}\n` +
-		`Net pay: ${money(stub.currentNetPay)}\n\n` +
-		`${PAY_DATE_NOTE}\n\n` +
-		`Your full earnings statement is attached (${fileName}).\n` +
-		"Please download the attached PDF to view, save or print your pay stub, and keep it for your records.\n";
+	const { html, text } = mail;
 
 	const pdf = await buildPayStubPdf(stub, employee, company);
 	const attachments = [
 		// the statement, offered as a download (Content-Disposition: attachment)
 		{ filename: fileName, content: pdf, contentType: "application/pdf", contentDisposition: "attachment" },
-		{ filename: "BusinessN.png", path: FOOTER_LOGO, cid: "footerLogo", contentDisposition: "inline" },
+		...mail.attachments, // the logo, inline
 	];
 	return { subject, text, html, attachments };
 };

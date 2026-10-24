@@ -1,0 +1,78 @@
+<%#
+  EMAIL-01: the one layout every e-mail uses (services/emailTemplates.js).
+  Table-based with inline styles so it renders the same in Outlook, Gmail and
+  Apple Mail; every value is HTML-escaped (escaped output tags). Data:
+    preheader, eyebrow, title, greeting, paragraphs[], details[{label, value}],
+    button {label, url}, linkNote, notice {title, text}, closing[], footer
+  The logo is an inline attachment (cid:footerLogo).
+%><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title><%= title %></title>
+</head>
+<body style="margin:0;padding:0;background:#f4f4f7;font-family:Arial,Helvetica,sans-serif;color:#333333;">
+<% if (preheader) { %><div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#f4f4f7;"><%= preheader %></div><% } %>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f4f7;">
+  <tr>
+    <td align="center" style="padding:24px 12px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
+        <tr>
+          <td style="background:#371f37;border-radius:10px 10px 0 0;padding:22px 28px;">
+            <% if (eyebrow) { %><p style="margin:0 0 6px;color:#e8ccb7;font-size:13px;font-weight:bold;letter-spacing:0.3px;"><%= eyebrow %></p><% } %>
+            <h1 style="margin:0;color:#ffffff;font-size:21px;line-height:1.3;font-weight:bold;"><%= title %></h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#ffffff;border:1px solid #e3e5f1;border-top:none;border-radius:0 0 10px 10px;padding:28px;font-size:15px;line-height:1.55;">
+            <% if (greeting) { %><p style="margin:0 0 16px;"><%= greeting %></p><% } %>
+            <% (paragraphs || []).forEach(function (p) { %><p style="margin:0 0 16px;"><%= p %></p><% }) %>
+            <% if (details && details.length) { %>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 20px;border-collapse:collapse;font-size:14px;">
+              <% details.forEach(function (d, i) { %>
+              <tr style="background:<%= i % 2 ? '#ffffff' : '#f7f6fa' %>;">
+                <td valign="top" style="padding:9px 12px;width:38%;color:#6b6478;font-weight:bold;"><%= d.label %></td>
+                <td valign="top" style="padding:9px 12px;white-space:pre-line;"><%= d.value %></td>
+              </tr>
+              <% }) %>
+            </table>
+            <% } %>
+            <% if (button && button.url) { %>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 20px;">
+              <tr>
+                <td style="background:#371f37;border-radius:6px;">
+                  <a href="<%= button.url %>" target="_blank" style="display:inline-block;padding:12px 26px;color:#ffffff;font-weight:bold;text-decoration:none;font-size:15px;"><%= button.label %></a>
+                </td>
+              </tr>
+            </table>
+            <% if (linkNote) { %>
+            <p style="margin:0 0 16px;font-size:12px;color:#6b6478;"><%= linkNote %><br /><a href="<%= button.url %>" target="_blank" style="color:#5b3b5b;word-break:break-all;"><%= button.url %></a></p>
+            <% } %>
+            <% } %>
+            <% if (notice) { %>
+            <p style="margin:0 0 16px;padding:10px 14px;background:#fff8e6;border-left:3px solid #e9a923;font-size:13px;"><% if (notice.title) { %><b><%= notice.title %></b> <% } %><%= notice.text %></p>
+            <% } %>
+            <% if (closing && closing.length) { %>
+            <p style="margin:20px 0 0;"><% closing.forEach(function (line, i) { %><%= line %><% if (i < closing.length - 1) { %><br /><% } %><% }) %></p>
+            <% } %>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:16px 0 10px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background:#371f37;border-radius:10px;padding:16px 12px;">
+            <img src="cid:footerLogo" width="140" alt="BusinessN" style="display:block;width:140px;max-width:40%;height:auto;border:0;" />
+            </td></tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:0 20px 12px;font-size:12px;line-height:1.5;color:#8a8494;">
+            <%= footer %>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

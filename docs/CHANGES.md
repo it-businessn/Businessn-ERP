@@ -208,6 +208,22 @@ Server: `GET /api/payroll/roe/employer/:company`, `GET /roe/earnings/:company/:e
 
 Tests: `api.roe.test.js` T-ROE-01..11, client `roe.test.jsx` C-ROE-01..03 (whole flow).
 
+### 1.9 E-mail templates (EMAIL-01)
+
+All e-mails are built by `services/emailTemplates.js` with one layout, `views/emails/layout.ejs` (table-based, inline styles, escaped values, preheader, logo on a dark band, "automated message" footer). Each builder returns subject, HTML and a plain-text part made from the same content; `sendTemplate(to, mail, extraAttachments)` sends it.
+
+| E-mail | Sent by | Fixed |
+|---|---|---|
+| Set your password | `userController.sendMailCreds` | text part was only the link; expiry from `RESET_LINK_MINUTES`; copy-paste link |
+| Reset your password | `passwordController.forgotPassword` | same; "Businessᴺ" subject |
+| Thank you for contacting us | `contactController.followUpContact` | was plain text only |
+| Your weekly schedule | `scheduleController.emailWorkShifts` | wrong text part ("We have received your inquiry"), empty paragraph, no footer |
+| New lead / New support ticket | `ticketController` | "Hello Jesse" hard-coded; empty text part; link text /login/ but href the home page |
+| Ticket assigned | `ticketController.createTicket` | wrong text part |
+| Pay stub | `payStubEmailService` | moved onto the layout, same wording (`paystub.ejs` removed) |
+
+Tests: `unit.emailTemplates.test.js` T-EMAIL-01..05; T-LEFT-12 accepts EJS's `&#34;` for a quote.
+
 ## 2. Open issues
 
 Deduplicated from the changelog, the API issue list and the feature gap register, in priority order.
@@ -283,7 +299,7 @@ Only `api.payrun.concurrency.test.js` mocks service modules and resets the modul
 | `api.payyear.test.js` | 14 | Two years' period-N stubs coexist, year-scoped upsert and readers, previous period per frequency, index shape, whole-day matching | T-YEAR-01..14 |
 | `unit.resolveDuplicates.test.js` | 5 | Dry run writes nothing; `--apply` keeps the newest, backs up, repoints orders, deletes; informational groups untouched | T-DEDUP-01..05 |
 | `api.paystubEmail.test.js` | 32 | Pay stub e-mails (pay-date job and Send pay stub e-mail): content and PDF (statement rows, totals, hidden cells, amount in words, payment method, superficial runs, one A4 page), escaping, switch, schedule, Vancouver day and catch-up, exactly-once (re-run, concurrent runs, new year), SMTP failure retry, no address, profile fallback, stuck send, Send Paystub (latest stub, re-send, not found / no stub / net pay not above $0.00 / SMTP down), net pay rule | T-PSE-01..14, 23-31, 33, 34, 36 |
-| **Server total** | **486** | | |
+| **Server total** | **491** | | |
 | Client: 10 suites | 29 | Navbar, chart registry, print modal, change password, sign-in, Axios interceptor, UI components | C-NAV, C-CHART, C-PRINT, C-PWD, C-LOGIN, C-API |
 | Client: `src/utils/utils.test.js` | 12 | Formatting, role helpers, pay-period helpers, completion %, dates, bank validation | C-UTIL-01..10, C-VAL-01/02 |
 | **Client total** | **41** | | |
@@ -296,7 +312,7 @@ Node 22.22, npm 10.9.
 
 | Check | Baseline (`erp.zip`) | After pass 1 | **Final** |
 |---|---|---|---|
-| Server tests | 85 / 85 | 156 / 156 | **486 / 486**, 0 skipped, stable across repeated runs |
+| Server tests | 85 / 85 | 156 / 156 | **491 / 491**, 0 skipped, stable across repeated runs |
 | Client tests | 29 / 29 | 41 / 41 | **41 / 41** |
 | Client lint | 3 errors, 375 warnings | 0 errors, 350 warnings | **0 errors**, 350 warnings |
 | Client production build | passes, 8.5 MB | passes | **passes**, 8.5 MB, `main.js` 382 kB gzip |

@@ -1,4 +1,3 @@
-const path = require("path");
 const mongoose = require("mongoose");
 
 const Company = require("../models/Company");
@@ -8,9 +7,8 @@ const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
 const Group = require("../models/Group");
 const Lead = require("../models/Lead");
 const UserActivity = require("../models/UserActivity");
-const { sendEmail } = require("../services/emailService");
+const { sendTemplate, setPasswordEmail } = require("../services/emailTemplates");
 // AUD-016: user-editable names are HTML-escaped in e-mail bodies.
-const { escapeHtml } = require("../helpers/escapeHtml");
 const { getResetPasswordLink } = require("../services/tokenService");
 const { emailPayStub, findLatestPayStub, isPayable } = require("../services/payStubEmailService");
 
@@ -445,7 +443,7 @@ const resolveMailRecipients = async (req, select) => {
  * POST /api/user/send-paystub {employees: [fullName], companyName}
  * E-mails each employee their latest processed pay stub, only when its net pay is above $0.00
  * (isPayable; $0.00 or negative net pay is never e-mailed). The e-mail is the pay stub e-mail
- * (views/emails/paystub.ejs) with the full earnings statement attached as a PDF
+ * (views/emails/layout.ejs) with the full earnings statement attached as a PDF
  * to download (services/payStubPdfService.js). Sends go through the pay stub
  * delivery log (PayStubEmailLog, triggeredBy MANUAL), so the automatic pay-date
  * e-mail does not send the same stub again.
@@ -515,89 +513,7 @@ const sendMailCreds = async (req, res) => {
 				const resetLink = getResetPasswordLink({ _id }, user.password);
 
 				if (resetLink)
-					await sendEmail(
-						email,
-						"Set Login Password",
-						resetLink,
-						`<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
-						<div
-							class="header"
-							style="
-								background-color: #371f37;
-								color: white;
-								text-align: center;
-								height: 150px;
-								display: flex;
-								align-items: center;
-							"
-						>
-							<div
-								id="header_content"
-								style="
-									display: flex;
-									flex-direction: column;
-									align-items: self-start;
-									background: #4c364b;
-									border-radius: 10px;
-									gap: 1em;
-									width: 80%;
-									margin: 0 auto;
-									padding: 1.5em;
-								"
-							>
-								<p
-									class="topic"
-									style="font-weight: bold; font-size: larger; margin: 5px 0"
-								>
-									Set Password
-								</p>
-							</div>
-						</div><div
-							class="container"
-							style="
-								background: #fdfdfd;
-								color: #371f37;
-								display: flex;
-								flex-direction: column;
-								align-items: self-start;
-								padding: 2em 3em;
-								gap: 1em;
-								font-size: 14px;
-							"
-						>
-				      <h2 style="margin: 5px 0">Hello ${escapeHtml(user.firstName)},</h2>
-       <p>  Your account has been successfully created. For your security, please
-        set your password by clicking the link below.</p> 
-		<p>
-	    This link will expire in 15 minutes. If it expires, you can request a
-	    new one from the login screen.
-	  </p>
-				      <p><a class="button" href="${resetLink}" target="_blank">Set Your Password</a></p>
-				   </div>
-						<div
-							class="footer"
-							style="
-								background-color: #371f37;
-								color: white;
-								text-align: center;
-								height: 150px;
-								display: flex;
-								align-items: center;
-							"
-						>
-				      <img src="cid:footerLogo"
-								style="margin: 0 auto;width:300px" alt="Footer Logo"/>
-
-						</div>
-					</body> `,
-						[
-							{
-								filename: "BusinessN_dark1.png",
-								path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-								cid: "footerLogo",
-							},
-						],
-					);
+					await sendTemplate(email, setPasswordEmail({ firstName: user.firstName, link: resetLink }));
 			}
 		}
 

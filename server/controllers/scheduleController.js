@@ -6,9 +6,8 @@ const EmployeeShift = require("../models/EmployeeShifts");
 const WorkShift = require("../models/WorkShift");
 const Crew = require("../models/Crew");
 const DailyTotals = require("../models/DailyTotals");
-const { sendEmail } = require("../services/emailService");
+const { sendTemplate, weeklyScheduleEmail } = require("../services/emailTemplates");
 // AUD-016: request data is HTML-escaped in e-mail bodies.
-const { escapeHtml } = require("../helpers/escapeHtml");
 const EmployeeScheduleEmailLog = require("../models/EmployeeScheduleEmailLog");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const BudgetAccount = require("../models/BudgetAccount");
@@ -583,81 +582,9 @@ const emailWorkShifts = async (req, res) => {
 			newSchedule.originalname = attachment?.originalname;
 
 			if (email) {
-				await sendEmail(
+				await sendTemplate(
 					email,
-					`Weekly Schedule ${week}`,
-					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
-					`
-						<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
-				<div
-					class="header"
-					style="
-						background-color: #371f37;
-						color: white;
-						text-align: center;
-						height: 150px;
-						display: flex;
-						align-items: center;
-					"
-				>
-					<div
-						id="header_content"
-						style="
-							display: flex;
-							flex-direction: column;
-							align-items: self-start;
-							background: #4c364b;
-							border-radius: 10px;
-							gap: 1em;
-							width: 80%;
-							margin: 0 auto;
-							padding: 1.5em;
-						"
-					> 
-					<p
-						class="category"
-						style="color: #e8ccb7; font-weight: bold; margin: 0"
-					>
-						${escapeHtml(location)}
-					</p>
-					<p
-						class="topic"
-						style="font-weight: bold; font-size: larger; margin: 5px 0"
-					>
-						Weekly Schedule Confirmation
-					</p>
-						 
-					</div>
-				</div>
-				<div
-					class="container"
-					style="
-						background: #fdfdfd;
-						color: #371f37;
-						display: flex;
-						flex-direction: column;
-						align-items: self-start;
-						padding: 2em 3em;
-						gap: 1em;
-						font-size: 14px;
-					"
-				>
-					<h3 style="margin: 0; margin-bottom: 1em">Hi ${escapeHtml(fullName)},</h3>
-				 
-
-					<p style="font-weight: bold; margin: 5px 0"> ${
-						attachment
-							? `Please see your schedule for the week of ${escapeHtml(week)}. The attached file contains the details for your reference.`
-							: ""
-					}</p>
-
-			 
-					<p style="margin: 5px 0">
-      					Please contact your manager if you have any questions about your schedule.
-					</p>
-				</div>			 
-			</body>
-					`,
+					weeklyScheduleEmail({ fullName, week, location, companyName, hasAttachment: Boolean(attachment) }),
 					attachments,
 				);
 				const data = {

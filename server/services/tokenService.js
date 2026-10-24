@@ -8,6 +8,9 @@ const CONFIG = require("../config/app.config");
  * outstanding link for that user without any server-side state, which makes a
  * reset link effectively single-use.
  */
+/** How long a set / reset password link is valid (the e-mails say so). */
+const RESET_LINK_MINUTES = 15;
+
 const resetSecret = (passwordHash) => `${CONFIG.ACCESS_TOKEN_SECRET}:${passwordHash || ""}`;
 
 const getResetPasswordLink = (user, passwordHash = "") => {
@@ -18,7 +21,7 @@ const getResetPasswordLink = (user, passwordHash = "") => {
 
 		// const expiresIn = moment().add(3, "days").unix();
 
-		const expiresIn = moment().add(15, "minutes").unix();
+		const expiresIn = moment().add(RESET_LINK_MINUTES, "minutes").unix();
 
 		const payload = {
 			...user,
@@ -59,4 +62,4 @@ const verifyResetPasswordToken = (token, passwordHash = "") => {
 	return decoded;
 };
 
-module.exports = { getResetPasswordLink, verifyResetPasswordToken };
+module.exports = { RESET_LINK_MINUTES, getResetPasswordLink, verifyResetPasswordToken };

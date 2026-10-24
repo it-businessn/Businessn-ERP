@@ -1,5 +1,5 @@
 const Contact = require("../models/Contact");
-const { sendEmail } = require("../services/emailService");
+const { sendTemplate, contactFollowUpEmail } = require("../services/emailTemplates");
 const { companyScopeFilter } = require("../middleware/authorize");
 const { pickScalarFields } = require("../helpers/requestFields");
 
@@ -138,11 +138,7 @@ const updateContact = async (req, res) => {
 const followUpContact = async (req, res) => {
 	const { contactEmail } = req.body;
 	try {
-		await sendEmail(
-			contactEmail,
-			"Thank you for contacting us",
-			"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
-		);
+		await sendTemplate(contactEmail, contactFollowUpEmail({ firstName: req.body?.firstName }));
 
 		return res.status(200).json({
 			message: "A followup email has been sent to your email address!",

@@ -227,7 +227,7 @@ describe("LEFT-05 user input is HTML-escaped in e-mails", () => {
 		expect(res.status).toBeLessThan(300);
 		expectEscaped(html());
 		expect(html()).not.toContain("<img src=x>");
-		expect(html()).toContain("&quot;&gt;&lt;img src=x&gt;");
+		expect(html()).toMatch(/(&quot;|&#34;)&gt;&lt;img src=x&gt;/); // EJS writes " as &#34;
 	});
 
 	test("T-LEFT-13 public support form (POST /api/ticket/support)", async () => {

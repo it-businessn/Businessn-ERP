@@ -6,7 +6,7 @@ const SupportTicket = require("../models/Ticket");
 const Employee = require("../models/Employee");
 const Lead = require("../models/Lead");
 
-const { sendEmail } = require("../services/emailService");
+const { sendTemplate, newLeadEmail, newSupportTicketEmail, ticketAssignedEmail } = require("../services/emailTemplates");
 const { filePath, fileContentType } = require("../services/fileService");
 const { COMPANIES } = require("../constants/constant");
 const { SUPPORT_ADMIN_CONTACT } = require("../constants/permissions.constants");
@@ -14,7 +14,6 @@ const { TICKET_STATUS } = require("../constants/ticket.constants");
 const { companyScopeFilter } = require("../middleware/authorize");
 const { pickScalarFields } = require("../helpers/requestFields");
 // AUD-016: request data (incl. the public lead / support forms) is HTML-escaped in e-mail bodies.
-const { escapeHtml } = require("../helpers/escapeHtml");
 
 const getAllTickets = async (req, res) => {
 	const { id } = req.params;
@@ -246,13 +245,6 @@ const createLeadTicket = async (req, res) => {
 		if (Array.isArray(interests)) data.interests = interests;
 		const lead = await createNewFreshLead(data);
 
-		const attachments = [
-			{
-				filename: "BusinessN_dark1.png",
-				path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-				cid: "footerLogo",
-			},
-		];
 		data.category = "Support";
 		data.priority = 1;
 
@@ -278,113 +270,16 @@ const createLeadTicket = async (req, res) => {
 		});
 
 		if (assigneeEmail?.email) {
-			await sendEmail(
+			await sendTemplate(
 				assigneeEmail?.email,
-				`New Lead Notification`,
-				"You’ve got a new lead! Here are the basic details:",
-				`
-					<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
-			<div
-				class="header"
-				style="
-					background-color: #371f37;
-					color: white;
-					text-align: center;
-					height: 150px;
-					display: flex;
-					align-items: center;
-				"
-			>
-				<div
-					id="header_content"
-					style="
-						display: flex;
-						flex-direction: column;
-						align-items: self-start;
-						background: #4c364b;
-						border-radius: 10px;
-						gap: 1em;
-						width: 80%;
-						margin: 0 auto;
-						padding: 1.5em;
-					"
-				>
-					<p
-						class="category"
-						style="color: #e8ccb7; font-weight: bold; margin: 0"
-					>
-						${escapeHtml(ticket?.category)}
-					</p>
-					<p
-						class="topic"
-						style="font-weight: bold; font-size: larger; margin: 5px 0"
-					>
-						New Lead Notification
-					</p>
-				</div>
-			</div>
-			<div
-				class="container"
-				style="
-					background: #fdfdfd;
-					color: #371f37;
-					display: flex;
-					flex-direction: column;
-					align-items: self-start;
-					padding: 2em 3em;
-					gap: 1em;
-					font-size: 14px;
-				"
-			>
-				<h3 style="margin: 0; margin-bottom: 1em">Hello Jesse,</h3>
-				<p style="margin: 5px 0">
-					We are confirming that we have received ticket <span style="
-					background: #d5efe2;">${escapeHtml(ticket?.ticketNumber)}</span> assigned to
-					you.
-				</p>
-
-				<p>You’ve got a new lead! Here are the basic details:</p>
-
-				<p style="font-weight: bold; margin: 0">Company Name:</p>
-				<p>${escapeHtml(lead?.opportunityName)}</p>
-				<p style="font-weight: bold; margin: 0">Customer Name:</p>
-				<p>${escapeHtml(data?.firstName)} ${escapeHtml(data?.lastName)}</p>
-				<p style="font-weight: bold; margin: 0">Email:</p>
-				<p>${escapeHtml(data?.email)}</p>
-				<p style="font-weight: bold; margin: 0">Phone:</p>
-				<p>${escapeHtml(data?.phone)}</p>
-				<p style="font-weight: bold; margin: 0">View Ticket:</p>
-				<p style="margin: 5px 0">
-					To view the full ticket or add a reply, access your account via the link
-					below:
-				</p>
-				<p style="margin: 5px 0">
-					<a href="https://businessn-erp.com/" target="_blank"
-						>https://businessn-erp.com/login/</a
-					>
-				</p>
-				<p style="margin: 5px 0">
-					Please do not reply to this email as responses are not monitored.
-				</p>
-			</div>
-			<div
-				class="footer"
-				style="
-					background-color: #371f37;
-					color: white;
-					text-align: center;
-					height: 150px;
-					display: flex;
-					align-items: center;
-				"
-			>
-		  <img src="cid:footerLogo"
-					style="margin: 0 auto;width:300px" alt="Footer Logo"/>
-
-			</div>
-		</body>
-				`,
-				attachments,
+				newLeadEmail({
+					assigneeName: assigneeEmail?.fullName,
+					ticketNumber: ticket?.ticketNumber,
+					companyName: lead?.opportunityName || data?.companyName,
+					contactName: [data?.firstName, data?.lastName].filter(Boolean).join(" "),
+					email: data?.email,
+					phone: data?.phone,
+				}),
 			);
 		}
 		return res.status(201).json(ticket);
@@ -428,13 +323,6 @@ const createSupportTicket = async (req, res) => {
 		const { clientFirstName, clientLastName, clientEmail, clientPhoneNumber, clientModeOfContact } =
 			contactInfo;
 		const { inquiryType, issue } = queryInfo;
-		const attachments = [
-			{
-				filename: "BusinessN_dark1.png",
-				path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-				cid: "footerLogo",
-			},
-		];
 
 		const companyNamePrefix = companyName.split(" ")[0];
 
@@ -458,108 +346,19 @@ const createSupportTicket = async (req, res) => {
 		});
 
 		if (assigneeEmail?.email) {
-			await sendEmail(
+			await sendTemplate(
 				assigneeEmail?.email,
-				`New Support Ticket Logged`,
-				"",
-				`
-					<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
-			<div
-				class="header"
-				style="
-					background-color: #371f37;
-					color: white;
-					text-align: center;
-					height: 150px;
-					display: flex;
-					align-items: center;
-				"
-			>
-				<div
-					id="header_content"
-					style="
-						display: flex;
-						flex-direction: column;
-						align-items: self-start;
-						background: #4c364b;
-						border-radius: 10px;
-						gap: 1em;
-						width: 80%;
-						margin: 0 auto;
-						padding: 1.5em;
-					"
-				>
-					<p
-						class="category"
-						style="color: #e8ccb7; font-weight: bold; margin: 0"
-					>
-						${escapeHtml(ticket?.category)}
-					</p>
-					<p
-						class="topic"
-						style="font-weight: bold; font-size: larger; margin: 5px 0"
-					>
-						Customer Support Inquiry
-					</p>
-				</div>
-			</div>
-			<div
-				class="container"
-				style="
-					background: #fdfdfd;
-					color: #371f37;
-					display: flex;
-					flex-direction: column;
-					align-items: self-start;
-					padding: 2em 3em;
-					gap: 1em;
-					font-size: 14px;
-				"
-			>
-				<h3 style="margin: 0; margin-bottom: 1em">Hello Jesse,</h3>
-				<p style="margin: 5px 0">
-					We are confirming that we have received ticket <span style="
-					background: #d5efe2;">${escapeHtml(ticket?.ticketNumber)}</span> assigned to
-					you.
-				</p>
-
-				<p>You’ve got a new support ticket! Here are the basic details:</p>
-
-				<p style="font-weight: bold; margin: 0">Company Name:</p>
-				<p>${escapeHtml(companyName)}</p>
-				
-				<p style="font-weight: bold; margin: 0">View Ticket:</p>
-				<p style="margin: 5px 0">
-					To view the full ticket or add a reply, access your account via the link
-					below:
-				</p>
-				<p style="margin: 5px 0">
-					<a href="https://businessn-erp.com/" target="_blank"
-						>https://businessn-erp.com/login/</a
-					>
-				</p>
-				<p style="margin: 5px 0">
-					Please do not reply to this email as responses are not monitored.
-				</p>
-			</div>
-			<div
-				class="footer"
-				style="
-					background-color: #371f37;
-					color: white;
-					text-align: center;
-					height: 150px;
-					display: flex;
-					align-items: center;
-				"
-			>
-		  <img src="cid:footerLogo"
-					style="margin: 0 auto;width:300px" alt="Footer Logo"/>
-
-			</div>
-		</body>
-				`,
-				attachments,
+				newSupportTicketEmail({
+					assigneeName: assigneeEmail?.fullName,
+					ticketNumber: ticket?.ticketNumber,
+					companyName,
+					clientName: [clientFirstName, clientLastName].filter(Boolean).join(" "),
+					email: clientEmail,
+					phone: clientPhoneNumber,
+					modeOfContact: clientModeOfContact,
+					inquiryType,
+					issue,
+				}),
 			);
 		}
 		return res.status(201).json(ticket);
@@ -572,13 +371,7 @@ const createTicket = async (req, res) => {
 	try {
 		const newTicket = req.body;
 		const attachment = req.file;
-		const attachments = [
-			{
-				filename: "BusinessN_dark1.png",
-				path: path.join(__dirname, "../", "assets/logos/BusinessN_dark1.png"),
-				cid: "footerLogo",
-			},
-		];
+		const attachments = [];
 		if (attachment) {
 			attachments.push({
 				filename: attachment.filename,
@@ -602,114 +395,17 @@ const createTicket = async (req, res) => {
 				"email",
 			]);
 			if (assigneeEmail?.email)
-				await sendEmail(
+				await sendTemplate(
 					assigneeEmail?.email,
-					`Ticket Assignment Confirmation`,
-					"We have received your inquiry. An agent will get in touch with you shortly to discuss your interests and provide more information.",
-					`
-				<body style="margin: 0; font-family: Arial, Helvetica, sans-serif;height:'auto">
-		<div
-			class="header"
-			style="
-				background-color: #371f37;
-				color: white;
-				text-align: center;
-				height: 150px;
-				display: flex;
-				align-items: center;
-			"
-		>
-			<div
-				id="header_content"
-				style="
-					display: flex;
-					flex-direction: column;
-					align-items: self-start;
-					background: #4c364b;
-					border-radius: 10px;
-					gap: 1em;
-					width: 80%;
-					margin: 0 auto;
-					padding: 1.5em;
-				"
-			>
-				<p
-					class="category"
-					style="color: #e8ccb7; font-weight: bold; margin: 0"
-				>
-					${escapeHtml(newTask?.category)}
-				</p>
-				<p
-					class="topic"
-					style="font-weight: bold; font-size: larger; margin: 5px 0"
-				>
-					Ticket Assignment Confirmation
-				</p>
-			</div>
-		</div>
-		<div
-			class="container"
-			style="
-				background: #fdfdfd;
-				color: #371f37;
-				display: flex;
-				flex-direction: column;
-				align-items: self-start;
-				padding: 2em 3em;
-				gap: 1em;
-				font-size: 14px;
-			"
-		>
-			<h3 style="margin: 0; margin-bottom: 1em">Hello ${escapeHtml(newTask?.assignee)},</h3>
-			<p style="margin: 5px 0">
-				We are confirming that we have received ticket <span style="
-				background: #d5efe2;">${escapeHtml(newTask?.ticketNumber)}</span> assigned to
-				you. 
-			</p>
-			
-			<p style="font-weight: bold; margin: 5px 0"> ${
-				attachment ? "Please find attached file for your reference. " : ""
-			}</p>
-			
-			<p style="font-weight: bold; margin: 0">Topic:</p>
-			<p>${escapeHtml(newTask?.topic)}</p>
-			<p style="font-weight: bold; margin: 0">Description:</p>
-			<p>${escapeHtml(newTask?.issue)}</p>
-			<p style="font-weight: bold; margin: 0">Assignor:</p>
-			<p>${escapeHtml(newTask?.originator)}</p>
-			<p style="font-weight: bold; margin: 0">Channel:</p>
-			<p>${escapeHtml(newTask?.category)}</p>
-			<p style="font-weight: bold; margin: 0">View Ticket:</p>
-			<p style="margin: 5px 0">
-				To view the full ticket or add a reply, access your account via the link
-				below:
-			</p>
-			<p style="margin: 5px 0">
-				<a href="https://businessn-erp.com/" target="_blank"
-					>https://businessn-erp.com/login/</a
-				>
-			</p>
-			<p style="margin: 5px 0">
-				Please do not reply to this email as responses are not monitored.
-			</p>
-		</div>
-		<div
-			class="footer"
-			style="
-				background-color: #371f37;
-				color: white;
-				text-align: center;
-				height: 150px;
-				display: flex;
-				align-items: center;
-			"
-		>
-      <img src="cid:footerLogo" 
-				style="margin: 0 auto;width:300px" alt="Footer Logo"/>
-			
-		</div>
-	</body>
-			`,
+					ticketAssignedEmail({
+						assigneeName: newTask?.assignee,
+						ticketNumber: newTask?.ticketNumber,
+						topic: newTask?.topic,
+						issue: newTask?.issue,
+						originator: newTask?.originator,
+						category: newTask?.category,
+						hasAttachment: Boolean(attachment),
+					}),
 					attachments,
 				);
 			return res.status(201).json(newTask);
