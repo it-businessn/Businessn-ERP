@@ -3,19 +3,31 @@ import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
 import { COUNTRIES } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
+import { maskSIN } from "../roeUtils";
 
 export const PersonalInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 	const [provinces, setProvinces] = useState([]);
 
 	useEffect(() => {
 		if (formData?.empInfo?.country) {
-			setProvinces(COUNTRIES.find(({ code }) => code === formData?.empInfo?.country)?.provinces);
+			// ROE-01: a country stored as "CA" / "Canada" (not "CAN") crashed the screen
+			const value = String(formData.empInfo.country).trim().toLowerCase();
+			const country = COUNTRIES.find(
+				({ code, type }) =>
+					code.toLowerCase() === value ||
+					type.toLowerCase() === value ||
+					code.toLowerCase().slice(0, 2) === value,
+			);
+			setProvinces(country?.provinces || []);
+			// show it in the Country list (stored as "CAN")
+			if (country && country.code !== formData.empInfo.country)
+				handleFieldChange("empInfo", "country", country.code);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formData?.empInfo?.country]);
 
 	return (
-		<Stack spacing={3} p={!isReadOnly && 5}>
-			<TextTitle size="xl" title="Personal Information" />
+		<Stack spacing={3}>
 			<Stack>
 				<HStack>
 					<FormControl isRequired>
@@ -49,14 +61,14 @@ export const PersonalInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 						/>
 					</FormControl>
 				</HStack>
-				<FormControl isRequired>
+				<FormControl>
 					<FormLabel size="sm">Social Insurance Number </FormLabel>
+					{/* ROE-01: from the employee's profile, shown masked as on the ROE */}
 					<Input
-						readOnly={isReadOnly}
+						readOnly
 						size="sm"
-						value={formData.empInfo?.SIN || ""}
-						onChange={(e) => handleFieldChange("empInfo", "SIN", e.target.value)}
-						placeholder="Please enter SSN"
+						cursor="not-allowed"
+						value={maskSIN(formData.empInfo?.SIN) || "Not on file - add it in the employee's profile"}
 					/>
 				</FormControl>
 				<TextTitle title="Address" />
@@ -139,7 +151,7 @@ export const PersonalInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 									}
 								}}
 							>
-								{provinces.map(({ name, id }) => (
+								{(provinces || []).map(({ name, id }) => (
 									<option key={name} value={id}>
 										{name}
 									</option>

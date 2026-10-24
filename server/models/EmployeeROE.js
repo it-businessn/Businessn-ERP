@@ -45,9 +45,15 @@ const employeeROESchema = new mongoose.Schema(
 		reviewComments: String,
 		specialPayments: { type: Array, default: [] },
 		occupation: { type: Array, default: [] },
+		// ROE-01: Draft until submitted; a submitted ROE is kept as issued
+		status: { type: String, default: "Draft" },
+		submittedOn: Date,
+		craBusinessNumber: String,
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
+
+employeeROESchema.index({ companyName: 1, empId: 1, createdOn: -1 });
 
 const EmployeeROE = mongoose.model("EmployeeROE", employeeROESchema);
 

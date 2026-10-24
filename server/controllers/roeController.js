@@ -11,43 +11,100 @@ const Company = require("../models/Company");
 
 const { SAVE_FILE_OUTPUT_DIR } = require("./t4SlipController");
 const CONFIG = require("../config/app.config");
-const { shouldDecrypt, decryptData } = require("../services/encryptDataService");
+const { shouldDecrypt, decryptData, encryptData } = require("../services/encryptDataService");
+const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
+const { insurablePeriods, maskSIN, validateROE, codeOf } = require("../utils/roe.util");
 
 const parser = new xml2js.Parser({ explicitArray: false });
 
+// ROE-01: an employee can have several ROEs (one per separation); the latest
+// is the one shown. A submitted ROE is never overwritten: saving again after
+// it was submitted starts a new one.
 const findEmployeeROEInfoDetails = async (empId, companyName) =>
 	await EmployeeROE.findOne({
 		empId,
 		companyName,
-	});
+	}).sort({ createdOn: -1 });
+
+/** The SIN is stored encrypted and only ever sent masked ("XXX XX9 822"). */
+const withMaskedSIN = (roe) => {
+	if (!roe) return roe;
+	const data = typeof roe.toObject === "function" ? roe.toObject() : { ...roe };
+	let sin = data.SIN;
+	if (shouldDecrypt(sin, data.SINIv)) sin = decryptData(sin, CONFIG.SIN_KEY, data.SINIv);
+	data.SIN = maskSIN(sin);
+	delete data.SINIv;
+	return data;
+};
 
 const getEmployeeROEEmploymentInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
 	try {
 		const existingROEInfo = await findEmployeeROEInfoDetails(empId, companyName);
 
-		return res.status(200).json(existingROEInfo);
+		return res.status(200).json(withMaskedSIN(existingROEInfo));
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
+// ROE-01: block 4, 5 and 7 (employer name, address, CRA payroll account number).
+const getEmployerInfo = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const company = await Company.findOne({ name: companyName }).select(
+			"name address registration_number cra_business_number",
+		);
+		if (!company) return res.status(404).json({ message: "Company not found" });
+		return res.status(200).json(company);
+	} catch (error) {
+		return res.status(500).json({ message: "Internal Server Error", error });
+	}
+};
+
+// ROE-01: block 15C rows (ROE PP 1 = final pay period, going back), with the
+// totals for 15A / 15B. Query: finalPayPeriodEndDate, firstDayWorked, frequency.
 const getEmployeeEarningsInfo = async (req, res) => {
 	const { companyName, empId } = req.params;
+	const { finalPayPeriodEndDate, firstDayWorked, frequency } = req.query;
 
 	try {
 		const payStubs = await EmployeePayStub.find({
 			companyName,
 			empId,
 			isProcessed: true,
+			reportType: null,
 		})
 			.sort({
 				payPeriodEndDate: -1,
 			})
 			.select(
-				"payPeriodNum payPeriodEndDate currentGrossPay totalRegHoursWorked totalOvertimeHoursWorked totalDblOvertimeHoursWorked totalSickHoursWorked totalSprayHoursWorked totalStatDayHoursWorked totalStatHours totalVacationHoursWorked totalFirstAidHoursWorked totalBereavementHoursWorked totalPersonalDayHoursWorked",
-			);
-		return res.status(200).json(payStubs);
+				"payPeriodNum payPeriodStartDate payPeriodEndDate isExtraRun scheduleFrequency currentGrossPay totalRegHoursWorked totalRegHoursWorked2 totalOvertimeHoursWorked totalDblOvertimeHoursWorked totalSickHoursWorked totalSprayHoursWorked totalStatDayHoursWorked totalStatHours totalVacationHoursWorked totalFirstAidHoursWorked totalBereavementHoursWorked totalPersonalDayHoursWorked",
+			)
+			.lean();
+		const scheduleFrequency =
+			frequency || payStubs?.find((s) => s.scheduleFrequency)?.scheduleFrequency || "";
+		const result = insurablePeriods(payStubs, {
+			finalPayPeriodEndDate,
+			firstDayWorked,
+			frequency: scheduleFrequency,
+		});
+		// pay periods the employee was paid in, for the final pay period choice
+		const paidPeriods = [
+			...new Map(
+				(payStubs || [])
+					.filter((s) => s.payPeriodEndDate)
+					.map((s) => [
+						new Date(s.payPeriodEndDate).toISOString().slice(0, 10),
+						{
+							payPeriodNum: s.payPeriodNum,
+							payPeriodStartDate: s.payPeriodStartDate,
+							payPeriodEndDate: s.payPeriodEndDate,
+						},
+					]),
+			).values(),
+		];
+		return res.status(200).json({ ...result, scheduleFrequency, paidPeriods });
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -64,14 +121,16 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 		employerInfo,
 		earningsInfo,
 		comments,
+		submit,
 	} = req.body;
 	try {
+		const errors = validateROE(req.body);
+		if (errors.length) return res.status(422).json({ message: errors[0], errors });
+
 		const {
 			firstName,
 			lastName,
 			middleName,
-			SIN,
-			SINIv,
 			streetAddress,
 			streetAddressSuite,
 			city,
@@ -97,9 +156,6 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 			specialPayments,
 		} = employmentInfo;
 		const {
-			name,
-			registration_number,
-			address,
 			contactName,
 			issuerName,
 			contactTelNumber,
@@ -109,20 +165,28 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 			preferredCommunication,
 		} = employerInfo;
 
-		const { totalInsurableHours, totalInsurableEarnings, earningsData } = earningsInfo;
+		const { totalInsurableHours, totalInsurableEarnings, earningsData } = earningsInfo || {};
 
-		const empTenureInfo = await findEmployeeEmploymentInfo(empId, companyName);
-		if (empTenureInfo && employmentStartDate && employmentLeaveDate) {
-			await updateEmploymentInfo(empTenureInfo._id, {
-				employmentStartDate,
-				employmentLeaveDate,
-			});
+		// ROE-01: block 8 comes from the employee's profile (stored encrypted); the
+		// browser only ever sees it masked
+		const profile = await EmployeeProfileInfo.findOne({ empId, companyName }).select("SIN SINIv");
+		let SIN = profile?.SIN;
+		let SINIv = profile?.SINIv;
+		if (SIN && !shouldDecrypt(SIN, SINIv) && !String(SIN).includes("*")) {
+			const encrypted = encryptData(String(SIN), CONFIG.SIN_KEY);
+			SIN = encrypted.encryptedData;
+			SINIv = encrypted.iv;
 		}
+		const company = await Company.findOne({ name: companyName }).select("cra_business_number");
+
+		const isRecall = codeOf(expectedRecallDate) === "Y";
 		const newData = {
 			empId,
 			companyName,
 			payPeriodType,
 			payPeriodId,
+			payrollReferenceNumber: employmentInfo?.employeeNo,
+			craBusinessNumber: company?.cra_business_number,
 			firstName,
 			lastName,
 			middleName,
@@ -137,7 +201,7 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 			employmentStartDate,
 			employmentLeaveDate,
 			finalPayPeriodEndDate,
-			recallDate,
+			recallDate: isRecall ? recallDate : null,
 			expectedRecallDate,
 			reasonCode,
 			occupation: positions,
@@ -147,7 +211,7 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 			contactExtNumber,
 			issuerTelNumber,
 			issuerExtNumber,
-			preferredCommunication,
+			preferredCommunication: preferredCommunication || "E",
 			insurableHours: earningsData,
 			insurableEarnings: earningsData,
 			totalInsurableHours,
@@ -161,20 +225,34 @@ const addEmployeeROEEmploymentInfo = async (req, res) => {
 			specialPayments,
 			reviewComments: comments?.message,
 		};
+		if (submit) {
+			newData.status = "Submitted";
+			newData.submittedOn = new Date();
+		}
 		const existingROEInfo = await findEmployeeROEInfoDetails(empId, companyName);
 
-		if (existingROEInfo) {
-			const updatedROEInfo = await EmployeeROE.findByIdAndUpdate(
+		let saved;
+		if (existingROEInfo && existingROEInfo.status !== "Submitted") {
+			saved = await EmployeeROE.findByIdAndUpdate(
 				existingROEInfo._id,
 				{ $set: newData },
 				{
 					new: true,
 				},
 			);
-			return res.status(201).json(updatedROEInfo);
+		} else {
+			saved = await EmployeeROE.create(newData);
 		}
-		const newROEInfo = await EmployeeROE.create(newData);
-		return res.status(201).json(newROEInfo);
+		if (submit) {
+			const empTenureInfo = await findEmployeeEmploymentInfo(empId, companyName);
+			if (empTenureInfo && employmentLeaveDate) {
+				await updateEmploymentInfo(empTenureInfo._id, {
+					...(employmentStartDate ? { employmentStartDate } : {}),
+					employmentLeaveDate,
+				});
+			}
+		}
+		return res.status(201).json(withMaskedSIN(saved));
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
@@ -400,6 +478,7 @@ const generateROEXML = async (name, payPeriodId, payPeriodType) => {
 };
 
 module.exports = {
+	getEmployerInfo,
 	getEmployeeROEEmploymentInfo,
 	addEmployeeROEEmploymentInfo,
 	getEmployeeEarningsInfo,

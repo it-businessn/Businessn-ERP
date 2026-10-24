@@ -1,78 +1,92 @@
-import { HStack, Stack } from "@chakra-ui/react";
+import { Box, HStack, Stack, Text } from "@chakra-ui/react";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
-import moment from "moment";
-import { useEffect } from "react";
+import { getAmount } from "utils/convertAmt";
 import { getDefaultDate } from "utils/convertDate";
 
-export const TenureInfo = ({ isReadOnly, payGroupSchedule, formData, handleFieldChange }) => {
-	useEffect(() => {
-		if (payGroupSchedule && formData?.employmentInfo?.employmentLeaveDate) {
-			const finalPayPeriodRecord = payGroupSchedule?.find(
-				({ payPeriodStartDate, payPeriodEndDate }) =>
-					moment(formData?.employmentInfo?.employmentLeaveDate).isBetween(
-						payPeriodStartDate,
-						payPeriodEndDate,
-						null,
-						"[]",
-					),
-			);
-			if (finalPayPeriodRecord) {
-				handleFieldChange(
-					"employmentInfo",
-					"finalPayPeriodEndDate",
-					finalPayPeriodRecord?.payPeriodEndDate,
-				);
-			}
-		}
-	}, [payGroupSchedule, formData?.employmentInfo?.employmentLeaveDate]);
-
+// ROE-01: block 10 (first day worked), 11 (last day for which paid) and the
+// employee's positions (block 13 occupation = the first position).
+export const TenureInfo = ({ isReadOnly, formData, handleFieldChange }) => {
+	const e = formData?.employmentInfo || {};
 	return (
-		<Stack spacing={3} p={!isReadOnly && 5}>
-			<TextTitle size="xl" title="Tenure" />
-			<HStack>
+		<Stack spacing={4}>
+			<HStack align="start">
 				{isReadOnly ? (
 					<>
 						<InputFormControl
-							readOnly={isReadOnly}
+							readOnly
 							size="sm"
 							label="Start Date"
-							valueText={getDefaultDate(formData?.employmentInfo?.employmentStartDate) || ""}
+							valueText={e.employmentStartDate ? getDefaultDate(e.employmentStartDate) : ""}
 						/>
 						<InputFormControl
-							readOnly={isReadOnly}
+							readOnly
 							size="sm"
 							label="Last Day Worked"
-							valueText={getDefaultDate(formData?.employmentInfo?.employmentLeaveDate) || ""}
+							valueText={e.employmentLeaveDate ? getDefaultDate(e.employmentLeaveDate) : ""}
 						/>
 					</>
 				) : (
 					<>
 						<DateTimeFormControl
 							label="Start Date"
-							valueText1={getDefaultDate(formData?.employmentInfo?.employmentStartDate)}
+							valueText1={e.employmentStartDate ? getDefaultDate(e.employmentStartDate) : ""}
 							name1="employmentStartDate"
-							handleChange={(e) =>
-								handleFieldChange("employmentInfo", "employmentStartDate", e.target.value)
+							handleChange={(ev) =>
+								handleFieldChange("employmentInfo", "employmentStartDate", ev.target.value)
 							}
 						/>
 						<DateTimeFormControl
 							required
 							label="Last Day Worked"
-							valueText1={
-								formData?.employmentInfo?.employmentLeaveDate
-									? getDefaultDate(formData?.employmentInfo?.employmentLeaveDate)
-									: ""
-							}
+							valueText1={e.employmentLeaveDate ? getDefaultDate(e.employmentLeaveDate) : ""}
 							name1="employmentLeaveDate"
-							handleChange={(e) =>
-								handleFieldChange("employmentInfo", "employmentLeaveDate", e.target.value)
+							handleChange={(ev) =>
+								handleFieldChange("employmentInfo", "employmentLeaveDate", ev.target.value)
 							}
 						/>
 					</>
 				)}
 			</HStack>
+			<Stack spacing={2}>
+				<TextTitle title="Positions" />
+				{e.positions?.length ? (
+					e.positions.map((position, index) => (
+						<HStack
+							key={`${position?.title}_${index}`}
+							border="1px solid"
+							borderColor="gray.200"
+							borderRadius="md"
+							p={2}
+							spacing={6}
+						>
+							<Box flex={1}>
+								<Text fontSize="xs" color="gray.500">
+									Position
+								</Text>
+								<Text>{position?.title || "-"}</Text>
+							</Box>
+							<Box flex={1}>
+								<Text fontSize="xs" color="gray.500">
+									Pay rate
+								</Text>
+								<Text>{position?.payRate ? getAmount(position.payRate) : "-"}</Text>
+							</Box>
+							<Box flex={1}>
+								<Text fontSize="xs" color="gray.500">
+									Pay group
+								</Text>
+								<Text>{position?.employmentPayGroup || "-"}</Text>
+							</Box>
+						</HStack>
+					))
+				) : (
+					<Text color="gray.500" fontSize="sm">
+						No positions on file (add them in the employee's Employment info).
+					</Text>
+				)}
+			</Stack>
 		</Stack>
 	);
 };

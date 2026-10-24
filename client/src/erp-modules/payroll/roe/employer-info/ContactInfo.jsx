@@ -1,202 +1,110 @@
-import { Box, HStack, Stack } from "@chakra-ui/react";
+import { Box, HStack, Radio, RadioGroup, Select, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import FormControlMain from "components/ui/form";
 import InputFormControl from "components/ui/form/InputFormControl";
-import RadioFormControl from "components/ui/form/RadioFormControl";
-import SelectFormControl from "components/ui/form/SelectFormControl";
-import NormalTextTitle from "components/ui/NormalTextTitle";
-import TextTitle from "components/ui/text/TextTitle";
+import RequiredLabel from "components/ui/form/RequiredLabel";
 
-export const ContactInfo = ({ isReadOnly, handleFieldChange, formData, admins }) => {
+const Field = ({ label, children }) => (
+	<Box>
+		<Text fontSize="xs" color="gray.500" textTransform="uppercase">
+			{label}
+		</Text>
+		{children}
+	</Box>
+);
+
+/** Block 4, 5 and 7: from the company record, read only. */
+export const EmployerDetails = ({ employer }) => {
+	const a = employer?.address || {};
 	return (
-		<>
-			<Stack spacing={3} p={!isReadOnly && 5}>
-				<TextTitle size="xl" title="Employer Details" />
-				<HStack
-					w={isReadOnly && 0.7}
-					alignItems="baseline"
-					spacing={isReadOnly && 10}
-					justifyContent={isReadOnly ? "start" : "space-between"}
-				>
-					<Box>
-						<TextTitle title="Employer Name" />
-						<NormalTextTitle title={formData?.employerInfo?.name} />
-					</Box>
-					<Box>
-						<TextTitle title="Employer Address" />
-						<NormalTextTitle title={formData?.employerInfo?.address?.streetNumber} />
-						<NormalTextTitle title={formData?.employerInfo?.address?.city} />
-						<NormalTextTitle
-							title={`${formData?.employerInfo?.address?.state} ${formData?.employerInfo?.address?.country}`}
-						/>
-						<NormalTextTitle title={formData?.employerInfo?.address?.postalCode} />
-					</Box>
-					<Box>
-						<TextTitle title="CRA Payroll Account Number" />
-						<NormalTextTitle title={formData?.employerInfo?.registration_number} />
-					</Box>
-					{isReadOnly && (
-						<Box>
-							<TextTitle title="Preferred Communication" />
-							<NormalTextTitle title={formData?.employerInfo?.preferredCommunication} />
-						</Box>
-					)}
-				</HStack>
+		<SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+			<Field label="Employer name">
+				<Text fontWeight="semibold">{employer?.name || "-"}</Text>
+			</Field>
+			<Field label="Employer address">
+				<Text>{[a.streetNumber, a.streetName].filter(Boolean).join(" ") || "-"}</Text>
+				<Text>{[a.city, a.state].filter(Boolean).join(", ")}</Text>
+				<Text>{[a.country, a.postalCode].filter(Boolean).join(" ")}</Text>
+			</Field>
+			<Field label="CRA payroll account number (BN)">
+				<Text fontWeight="semibold">
+					{employer?.cra_business_number || "Not on file - add it in the company settings"}
+				</Text>
+			</Field>
+		</SimpleGrid>
+	);
+};
 
-				<HStack>
-					{isReadOnly ? (
-						<>
-							<InputFormControl
-								readOnly={isReadOnly}
-								size="sm"
-								label="Contact Name"
-								valueText={formData?.employerInfo?.contactName || ""}
-							/>
-							<InputFormControl
-								readOnly={isReadOnly}
-								size="sm"
-								label="Contact Telephone Number"
-								valueText={formData?.employerInfo?.contactTelNumber || ""}
-							/>
-							<InputFormControl
-								readOnly={isReadOnly}
-								size="sm"
-								label="Contact Ext Number"
-								valueText={formData?.employerInfo?.contactExtNumber || ""}
-							/>
-						</>
-					) : (
-						<>
-							{admins && (
-								<Stack>
-									<TextTitle title="Contact Name" />
-									<SelectFormControl
-										placeholder={"Select Contact"}
-										valueParam="fullName"
-										name="fullName"
-										label=""
-										valueText={formData?.employerInfo?.contactName}
-										handleChange={(e) => {
-											if (e.target.value) {
-												handleFieldChange("employerInfo", "contactName", e.target.value);
-											}
-										}}
-										options={admins}
-									/>
-								</Stack>
-							)}
-							<Stack>
-								<TextTitle title="Contact Telephone Number" />
-								<HStack>
-									<InputFormControl
-										readOnly={isReadOnly}
-										type="tel"
-										label=""
-										name="contactTelNumber"
-										placeholder="Enter Telephone Number"
-										valueText={formData?.employerInfo?.contactTelNumber || ""}
-										handleChange={(e) =>
-											handleFieldChange("employerInfo", "contactTelNumber", e.target.value)
-										}
-									/>
-									<InputFormControl
-										readOnly={isReadOnly}
-										label=""
-										name="contactExtNumber"
-										placeholder="Enter Ext Number"
-										valueText={formData?.employerInfo?.contactExtNumber || ""}
-										handleChange={(e) =>
-											handleFieldChange("employerInfo", "contactExtNumber", e.target.value)
-										}
-									/>
-								</HStack>
-							</Stack>
-						</>
-					)}
-				</HStack>
-				<HStack>
-					{isReadOnly ? (
-						<>
-							<InputFormControl
-								readOnly={isReadOnly}
-								size="sm"
-								label="Issuer Name"
-								valueText={formData?.employerInfo?.issuerName || ""}
-							/>
-							<InputFormControl
-								readOnly={isReadOnly}
-								size="sm"
-								label="Issuer Telephone Number"
-								valueText={formData?.employerInfo?.issuerTelNumber || ""}
-							/>
-							<InputFormControl
-								readOnly={isReadOnly}
-								size="sm"
-								label="Issuer Ext Number"
-								valueText={formData?.employerInfo?.issuerExtNumber || ""}
-							/>
-						</>
-					) : (
-						<>
-							<Stack>
-								<TextTitle title="Issuer Name" />
-								{admins && (
-									<SelectFormControl
-										placeholder={"Select Issuer"}
-										valueParam="fullName"
-										name="fullName"
-										label=""
-										valueText={formData?.employerInfo?.issuerName}
-										handleChange={(e) => {
-											if (e.target.value) {
-												handleFieldChange("employerInfo", "issuerName", e.target.value);
-											}
-										}}
-										options={admins}
-									/>
-								)}
-							</Stack>
-							<Stack>
-								<TextTitle title="Issuer Telephone Number" />
-								<HStack>
-									<InputFormControl
-										readOnly={isReadOnly}
-										type="tel"
-										label=""
-										name="issuerTelNumber"
-										placeholder="Enter Telephone Number"
-										valueText={formData?.employerInfo?.issuerTelNumber || ""}
-										handleChange={(e) =>
-											handleFieldChange("employerInfo", "issuerTelNumber", e.target.value)
-										}
-									/>
-									<InputFormControl
-										readOnly={isReadOnly}
-										label=""
-										name="issuerExtNumber"
-										placeholder="Enter Ext Number"
-										valueText={formData?.employerInfo?.issuerExtNumber || ""}
-										handleChange={(e) =>
-											handleFieldChange("employerInfo", "issuerExtNumber", e.target.value)
-										}
-									/>
-								</HStack>
-							</Stack>
-						</>
-					)}
-				</HStack>
-				{!isReadOnly && (
-					<RadioFormControl
-						label="Preferred Communication"
-						handleChange={(value) =>
-							handleFieldChange("employerInfo", "preferredCommunication", value)
-						}
-						defaultVal="E"
-						options={[
-							{ name: "English", value: "E" },
-							{ name: "French", value: "F" },
-						]}
-					/>
-				)}
-			</Stack>
-		</>
+const PersonPicker = ({ role, label, admins, info, handleFieldChange }) => (
+	<HStack align="end" spacing={3}>
+		<FormControlMain>
+			<RequiredLabel label={`${label} Name`} required name={`${role}Name`} />
+			<Select
+				id={`${role}Name`}
+				placeholder={`Select ${label.toLowerCase()}`}
+				value={info?.[`${role}Name`] || ""}
+				onChange={(e) => handleFieldChange("employerInfo", `${role}Name`, e.target.value)}
+			>
+				{(admins || []).map(({ fullName }) => (
+					<option key={fullName} value={fullName}>
+						{fullName}
+					</option>
+				))}
+			</Select>
+		</FormControlMain>
+		<InputFormControl
+			required={role === "contact"}
+			type="tel"
+			label="Telephone Number"
+			name={`${role}TelNumber`}
+			placeholder="(604) 555-0123"
+			valueText={info?.[`${role}TelNumber`] || ""}
+			handleChange={(e) => handleFieldChange("employerInfo", `${role}TelNumber`, e.target.value)}
+		/>
+		<InputFormControl
+			label="Ext."
+			name={`${role}ExtNumber`}
+			placeholder="Ext."
+			w="100px"
+			valueText={info?.[`${role}ExtNumber`] || ""}
+			handleChange={(e) => handleFieldChange("employerInfo", `${role}ExtNumber`, e.target.value)}
+		/>
+	</HStack>
+);
+
+// ROE-01 tab 3: employer details (read only), contact (block 16) and issuer
+// (block 21-22), both chosen from the company's administrators, and the
+// preferred language (block 20, English by default).
+export const ContactInfo = ({ employer, handleFieldChange, formData, admins }) => {
+	const info = formData?.employerInfo || {};
+	return (
+		<Stack spacing={5}>
+			<EmployerDetails employer={employer} />
+			<PersonPicker
+				role="contact"
+				label="Contact"
+				admins={admins}
+				info={info}
+				handleFieldChange={handleFieldChange}
+			/>
+			<PersonPicker
+				role="issuer"
+				label="Issuer"
+				admins={admins}
+				info={info}
+				handleFieldChange={handleFieldChange}
+			/>
+			<FormControlMain>
+				<RequiredLabel label="Preferred Communication" />
+				<RadioGroup
+					value={info.preferredCommunication || "E"}
+					onChange={(value) => handleFieldChange("employerInfo", "preferredCommunication", value)}
+				>
+					<HStack spacing={6}>
+						<Radio value="E">English</Radio>
+						<Radio value="F">French</Radio>
+					</HStack>
+				</RadioGroup>
+			</FormControlMain>
+		</Stack>
 	);
 };

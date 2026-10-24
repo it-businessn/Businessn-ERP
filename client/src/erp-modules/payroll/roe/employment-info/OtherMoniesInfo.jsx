@@ -9,7 +9,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OTHER_MONIES_OPTIONS } from "../data";
 
 export const OtherMoniesInfo = ({ roeData, handleArrayChange, removeArrayRow, addArrayRow }) => {
@@ -17,9 +17,11 @@ export const OtherMoniesInfo = ({ roeData, handleArrayChange, removeArrayRow, ad
 
 	const validate = () => {
 		const newErrors = {};
-		roeData.otherMonies.forEach((om, i) => {
+		(roeData?.otherMonies || []).forEach((om, i) => {
 			if (!om.code) {
-				newErrors[i] = { ...newErrors[i], code: "Code is required" };
+				// an empty row is left out when the ROE is saved
+				if (Object.values(om).some(Boolean))
+					newErrors[i] = { ...newErrors[i], code: "Code is required" };
 			} else {
 				const option = OTHER_MONIES_OPTIONS.find((o) => o.code === om.code);
 				if (option.amountRequired && !om.amount) {
@@ -36,10 +38,11 @@ export const OtherMoniesInfo = ({ roeData, handleArrayChange, removeArrayRow, ad
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
-	const handleSubmit = () => {
-		if (!validate()) return;
-		console.log("Validated Other Monies:", roeData.otherMonies);
-	};
+	// ROE-01: rows are checked as they are filled in
+	useEffect(() => {
+		validate();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [roeData?.otherMonies]);
 	return (
 		<>
 			<TextTitle size="xl" title={"Other Monies"} />
@@ -121,9 +124,6 @@ export const OtherMoniesInfo = ({ roeData, handleArrayChange, removeArrayRow, ad
 							+ Add Other Money
 						</Button>
 					)}
-					<Button colorScheme="blue" onClick={handleSubmit}>
-						Validate & Save
-					</Button>
 				</HStack>
 			</div>
 		</>

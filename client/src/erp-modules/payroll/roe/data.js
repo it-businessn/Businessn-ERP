@@ -214,7 +214,7 @@ export const OTHER_MONIES_OPTIONS = [
 
 export const REASON_CODE = [
 	{
-		name: "AOO - Shortage of Work / End of Contract or Season",
+		name: "A00 - Shortage of Work / End of Contract or Season",
 	},
 	{
 		name: "A01 - Employer bankruptcy or receivership",

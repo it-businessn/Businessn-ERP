@@ -17,8 +17,13 @@ const PayrollService = {
 		return apiService.get(`/payroll/roe/${company}/${empId}`);
 	},
 
-	async getEmpEarningInfo(company, empId) {
-		return apiService.get(`/payroll/roe/earnings/${company}/${empId}`);
+	// ROE-01: params = { finalPayPeriodEndDate, firstDayWorked, frequency } (all optional)
+	async getEmpEarningInfo(company, empId, params) {
+		return apiService.get(`/payroll/roe/earnings/${company}/${empId}`, params);
+	},
+
+	async getROEEmployerInfo(company) {
+		return apiService.get(`/payroll/roe/employer/${company}`);
 	},
 
 	async addAdditionalHoursAllocation(data) {

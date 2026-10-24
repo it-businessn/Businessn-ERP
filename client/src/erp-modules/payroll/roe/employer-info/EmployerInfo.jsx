@@ -1,52 +1,48 @@
-import {
-	Box,
-	Flex,
-	Step,
-	StepIcon,
-	StepIndicator,
-	StepNumber,
-	Stepper,
-	StepSeparator,
-	StepStatus,
-	StepTitle,
-} from "@chakra-ui/react";
-import { tabPanelStyleCss, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import { Button, HStack, Stack, Text } from "@chakra-ui/react";
+import RoeSection from "../RoeSection";
 import { ContactInfo } from "./ContactInfo";
 
-const EmployerInfo = ({ formData, admins, handleFieldChange }) => {
-	return (
-		<Flex height="100%">
-			<Box
-				display={{ base: "none", md: "flex" }}
-				p={6}
-				borderRight="1px solid"
-				borderColor="gray.200"
-				flex={0.2}
-				bg="gray.50"
-			>
-				<Stepper orientation="vertical" gap={8} sx={tabPanelStyleCss}>
-					<Step cursor="pointer" py={2}>
-						<StepIndicator>
-							<StepStatus
-								complete={<StepIcon fontSize="1.2em" color="white" bg={"var(--banner_bg)"} />}
-								incomplete={<StepNumber fontSize="1.1em" color={"var(--banner_bg)"} />}
-								active={<StepNumber fontSize="1.1em" color="white" bg={"var(--banner_bg)"} />}
-							/>
-						</StepIndicator>
-						<Box flexShrink="0" ml={3} whiteSpace="wrap">
-							<StepTitle fontWeight={"bold"} mb={1}>
-								Employer Details
-							</StepTitle>
-						</Box>
-						<StepSeparator />
-					</Step>
-				</Stepper>
-			</Box>
-			<Box flex={{ base: 1, md: 0.7 }} overflowY="auto" css={tabScrollCss}>
-				<ContactInfo formData={formData} admins={admins} handleFieldChange={handleFieldChange} />
-			</Box>
-		</Flex>
-	);
-};
+// ROE-01 tab 3: employer details, contact and issuer; Confirm Selection moves
+// on to the earnings.
+const EmployerInfo = ({
+	formData,
+	employer,
+	admins,
+	handleFieldChange,
+	sections,
+	toggleSection,
+	done,
+	onConfirm,
+	errors,
+}) => (
+	<Stack spacing={4} p={2}>
+		<RoeSection
+			title="Employer Details"
+			isOpen={sections.employer}
+			onToggle={() => toggleSection("employer")}
+			isDone={done.employer}
+			summary={formData?.employerInfo?.contactName ? `Contact: ${formData.employerInfo.contactName}` : ""}
+		>
+			<Stack spacing={4}>
+				<ContactInfo
+					employer={employer}
+					formData={formData}
+					admins={admins}
+					handleFieldChange={handleFieldChange}
+				/>
+				{errors?.length > 0 && (
+					<Text color="red.500" fontSize="sm">
+						Required: {errors.join(", ")}
+					</Text>
+				)}
+				<HStack justify="end">
+					<Button bg="var(--banner_bg)" color="white" _hover={{ bg: "#4a2b4a" }} onClick={onConfirm}>
+						Confirm Selection
+					</Button>
+				</HStack>
+			</Stack>
+		</RoeSection>
+	</Stack>
+);
 
 export default EmployerInfo;

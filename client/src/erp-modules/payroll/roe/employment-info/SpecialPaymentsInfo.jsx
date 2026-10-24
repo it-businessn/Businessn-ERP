@@ -9,7 +9,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SPECIAL_PAYMENT_OPTIONS } from "../data";
 
 export const SpecialPaymentsInfo = ({
@@ -22,9 +22,12 @@ export const SpecialPaymentsInfo = ({
 	const [errors, setErrors] = useState({});
 	const validate = () => {
 		const newErrors = {};
-		roeData.specialPayments.forEach((p, i) => {
-			if (!p.code) newErrors[i] = { ...newErrors[i], code: "Code is required" };
-			else {
+		(roeData?.specialPayments || []).forEach((p, i) => {
+			if (!p.code) {
+				// an empty row is left out when the ROE is saved
+				if (Object.values(p).some(Boolean))
+					newErrors[i] = { ...newErrors[i], code: "Code is required" };
+			} else {
 				const option = SPECIAL_PAYMENT_OPTIONS.find((o) => o.code === p.code);
 				if (option.startRequired && !p.startDate)
 					newErrors[i] = { ...newErrors[i], startDate: "Start Date is required" };
@@ -39,17 +42,18 @@ export const SpecialPaymentsInfo = ({
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
+	// ROE-01: rows are checked as they are filled in
+	useEffect(() => {
+		validate();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [roeData?.specialPayments]);
 
-	const handleSubmit = () => {
-		if (!validate()) return;
-		console.log("Validated Special Payments:", roeData.specialPayments);
-	};
 
 	return (
 		<>
 			<TextTitle size="xl" title={"Special Payments"} />
 			<div className="p-3 border rounded space-y-2">
-				{roeData.specialPayments.map((p, i) => (
+				{(roeData?.specialPayments || []).map((p, i) => (
 					<VStack key={i} align="stretch" spacing={2} borderWidth="1px" p={3} borderRadius="md">
 						<HStack spacing={2} align="end">
 							{/* Code */}
@@ -153,9 +157,6 @@ export const SpecialPaymentsInfo = ({
 							+ Add Special Payment
 						</Button>
 					)}
-					<Button colorScheme="blue" onClick={handleSubmit}>
-						Validate & Save
-					</Button>
 				</HStack>
 			</div>
 		</>

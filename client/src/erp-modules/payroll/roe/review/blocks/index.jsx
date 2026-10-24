@@ -1,492 +1,268 @@
-import {
-	Box,
-	Checkbox,
-	HStack,
-	Stack,
-	Table,
-	Tbody,
-	Td,
-	Text,
-	Th,
-	Thead,
-	Tr,
-	VStack,
-} from "@chakra-ui/react";
-import moment from "moment";
-import { useEffect, useState } from "react";
+import { Box, HStack, Stack, Table, Tbody, Td, Text, Th, Thead, Tr, VStack } from "@chakra-ui/react";
+import { dmy, maskSIN } from "../../roeUtils";
 
-export const Block1 = () => {
-	return (
-		<Box flex={0.5} pl={1} border="1px solid" borderRight={0}>
-			1 SERIAL NO.
+// ROE-01: the blocks of the Service Canada ROE, laid out as on the printed
+// form (review tab and print copy). Dates are D / M / Y with the month 1-12.
+
+/** A printed check box (prints the same everywhere, unlike a form control). */
+const Tick = ({ checked, label }) => (
+	<HStack spacing={1}>
+		<Box
+			w="10px"
+			h="10px"
+			border="1px solid black"
+			fontSize="9px"
+			lineHeight="9px"
+			textAlign="center"
+			fontWeight="bold"
+			role="img"
+			aria-label={`${label || "box"} ${checked ? "checked" : "not checked"}`}
+		>
+			{checked ? "X" : ""}
 		</Box>
-	);
-};
+		{label && <Text>{label}</Text>}
+	</HStack>
+);
 
-export const Block2 = () => {
+const num2 = (v) => (v === null || v === undefined || v === "" ? "" : Number(v).toFixed(2));
+
+/** D M Y date as on the form. */
+export const DateDMY = ({ date }) => {
+	const { day, month, year } = dmy(date);
 	return (
-		<Box flex={1} pl={1} border="1px solid" borderRight={0}>
-			2 SERIAL NO. OF ROE AMENDED OR REPLACED
-		</Box>
-	);
-};
-
-export const Block3 = ({ refNum }) => {
-	return (
-		<VStack alignItems={"start"} spacing={0.5} pl={1} flex={1} border="1px solid">
-			<Text> 3 EMPLOYER'S PAYROLL REFERENCE NUMBER</Text>
-
-			<Text pl={2} h={!refNum && "15px"}>
-				{refNum}
-			</Text>
-		</VStack>
-	);
-};
-
-export const Block4 = ({ companyInfo }) => {
-	return (
-		<Box>
-			<Text borderLeft={"1px solid"} ml={"-1px"} p={1} mt={"-17px"}>
-				4 EMPLOYER'S NAME AND ADDRESS
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{companyInfo?.name}
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{companyInfo?.address?.streetNumber}
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{companyInfo?.address?.city}
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{companyInfo?.address?.country}
-			</Text>
-		</Box>
-	);
-};
-
-export const Block5 = ({ accNum }) => {
-	return (
-		<Box pl={1} pt={1} pb={0.95}>
-			<VStack>
-				<Text>5 CRA PAYROLL ACCOUNT NUMBER </Text>
-				<Text> {accNum}</Text>
-			</VStack>
-		</Box>
-	);
-};
-
-export const Block6 = ({ payPeriod }) => {
-	return (
-		<Box p={1} w={"100%"} borderTop={"1px solid"}>
-			<VStack alignItems={"self-start"} spacing={0}>
-				<Text> 6 PAY PERIOD TYPE </Text>
-				<Text> {`${payPeriod?.code} - ${payPeriod?.name}`}</Text>
-			</VStack>
-		</Box>
-	);
-};
-
-export const Block7 = ({ companyInfo }) => {
-	return (
-		<Box flex={0.7} borderTop="1px solid" p={1} pt={0.8} pb={0} borderLeft="1px solid">
-			7 POSTAL CODE {companyInfo.address.postalCode}
-		</Box>
-	);
-};
-
-export const Block8 = ({ sin }) => {
-	return (
-		<Box w={"100%"} pl={1}>
-			<HStack>
-				<Text flex={0.8}>8 SOCIAL INSURANCE NUMBER </Text>
-				<Text flex={0.2}> {sin} </Text>
-			</HStack>
-		</Box>
-	);
-};
-
-export const Block9 = ({ empInfo }) => {
-	return (
-		<Box pl={1}>
-			<Text borderLeft={"1px solid"} ml={"-1px"} p={1} mt={"-17px"}>
-				9 EMPLOYEE'S NAME AND ADDRESS
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{empInfo.firstName} {empInfo.middleName} {empInfo.lastName}
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{empInfo?.streetAddressSuite} {empInfo.streetAddress}
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{empInfo.city}, {empInfo.province}
-			</Text>
-			<Text p={1} textTransform={"uppercase"}>
-				{empInfo.country}, {empInfo.postalCode}
-			</Text>
-		</Box>
-	);
-};
-
-export const Block10 = ({ firstDayWorked }) => {
-	const day = moment.utc(firstDayWorked).date();
-	const month = moment.utc(firstDayWorked).month();
-	const year = moment.utc(firstDayWorked).year();
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			<HStack>
-				<Text flex={0.8}>10 FIRST DAY WORKED</Text>
-				<HStack flex={0.2}>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>D</Text>
-						<Text fontSize={"8px"}>{day}</Text>
-					</VStack>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>m</Text>
-						<Text fontSize={"8px"}>{month}</Text>
-					</VStack>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>y</Text>
-						<Text fontSize={"8px"}>{year}</Text>
-					</VStack>
-				</HStack>
-			</HStack>
-		</Box>
-	);
-};
-
-export const Block11 = ({ lastDayWorked }) => {
-	const day = moment.utc(lastDayWorked).date();
-	const month = moment.utc(lastDayWorked).month();
-	const year = moment.utc(lastDayWorked).year();
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			<HStack>
-				<Text flex={0.8}>11 LAST DAY FOR WHICH PAID</Text>
-				<HStack flex={0.2}>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>D</Text>
-						<Text fontSize={"8px"}>{day}</Text>
-					</VStack>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>m</Text>
-						<Text fontSize={"8px"}>{month}</Text>
-					</VStack>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>y</Text>
-						<Text fontSize={"8px"}>{year}</Text>
-					</VStack>
-				</HStack>
-			</HStack>
-		</Box>
-	);
-};
-
-export const Block12 = ({ finalPayPeriodEndDate }) => {
-	const day = moment.utc(finalPayPeriodEndDate).date();
-	const month = moment.utc(finalPayPeriodEndDate).month();
-	const year = moment.utc(finalPayPeriodEndDate).year();
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			<HStack>
-				<Text flex={0.8}>12 FINAL PAY PERIOD ENDING DATE</Text>
-				<HStack flex={0.2}>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>D</Text>
-						<Text fontSize={"8px"}>{day}</Text>
-					</VStack>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>m</Text>
-						<Text fontSize={"8px"}>{month}</Text>
-					</VStack>
-					<VStack spacing={0}>
-						<Text fontSize={"8px"}>y</Text>
-						<Text fontSize={"8px"}>{year}</Text>
-					</VStack>
-				</HStack>
-			</HStack>
-		</Box>
-	);
-};
-
-export const Block13 = () => {
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			13 OCCUPATION <Text>&nbsp;</Text>
-		</Box>
-	);
-};
-
-export const Block14 = ({ recallDate, expectedRecallDate }) => {
-	const day = moment.utc(recallDate).date();
-	const month = moment.utc(recallDate).month();
-	const year = moment.utc(recallDate).year();
-
-	return (
-		<Box borderTop="1px solid" w={"100%"} p={1} pb={1}>
-			14 EXPECTED DATE OF RECALL
-			<HStack flex={0.2}>
-				<VStack spacing={0}>
-					<Text fontSize={"8px"}>D</Text>
-					<Text fontSize={"8px"}>{day || ""}</Text>
+		<HStack spacing={2} fontSize="9px" lineHeight={1.1}>
+			{[
+				["D", day],
+				["M", month],
+				["Y", year],
+			].map(([label, value]) => (
+				<VStack key={label} spacing={0} minW="18px">
+					<Text fontSize="8px">{label}</Text>
+					<Text>{value || " "}</Text>
 				</VStack>
-				<VStack spacing={0}>
-					<Text fontSize={"8px"}>m</Text>
-					<Text fontSize={"8px"}>{month || ""}</Text>
-				</VStack>
-				<VStack spacing={0}>
-					<Text fontSize={"8px"}>y</Text>
-					<Text fontSize={"8px"}>{year || ""}</Text>
-				</VStack>
-			</HStack>
-			<Text> {expectedRecallDate}</Text>
-		</Box>
-	);
-};
-
-export const Block15a = ({ hours }) => {
-	return (
-		<Box pl={1} w={"100%"}>
-			<HStack>
-				<Text flex={0.6}>15a TOTAL INSURABLE HOURS ACCORDING TO CHART 565</Text>
-				<Text flex={0.4}> {hours}</Text>
-			</HStack>
-		</Box>
-	);
-};
-
-export const Block15b = ({ amt }) => {
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			<HStack>
-				<Text flex={0.6}>15b TOTAL INSURABLE EARNINGS ACCORDING TO CHART 3463</Text>
-				<Text flex={0.4}> {amt}</Text>
-			</HStack>
-		</Box>
-	);
-};
-
-export const Block15c = ({ earningsData, payPeriod }) => {
-	const [set1, setSet1] = useState([]);
-	const [set2, setSet2] = useState([]);
-
-	useEffect(() => {
-		if (earningsData?.length) {
-			const evenRecords = [];
-			const oddRecords = [];
-			let evenIndex = 1;
-			let oddIndex = 2;
-			// earningsData.forEach((record, index) => {
-			// 	if (index % 2 === 0) {
-			// 		evenRecords.push({ ...record, newIndex: evenIndex });
-			// 		evenIndex += 2;
-			// 	} else {
-			// 		oddRecords.push({ ...record, newIndex: oddIndex });
-			// 		oddIndex += 2;
-			// 	}
-			// });
-			// const totalPayPeriod = payPeriod.totalPayPeriod;
-			const totalPayPeriod = 53;
-			const createBlankRecord = (index) => {
-				return {
-					insurableHours: null,
-					payPeriodNum: null,
-					payPeriodEndDate: null,
-					currentGrossPay: null,
-					newIndex: index,
-				};
-			};
-			for (let i = 0; i < totalPayPeriod; i++) {
-				const record = earningsData[i];
-
-				if (i % 2 === 0) {
-					if (record) {
-						evenRecords.push({ ...record, newIndex: evenIndex });
-					} else {
-						evenRecords.push(createBlankRecord(evenIndex));
-					}
-					evenIndex += 2;
-				} else {
-					if (record) {
-						oddRecords.push({ ...record, newIndex: oddIndex });
-					} else {
-						oddRecords.push(createBlankRecord(oddIndex));
-					}
-					oddIndex += 2;
-				}
-			}
-			setSet1(evenRecords);
-			setSet2(oddRecords);
-		}
-	}, [earningsData]);
-
-	return (
-		<HStack w={"100%"} border="1px solid" spacing={1}>
-			<Table
-				variant="unstyled"
-				size="sm"
-				border="1px solid black"
-				borderCollapse="collapse"
-				flex={0.5}
-				className="roe-15c"
-			>
-				<Thead>
-					<Tr>
-						<Th w={"30px"} border="1px solid black" textAlign="center">
-							<VStack spacing={0}>
-								<Text>15C </Text>
-								<Text>PP</Text>
-							</VStack>
-						</Th>
-						<Th
-							w={"100px"}
-							border="1px solid black"
-							textAlign="center"
-							p={0}
-							px={1}
-							fontSize={"10px"}
-						>
-							<Text whiteSpace={"pre-wrap"} textAlign={"center"}>
-								PAY PERIOD ENDING DATE
-							</Text>
-						</Th>
-						<Th
-							w={"80px"}
-							border="1px solid black"
-							textAlign="center"
-							p={0}
-							px={1}
-							fontSize={"10px"}
-						>
-							<Text whiteSpace={"pre-wrap"} textAlign={"center"}>
-								INSURABLE EARNINGS
-							</Text>
-						</Th>
-						<Th
-							w={"50px"}
-							border="1px solid black"
-							textAlign="center"
-							p={0}
-							px={0.5}
-							fontSize={"10px"}
-						>
-							<Text whiteSpace={"pre-wrap"} textAlign={"center"}>
-								INSURABLE HOURS
-							</Text>
-						</Th>
-					</Tr>
-				</Thead>
-				<Tbody>
-					{set1?.map(
-						({ payPeriodNum, payPeriodEndDate, currentGrossPay, insurableHours, newIndex }) => (
-							<Tr key={`${payPeriodNum}_${newIndex}`}>
-								<Td w={"30px"} border="1px solid black" textAlign="center">
-									{newIndex}
-								</Td>
-								<Td w={"100px"} border="1px solid black" textAlign="center">
-									{payPeriodEndDate && moment.utc(payPeriodEndDate).format("YYYY-MM-DD")}
-								</Td>
-								<Td w={"80px"} border="1px solid black" textAlign="center">
-									{currentGrossPay}
-								</Td>
-								<Td w={"50px"} border="1px solid black" textAlign="center">
-									{insurableHours}
-								</Td>
-							</Tr>
-						),
-					)}
-				</Tbody>
-			</Table>
-			<Table
-				variant="unstyled"
-				size="sm"
-				border="1px solid black"
-				borderCollapse="collapse"
-				flex={0.5}
-				className="roe-15c"
-			>
-				<Thead>
-					<Tr>
-						<Th w={"30px"} border="1px solid black" textAlign="center">
-							<VStack spacing={0}>
-								<Text>15C </Text>
-								<Text>PP</Text>
-							</VStack>
-						</Th>
-						<Th
-							w={"100px"}
-							border="1px solid black"
-							textAlign="center"
-							p={0}
-							px={1}
-							fontSize={"10px"}
-						>
-							<Text whiteSpace={"pre-wrap"} textAlign={"center"}>
-								PAY PERIOD ENDING DATE
-							</Text>
-						</Th>
-						<Th
-							w={"80px"}
-							border="1px solid black"
-							textAlign="center"
-							p={0}
-							px={1}
-							fontSize={"10px"}
-						>
-							<Text whiteSpace={"pre-wrap"} textAlign={"center"}>
-								INSURABLE EARNINGS
-							</Text>
-						</Th>
-						<Th
-							w={"50px"}
-							border="1px solid black"
-							textAlign="center"
-							p={0}
-							px={0.5}
-							fontSize={"10px"}
-						>
-							<Text whiteSpace={"pre-wrap"} textAlign={"center"}>
-								INSURABLE HOURS
-							</Text>
-						</Th>
-					</Tr>
-				</Thead>
-				<Tbody>
-					{set2?.map(
-						({ payPeriodNum, payPeriodEndDate, currentGrossPay, insurableHours, newIndex }) => (
-							<Tr key={`${payPeriodNum}_${newIndex}`}>
-								<Td w={"30px"} border="1px solid black" textAlign="center">
-									{newIndex}
-								</Td>
-								<Td w={"100px"} border="1px solid black" textAlign="center">
-									{payPeriodEndDate && moment.utc(payPeriodEndDate).format("YYYY-MM-DD")}
-								</Td>
-								<Td w={"80px"} border="1px solid black" textAlign="center">
-									{currentGrossPay}
-								</Td>
-								<Td w={"50px"} border="1px solid black" textAlign="center">
-									{insurableHours}
-								</Td>
-							</Tr>
-						),
-					)}
-				</Tbody>
-			</Table>
+			))}
 		</HStack>
 	);
 };
 
-export const Block16 = ({ reasonCode, contactName, contactNumber }) => {
+const DateRow = ({ label, date }) => (
+	<Box borderTop="1px solid" w="100%" pl={1}>
+		<HStack justify="space-between" pr={1}>
+			<Text>{label}</Text>
+			<DateDMY date={date} />
+		</HStack>
+	</Box>
+);
+
+export const Block1 = () => (
+	<Box flex={0.5} pl={1} border="1px solid" borderRight={0}>
+		1 SERIAL NO.
+	</Box>
+);
+
+export const Block2 = () => (
+	<Box flex={1} pl={1} border="1px solid" borderRight={0}>
+		2 SERIAL NO. OF ROE AMENDED OR REPLACED
+	</Box>
+);
+
+export const Block3 = ({ refNum }) => (
+	<VStack alignItems="start" spacing={0.5} pl={1} flex={1} border="1px solid">
+		<Text>3 EMPLOYER'S PAYROLL REFERENCE NUMBER</Text>
+		<Text pl={2} minH="15px">
+			{refNum}
+		</Text>
+	</VStack>
+);
+
+export const Block4 = ({ companyInfo }) => {
+	const a = companyInfo?.address || {};
 	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			16 REASON FOR ISSUING THIS ROE <br />
-			{reasonCode} <br />
-			FOR FURTHER INFORMATION, CONTACT
-			<br /> {contactName} <br />
-			TELEPHONE NO {contactNumber}
+		<Box>
+			<Text borderLeft="1px solid" ml="-1px" p={1} mt="-17px">
+				4 EMPLOYER'S NAME AND ADDRESS
+			</Text>
+			{[companyInfo?.name, [a.streetNumber, a.streetName].filter(Boolean).join(" "), a.city, a.state]
+				.filter(Boolean)
+				.map((line) => (
+					<Text key={line} p={1} textTransform="uppercase">
+						{line}
+					</Text>
+				))}
 		</Box>
 	);
 };
+
+export const Block5 = ({ accNum }) => (
+	<Box pl={1} pt={1} pb={1} w="100%">
+		<Text>5 CRA PAYROLL ACCOUNT NUMBER</Text>
+		<Text pl={2}>{accNum}</Text>
+	</Box>
+);
+
+export const Block6 = ({ payPeriod }) => (
+	<Box p={1} w="100%" borderTop="1px solid">
+		<Text>6 PAY PERIOD TYPE</Text>
+		<Text pl={2}>{payPeriod ? `${payPeriod.code} - ${payPeriod.name}` : ""}</Text>
+	</Box>
+);
+
+export const Block7 = ({ companyInfo }) => (
+	<Box flex={0.7} borderTop="1px solid" p={1} pt={0.8} pb={0} borderLeft="1px solid">
+		7 POSTAL CODE {companyInfo?.address?.postalCode || ""}
+	</Box>
+);
+
+export const Block8 = ({ sin }) => (
+	<Box w="100%" pl={1}>
+		<HStack justify="space-between" pr={1}>
+			<Text>8 SOCIAL INSURANCE NUMBER</Text>
+			<Text>{maskSIN(sin)}</Text>
+		</HStack>
+	</Box>
+);
+
+export const Block9 = ({ empInfo }) => (
+	<Box pl={1}>
+		<Text borderLeft="1px solid" ml="-1px" p={1} mt="-17px">
+			9 EMPLOYEE'S NAME AND ADDRESS
+		</Text>
+		{[
+			[empInfo?.firstName, empInfo?.middleName, empInfo?.lastName].filter(Boolean).join(" "),
+			[empInfo?.streetAddressSuite, empInfo?.streetAddress].filter(Boolean).join(" "),
+			[empInfo?.city, empInfo?.province, empInfo?.postalCode].filter(Boolean).join(", "),
+		]
+			.filter(Boolean)
+			.map((line) => (
+				<Text key={line} p={1} textTransform="uppercase">
+					{line}
+				</Text>
+			))}
+	</Box>
+);
+
+export const Block10 = ({ firstDayWorked }) => (
+	<DateRow label="10 FIRST DAY WORKED" date={firstDayWorked} />
+);
+
+export const Block11 = ({ lastDayWorked }) => (
+	<DateRow label="11 LAST DAY FOR WHICH PAID" date={lastDayWorked} />
+);
+
+export const Block12 = ({ finalPayPeriodEndDate }) => (
+	<DateRow label="12 FINAL PAY PERIOD ENDING DATE" date={finalPayPeriodEndDate} />
+);
+
+export const Block13 = ({ occupation }) => (
+	<Box borderTop="1px solid" w="100%" pl={1}>
+		13 OCCUPATION
+		<Text pl={2} minH="15px" textTransform="uppercase">
+			{occupation}
+		</Text>
+	</Box>
+);
+
+export const Block14 = ({ recallDate, expectedRecallDate }) => {
+	const returning = String(expectedRecallDate || "").startsWith("Y");
+	return (
+		<Box borderTop="1px solid" w="100%" p={1}>
+			<Text>14 EXPECTED DATE OF RECALL</Text>
+			<HStack justify="space-between">
+				<Text>{expectedRecallDate}</Text>
+				{returning && <DateDMY date={recallDate} />}
+			</HStack>
+		</Box>
+	);
+};
+
+export const Block15a = ({ hours }) => (
+	<Box pl={1} w="100%">
+		<HStack justify="space-between" pr={2}>
+			<Text>15A TOTAL INSURABLE HOURS ACCORDING TO CHART</Text>
+			<Text fontWeight="bold">{num2(hours)}</Text>
+		</HStack>
+	</Box>
+);
+
+export const Block15b = ({ amt }) => (
+	<Box borderTop="1px solid" w="100%" pl={1}>
+		<HStack justify="space-between" pr={2}>
+			<Text>15B TOTAL INSURABLE EARNINGS ACCORDING TO CHART</Text>
+			<Text fontWeight="bold">{num2(amt)}</Text>
+		</HStack>
+	</Box>
+);
+
+const HeadCell = ({ children, w }) => (
+	<Th w={w} border="1px solid black" textAlign="center" p={0} px={1} fontSize="8px">
+		<Text whiteSpace="pre-wrap" textAlign="center">
+			{children}
+		</Text>
+	</Th>
+);
+
+const Column15c = ({ rows }) => (
+	<Table variant="unstyled" size="sm" borderCollapse="collapse" flex={0.5} className="roe-15c">
+		<Thead>
+			<Tr>
+				<HeadCell w="30px">PP</HeadCell>
+				<HeadCell w="90px">PAY PERIOD ENDING DATE</HeadCell>
+				<HeadCell w="80px">INSURABLE EARNINGS</HeadCell>
+				<HeadCell w="50px">INSURABLE HOURS</HeadCell>
+			</Tr>
+		</Thead>
+		<Tbody>
+			{rows.map(({ roePP, payPeriodEndDate, currentGrossPay, insurableHours }) => (
+				<Tr key={roePP}>
+					<Td border="1px solid black" textAlign="center">
+						{roePP}
+					</Td>
+					<Td border="1px solid black">
+						{payPeriodEndDate ? <DateDMY date={payPeriodEndDate} /> : " "}
+					</Td>
+					<Td border="1px solid black" textAlign="right">
+						{num2(currentGrossPay)}
+					</Td>
+					<Td border="1px solid black" textAlign="right">
+						{num2(insurableHours)}
+					</Td>
+				</Tr>
+			))}
+		</Tbody>
+	</Table>
+);
+
+/** Block 15C: ROE PP 1 = final pay period; odd numbers left, even right. */
+export const Block15c = ({ earningsData, payPeriod }) => {
+	const periods = earningsData || [];
+	// blank rows up to the number of periods the pay period type reports
+	const total = Math.max(periods.length, payPeriod?.maxPeriods || 27);
+	const rows = Array.from({ length: total }, (_, i) => ({ ...periods[i], roePP: i + 1 }));
+	return (
+		<Stack w="100%" spacing={0}>
+			<Text pl={1}>15C INSURABLE EARNINGS BY PAY PERIOD</Text>
+			<HStack w="100%" spacing={1} align="start">
+				<Column15c rows={rows.filter((_, i) => i % 2 === 0)} />
+				<Column15c rows={rows.filter((_, i) => i % 2 === 1)} />
+			</HStack>
+		</Stack>
+	);
+};
+
+export const Block16 = ({ reasonCode, contactName, contactNumber, contactExt }) => (
+	<Box borderTop="1px solid" w="100%" pl={1}>
+		<Text>16 REASON FOR ISSUING THIS ROE</Text>
+		<Text pl={2}>{reasonCode}</Text>
+		<Text>FOR FURTHER INFORMATION, CONTACT</Text>
+		<Text pl={2}>{contactName}</Text>
+		<Text>
+			TELEPHONE NO. {contactNumber}
+			{contactExt ? ` EXT. ${contactExt}` : ""}
+		</Text>
+	</Box>
+);
+
+const filled = (rows, key) => (rows || []).filter((r) => r?.[key]);
 
 export const Block17 = ({
 	vacationPayCode,
@@ -495,209 +271,135 @@ export const Block17 = ({
 	vacationPayEndDate,
 	statHolidays,
 	otherMonies,
-}) => {
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			17 SEPARATION PAYMENTS <br /> A - VACATION PAY
-			<HStack pl={2}>
-				<Text>{vacationPayCode}</Text>
-				<Text> {vacationPayAmount}</Text>
-			</HStack>
-			<HStack pl={2}>
-				<Text flex={0.5}>Start Date (D/M/Y):{vacationPayStartDate}</Text>
-				<Text flex={0.5}> End Date (D/M/Y):{vacationPayEndDate}</Text>
-			</HStack>
-			B - STATUTORY HOLIDAY PAY
-			<HStack h={"80px"} alignItems={"self-start"}>
-				<HStack flex={0.5}>
-					<VStack>
-						<Text>D</Text>
-						{/* <Text>D</Text> statHolidays*/}
-					</VStack>
-					<VStack>
-						<Text>m</Text>
-						{/* <Text>D</Text> */}
-					</VStack>
-					<VStack>
-						<Text>y</Text>
-						{/* <Text>D</Text> */}
-					</VStack>
+}) => (
+	<Box borderTop="1px solid" w="100%" pl={1} pr={1}>
+		<Text>17 SEPARATION PAYMENTS</Text>
+		<Text>A - VACATION PAY</Text>
+		<HStack pl={2} justify="space-between">
+			<Text>{vacationPayCode}</Text>
+			<Text>{num2(vacationPayAmount || "")}</Text>
+		</HStack>
+		{(vacationPayStartDate || vacationPayEndDate) && (
+			<HStack pl={2} justify="space-between">
+				<HStack>
+					<Text>Start Date</Text>
+					<DateDMY date={vacationPayStartDate} />
 				</HStack>
-				<HStack flex={0.5}>
-					<VStack>
-						<Text>D</Text>
-						{/* <Text>D</Text> */}
-					</VStack>
-					<VStack>
-						<Text>m</Text>
-						{/* <Text>D</Text> */}
-					</VStack>
-					<VStack>
-						<Text>y</Text>
-						{/* <Text>D</Text> */}
-					</VStack>
+				<HStack>
+					<Text>End Date</Text>
+					<DateDMY date={vacationPayEndDate} />
 				</HStack>
 			</HStack>
-			C - OTHER MONIES (SPECIFY)
-			{/* otherMonies */}
-			<HStack>
-				<Text flex={0.5}>Start Date (D/M/Y):</Text>
-				<Text flex={0.5}>End Date (D/M/Y):</Text>
-			</HStack>
-			<br />
-			<HStack>
-				<Text flex={0.5}>Start Date (D/M/Y):</Text>
-				<Text flex={0.5}>End Date (D/M/Y):</Text>
-			</HStack>
-			<br />
-			<HStack>
-				<Text flex={0.5}>Start Date (D/M/Y):</Text>
-				<Text flex={0.5}>End Date (D/M/Y):</Text>
-			</HStack>
-		</Box>
-	);
-};
+		)}
+		<Text>B - STATUTORY HOLIDAY PAY</Text>
+		<Stack pl={2} spacing={0} minH="30px">
+			{filled(statHolidays, "date").map((sh) => (
+				<HStack key={sh.date} justify="space-between">
+					<DateDMY date={sh.date} />
+					<Text>{num2(sh.amount)}</Text>
+				</HStack>
+			))}
+		</Stack>
+		<Text>C - OTHER MONIES (SPECIFY)</Text>
+		<Stack pl={2} spacing={0} minH="30px">
+			{filled(otherMonies, "code").map((om) => (
+				<HStack key={`${om.code}_${om.startDate}`} justify="space-between">
+					<Text>{om.code}</Text>
+					{om.startDate && <DateDMY date={om.startDate} />}
+					{om.endDate && <DateDMY date={om.endDate} />}
+					<Text>{num2(om.amount)}</Text>
+				</HStack>
+			))}
+		</Stack>
+	</Box>
+);
 
-export const Block18 = ({ comments }) => {
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1} h={"80px"}>
-			18 COMMENTS
-			<br /> {comments}
-		</Box>
-	);
-};
+export const Block18 = ({ comments }) => (
+	<Box borderTop="1px solid" w="100%" pl={1} minH="60px">
+		18 COMMENTS
+		<Text pl={2} whiteSpace="pre-wrap">
+			{comments}
+		</Text>
+	</Box>
+);
 
-export const Block19 = ({ specialPayments }) => {
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			<HStack alignItems={"self-start"} spacing={1}>
-				<Text>19</Text>
-				<Text>
-					PAID SICK/MATERNITY/PARENTAL/COMPASSIONATE CARE/PARENTS OF CRITICALLY ILL CHILDREN LEAVE
-					OR GROUP WAGE LOSS INDEMNITY PAYMENT
-				</Text>
-			</HStack>
-			<Table variant="unstyled" size={"sm"}>
-				<Thead>
-					<Tr>
-						<Th w={"100px"}></Th>
-						<Th p={0} px={1} fontSize={"10px"}>
-							<VStack spacing={0}>
-								<Text>START DATE </Text>
-								<Text>(D/M/Y)</Text>
-							</VStack>
+export const Block19 = ({ specialPayments }) => (
+	<Box borderTop="1px solid" w="100%" pl={1}>
+		<Text>
+			19 PAID SICK/MATERNITY/PARENTAL/COMPASSIONATE CARE/PARENTS OF CRITICALLY ILL CHILDREN LEAVE OR
+			GROUP WAGE LOSS INDEMNITY PAYMENT
+		</Text>
+		<Table variant="unstyled" size="sm">
+			<Thead>
+				<Tr>
+					{["", "START DATE", "END DATE", "AMOUNT", "PER DAY", "PER WEEK"].map((h) => (
+						<Th key={h || "code"} p={0} px={1} fontSize="8px">
+							{h}
 						</Th>
-						<Th p={0} px={1} fontSize={"10px"}>
-							<VStack spacing={0}>
-								<Text>END DATE </Text>
-								<Text>(D/M/Y)</Text>
-							</VStack>
-						</Th>
-						<Th p={0} px={0.5} fontSize={"10px"} w={"50px"}>
-							AMOUNT &nbsp;
-						</Th>
-						<Th p={0} px={1} fontSize={"10px"} whiteSpace={"pre-wrap"} w={"50px"}>
-							PER DAY &nbsp;&nbsp;
-						</Th>
-						<Th p={0} px={1} whiteSpace={"pre-wrap"} w={"50px"} fontSize={"10px"}>
-							PER WEEK
-						</Th>
-					</Tr>
-				</Thead>
-				<Tbody>
-					<Tr>
-						<Td pt={0} fontSize={"10px"}>
-							PSL
+					))}
+				</Tr>
+			</Thead>
+			<Tbody>
+				{filled(specialPayments, "code").map((sp) => (
+					<Tr key={`${sp.code}_${sp.startDate}`}>
+						<Td p={0} px={1}>
+							{sp.code}
 						</Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={1} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
+						<Td p={0} px={1}>
+							{sp.startDate && <DateDMY date={sp.startDate} />}
 						</Td>
-						<Td pt={0.2} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
+						<Td p={0} px={1}>
+							{sp.endDate && <DateDMY date={sp.endDate} />}
+						</Td>
+						<Td p={0} px={1}>
+							{num2(sp.amount)}
+						</Td>
+						<Td p={0} px={1}>
+							<Tick checked={sp.period === "D"} />
+						</Td>
+						<Td p={0} px={1}>
+							<Tick checked={sp.period === "W"} />
 						</Td>
 					</Tr>
-					<Tr>
-						<Td pt={0} fontSize={"10px"}>
-							WLI - Not ins
-						</Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
-						</Td>
-						<Td pt={0} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
-						</Td>
-					</Tr>
-					<Tr>
-						<Td pt={0} fontSize={"10px"}>
-							PSL
-						</Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
-						</Td>
-						<Td pt={0} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
-						</Td>
-					</Tr>
-					<Tr>
-						<Td pt={0} fontSize={"10px"}>
-							WLI - Not ins
-						</Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}></Td>
-						<Td pt={0} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
-						</Td>
-						<Td pt={0} fontSize={"10px"}>
-							<Checkbox size={"sm"} />
-						</Td>
-					</Tr>
-				</Tbody>
-			</Table>
-		</Box>
-	);
-};
+				))}
+			</Tbody>
+		</Table>
+	</Box>
+);
 
-export const Block20 = ({ preferredCommunication }) => {
-	return (
-		<Box flex={0.5} pl={1}>
-			20 COMMUNICATION PREFERRED IN
-			<Stack direction="row" spacing={6}>
-				<Checkbox size={"sm"} isChecked={preferredCommunication == "E"} colorScheme={"gray"}>
-					English
-				</Checkbox>
-				<Checkbox size={"sm"} isChecked={preferredCommunication == "F"}>
-					Français
-				</Checkbox>
-			</Stack>
-		</Box>
-	);
-};
+export const Block20 = ({ preferredCommunication }) => (
+	<Box flex={0.5} pl={1}>
+		20 COMMUNICATION PREFERRED IN
+		<Stack direction="row" spacing={6}>
+			<Tick checked={(preferredCommunication || "E") === "E"} label="English" />
+			<Tick checked={preferredCommunication === "F"} label="Français" />
+		</Stack>
+	</Box>
+);
 
-export const Block21 = ({ issuerTelNumber }) => {
-	return (
-		<Box flex={0.5} borderLeft="1px solid" pl={1}>
-			21 TELEPHONE NO <br />
+export const Block21 = ({ issuerTelNumber, issuerExt }) => (
+	<Box flex={0.5} borderLeft="1px solid" pl={1}>
+		21 TELEPHONE NO.
+		<Text pl={2}>
 			{issuerTelNumber}
-		</Box>
-	);
-};
+			{issuerExt ? ` EXT. ${issuerExt}` : ""}
+		</Text>
+	</Box>
+);
 
-export const Block22 = ({ issuerName, dateIssued }) => {
-	return (
-		<Box borderTop="1px solid" w={"100%"} pl={1}>
-			22 NAME OF ISSUER
-			<Text pl={5}> {issuerName}</Text>
-			<Text pl={1}> DATE ISSUED (D/M/Y){dateIssued}</Text>
-		</Box>
-	);
-};
+export const Block22 = ({ issuerName, dateIssued }) => (
+	<Box borderTop="1px solid" w="100%" pl={1}>
+		<HStack justify="space-between" pr={1}>
+			<Box>
+				22 NAME OF ISSUER
+				<Text pl={2} textTransform="uppercase">
+					{issuerName}
+				</Text>
+			</Box>
+			<HStack>
+				<Text>DATE ISSUED</Text>
+				<DateDMY date={dateIssued} />
+			</HStack>
+		</HStack>
+	</Box>
+);

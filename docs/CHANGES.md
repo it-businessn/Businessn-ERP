@@ -192,6 +192,22 @@ Decisions where the code did not say:
 
 Tests: `api.payrunYear.test.js` T-VAC-01..07 (real pay runs; all 7 fail on the previous code); T-YEAR-05, 06, 26 now carry the closing balance.
 
+### 1.8 Issue ROE completed (ROE-01)
+
+Five tabs, each confirmed before the next opens; confirmed sections fold up and can be reopened.
+
+| Tab | What it does |
+|---|---|
+| Employee Info | All employees of the company (no active/inactive filter); Confirm Selection fills the personal information from the profile (SIN masked, read only); an employee with a submitted ROE gets "View / print copy" or "Start a new ROE" |
+| Employment Info | Tenure and positions; final pay period end date filled in from the last day worked (pay period containing it, from the employee's pay group schedule); reason code; expected recall default "U - Unknown"; recall date shown and required only for "Y" (not for E/G/M reasons); optional separation payments |
+| Employer Info | Company name, address, CRA payroll account number (read only); contact and issuer from the company's admins, default the logged-in user; tel / ext; English by default |
+| Earnings Info | Block 15C from processed pay stubs: ROE PP 1 = final pay period, going back (27 / 53 / 25 / 13 by pay period type); insurable earnings = gross pay, hours = all paid hours; runs ending the same day are one period; odd / even columns with a merge toggle; totals 15A / 15B |
+| Review | The ROE as the Service Canada form; comments; print; submit. Draft: DRAFT COPY watermark. Submitted: printed copy with the filed-copy notice |
+
+Server: `GET /api/payroll/roe/employer/:company`, `GET /roe/earnings/:company/:empId?finalPayPeriodEndDate=&firstDayWorked=&frequency=` (`utils/roe.util.js`), `POST /roe` validated (422) with `submit: true` to submit; latest ROE per employee; a submitted ROE is never overwritten; SIN stored encrypted from the profile and returned masked; all ROE routes administrator-only. Fixed: month printed 0-based, full SIN, hard-coded 15A/15B, crashes on a missing company address or a country stored as "CA". Not done: electronic filing with Service Canada (ROE Web); Submit records the ROE as issued.
+
+Tests: `api.roe.test.js` T-ROE-01..11, client `roe.test.jsx` C-ROE-01..03 (whole flow).
+
 ## 2. Open issues
 
 Deduplicated from the changelog, the API issue list and the feature gap register, in priority order.
@@ -267,7 +283,7 @@ Only `api.payrun.concurrency.test.js` mocks service modules and resets the modul
 | `api.payyear.test.js` | 14 | Two years' period-N stubs coexist, year-scoped upsert and readers, previous period per frequency, index shape, whole-day matching | T-YEAR-01..14 |
 | `unit.resolveDuplicates.test.js` | 5 | Dry run writes nothing; `--apply` keeps the newest, backs up, repoints orders, deletes; informational groups untouched | T-DEDUP-01..05 |
 | `api.paystubEmail.test.js` | 32 | Pay stub e-mails (pay-date job and Send pay stub e-mail): content and PDF (statement rows, totals, hidden cells, amount in words, payment method, superficial runs, one A4 page), escaping, switch, schedule, Vancouver day and catch-up, exactly-once (re-run, concurrent runs, new year), SMTP failure retry, no address, profile fallback, stuck send, Send Paystub (latest stub, re-send, not found / no stub / net pay not above $0.00 / SMTP down), net pay rule | T-PSE-01..14, 23-31, 33, 34, 36 |
-| **Server total** | **474** | | |
+| **Server total** | **486** | | |
 | Client: 10 suites | 29 | Navbar, chart registry, print modal, change password, sign-in, Axios interceptor, UI components | C-NAV, C-CHART, C-PRINT, C-PWD, C-LOGIN, C-API |
 | Client: `src/utils/utils.test.js` | 12 | Formatting, role helpers, pay-period helpers, completion %, dates, bank validation | C-UTIL-01..10, C-VAL-01/02 |
 | **Client total** | **41** | | |
@@ -280,7 +296,7 @@ Node 22.22, npm 10.9.
 
 | Check | Baseline (`erp.zip`) | After pass 1 | **Final** |
 |---|---|---|---|
-| Server tests | 85 / 85 | 156 / 156 | **474 / 474**, 0 skipped, stable across repeated runs |
+| Server tests | 85 / 85 | 156 / 156 | **486 / 486**, 0 skipped, stable across repeated runs |
 | Client tests | 29 / 29 | 41 / 41 | **41 / 41** |
 | Client lint | 3 errors, 375 warnings | 0 errors, 350 warnings | **0 errors**, 350 warnings |
 | Client production build | passes, 8.5 MB | passes | **passes**, 8.5 MB, `main.js` 382 kB gzip |

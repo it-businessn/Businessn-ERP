@@ -1,224 +1,151 @@
 import {
+	Alert,
+	AlertIcon,
 	Box,
-	Flex,
+	Button,
 	HStack,
 	IconButton,
+	Spinner,
 	Stack,
 	Table,
 	Tbody,
 	Td,
+	Text,
 	Th,
 	Thead,
+	Tooltip,
 	Tr,
 } from "@chakra-ui/react";
-import NormalTextTitle from "components/ui/NormalTextTitle";
-import TextTitle from "components/ui/text/TextTitle";
-import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
-import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BiMerge } from "react-icons/bi";
+import { MdCallSplit } from "react-icons/md";
 import { convertDecimal, getAmount } from "utils/convertAmt";
+import RoeSection from "./RoeSection";
+import { formatPayDate, splitColumns } from "./roeUtils";
 
-const EarningsInfo = ({ formData, setFormData }) => {
-	const cols = ["ROE PP", "Payroll PP", "PP End Date", "Insurable Earnings", "Insurable Hours"];
-	const [earningsData, setEarningsData] = useState([]);
-	const [set1, setSet1] = useState([]);
-	const [set2, setSet2] = useState([]);
-	const [totalInsurableHours, setTotalInsurableHours] = useState(0);
-	const [totalInsurableEarnings, setTotalInsurableEarnings] = useState(0);
+const COLS = ["ROE PP", "Payroll PP", "PP End Date", "Insurable Earnings", "Insurable Hours"];
 
-	useEffect(() => {
-		if (!formData?.earningsInfo?.earningsData) {
-			return;
-		}
-		formData?.earningsInfo?.earningsData?.map(
-			(_) =>
-				(_.insurableHours =
-					_?.totalRegHoursWorked +
-					_?.totalOvertimeHoursWorked +
-					_?.totalDblOvertimeHoursWorked +
-					_?.totalSickHoursWorked +
-					_?.totalSprayHoursWorked +
-					_?.totalStatDayHoursWorked +
-					_?.totalStatHours +
-					_?.totalVacationHoursWorked +
-					_?.totalBereavementHoursWorked +
-					_?.totalPersonalDayHoursWorked +
-					_?.totalFirstAidHoursWorked),
-		);
-		const totalHours = formData.earningsInfo?.earningsData?.reduce((acc, item) => {
-			return acc + item?.insurableHours;
-		}, 0);
-		setTotalInsurableHours(totalHours);
+const PeriodTable = ({ rows, label }) => (
+	<Table size="sm" variant="simple" aria-label={label} bg="var(--lead_cards_bg)">
+		<Thead position="sticky" top={0} zIndex={1} bg="gray.50">
+			<Tr>
+				{COLS.map((col) => (
+					<Th key={col} textAlign="center" px={2}>
+						{col}
+					</Th>
+				))}
+			</Tr>
+		</Thead>
+		<Tbody>
+			{rows.map(({ roePP, payPeriodNum, payPeriodEndDate, currentGrossPay, insurableHours }) => (
+				<Tr key={`${roePP}_${payPeriodEndDate}`}>
+					<Td textAlign="center" fontWeight="semibold">
+						{roePP}
+					</Td>
+					<Td textAlign="center">{payPeriodNum ?? "-"}</Td>
+					<Td textAlign="center">{formatPayDate(payPeriodEndDate)}</Td>
+					<Td textAlign="right">{getAmount(currentGrossPay)}</Td>
+					<Td textAlign="right">{convertDecimal(insurableHours)}</Td>
+				</Tr>
+			))}
+		</Tbody>
+	</Table>
+);
 
-		const totalEarnings = formData.earningsInfo?.earningsData?.reduce((acc, item) => {
-			return acc + item?.currentGrossPay;
-		}, 0);
-		setTotalInsurableEarnings(totalEarnings);
-		setEarningsData(formData.earningsInfo?.earningsData);
-	}, [formData?.earningsInfo?.earningsData]);
-
-	useEffect(() => {
-		if (totalInsurableEarnings || totalInsurableHours)
-			setFormData({
-				...formData,
-				earningsInfo: {
-					...formData.earningsInfo,
-					totalInsurableEarnings,
-					totalInsurableHours,
-				}, ////Total Insurable Hours -between 1 and 8904 - Note: (53 weeks x 7 days) x 24 hours = 8904(max)
-			});
-	}, [totalInsurableEarnings, totalInsurableHours]);
-
-	useEffect(() => {
-		if (earningsData.length) {
-			const evenRecords = [];
-			const oddRecords = [];
-			let evenIndex = 1;
-			let oddIndex = 2;
-			earningsData.forEach((record, index) => {
-				if (index % 2 === 0) {
-					evenRecords.push({ ...record, newIndex: evenIndex });
-					evenIndex += 2;
-				} else {
-					oddRecords.push({ ...record, newIndex: oddIndex });
-					oddIndex += 2;
-				}
-			});
-			setSet1(evenRecords);
-			setSet2(oddRecords);
-		}
-	}, [earningsData]);
-
+/**
+ * Block 15C as on the ROE: ROE PP 1, 3, 5... on the left and 2, 4, 6... on the
+ * right; the button in between merges them into one list (and splits again).
+ */
+export const EarningsTable = ({ periods }) => {
+	const [merged, setMerged] = useState(false);
+	const { left, right } = splitColumns(periods);
 	return (
-		<Flex height="100%">
-			<Box overflowY="auto" css={tabScrollCss}>
-				<Stack spacing={3} p={5}>
-					<TextTitle size="xl" title="Earnings Information" />
-					<HStack
-						spacing={3}
-						justifyContent="space-between"
-						alignItems="baseline"
-						height="50vh"
-						overflow="auto"
-					>
-						<Table bg="var(--lead_cards_bg)" variant="simple">
-							<Thead position="sticky" top={-1} zIndex={3}>
-								<Tr>
-									{cols?.map((col, index) => (
-										<Th key={`${col}_${index}`} pl={index === 0 && "1em !important"}>
-											<TextTitle size="md" title={col} />
-										</Th>
-									))}
-								</Tr>
-							</Thead>
-							<Tbody>
-								{set1?.map(
-									({
-										payPeriodNum,
-										payPeriodEndDate,
-										currentGrossPay,
-										insurableHours,
-										newIndex,
-									}) => (
-										<Tr key={`${payPeriodNum}_${newIndex}`}>
-											<Td py={0}>
-												<NormalTextTitle align="center" title={newIndex} />
-											</Td>
+		<HStack align="start" spacing={2} maxH="55vh" overflow="auto">
+			{merged ? (
+				<Box flex={1}>
+					<PeriodTable rows={periods} label="Insurable earnings by pay period" />
+				</Box>
+			) : (
+				<Box flex={1}>
+					<PeriodTable rows={left} label="Insurable earnings, odd pay periods" />
+				</Box>
+			)}
+			<Tooltip label={merged ? "Split into two columns" : "Merge into one list"}>
+				<IconButton
+					size="sm"
+					mt={8}
+					variant="outline"
+					icon={merged ? <MdCallSplit /> : <BiMerge />}
+					aria-label={merged ? "Split into two columns" : "Merge into one list"}
+					onClick={() => setMerged(!merged)}
+				/>
+			</Tooltip>
+			{!merged && (
+				<Box flex={1}>
+					<PeriodTable rows={right} label="Insurable earnings, even pay periods" />
+				</Box>
+			)}
+		</HStack>
+	);
+};
 
-											<Td py={1}>
-												<NormalTextTitle align="center" title={payPeriodNum} />
-											</Td>
-											<Td py={1}>
-												<NormalTextTitle
-													align="center"
-													title={moment.utc(payPeriodEndDate).format("YYYY-MM-DD")}
-												/>
-											</Td>
-											<Td py={1}>
-												<NormalTextTitle align="center" title={getAmount(currentGrossPay)} />
-											</Td>
-											<Td py={1}>
-												<NormalTextTitle align="center" title={convertDecimal(insurableHours)} />
-											</Td>
-										</Tr>
-									),
-								)}
-							</Tbody>
-						</Table>
-						<IconButton
-							ml={"1em"}
-							size="sm"
-							icon={<BiMerge />}
-							aria-label="Refresh"
-							variant="round"
-						/>
-						<Table bg="var(--lead_cards_bg)" variant="simple">
-							<Thead position="sticky" top={-1} zIndex={3}>
-								<Tr>
-									{cols?.map((col, index) => (
-										<Th key={`${col}_${index}`} pl={index === 0 && "1em !important"}>
-											<TextTitle size="md" title={col} />
-										</Th>
-									))}
-								</Tr>
-							</Thead>
-							<Tbody>
-								{set2?.map(
-									({
-										payPeriodNum,
-										payPeriodEndDate,
-										currentGrossPay,
-										insurableHours,
-										newIndex,
-									}) => (
-										<Tr key={`${payPeriodNum}_${newIndex}`}>
-											<Td py={0}>
-												<NormalTextTitle align="center" title={newIndex} />
-											</Td>
+export const EarningsTotals = ({ earningsInfo }) => (
+	<HStack justify="end" spacing={8}>
+		<Text>
+			Total insurable hours (15A): <b>{convertDecimal(earningsInfo?.totalInsurableHours || 0)}</b>
+		</Text>
+		<Text>
+			Total insurable earnings (15B): <b>{getAmount(earningsInfo?.totalInsurableEarnings || 0)}</b>
+		</Text>
+	</HStack>
+);
 
-											<Td py={1}>
-												<NormalTextTitle align="center" title={payPeriodNum} />
-											</Td>
-											<Td py={1}>
-												<NormalTextTitle
-													align="center"
-													title={moment(payPeriodEndDate).format("YYYY-MM-DD")}
-												/>
-											</Td>
-											<Td py={1}>
-												<NormalTextTitle align="center" title={getAmount(currentGrossPay)} />
-											</Td>
-											<Td py={1}>
-												<NormalTextTitle align="center" title={convertDecimal(insurableHours)} />
-											</Td>
-										</Tr>
-									),
-								)}
-							</Tbody>
-						</Table>
+// ROE-01 tab 4: insurable earnings by pay period from the processed pay stubs
+// (gross pay; hours = all paid hours), final pay period first.
+const EarningsInfo = ({ formData, isLoading, sections, toggleSection, done, onConfirm }) => {
+	const periods = formData?.earningsInfo?.earningsData || [];
+	return (
+		<Stack spacing={4} p={2}>
+			<RoeSection
+				title="Earnings Information"
+				isOpen={sections.earnings}
+				onToggle={() => toggleSection("earnings")}
+				isDone={done.earnings}
+				summary={`${periods.length} pay periods, ${getAmount(formData?.earningsInfo?.totalInsurableEarnings || 0)}`}
+			>
+				<Stack spacing={4}>
+					{formData?.payPeriodTypeLabel && (
+						<Text color="gray.600" fontSize="sm">
+							Pay period type (block 6): {formData.payPeriodTypeLabel}. ROE PP 1 is the final pay period
+							ending {formatPayDate(formData?.employmentInfo?.finalPayPeriodEndDate)}.
+						</Text>
+					)}
+					{isLoading ? (
+						<Spinner />
+					) : periods.length ? (
+						<EarningsTable periods={periods} />
+					) : (
+						<Alert status="warning" borderRadius="md">
+							<AlertIcon />
+							No processed pay found up to the final pay period. Process the final pay run first,
+							then come back.
+						</Alert>
+					)}
+					<EarningsTotals earningsInfo={formData?.earningsInfo} />
+					<HStack justify="end">
+						<Button
+							bg="var(--banner_bg)"
+							color="white"
+							_hover={{ bg: "#4a2b4a" }}
+							isDisabled={!periods.length}
+							onClick={onConfirm}
+						>
+							Confirm
+						</Button>
 					</HStack>
-					<Stack alignItems="end" w={"100%"}>
-						<HStack alignItems="start" w="25%" justifyContent="space-between">
-							<TextTitle title="Total Insurable Hours:" whiteSpace="wrap" align={"right"} />
-							<NormalTextTitle
-								title={convertDecimal(totalInsurableHours)}
-								align={"right"}
-								width="100px"
-							/>
-						</HStack>
-						<HStack alignItems="start" w="25%" justifyContent="space-between">
-							<TextTitle title="Total Insurable Dollars:" whiteSpace="wrap" align={"right"} />
-							<NormalTextTitle
-								title={getAmount(totalInsurableEarnings)}
-								align={"right"}
-								width="100px"
-							/>
-						</HStack>
-					</Stack>
 				</Stack>
-			</Box>
-		</Flex>
+			</RoeSection>
+		</Stack>
 	);
 };
 
