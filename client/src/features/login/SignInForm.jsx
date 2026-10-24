@@ -7,17 +7,18 @@ import {
 	FormControl,
 	FormLabel,
 	Heading,
+	Image,
 	Input,
 	InputGroup,
 	InputRightElement,
 	Stack,
 } from "@chakra-ui/react";
+import { primaryButtonProps } from "layouts/PublicLayout";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginService from "services/LoginService";
 import { buildUserInfo, storeUser } from "utils/common";
-import logoImg from "../../assets/logos/BusinessN_lightLogo1.png";
-import Logo from "../../components/logo";
+import logoImg from "../../assets/logos/businessn-dark.png";
 
 const SignInForm = ({ title, isMobile }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +97,8 @@ const SignInForm = ({ title, isMobile }) => {
 			position="relative"
 			spacing="8"
 			p={isMobile ? "2em" : "1em 2em"}
-			mt={isMobile ? "50%" : "20vh"}
+			mt={isMobile ? "8vh" : "12vh"}
+			mb={8}
 			width={isMobile ? "90vw" : "md"}
 			bg="var(--main_color)"
 			boxShadow="xl"
@@ -104,13 +106,10 @@ const SignInForm = ({ title, isMobile }) => {
 			borderRadius={"20px"}
 		>
 			<Stack spacing={0}>
-				{isMobile ? (
-					<Logo />
-				) : (
-					<Flex h="20" m={"0 auto"}>
-						<Logo isFullLogo logoImgSrc={logoImg} />
-					</Flex>
-				)}
+				{/* UI-01: the same card logo as the other public pages */}
+				<Flex justify="center" mb={4} mt={2}>
+					<Image src={logoImg} alt="BusinessN" h="32px" objectFit="contain" />
+				</Flex>
 				<Stack
 					spacing={{
 						base: "2",
@@ -174,8 +173,8 @@ const SignInForm = ({ title, isMobile }) => {
 							</InputGroup>
 						</FormControl>
 						{/* //checkbox remember me */}
-						<Button isLoading={isLoading} type="submit" bg="var(--banner_bg)">
-							Login
+						<Button isLoading={isLoading} type="submit" {...primaryButtonProps}>
+							Sign in
 						</Button>
 					</Stack>
 				</form>

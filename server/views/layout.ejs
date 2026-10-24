@@ -1,129 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<%#
+  Set / reset password page (passwordController: GET and POST
+  /api/reset-password/:id/:token). UI-01: the same look as the app's public
+  pages (client/src/layouts/PublicLayout.jsx): light background, purple top
+  bar with the logo, white card, purple full-width button.
+  Data: email, status ("Not verified" | "Verified" | "Expired"), message, loginUrl.
+%>
 <head>
 	<meta charset="UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title><%= status === "Verified" ? "Password saved" : status === "Expired" ? "Link expired" : "Set your password" %> | BusinessN</title>
 	<style>
-		* {
-			font-family: "Inter Variable", -apple-system, system-ui, sans-serif;
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
+		:root {
+			--page-bg: #f9f9fb;
+			--brand: #371f37;
+			--brand-hover: #4a2b4a;
+			--card-bg: #ffffff;
+			--border: #e2e8f0;
+			--text: #1a202c;
+			--muted: #4a5568;
 		}
-
-		.flex-container {
-			display: flex;
-			justify-content: center;
-			height: 100vh;
-			background-color: #371f37;
-			align-items: center;
-		}
-
-		.form-div {
-			padding: 2em;
-			padding-top: 3em;
-			background-color: white;
-			width: 28rem;
-			border-radius: 1em;
-		}
-
-		h1 {
-			font-size: 1.875em;
-			line-height: 2.375rem;
-			font-weight: 600;
-			margin: 1em 0;
-		}
-
-		.form-content {
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+		body {
+			min-height: 100vh;
+			background: var(--page-bg);
+			color: var(--text);
+			font-family: "Inter Variable", "Inter", -apple-system, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+			font-size: 16px;
 			display: flex;
 			flex-direction: column;
+		}
+		nav { padding: 12px 20px 0; }
+		.bar {
+			background: var(--brand);
+			border-radius: 10px;
+			height: 74px;
+			padding: 0 32px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.bar img { height: 28px; display: block; }
+		.bar a.link { color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 6px 12px; border-radius: 6px; }
+		.bar a.link:hover { background: rgba(255, 255, 255, 0.16); }
+		main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+		.card {
 			width: 100%;
+			max-width: 448px;
+			background: var(--card-bg);
+			border-radius: 20px;
+			box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+			padding: 32px;
 		}
-
-		input,
-		button,
-		label {
-			font-size: 0.875rem;
+		.logo { display: flex; justify-content: center; margin-bottom: 16px; }
+		.logo img { height: 32px; }
+		h1 { font-size: 22px; line-height: 1.3; font-weight: 700; text-align: center; margin-bottom: 8px; }
+		p.lead { color: var(--muted); font-size: 14px; text-align: center; line-height: 1.5; margin-bottom: 24px; }
+		label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+		.account { font-size: 14px; color: var(--muted); margin-bottom: 16px; text-align: center; }
+		input {
+			width: 100%;
+			height: 40px;
+			padding: 0 16px;
+			font-size: 16px;
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			background: #eeeeee;
+			color: var(--text);
+			outline: none;
 		}
-
-		input,
-		button {
-			height: 2.5rem;
-			border-radius: 0.5rem;
-			border: 1px solid #e2e8f0;
-		}
-
-		input,
-		label {
-			padding-inline-start: 1em;
-			color: black;
-			margin-top: 0.5rem;
-			padding-inline-end: 1em;
-		}
-
-		button {
-			color: white;
-			background: #4c364b;
+		input:focus { border-color: #3182ce; box-shadow: 0 0 0 1px #3182ce; background: #fff; }
+		.hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+		.button {
+			display: block;
+			width: 100%;
+			height: 40px;
+			margin-top: 20px;
+			border: 0;
+			border-radius: 6px;
+			background: var(--brand);
+			color: #fff;
+			font-size: 16px;
+			font-weight: 600;
+			text-align: center;
+			line-height: 40px;
+			text-decoration: none;
 			cursor: pointer;
 		}
-
-		.center {
-			text-align: center;
-		}
-
-		img {
-			height: 50px;
-			object-fit: cover;
+		.button:hover { background: var(--brand-hover); }
+		.alert { border-radius: 6px; padding: 12px 16px; font-size: 14px; margin-bottom: 16px; line-height: 1.5; }
+		.alert.error { background: #fed7d7; color: #822727; }
+		.alert.success { background: #c6f6d5; color: #22543d; }
+		.secondary { display: block; text-align: center; margin-top: 16px; font-size: 14px; font-weight: 600; color: var(--brand); text-decoration: none; }
+		.secondary:hover { text-decoration: underline; }
+		@media (max-width: 480px) {
+			nav { padding: 12px 12px 0; }
+			.bar { height: 56px; padding: 0 16px; }
+			.bar img { height: 22px; }
+			main { align-items: flex-start; padding: 24px 12px; }
+			.card { padding: 24px 20px; }
 		}
 	</style>
-	<title>Create Your Password</title>
-	<script>
-		var status = `<%- JSON.stringify(status) %>`;
-
-		if (JSON.parse(status) == "Verified") {
-			if (confirm("Do u want to login?")) {
-				window.location.href = "https://businessn-erp.com/";
-			}
-		}
-	</script>
 </head>
 
 <body>
-	<section class="flex-container">
-		<section class="form-div">
-			<section class="center">
-				<img alt="logo" src="/assets/logos/logoCover.jpg" />
-				<h1>Set Your Password</h1>
-			</section>
+	<% const signIn = typeof loginUrl !== "undefined" && loginUrl ? loginUrl : "/login"; %>
+	<% const forgot = signIn.replace(/\/login\/?$/, "/forgot-password"); %>
+	<nav>
+		<div class="bar">
+			<a href="<%= signIn %>" aria-label="BusinessN home"><img alt="BusinessN" src="/assets/logos/businessn-white.png" /></a>
+			<a class="link" href="<%= signIn %>">Sign in</a>
+		</div>
+	</nav>
+	<main>
+		<section class="card">
+			<div class="logo"><img alt="BusinessN" src="/assets/logos/businessn-dark.png" /></div>
 
+			<% if (status === "Verified") { %>
+			<h1>Your password has been saved</h1>
+			<p class="lead">You can now sign in to BusinessN with your new password.</p>
+			<a class="button" href="<%= signIn %>">Go to sign in</a>
+
+			<% } else if (status === "Expired") { %>
+			<h1>This link has expired</h1>
+			<p class="lead">For your security, password links can be used once and expire after 15 minutes.</p>
 			<% if (typeof message !== "undefined" && message) { %>
-			<p role="alert" style="color: #b00020; text-align: center"><%= message %></p>
+			<div class="alert error" role="alert"><%= message %></div>
 			<% } %>
-			<% if (status !== "Expired") { %>
-			<form class="form-content" action="" method="post">
-				<label for="password">Email : <%= email%></label>
+			<a class="button" href="<%= forgot %>">Request a new link</a>
+			<a class="secondary" href="<%= signIn %>">Back to sign in</a>
 
+			<% } else { %>
+			<h1>Set your password</h1>
+			<p class="lead">Choose a new password for your BusinessN account.</p>
+			<% if (email) { %><p class="account">Account: <strong><%= email %></strong></p><% } %>
+			<% if (typeof message !== "undefined" && message) { %>
+			<div class="alert error" role="alert"><%= message %></div>
+			<% } %>
+			<form action="" method="post">
+				<label for="password">New password</label>
 				<input
 					type="password"
 					name="password"
 					id="password"
-					placeholder="New Password (min 8 characters)"
 					minlength="8"
 					maxlength="128"
 					required
 					autocomplete="new-password"
 				/>
-				<br />
-				<button>Reset password</button>
+				<p class="hint">At least 8 characters.</p>
+				<button class="button" type="submit">Save password</button>
 			</form>
-			<% } else { %>
-			<p style="text-align: center">Please request a new reset link from the login page.</p>
+			<a class="secondary" href="<%= signIn %>">Back to sign in</a>
 			<% } %>
 		</section>
-	</section>
-	<!-- &copy; ${CURRENT_YEAR} ${COMPANIES.BUSINESSN_ORG}. All rights reserved. -->
+	</main>
 </body>
 
 </html>

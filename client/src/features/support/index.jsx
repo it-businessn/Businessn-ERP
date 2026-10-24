@@ -1,7 +1,8 @@
-import { Box, Center, HStack, Image, Stack } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
+import PublicLayout from "layouts/PublicLayout";
 
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from "@chakra-ui/react";
-import { tabScrollCss, tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
+import { tabStyleCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useState } from "react";
 import CompanyInfo from "./CompanyInfo";
 import ContactInfo from "./ContactInfo";
@@ -9,9 +10,7 @@ import QueryInfo from "./QueryInfo";
 
 import TextTitle from "components/ui/text/TextTitle";
 import { FaChevronLeft, FaChevronRight, FaSave } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import TicketService from "services/TicketService";
-import logoImgSrc from "../../assets/logos/logoCover.png";
 import { WEBSITE_URL } from "constant";
 
 const Support = () => {
@@ -58,7 +57,7 @@ const Support = () => {
 
 	const handleSubmit = async () => {
 		try {
-			const { data } = await TicketService.addSupportTicket(formData);
+			await TicketService.addSupportTicket(formData);
 			toast({
 				title: "Ticket submitted!",
 				description: "Your support request has been sent successfully.",
@@ -94,32 +93,8 @@ const Support = () => {
 	};
 
 	return (
-		<Box
-			padding={"1em"}
-			backgroundColor="var(--logo_bg)"
-			h={"100vh"}
-			overflow={"auto"}
-			css={tabScrollCss}
-		>
-			<Stack w={{ base: "100%", lg: "60%" }} m="0 auto" spacing={10} borderRadius={"lg"}>
-				<Center>
-					<Link to="/">
-						<Image
-							width={200}
-							m={"0 auto"}
-							objectFit="contain"
-							src={logoImgSrc}
-							alt="Company logo"
-						/>
-					</Link>
-				</Center>
-				<Box
-					borderRadius={"lg"}
-					w={"100%"}
-					backgroundColor="var(--main_color)"
-					p="2em"
-					m="1em auto"
-				>
+		<PublicLayout action="signin" size="lg">
+			<Box>
 					<TextTitle size={"lg"} title="Need Support? Let Us Help" />
 					<Tabs
 						index={tabIndex}
@@ -186,9 +161,8 @@ const Support = () => {
 							Cancel
 						</Button>
 					</HStack>
-				</Box>
-			</Stack>
-		</Box>
+			</Box>
+		</PublicLayout>
 	);
 };
 

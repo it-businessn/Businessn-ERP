@@ -1,22 +1,24 @@
-import { Flex, Heading, Text } from "@chakra-ui/react";
+import { Button, Heading, Stack, Text } from "@chakra-ui/react";
+import PublicLayout, { primaryButtonProps } from "layouts/PublicLayout";
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "./ui/button/PrimaryButton";
 
+// UI-01: same look as the other public pages.
 export default function PageNotFound() {
 	const navigate = useNavigate();
 	return (
-		<Flex
-			alignItems="center"
-			justifyContent="center"
-			flexDirection="column"
-			className="page_not_found"
-		>
-			<Heading>404</Heading>
-			<Text fontSize="18px" mt={3} mb={2}>
-				Page Not Found
-			</Text>
-			<Text mb={6}>The page you're looking for does not seem to exist</Text>
-			<PrimaryButton name="Go to Home" onOpen={() => navigate("/login")} />
-		</Flex>
+		<PublicLayout action="signin">
+			<Stack spacing={3} textAlign="center">
+				<Heading size="2xl" color="var(--banner_bg)">
+					404
+				</Heading>
+				<Heading size={{ base: "xs", md: "sm" }}>Page not found</Heading>
+				<Text color="gray.600" fontSize="sm">
+					The page you are looking for does not exist or has moved.
+				</Text>
+				<Button {...primaryButtonProps} onClick={() => navigate("/login")}>
+					Go to sign in
+				</Button>
+			</Stack>
+		</PublicLayout>
 	);
 }

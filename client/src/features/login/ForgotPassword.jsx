@@ -1,132 +1,100 @@
-import { Box, Button, Flex, FormControl, Image, Input, Stack } from "@chakra-ui/react";
-import LinkButton from "components/ui/button/LinkButton";
-import NormalTextTitle from "components/ui/NormalTextTitle";
-import TextTitle from "components/ui/text/TextTitle";
+import {
+	Alert,
+	AlertDescription,
+	AlertIcon,
+	Button,
+	FormControl,
+	FormLabel,
+	Heading,
+	Input,
+	Stack,
+	Text,
+} from "@chakra-ui/react";
 import CenterBoxLayout from "layouts/CenterBoxLayout";
+import { primaryButtonProps } from "layouts/PublicLayout";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { isMobileView } from "services/Breakpoint";
+import { useNavigate } from "react-router-dom";
 import PasswordService from "services/PasswordService";
-import logoImgSrc from "../../assets/logos/logo1.png";
-import Logo from "../../components/logo";
 
+// UI-01: same look as the sign-in page. The server always answers the same way
+// (no hint whether the e-mail exists), so the page does too.
 const ForgotPassword = () => {
+	const [email, setEmail] = useState("");
+	const [sentMessage, setSentMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
-	const [captionTitle, setCaptionTitle] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 
-	const [email, setEmail] = useState("");
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setErrorMessage("");
+		setIsLoading(true);
 		try {
 			const { data } = await PasswordService.sendPassword({ email });
-			setCaptionTitle(data.message);
+			setSentMessage(
+				data?.message || "If an account exists for this e-mail, we have sent a link to reset your password.",
+			);
 		} catch (error) {
-			setErrorMessage(error?.response?.data?.message);
+			setErrorMessage(error?.response?.data?.message || "We could not send the e-mail. Please try again.");
+		} finally {
+			setIsLoading(false);
 		}
 	};
-	const goBack = () => {
-		navigate(-1);
-	};
-	const LogoContent = () =>
-		isMobileView ? (
-			<Link to="/">
-				<Image
-					height={"50px"}
-					width={"50px"}
-					m={"0 auto"}
-					objectFit="contain"
-					src={logoImgSrc}
-					alt="Company logo"
-				/>
-			</Link>
-		) : (
-			<Logo isCover isForgotPassword />
-		);
 
-	return captionTitle ? (
-		<CenterBoxLayout spacing="0">
-			<Flex h="24" m={"0 auto"}>
-				<LogoContent />
-			</Flex>
-			<TextTitle
-				title="
-					Password Reset Link Sent"
-				size="xl"
-			/>
-			<NormalTextTitle color="green" whiteSpace="wrap" title={captionTitle} />
-		</CenterBoxLayout>
-	) : (
-		<CenterBoxLayout>
-			<Stack
-				spacing={{
-					base: "2",
-					md: "3",
-				}}
-			>
-				<Flex h="3em" m={"0 auto"}>
-					<LogoContent />
-				</Flex>
-				<TextTitle
-					size={{
-						base: "lg",
-						md: "2xl",
-					}}
-					align={"center"}
-					title="Forgot your password?"
-				/>
-				<NormalTextTitle
-					size="sm"
-					title="Please enter your email address. You will receive a new password via email."
-					whiteSpace="wrap"
-				/>
-				<Stack spacing="4">
-					<form onSubmit={handleSubmit}>
-						<Stack spacing={4}>
-							<FormControl>
-								<Input
-									type="email"
-									name="email"
-									placeholder="Enter your email"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									required
-								/>
-							</FormControl>
-							<Button type="submit" bg="var(--banner_bg)">
-								Get Password
-							</Button>
-						</Stack>
-					</form>
+	if (sentMessage) {
+		return (
+			<CenterBoxLayout>
+				<Stack spacing={3} textAlign="center">
+					<Heading size={{ base: "xs", md: "sm" }}>Check your e-mail</Heading>
+					<Text color="gray.600" fontSize="sm">
+						{sentMessage}
+					</Text>
+					<Text color="gray.600" fontSize="sm">
+						The link expires in 15 minutes. If you do not see the e-mail, check your spam folder.
+					</Text>
 				</Stack>
-				<LinkButton name="Go Back" onClick={goBack} />
+				<Button {...primaryButtonProps} onClick={() => navigate("/login")}>
+					Back to sign in
+				</Button>
+			</CenterBoxLayout>
+		);
+	}
 
-				{/* <HStack>
-					<Divider />
-					<Text textStyle="sm" color="fg.muted">
-						OR
-					</Text>
-					<Divider />
-				</HStack> */}
-				{errorMessage && (
-					<Box color="red">
-						<TextTitle
-							size="sm"
-							whiteSpace="wrap"
-							title="The email address you entered was not found."
-						/>
-						<TextTitle size="sm" whiteSpace="wrap" title={errorMessage} />
-					</Box>
-				)}
-				{/* <HStack spacing="1" justify="center">
-					<Text textStyle="sm" color="fg.muted">
-						Having issues?
-					</Text>
-					<Button variant="text" size="sm">//send contact us link
-						Contact us
-					</Button>
-				</HStack> */}
+	return (
+		<CenterBoxLayout>
+			<Stack spacing={2} textAlign="center">
+				<Heading size={{ base: "xs", md: "sm" }}>Forgot your password?</Heading>
+				<Text color="gray.600" fontSize="sm">
+					Enter the e-mail address for your account and we will send you a link to reset your
+					password.
+				</Text>
 			</Stack>
+			<form onSubmit={handleSubmit}>
+				<Stack spacing={4}>
+					<FormControl isRequired>
+						<FormLabel>Email</FormLabel>
+						<Input
+							type="email"
+							name="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value.trim())}
+							autoComplete="email"
+						/>
+					</FormControl>
+					<Button type="submit" isLoading={isLoading} {...primaryButtonProps}>
+						Send reset link
+					</Button>
+				</Stack>
+			</form>
+			<Button variant="link" onClick={() => navigate("/login")}>
+				Back to sign in
+			</Button>
+			{errorMessage && (
+				<Alert status="error" borderRadius="md">
+					<AlertIcon />
+					<AlertDescription>{errorMessage}</AlertDescription>
+				</Alert>
+			)}
 		</CenterBoxLayout>
 	);
 };

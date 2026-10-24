@@ -224,6 +224,10 @@ All e-mails are built by `services/emailTemplates.js` with one layout, `views/em
 
 Tests: `unit.emailTemplates.test.js` T-EMAIL-01..05; T-LEFT-12 accepts EJS's `&#34;` for a quote.
 
+### 1.10 Uniform public pages (UI-01)
+
+Every page shown before sign-in uses `client/src/layouts/PublicLayout.jsx` (light `--primary_bg` background, `--banner_bg` top bar with the logo and Sign in / Contact us, white card with radius 20px and the logo, `primaryButtonProps`): sign in, forgot password, verify e-mail (via `CenterBoxLayout`), contact us / support, sign-up, ambassador sign-up, 404. The server-rendered set / reset password page (`server/views/layout.ejs`) copies the same values and now has success ("Your password has been saved", Go to sign in) and expired ("Request a new link") states instead of a `confirm()` pop-up; `passwordController` passes `loginUrl` (`BASE_URL_LIVE/login`). Forgot-password wording fixed (a link, not a new password). Trimmed logo files `businessn-white.png` / `businessn-dark.png`. Test T-RST-07.
+
 ## 2. Open issues
 
 Deduplicated from the changelog, the API issue list and the feature gap register, in priority order.
@@ -299,7 +303,7 @@ Only `api.payrun.concurrency.test.js` mocks service modules and resets the modul
 | `api.payyear.test.js` | 14 | Two years' period-N stubs coexist, year-scoped upsert and readers, previous period per frequency, index shape, whole-day matching | T-YEAR-01..14 |
 | `unit.resolveDuplicates.test.js` | 5 | Dry run writes nothing; `--apply` keeps the newest, backs up, repoints orders, deletes; informational groups untouched | T-DEDUP-01..05 |
 | `api.paystubEmail.test.js` | 32 | Pay stub e-mails (pay-date job and Send pay stub e-mail): content and PDF (statement rows, totals, hidden cells, amount in words, payment method, superficial runs, one A4 page), escaping, switch, schedule, Vancouver day and catch-up, exactly-once (re-run, concurrent runs, new year), SMTP failure retry, no address, profile fallback, stuck send, Send Paystub (latest stub, re-send, not found / no stub / net pay not above $0.00 / SMTP down), net pay rule | T-PSE-01..14, 23-31, 33, 34, 36 |
-| **Server total** | **491** | | |
+| **Server total** | **492** | | |
 | Client: 10 suites | 29 | Navbar, chart registry, print modal, change password, sign-in, Axios interceptor, UI components | C-NAV, C-CHART, C-PRINT, C-PWD, C-LOGIN, C-API |
 | Client: `src/utils/utils.test.js` | 12 | Formatting, role helpers, pay-period helpers, completion %, dates, bank validation | C-UTIL-01..10, C-VAL-01/02 |
 | **Client total** | **41** | | |
@@ -312,7 +316,7 @@ Node 22.22, npm 10.9.
 
 | Check | Baseline (`erp.zip`) | After pass 1 | **Final** |
 |---|---|---|---|
-| Server tests | 85 / 85 | 156 / 156 | **491 / 491**, 0 skipped, stable across repeated runs |
+| Server tests | 85 / 85 | 156 / 156 | **492 / 492**, 0 skipped, stable across repeated runs |
 | Client tests | 29 / 29 | 41 / 41 | **41 / 41** |
 | Client lint | 3 errors, 375 warnings | 0 errors, 350 warnings | **0 errors**, 350 warnings |
 | Client production build | passes, 8.5 MB | passes | **passes**, 8.5 MB, `main.js` 382 kB gzip |

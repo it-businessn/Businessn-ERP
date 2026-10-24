@@ -1,5 +1,82 @@
 CHANGE LOG (newest first) - compared with erp_t.zip as uploaded
 
+15. Public pages: one uniform look (background, top bar, card, buttons)
+   - Before: sign in was light grey; forgot password, contact us (support),
+     sign-up and verify e-mail were navy; the set / reset password page was
+     dark purple with its own fonts; the ambassador sign-up was a white split
+     page; the 404 page had no header.
+   - Now every page before sign-in looks like the sign-in page: light
+     background, the purple top bar with the BusinessN logo (and "Sign in" or
+     "Contact us"), content in a white rounded card with the logo, the same
+     purple full-width button, inputs and links - on desktop and phones.
+     One shared component: client/src/layouts/PublicLayout.jsx; the server's
+     password page (server/views/layout.ejs) uses the same values.
+   - Set / reset password page: replaced the "Do u want to login?" browser
+     pop-up with "Your password has been saved" + Go to sign in; an expired
+     link now offers "Request a new link"; "Save password" button.
+   - Forgot password: correct wording (we e-mail a reset LINK, not a new
+     password), "Check your e-mail" confirmation, no "e-mail not found"
+     message (the server never says whether an account exists).
+   - Logos: trimmed wordmarks (the original files have very wide empty
+     margins, so the logo showed tiny).
+   - Button text on sign in: "Sign in" (was "Login").
+   - Screenshots before / after: deliverables/page-previews.
+   - Tests: T-RST-07 (server), sign-in test updated; 492 server, 61 client.
+
+14. All e-mails: one standard, professional template
+   - Every e-mail now uses the same layout (views/emails/layout.ejs): branded
+     header, clear title, greeting by the recipient's own name, short
+     professional wording, a details table, one button, sign-off, logo footer
+     and an "automated message" line. Table-based, so it looks the same in
+     Outlook, Gmail and phones (the old ones used flexbox, which Outlook and
+     Gmail ignore). Previews: deliverables/email-previews.
+   - E-mails: set password (new account), reset password, website enquiry
+     thank-you, weekly schedule, new lead, new support ticket, ticket assigned,
+     pay stub (same wording as before).
+   - Fixed: lead and support e-mails always said "Hello Jesse" (now the
+     assignee's name); wrong plain-text parts ("We have received your
+     inquiry..." on schedules and ticket assignments, an empty one on support
+     tickets, just the link on password e-mails); the ticket link text said
+     /login/ but opened the home page (now the sign-in page, from
+     BASE_URL_LIVE); an empty paragraph in schedules without a file; password
+     e-mails now say how long the link lasts (from the same 15-minute setting)
+     and give a copy-paste link if the button does not work.
+   - All wording and layout in one file: server/services/emailTemplates.js.
+   - Tests: unit.emailTemplates.test.js T-EMAIL-01..05; 491 server tests pass.
+
+13. Issue ROE (Record of Employment) - completed, Payroll > Issue ROE
+   - Employee Info: choose from ALL employees of the company (active or not),
+     Confirm Selection fills in the personal information (SIN shown masked,
+     XXX XX9 822), Confirm moves on. If an ROE was already submitted:
+     "View / print copy" or "Start a new ROE".
+   - Employment Info: tenure (start date, last day worked) and positions; the
+     final pay period end date is filled in from the last day worked (the pay
+     period containing it) and can be changed; reason code list (A00 fixed);
+     expected date of recall defaults to "U - Unknown"; a recall date shows,
+     and is required, only for "Y - Return Date" (not allowed for quits,
+     retirement or dismissal); optional separation payments. Save -> employer.
+   - Employer Info: company name, address and CRA payroll account number (read
+     only); contact and issuer chosen from the company's admins, default the
+     logged-in user; telephone + ext.; communication English by default.
+   - Earnings Info: insurable earnings (gross pay) and hours (all paid hours)
+     by pay period, ROE PP 1 = final pay period going back (27 bi-weekly,
+     53 weekly, 25 semi-monthly, 13 monthly); payroll PP and end date shown
+     (e.g. PP 7, Mar 23, 2025); odd PPs left, even right, merge button in
+     between; a regular and an extra run ending the same day are one period.
+   - Review: the ROE laid out as the Service Canada form, comments (block 18),
+     Print, Submit. Draft prints with a DRAFT COPY watermark; a submitted ROE
+     prints as a copy with "This is a print-friendly copy of the ROE. The
+     official ROE has been filed with Service Canada."
+   - Fixes: dates printed with the wrong month (0-based); full SIN shown;
+     hard-coded 15A/15B numbers; a missing company address or a country stored
+     as "CA" crashed the screen; a new ROE overwrote the previous one (a
+     submitted ROE is now kept; a draft is saved before review).
+   - Server: SIN stored encrypted (copied from the profile), only sent masked;
+     validation (422 with the reason); ROE routes are administrators only.
+   - Note: Submit records the ROE as issued in the app; the app does not send
+     it to Service Canada (file it in ROE Web as before).
+   - Tests: server T-ROE-01..11 (api.roe.test.js), client C-ROE-01..03.
+
 12. Vacation accrual and carry-over (VAC-01) - built on the existing logic
    - Accrued: now adds up every period (vacation % x gross + accrual
      adjustments). Before, it stayed at period 1's amount all year.

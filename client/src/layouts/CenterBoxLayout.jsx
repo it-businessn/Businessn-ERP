@@ -1,39 +1,11 @@
-import { Box, Container, Stack } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
+import PublicLayout from "./PublicLayout";
 
-const CenterBoxLayout = ({ spacing = "8", children }) => {
-	return (
-		<Box
-			bg={"var(--logo_bg)"}
-			py={{
-				base: "12",
-				md: "24",
-			}}
-			display="flex"
-			minH="100vh"
-			alignItems="center"
-		>
-			<Container
-				bg={"var(--main_color)"}
-				maxW="md"
-				mx={{ base: "3em", md: "auto" }}
-				py={{
-					base: "10",
-					sm: "8",
-				}}
-				px={{
-					base: "4",
-					sm: "10",
-				}}
-				boxShadow={{
-					base: "none",
-					sm: "xl",
-				}}
-				borderRadius={"lg"}
-			>
-				<Stack spacing={spacing}>{children}</Stack>
-			</Container>
-		</Box>
-	);
-};
+// UI-01: the small centred card of the public pages (same look as sign-in).
+const CenterBoxLayout = ({ spacing = "6", action = "signin", showLogo = true, children }) => (
+	<PublicLayout action={action} showLogo={showLogo}>
+		<Stack spacing={spacing}>{children}</Stack>
+	</PublicLayout>
+);
 
 export default CenterBoxLayout;

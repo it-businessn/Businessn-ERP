@@ -48,7 +48,7 @@ describe("SignInForm (AUD-017 / REV-010)", () => {
 		const { submit } = setup();
 		submit();
 		expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument();
-		await waitFor(() => expect(screen.getByRole("button", { name: /^login$/i })).not.toBeDisabled());
+		await waitFor(() => expect(screen.getByRole("button", { name: /^sign in$/i })).not.toBeDisabled());
 	});
 
 	test("C-LOGIN-08 network failure shows a connectivity message", async () => {

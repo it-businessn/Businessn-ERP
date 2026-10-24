@@ -269,6 +269,29 @@ describe("AUD-001 reset-password token verification", () => {
 		expect(res.status).toBe(400);
 		expect(res.text).toMatch(/invalid or has expired/i);
 	});
+
+	test("T-RST-07 (UI-01) the reset page has the public-page look and a clear next step in each state", async () => {
+		// expired: a way to get a new link
+		Employee.findById.mockImplementation(() => query({ _id: USER_ID, email: "a@b.c", password: "h" }));
+		const expired = await request(app).get(`/api/reset-password/${USER_ID}/bad`);
+		expect(expired.text).toContain("This link has expired");
+		expect(expired.text).toContain('href="http://localhost:0/forgot-password"');
+		expect(expired.text).toContain('class="bar"'); // the purple top bar
+		// form
+		const token = getResetPasswordLink({ _id: USER_ID }, "h").split("/").pop();
+		const form = await request(app).get(`/api/reset-password/${USER_ID}/${token}`);
+		expect(form.status).toBe(200);
+		expect(form.text).toContain("Set your password");
+		expect(form.text).toContain("a@b.c");
+		expect(form.text).toContain('autocomplete="new-password"');
+		// saved: a sign-in button, no browser pop-up
+		Employee.findByIdAndUpdate.mockResolvedValue({});
+		EmployeeProfileInfo.updateMany.mockResolvedValue({});
+		const saved = await request(app).post(`/api/reset-password/${USER_ID}/${token}`).type("form").send({ password: "NewPassw0rd!" });
+		expect(saved.text).toContain("Your password has been saved");
+		expect(saved.text).toContain('href="http://localhost:0/login"');
+		expect(saved.text).not.toMatch(/confirm\(/);
+	});
 });
 
 describe("AUD-004 updateUser mass assignment", () => {

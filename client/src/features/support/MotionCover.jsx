@@ -25,7 +25,8 @@ export default function MotionCover() {
 	return (
 		<Box
 			bg="var(--banner_bg)"
-			w={{ base: "100%", md: "50%", lg: "30%" }}
+			borderRadius="16px"
+			w={{ base: "100%", md: "50%", lg: "35%" }}
 			p={6}
 			display={{ base: "none", md: "flex" }}
 			justifyContent="space-between"

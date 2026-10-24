@@ -1,16 +1,15 @@
 import {
 	Box,
-	Center,
 	Checkbox,
 	Flex,
 	FormControl,
 	FormLabel,
 	HStack,
-	Image,
 	Select,
 	Stack,
 	useToast,
 } from "@chakra-ui/react";
+import PublicLayout from "layouts/PublicLayout";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import RequiredLabel from "components/ui/form/RequiredLabel";
@@ -19,9 +18,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { COUNTRIES, tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import TicketService from "services/TicketService";
-import logoImgSrc from "../../assets/logos/logoCover.png";
 import { WEBSITE_URL } from "constant";
 
 export default function CustomerInfo() {
@@ -101,38 +98,14 @@ export default function CustomerInfo() {
 	};
 
 	return (
-		<Box
-			padding={"1em"}
-			backgroundColor="var(--logo_bg)"
-			h={"100vh"}
-			overflow={"auto"}
-			css={tabScrollCss}
-		>
-			<Center>
-				<Link to="/">
-					<Image
-						height={"40px"}
-						width={200}
-						m={"0 auto"}
-						objectFit="contain"
-						src={logoImgSrc}
-						alt="Company logo"
-					/>
-				</Link>
-			</Center>
-			<Box
-				borderRadius={"lg"}
-				backgroundColor="var(--main_color)"
-				w={{ base: "100%", md: "80%", lg: "70%" }}
-				py="2em"
-				m="1em auto"
-			>
+		<PublicLayout action="signin" size="lg">
+			<Box>
 				{showPopup ? (
 					<Flex
 						alignItems="center"
 						justifyContent="center"
 						flexDirection="column"
-						minH="calc(100vh - 192px)"
+						minH="40vh"
 						css={tabScrollCss}
 					>
 						<TextTitle
@@ -325,6 +298,6 @@ export default function CustomerInfo() {
 					</>
 				)}
 			</Box>
-		</Box>
+		</PublicLayout>
 	);
 }

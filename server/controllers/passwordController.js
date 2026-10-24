@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const Employee = require("../models/Employee");
-const { sendTemplate, resetPasswordEmail } = require("../services/emailTemplates");
+const { sendTemplate, resetPasswordEmail, loginUrl } = require("../services/emailTemplates");
 // AUD-016: user-editable names are HTML-escaped in e-mail bodies.
 const { hashPassword, comparePassword } = require("../services/passwordService");
 const { getResetPasswordLink, verifyResetPasswordToken } = require("../services/tokenService");
@@ -80,10 +80,10 @@ const resetPassword = async (req, res) => {
 	try {
 		const check = await verifyResetRequest(id, token);
 		if (!check.ok) {
-			return res.status(400).render("index", { email: "", status: "Expired", message: check.reason });
+			return res.status(400).render("index", { loginUrl: loginUrl(), email: "", status: "Expired", message: check.reason });
 		}
 		const { user } = check;
-		return res.render("index", {
+		return res.render("index", { loginUrl: loginUrl(),
 			email: user.email,
 			status: "Not verified",
 			message: "",
@@ -113,7 +113,7 @@ const setNewPassword = async (req, res) => {
 			if (req.accepts(["json", "html"]) === "html") {
 				return res
 					.status(400)
-					.render("index", { email: user.email, status: "Not verified", message: passwordError });
+					.render("index", { loginUrl: loginUrl(), email: user.email, status: "Not verified", message: passwordError });
 			}
 			return res.status(400).json({ message: passwordError });
 		}
@@ -131,7 +131,7 @@ const setNewPassword = async (req, res) => {
 		// We unset it rather than storing the new value there.
 		await EmployeeProfileInfo.updateMany({ empId: user._id }, { $unset: { password: "" } });
 
-		return res.render("index", { email: user.email, status: "Verified", message: "" });
+		return res.render("index", { loginUrl: loginUrl(), email: user.email, status: "Verified", message: "" });
 	} catch (error) {
 		console.error("Set password error:", {
 			message: error.message,

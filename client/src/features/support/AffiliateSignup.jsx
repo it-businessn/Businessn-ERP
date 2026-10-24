@@ -25,6 +25,7 @@ import { COUNTRIES, tabScrollCss } from "erp-modules/payroll/onboard-user/custom
 import { useState } from "react";
 import { FaInstagram, FaLinkedin, FaTiktok, FaYoutube } from "react-icons/fa";
 import PayrollService from "services/PayrollService";
+import PublicLayout from "layouts/PublicLayout";
 import MotionCover from "./MotionCover";
 import { WEBSITE_URL } from "constant";
 
@@ -92,18 +93,12 @@ export default function AffiliateSignup() {
 		});
 	};
 	return (
-		<Flex
-			backgroundColor="var(--main_color)"
-			h={"100vh"}
-			flexDirection={{ base: "column", md: "row" }}
-			overflow={"hidden"}
-		>
+		<PublicLayout action="signin" size="xl" showLogo={false}>
+		<Flex flexDirection={{ base: "column", md: "row" }} gap={{ base: 6, md: 8 }}>
 			<Box
-				w={{ base: "100%", md: "50%", lg: "70%" }}
-				p={{ base: "3em", xl: "8em" }}
+				w={{ base: "100%", md: "50%", lg: "65%" }}
+				p={{ base: "0.5em", xl: "1.5em" }}
 				css={tabScrollCss}
-				overflow={"auto"}
-				borderRadius={"xl"}
 			>
 				{affiliate ? (
 					<div className="bg-green-50 p-4 rounded-lg">
@@ -336,5 +331,6 @@ export default function AffiliateSignup() {
 			</Box>
 			<MotionCover />
 		</Flex>
+		</PublicLayout>
 	);
 }
