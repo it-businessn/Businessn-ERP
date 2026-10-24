@@ -33,6 +33,9 @@ const CONFIG = {
 	REFRESH_TOKEN_SECRET: requireEnv("REFRESH_TOKEN_SECRET"),
 	MONGO_URI: requireEnv("DB_CONNECTION_URL_STAGING_CRM"),
 	BASE_URL_LIVE: requireEnv("BASE_URL_LIVE"),
+	// UI-01: the web app (sign-in page links in e-mails and the password page).
+	// BASE_URL_LIVE is the API server, which can be a different address.
+	APP_URL: (process.env.APP_URL || "https://businessn-erp.com").replace(/\/+$/, ""),
 	SIN_KEY: toHexBuffer("SIN_ENCRYPTION_KEY"),
 	BANKING_KEY: toHexBuffer("BANKING_ENCRYPTION_KEY"),
 	XML_ENCRYPTION_KEY: toHexBuffer("XML_ENCRYPTION_KEY"),

@@ -61,8 +61,8 @@ test("T-EMAIL-03 ticket and lead e-mails greet the assignee and list the details
 	expect(lead.text).toContain("Ticket: ACME-1");
 	expect(lead.text).toContain("Contact: Ann Lee");
 	expect(lead.text).not.toContain("Phone:"); // empty rows are left out
-	expect(loginUrl()).toBe("http://localhost:0/login");
-	expect(lead.html).toContain('href="http://localhost:0/login"');
+	expect(loginUrl()).toBe("https://businessn-erp.com/login"); // the app, not the API (BASE_URL_LIVE)
+	expect(lead.html).toContain('href="https://businessn-erp.com/login"');
 	const assigned = await ticketAssignedEmail({ assigneeName: "Bruce Hurst", ticketNumber: "ACME-3", topic: "Payroll", originator: "Ana Ruiz", hasAttachment: true });
 	expect(assigned.subject).toBe("Ticket ACME-3 assigned to you: Payroll");
 	expect(assigned.text).toContain("assigned to you by Ana Ruiz");

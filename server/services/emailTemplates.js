@@ -21,8 +21,8 @@ const BRAND = "BusinessN";
 const AUTOMATED = `This is an automated message from ${BRAND}. Please do not reply to this e-mail.`;
 const SIGN_OFF = ["Kind regards,", `The ${BRAND} Team`];
 
-/** The app's sign-in page. */
-const loginUrl = () => `${String(CONFIG.BASE_URL_LIVE || "").replace(/\/+$/, "")}/login`;
+/** The app's sign-in page (CONFIG.APP_URL, default https://businessn-erp.com). */
+const loginUrl = () => `${CONFIG.APP_URL || "https://businessn-erp.com"}/login`;
 
 const clean = (v) => (v === null || v === undefined ? "" : String(v).trim());
 const firstNameOf = (name) => clean(name).split(/\s+/)[0] || "";

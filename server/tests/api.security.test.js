@@ -275,7 +275,7 @@ describe("AUD-001 reset-password token verification", () => {
 		Employee.findById.mockImplementation(() => query({ _id: USER_ID, email: "a@b.c", password: "h" }));
 		const expired = await request(app).get(`/api/reset-password/${USER_ID}/bad`);
 		expect(expired.text).toContain("This link has expired");
-		expect(expired.text).toContain('href="http://localhost:0/forgot-password"');
+		expect(expired.text).toContain('href="https://businessn-erp.com/forgot-password"');
 		expect(expired.text).toContain('class="bar"'); // the purple top bar
 		// form
 		const token = getResetPasswordLink({ _id: USER_ID }, "h").split("/").pop();
@@ -289,7 +289,10 @@ describe("AUD-001 reset-password token verification", () => {
 		EmployeeProfileInfo.updateMany.mockResolvedValue({});
 		const saved = await request(app).post(`/api/reset-password/${USER_ID}/${token}`).type("form").send({ password: "NewPassw0rd!" });
 		expect(saved.text).toContain("Your password has been saved");
-		expect(saved.text).toContain('href="http://localhost:0/login"');
+		expect(saved.text).toContain('href="https://businessn-erp.com/login"');
+		expect(saved.text).not.toContain("localhost:0"); // never the API address
+		expect(saved.text).toContain('<meta http-equiv="refresh" content="5;url=https://businessn-erp.com/login"'); // goes there by itself
+		expect(form.text).not.toContain('http-equiv="refresh"'); // only once the password is saved
 		expect(saved.text).not.toMatch(/confirm\(/);
 	});
 });

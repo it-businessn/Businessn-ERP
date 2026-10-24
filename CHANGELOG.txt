@@ -1,5 +1,16 @@
 CHANGE LOG (newest first) - compared with erp_t.zip as uploaded
 
+16. Sign-in links always go to https://businessn-erp.com/login
+   - "Back to sign in", "Go to sign in", the top bar link on the password
+     page and the "Sign in to view the ticket" button in e-mails used the
+     API address (BASE_URL_LIVE, which the password links need) - that can
+     be a different server from the app. They now use the app address:
+     APP_URL, default https://businessn-erp.com (optional .env setting; only
+     set it if the app moves). "Request a new link" goes to
+     https://businessn-erp.com/forgot-password.
+   - After a password is saved, the page also goes to the sign-in page by
+     itself after 5 seconds (the Go to sign in button still works at once).
+
 15. Public pages: one uniform look (background, top bar, card, buttons)
    - Before: sign in was light grey; forgot password, contact us (support),
      sign-up and verify e-mail were navy; the set / reset password page was
@@ -37,8 +48,8 @@ CHANGE LOG (newest first) - compared with erp_t.zip as uploaded
      assignee's name); wrong plain-text parts ("We have received your
      inquiry..." on schedules and ticket assignments, an empty one on support
      tickets, just the link on password e-mails); the ticket link text said
-     /login/ but opened the home page (now the sign-in page, from
-     BASE_URL_LIVE); an empty paragraph in schedules without a file; password
+     /login/ but opened the home page (now the sign-in page,
+     https://businessn-erp.com/login); an empty paragraph in schedules without a file; password
      e-mails now say how long the link lasts (from the same 15-minute setting)
      and give a copy-paste link if the button does not work.
    - All wording and layout in one file: server/services/emailTemplates.js.
