@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Resolves the duplicates that block the unique indexes reported by
- * scripts/check-duplicates.js (only the ENFORCED keys: processed pay stubs and
+ * scripts/check-duplicates.js (only the ENFORCED keys: processed pay stubs, alerts and
  * funding totals). The informational "not enforced" groups are left alone.
  *
  * Rule: in each duplicate group the NEWEST document (by ObjectId creation time)
@@ -34,6 +34,8 @@ const APPLY_FLAG = process.argv.includes("--apply");
 const SHOWN_FIELDS = {
 	employeepaystubs: ["currentGrossPay", "currentNetPay", "currentDeductionsTotal", "payPeriodProcessingDate"],
 	fundingtotalspays: ["totalNetPay", "totalFundingWithDrawals", "totalEmpPaymentRemitCost", "fundTransferStatus"],
+	employeealertsviolationinfos: ["description", "payPeriodNum"],
+	holidays: ["date", "source"],
 };
 
 const createdAt = (id) => id.getTimestamp().toISOString().replace(".000Z", "Z");

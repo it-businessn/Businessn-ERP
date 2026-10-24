@@ -534,13 +534,19 @@ const buildPayStubPdf = (stub, employee = {}, company = {}) =>
 		}
 	});
 
+/** ASCII letters and digits only (accents dropped, not the letter: "José" -> "Jose"). */
+const fileSafe = (value) =>
+	String(value ?? "")
+		.normalize("NFD")
+		.replace(/[\u0300-\u036f]/g, "")
+		.replace(/[^A-Za-z0-9]+/g, "");
+
 const payStubFileName = (stub, employee = {}) => {
-	const name = String(employee.fullName || employee.firstName || "employee").replace(
-		/[^A-Za-z0-9]+/g,
-		"",
-	);
+	const name = fileSafe(employee.fullName || employee.firstName) || "employee";
+	const period = fileSafe(stub.payPeriodNum) || "0";
 	const extra = stub.isExtraRun ? "-extra" : "";
-	return `Paystub_PP${stub.payPeriodNum}${extra}_${dateBar(stub.payPeriodPayDate).replace(/\//g, "-")}_${name}.pdf`;
+	const day = dateBar(stub.payPeriodPayDate).replace(/\//g, "-");
+	return ["Paystub", `PP${period}${extra}`, day, name].filter(Boolean).join("_") + ".pdf";
 };
 
 module.exports = {

@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"check:rates": "node scripts/check-payroll-rates.js",
 		"start": "node index.js",
 		"devStart": "nodemon index.js",
 		"test": "jest --runInBand",

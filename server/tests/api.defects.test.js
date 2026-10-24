@@ -264,5 +264,40 @@ describe("NEW-06 announcements", () => {
 		const res = await request(app).get("/api/announcements/Acme").set(auth());
 		expect(res.status).toBe(200);
 		expect(Announcement.find).toHaveBeenCalledWith({ companyName: "Acme" });
+		expect(res.body.map((a) => a.title)).toContain("Hi");
+	});
+
+	test("T-ANN-02 (SUPPORT-01) every company gets the general Support notices, newest first, without old copies", async () => {
+		const Announcement = require("../models/Announcement");
+		const { SUPPORT_NOTICES } = require("../constants/supportNotices.constants");
+		// a company with no announcements of its own (e.g. Cornerstone) still sees the notices
+		Announcement.find.mockImplementation(() => query([]));
+		const empty = await request(app).get("/api/announcements/Acme").set(auth());
+		expect(empty.body.map((a) => a.title)).toEqual(SUPPORT_NOTICES.map((n) => n.title));
+		expect(empty.body[0].title).toBe("BC Income Tax Change from July 1, 2026");
+		expect(empty.body.every((a) => a.message && a.createdOn)).toBe(true);
+		// stored copies of a general notice and retired notices are not shown twice
+		Announcement.find.mockImplementation(() =>
+			query([
+				{ title: "Can Statutory Holidays Be Moved to Another Day?", message: "old", createdOn: "2025-07-01" },
+				{ title: "Minimum Wage Increase Effective June 1, 2025", message: "old", createdOn: "2025-05-01" },
+				{ title: "Office closed Friday", message: "Our office is closed", createdOn: "2026-10-01" },
+			]),
+		);
+		const res = await request(app).get("/api/announcements/Acme").set(auth());
+		expect(res.body.map((a) => a.title)).toEqual([
+			"Office closed Friday",
+			"BC Income Tax Change from July 1, 2026",
+			"Minimum Wage Increase Effective June 1, 2026",
+			"Can Statutory Holidays Be Moved to Another Day?",
+		]);
+		expect(res.body.find((a) => a.title.startsWith("Can Statutory")).message).not.toBe("old");
+	});
+
+	test("T-ANN-03 a company announcement without a date is listed last, not in random order", async () => {
+		const Announcement = require("../models/Announcement");
+		Announcement.find.mockImplementation(() => query([{ title: "Undated", message: "x" }]));
+		const res = await request(app).get("/api/announcements/Acme").set(auth());
+		expect(res.body[res.body.length - 1].title).toBe("Undated");
 	});
 });

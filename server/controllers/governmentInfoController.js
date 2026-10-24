@@ -58,6 +58,7 @@ const addEmployeeGovernmentInfo = async (req, res) => {
 		regionalEmployeeHealth,
 		regionalEmployerInjury,
 		regionalEmployerHealth,
+		isTD1ClaimCodeZero,
 	} = req.body;
 	try {
 		const existingGovernmentInfo = await findEmployeeGovernmentInfo(empId, companyName);
@@ -85,6 +86,7 @@ const addEmployeeGovernmentInfo = async (req, res) => {
 			regionalEmployeeHealth,
 			regionalEmployerInjury,
 			regionalEmployerHealth,
+			isTD1ClaimCodeZero: isTD1ClaimCodeZero === true || isTD1ClaimCodeZero === "true",
 		});
 		return res.status(201).json(newGovernmentInfo);
 	} catch (error) {
@@ -111,7 +113,7 @@ const findEmployeeGovernmentInfoDetails = async (empId, companyName) =>
 	await EmployeeGovernmentInfo.findOne({
 		empId,
 		companyName,
-	}).select("empId federalTaxCredit regionalTaxCredit isCPPExempt isEIExempt");
+	}).select("empId federalTaxCredit regionalTaxCredit isCPPExempt isEIExempt isTD1ClaimCodeZero");
 
 module.exports = {
 	findEmployeeGovernmentInfoDetails,

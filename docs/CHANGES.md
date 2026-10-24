@@ -126,6 +126,72 @@ Each employee receives their earnings statement as a PDF by e-mail on the pay da
 | Bug fix (all multi-select lists) | Ticked employees showed as unchecked: the theme had no `facebook` palette, so a checked box (`colorScheme="facebook"`, 59 places) had a transparent background and an invisible white tick. Added the palette to `client/src/config/themeConfig.js`. Also `MultiSelectBox.jsx` / `PayrollMultiSelectBox.jsx`: the whole row toggles (clicking beside the name did nothing), and the checked state uses the same value as the toggle (string options and the timesheet filter could be selected but never shown checked). Tests C-MSB-01..05 |
 | Tests | 32 automated (T-PSE-01..14, 23-31, 33, 34, 36: pay-date job, statement PDF, Send pay stub e-mail, net pay rule) plus an end-to-end run through the real nodemailer over TLS to a local capture server, and real server boots with the switch off and on |
 
+### 1.3 Tax tables by pay date and BC statutory holidays (TAX-TABLES, STAT-HOLIDAYS)
+
+| Area | Change |
+|---|---|
+| BC income tax | Was 5.06 % on the first bracket for every pay date. Now 5.06 % until June 30, 2026, **6.14 % from July 1, 2026** (CRA July 2026 T4127; BC Budget 2026 raised 2026 to 5.60 %), and **5.60 % from 2027** with the 2026 thresholds (frozen 2027-2030) |
+| Federal income tax | 2026 values were already right (14 %, 58,523 / 117,045 / 181,440 / 258,482). 2025 editions added (15 % until June, 14 % from July). 2027 is not published yet: the 2026 table is used with a log warning until it is added |
+| How | `constants/taxTables.constants.js` (editions by effective date, with sources), `taxService.getTaxTables(payDate)`, pay date passed from the pay run. Before: one hard-coded 2026 table for every pay date |
+| Stat holidays | BC holidays computed for any year (`utils/bcStatHolidays.util.js`) and filled in for a BC company's empty year (holiday page, daily job); year picker on the holiday page (was current year only); editing a date into another year moves the holiday to that year (it stayed in the old year); punches compared on the Vancouver day (evening punches on a stat were missed); the daily job loads `moment-timezone` itself |
+| Tests | `unit.taxTables.test.js` T-TT-01..08, `api.statHolidays.test.js` T-SH-01..09, client C-HOL-01; T-TAX-01 pinned to a March 2026 pay date |
+
+### 1.4 Alerts and Violations duplicates; Support notices for every company (ALERTS-01, SUPPORT-01)
+
+| Area | Change |
+|---|---|
+| Duplicate alerts | Alerts were stored once per pay period (the existence check included `payPeriodNum`) while the list ignored the period, so an unfixed problem was listed once per pay run. Now one row per (company, employee, type), updated on each inputs review and removed once fixed; the next review deletes legacy copies, and the list and count show one per problem until then. Unique index `uniq_alert_per_problem` (builds once copies are gone; `scripts/check-duplicates.js` / `resolve-duplicates.js --apply` also handle it) |
+| Minimum wage | Was $17.85 hard-coded; BC raised it to **$18.25 on June 1, 2026**. Now `constants/minimumWage.constants.js` by date. The alert fired below 17.85 but was cleared only above 17.85, so a rate of exactly the minimum never cleared it; now equal meets it. No pay rate is "Pay rate missing." |
+| Clearing alerts | Saving bank / pay rate / SIN clears that employee's alert in that company only (it cleared it in every company) |
+| Support panel | Messages were Announcement rows for BusinessN only; since NEW-06 limited them to the company, other companies (Cornerstone) saw none, and nothing in the app creates them. General notices now live in `constants/supportNotices.constants.js` and are shown to every company with its own announcements. Each notice shows its own text (it was hard-coded by position, so "Minimum Wage Increase June 1, 2025" showed the stat-holiday text). Notices: BC tax change July 2026, minimum wage June 2026, moving a stat holiday |
+| Tests | `api.alerts.test.js` T-ALERT-01..07, T-ANN-02, client C-SUP-01, T-DEDUP-05 updated |
+
+### 1.5 CPP / EI by year with annual maximums, TD1 default, BC tax reduction (PAYROLL-CALC, RATES-READINESS)
+
+| Area | Change |
+|---|---|
+| CPP | Was 5.95 % every period with no annual maximum (`MAX_CPP_CONTRIBUTION` unused) and no CPP2. Now by year (2025, 2026, 2027 rate 5.75 %), stopped at the annual maximum using this year's CPP so far, plus CPP2 (4 % between YMPE and YAMPE) |
+| EI | Was capped per period at the 2023 maximum ($1,002.45). Now 2025 / 2026 / 2027 rates and maximums, stopped at the annual maximum using this year's EI so far; employer 1.4 x |
+| Tax formula | Follows CRA T4127 Option 1: enhanced CPP deducted from income; base CPP, EI and the Canada employment amount credited (they were not, so tax was over-withheld) |
+| TD1 default | A blank or 0 tax credit (the screen's default) gave no basic personal amount: on $2,000 bi-weekly about $83 too much tax per pay. Now blank / 0 = the basic personal amount (federal reduced for high incomes); new "Claim code 0" checkbox for employees who claim nothing. The screen shows blank instead of 0 and explains the field |
+| BC tax reduction | Applied (factor S): 2025 $562, 2026 $575 then $805 prorated from July, 2027 $690 |
+| Staying current | `npm run check:rates`; daily warning from Nov 1; T-RR-03 fails in December while next year is incomplete; calendar in TECHNICAL.md 1.14 |
+| Tests | `unit.payrollCalc.test.js` T-PC-01..10, `unit.ratesReadiness.test.js` T-RR-01..03, T-YEAR-04b, T-TAX-01..08 rewritten with the T4127 arithmetic, client C-TD1-01 |
+
+### 1.6 Bugs found in the full review (YTD-01 and others)
+
+| Area | Bug | Fix |
+|---|---|---|
+| Year to date (all YTD totals, CPP / EI caps) | Read from "period N-1": a re-run extra run counted its own amounts twice; an extra run in period 1 restarted the year and later periods lost the regular period-1 pay; a period without a stub (unpaid leave) or a pay-schedule change restarted the year; an extra run paid between two regular runs could be lost | Sum of the per-pay amounts of the year's earlier stubs by pay date, all pay schedules (`findYtdBase`, `YTD_SUMS`); same result in any processing order; stored YTD totals not re-used. Opening balances from before the app are not supported |
+| Holidays | Adding or renaming to a name already used that year (new unique index) gave 500 | 409 "already exists" |
+| Pay stub e-mail | A database error or a stub without a pay date threw: the whole Send Paystub request failed (500) and the hourly batch stopped | `emailPayStub` never throws; that stub is FAILED; an overlapping send is reported "already being sent" |
+| Stat holidays | Two fills at the same moment could insert the BC holidays twice | Unique index (company, year, name); dedupe scripts cover it |
+| Timecard | (my earlier change) time-clock punches, stored as local time labelled UTC, were converted again, moving early-morning punches to the previous day | Only app punches are converted to Vancouver time |
+| Multi-select (client) | A row without a name (deleted employee) crashed the picker (my earlier change); the accounting ledger filter could never untick a row | Nameless rows left out; object selections kept as objects |
+| Holiday page | A year outside the 7-year range showed the wrong year; a slow answer could overwrite the current list | Selected year always listed; stale answers ignored |
+| Others | Accented names lost letters in PDF file names; undated announcements sorted randomly; credentials toast hid names not found; claim code 0 sent as "true" ignored | Fixed |
+| Tests | | T-YEAR-20..30 (a full year of real pay runs; 22-29 fail on earlier versions), T-PSE-37..39, T-SH-10..11, T-ANN-03, C-MSB-06..07, C-HOL-02 |
+
+### 1.7 Vacation accrual and carry-over (VAC-01)
+
+Built on the existing logic: `calcVacBalance` (per-period accrued / used / balance adjustment) is unchanged, and so is the balance formula `forward + accrued - used` the code already used for period 1. What was broken is how the per-period amounts were added up over the year.
+
+| Field on the stub | Before | Now |
+|---|---|---|
+| Accrued (`YTDVacationAccrued`) | Period 1's accrual, then frozen: the current period was never added | This year's per-period accruals added up (vacation % x gross pay + "vacation accrual" adjustment), in pay-date order like the other YTD totals |
+| Balance forward (`YTDVacationBalanceFwd`) | Period 1: last year's *accrued* total; period 2 on: only this period's adjustment, so the carry-over disappeared | Last year's **closing balance** + this year's balance adjustments, the same all year |
+| Used (`YTDVacationUsed`) | Vacation payouts + vacation pay taken | Vacation payouts + the per-period "used" from `calcVacBalance`: vacation pay taken (Accrued) or the accrual itself (Payout), + the "vacation used" adjustment |
+| Balance (`YTDVacationBalance`) | Period 1: forward + accrued - used; later: accrued - used (no carry-over) | forward + accrued - used on every stub |
+
+Decisions where the code did not say:
+- **Carry-over = last year's closing balance**, from the employee's last stub paid in the previous pay year (any pay schedule; `findVacationCarryIn`). Carrying last year's *accrued* total, as before, would carry again vacation already taken or paid out. No stub last year: nothing carried. Stubs processed before this fix carry their stored closing balance; if one is wrong, correct it once with a "vacation balance adjustment" on the first pay run of the year.
+- **Always carried.** The `carryFwd` flag on the employee's balance info is not used by payroll (it was never read, and the current screen no longer saves it).
+- Extra runs and every pay schedule count, in the same order as the YTD totals (YTD-01): re-running, or processing out of order, gives the same balances.
+- Sick balances unchanged (they are always 0 today).
+- Open: VAC-02 ("Payout" treatment's 4 % is not added to gross pay).
+
+Tests: `api.payrunYear.test.js` T-VAC-01..07 (real pay runs; all 7 fail on the previous code); T-YEAR-05, 06, 26 now carry the closing balance.
+
 ## 2. Open issues
 
 Deduplicated from the changelog, the API issue list and the feature gap register, in priority order.
@@ -134,7 +200,8 @@ Deduplicated from the changelog, the API issue list and the feature gap register
 |---|---|---|---|
 | AUD-025 / PII-01 | P0 | Live credentials were in the delivered `.env*` files (and are in the baseline commit); `server/generated-T4-xml/` holds real T4 slips with names and SIN fields; `server/uploads/` holds documents | Owner: rotate every credential, keep these out of archives, never push the baseline commit publicly |
 | PAYYEAR-YTD | P1 | Year-to-date reset is keyed on period number, not the pay year (section 4) | Payroll SME decision, then a small change with golden-file tests |
-| FEAT-GAP-06 | P1 | BC is the only province; CPP/EI annual maximums aren't applied against YTD (EI is capped per period; `MAX_CPP_CONTRIBUTION` is defined but unused); no CPP2; tax constants are pinned by tests, not validated | Payroll SME review against the CRA PDOC calculator |
+| VAC-02 | P1 | Vacation "Payout" treatment: the 4 % (vacation percent) is counted as paid each period on the stub's vacation balance, but it is not added to gross pay (`calcCurrentGrossPay`), so it is only paid if entered as a Vacation Payout amount (existing logic, not changed: it changes net pay and taxes) | Owner decision: add `currentVacationAccrued` to gross pay for Payout employees, with tests |
+| FEAT-GAP-06 | P1 | BC is the only province; RRSP / union dues are not deducted from taxable income and other TD1 credits (K3) are not applied (CPP/EI maximums, CPP2 and the BC tax reduction: fixed in 1.5); tax values come from published sources but have not been compared with PDOC by a payroll specialist | Payroll SME review against the CRA PDOC calculator |
 | VOPAY-ACCT | P1 | `fundEmployerWallet` and `createClientAccountEmployee` are commented as Cornerstone but use the default (staging) account | Owner decision; test in the VoPay sandbox |
 | AUD-030 | P1 | Public `/api/signup` lets anyone join any company by name; no auth limiter; 409 reveals known e-mails; unknown company → 500 | Product decision (invite-only?) |
 | RBAC-ROLES | P2 | Users with an empty role, and Employees given pages through custom permissions, are refused on gated endpoints | Deploy with `RBAC_MODE=report`, fix role data, then `enforce` |
@@ -182,6 +249,12 @@ Only `api.payrun.concurrency.test.js` mocks service modules and resets the modul
 | `api.employees.batch.test.js` | 5 | Batched employee/crew look-ups, `:name` routes | T-EMP-01..03 |
 | `api.payrun.concurrency.test.js` | 1 | Concurrent pay-run lock (409) | T-PAY-05 |
 | `unit.payroll.test.js` | 29 | Tax/CPP/EI, percent and time utilities, hours by earning type, contributions, time-card hours | T-TAX-01..08, T-PCT, T-UTIL, T-PAYH, T-CONTR, T-HRS-01..05 |
+| `unit.taxTables.test.js` | 8 | Federal and BC tables by pay date: 2025, 2026 (July BC 6.14 %), 2027 BC freeze, missing-year fallback, table structure, credit handling | T-TT-01..08 |
+| `api.statHolidays.test.js` | 9 | BC holiday rules (2026 official list, 2027, Easter, rule changes), BC companies, auto-fill once per empty year, non-BC, bad year, edit moves year | T-SH-01..09 |
+| `api.alerts.test.js` | 7 | One alert per problem across pay runs, fixed problems removed, legacy copies cleaned, minimum wage by date, company-scoped clearing, pay rate missing | T-ALERT-01..07 |
+| `unit.payrollCalc.test.js` | 10 | TD1 default and claim code 0, federal BPA phase-out, CPP / EI / CPP2 annual maximums, enhanced CPP deduction, BC tax reduction by edition | T-PC-01..10 |
+| `unit.ratesReadiness.test.js` | 3 | Tables loaded for this year; status per year; fails in December while next year is incomplete | T-RR-01..03 |
+| `api.payrunYear.test.js` | 18 | A whole year of real pay runs: CPP / CPP2 / EI stop exactly at the maximums, re-runs and extra runs in any order, two extra runs or two schedules on one day, period without a stub, schedule change, re-dated first stub, vacation carry into period 1, new year; vacation accrual, carry-over, adjustments, payouts, Payout treatment, re-runs (VAC-01) | T-YEAR-20..30, T-VAC-01..07 |
 | `api.auth.test.js` | 18 | Login, refresh, forgot-password, logout, sign-up response | T-AUTH-10..27 |
 | `api.defects.test.js` | 26 | Operator bypasses, company (un)assignment, time-card ingest, hanging/no-op handlers | T-TEN-20..25, T-USR-04..09, T-TC, T-LEAD, T-PERM, T-T4, T-CON, T-TASK, T-ORD, T-NOTE, T-ANN |
 | `api.scoping.test.js` | 50 | List-endpoint and object-level tenant scoping, resource route shadowing | T-SCOPE-01..30 |
@@ -194,7 +267,7 @@ Only `api.payrun.concurrency.test.js` mocks service modules and resets the modul
 | `api.payyear.test.js` | 14 | Two years' period-N stubs coexist, year-scoped upsert and readers, previous period per frequency, index shape, whole-day matching | T-YEAR-01..14 |
 | `unit.resolveDuplicates.test.js` | 5 | Dry run writes nothing; `--apply` keeps the newest, backs up, repoints orders, deletes; informational groups untouched | T-DEDUP-01..05 |
 | `api.paystubEmail.test.js` | 32 | Pay stub e-mails (pay-date job and Send pay stub e-mail): content and PDF (statement rows, totals, hidden cells, amount in words, payment method, superficial runs, one A4 page), escaping, switch, schedule, Vancouver day and catch-up, exactly-once (re-run, concurrent runs, new year), SMTP failure retry, no address, profile fallback, stuck send, Send Paystub (latest stub, re-send, not found / no stub / net pay not above $0.00 / SMTP down), net pay rule | T-PSE-01..14, 23-31, 33, 34, 36 |
-| **Server total** | **411** | | |
+| **Server total** | **474** | | |
 | Client: 10 suites | 29 | Navbar, chart registry, print modal, change password, sign-in, Axios interceptor, UI components | C-NAV, C-CHART, C-PRINT, C-PWD, C-LOGIN, C-API |
 | Client: `src/utils/utils.test.js` | 12 | Formatting, role helpers, pay-period helpers, completion %, dates, bank validation | C-UTIL-01..10, C-VAL-01/02 |
 | **Client total** | **41** | | |
@@ -207,7 +280,7 @@ Node 22.22, npm 10.9.
 
 | Check | Baseline (`erp.zip`) | After pass 1 | **Final** |
 |---|---|---|---|
-| Server tests | 85 / 85 | 156 / 156 | **411 / 411**, 0 skipped, stable across repeated runs (379 + 32 pay stub e-mail tests) |
+| Server tests | 85 / 85 | 156 / 156 | **474 / 474**, 0 skipped, stable across repeated runs |
 | Client tests | 29 / 29 | 41 / 41 | **41 / 41** |
 | Client lint | 3 errors, 375 warnings | 0 errors, 350 warnings | **0 errors**, 350 warnings |
 | Client production build | passes, 8.5 MB | passes | **passes**, 8.5 MB, `main.js` 382 kB gzip |
@@ -261,7 +334,7 @@ Reported, **not changed**, because each needs a payroll decision:
 2. **`YTDPrimaryDeposit` never resets.**
 3. **`YTDVacationAccrued` in periods 2 and later copies the previous value and never adds the current accrual.** This looks like a bug.
 4. **`appendPrevPayInfoBalance`** (used only by the unused `runBalances`) sums `YTDRegPayTotal2` from `YTDRegPayTotal`, which looks like a typo.
-5. **Annual maximums:** EI is capped per period, not against YTD (T-TAX-08 pins this); CPP has no YTD cap (`MAX_CPP_CONTRIBUTION` is unused); CPP2 isn't implemented; BC is the only province.
+5. **Annual maximums:** fixed in 1.5 (CPP, CPP2 and EI stop at the annual maximums using year to date). BC is still the only province.
 6. **27-pay-date years:** if a bi-weekly year has 27 pay dates, two runs with the same period number in one pay year update the newer stub.
 7. **Lost history:** pay stubs overwritten by the old period-only key before PAYYEAR-01 can only be restored from a backup.
 

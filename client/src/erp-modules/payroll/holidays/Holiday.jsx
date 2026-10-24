@@ -15,6 +15,7 @@ import PageLayout from "layouts/PageLayout";
 import { useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import SettingService from "services/SettingService";
+import { CURRENT_YEAR } from "utils/convertDate";
 import { StatHolidayTable } from "./stat-holiday";
 
 const Holiday = ({ company }) => {
@@ -25,7 +26,14 @@ const Holiday = ({ company }) => {
 	const [date, setDate] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [editingId, setEditingId] = useState(null);
+	const [year, setYear] = useState(CURRENT_YEAR);
 	const toast = useToast();
+	// a holiday saved for another year is shown in that year's list
+	const showYearOf = (savedDate) => {
+		const savedYear = Number(String(savedDate).slice(0, 4));
+		if (savedYear && savedYear !== year) setYear(savedYear);
+		return savedYear === year;
+	};
 
 	const handleEdit = (holiday) => {
 		setName(holiday.name);
@@ -49,11 +57,13 @@ const Holiday = ({ company }) => {
 			setIsLoading(true);
 			if (editingId) {
 				await SettingService.updateHoliday({ name, date, company: currentCompany }, editingId);
-				setHolidays(
-					holidays.map((holiday) =>
-						holiday._id === editingId ? { ...holiday, name, date } : holiday,
-					),
-				);
+				if (showYearOf(date)) {
+					setHolidays(
+						holidays.map((holiday) =>
+							holiday._id === editingId ? { ...holiday, name, date } : holiday,
+						),
+					);
+				}
 				toast({
 					title: "Success",
 					description: "Holiday updated successfully",
@@ -67,7 +77,7 @@ const Holiday = ({ company }) => {
 					date,
 					company: currentCompany,
 				});
-				setHolidays([...holidays, data]);
+				if (showYearOf(date)) setHolidays([...holidays, data]);
 				toast({
 					title: "Success",
 					description: "Holiday added successfully",
@@ -153,6 +163,8 @@ const Holiday = ({ company }) => {
 							setHolidays={setHolidays}
 							currentCompany={currentCompany}
 							handleEdit={handleEdit}
+							year={year}
+							setYear={setYear}
 						/>
 					</BoxCard>
 				</Grid>

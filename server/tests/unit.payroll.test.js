@@ -20,66 +20,82 @@ const { EARNING_TYPE } = require("../constants/earning.constants");
 
 const round2 = (n) => Math.round(n * 100) / 100;
 
-describe("taxService.getTaxDetails", () => {
+describe("taxService.getTaxDetails (CRA T4127 Option 1)", () => {
 	const credits = { federalTaxCredit: "$16,129.00", regionalTaxCredit: "12932" };
+	// 2026 tables (pay date March 2026): CPP 5.95 % (base 4.95), YMPE 74,600,
+	// EI 1.63 %, federal 14 % / CEA 1,501, BC 5.06 %
+	const MARCH_2026 = { payDate: "2026-03-13" };
 
-	test("T-TAX-01 bi-weekly $2,000 gross: CPP, federal, BC tax and EI per period", () => {
-		const r = getTaxDetails(25, 2000, credits, "Biweekly");
-		// annual income = 2000 * 26 = 52,000
-		expect(round2(r.CPPContribution)).toBe(round2(((52000 - 3500) / 26) * 0.0595)); // 110.99
-		expect(round2(r.federalTaxDeductionByPayPeriod)).toBe(round2(((52000 - 16129) * 0.14) / 26)); // 193.15
-		// BC: first bracket 0.0506 up to 50,363, then 0.077
-		const bc = (50363 - 12932) * 0.0506 + (52000 - 50363) * 0.077;
-		expect(round2(r.totalProvincialTaxDeduction)).toBe(round2(bc / 26));
-		expect(round2(r.EmployeeEIContribution)).toBe(32.6); // 1.63 %
+	test("T-TAX-01 bi-weekly $2,000 gross: CPP, EI, federal and BC tax per period (hand calculation)", () => {
+		const r = getTaxDetails(25, 2000, credits, "Biweekly", MARCH_2026);
+		const P = 26;
+		const cpp = 0.0595 * (2000 - 3500 / P); // 110.99
+		const ei = 0.0163 * 2000; // 32.60
+		const F5 = cpp * (0.01 / 0.0595); // enhanced CPP, deductible
+		const A = P * (2000 - F5); // annual taxable income 51,515
+		const credit = P * cpp * (0.0495 / 0.0595) + P * ei; // base CPP + EI (K2)
+		const federal = (A * 0.14 - 0.14 * (16129 + credit + 1501)) / P; // K1, K2, K4
+		const bcTax = (50363 * 0.0506 + (A - 50363) * 0.077 - 0.0506 * (12932 + credit)) / P;
+		expect(round2(r.CPPContribution)).toBe(round2(cpp));
+		expect(round2(r.EmployeeEIContribution)).toBe(32.6);
 		expect(round2(r.EmployerEIContribution)).toBe(45.64); // 1.4 x employee
+		expect(round2(r.federalTaxDeductionByPayPeriod)).toBe(round2(federal));
+		expect(round2(r.totalProvincialTaxDeduction)).toBe(round2(bcTax)); // above the BC reduction range
+		expect(r.details.annualTaxableIncome).toBe(round2(A));
 	});
 
 	test("T-TAX-02 frequency strings are normalised (bi-weekly == Biweekly, missing == Biweekly)", () => {
-		const a = getTaxDetails(25, 2000, credits, "Biweekly");
-		expect(getTaxDetails(25, 2000, credits, "bi-weekly")).toEqual(a);
-		expect(getTaxDetails(25, 2000, credits, undefined)).toEqual(a);
+		const a = getTaxDetails(25, 2000, credits, "Biweekly", MARCH_2026);
+		expect(getTaxDetails(25, 2000, credits, "bi-weekly", MARCH_2026)).toEqual(a);
+		expect(getTaxDetails(25, 2000, credits, undefined, MARCH_2026)).toEqual(a);
 	});
 
 	test("T-TAX-03 (BUG-03) 'semi-monthly' is treated as Semimonthly, not silently as Biweekly", () => {
-		const semi = getTaxDetails(25, 2000, credits, "Semimonthly");
-		expect(getTaxDetails(25, 2000, credits, "semi-monthly")).toEqual(semi);
-		expect(getTaxDetails(25, 2000, credits, "Semi-monthly")).toEqual(semi);
-		expect(semi).not.toEqual(getTaxDetails(25, 2000, credits, "Biweekly"));
+		const semi = getTaxDetails(25, 2000, credits, "Semimonthly", MARCH_2026);
+		expect(getTaxDetails(25, 2000, credits, "semi-monthly", MARCH_2026)).toEqual(semi);
+		expect(getTaxDetails(25, 2000, credits, "Semi-monthly", MARCH_2026)).toEqual(semi);
+		expect(semi).not.toEqual(getTaxDetails(25, 2000, credits, "Biweekly", MARCH_2026));
 	});
 
 	test("T-TAX-04 monthly frequency annualises with 12 periods", () => {
-		const r = getTaxDetails(0, 5000, credits, "Monthly");
-		expect(round2(r.CPPContribution)).toBe(round2(((60000 - 3500) / 12) * 0.0595));
-		expect(round2(r.federalTaxDeductionByPayPeriod)).toBe(
-			round2(((58523 - 16129) * 0.14 + (60000 - 58523) * 0.205) / 12),
-		);
+		const r = getTaxDetails(0, 5000, credits, "Monthly", MARCH_2026);
+		const cpp = 0.0595 * (5000 - 3500 / 12);
+		const A = 12 * (5000 - cpp * (0.01 / 0.0595));
+		const credit = 12 * cpp * (0.0495 / 0.0595) + 12 * 0.0163 * 5000;
+		const federal = (58523 * 0.14 + (A - 58523) * 0.205 - 0.14 * (16129 + credit + 1501)) / 12;
+		expect(round2(r.CPPContribution)).toBe(round2(cpp));
+		expect(round2(r.federalTaxDeductionByPayPeriod)).toBe(round2(federal));
 	});
 
 	test("T-TAX-05 CPP and EI exemptions zero the contributions", () => {
-		const r = getTaxDetails(25, 2000, { ...credits, isCPPExempt: true, isEIExempt: true });
+		const r = getTaxDetails(25, 2000, { ...credits, isCPPExempt: true, isEIExempt: true }, "Biweekly", MARCH_2026);
 		expect(r.CPPContribution).toBe(0);
 		expect(r.EmployeeEIContribution).toBe(0);
 		expect(r.EmployerEIContribution).toBe(0);
 	});
 
 	test("T-TAX-06 income below the basic exemption / credits -> no CPP and no income tax", () => {
-		const r = getTaxDetails(15, 100, credits, "Biweekly"); // 2,600 / year
+		const r = getTaxDetails(15, 100, credits, "Biweekly", MARCH_2026); // 2,600 / year
 		expect(r.CPPContribution).toBe(0);
 		expect(r.federalTaxDeductionByPayPeriod).toBe(0);
 		expect(r.totalProvincialTaxDeduction).toBe(0);
 	});
 
 	test("T-TAX-07 zero gross and missing credit object do not throw or produce NaN", () => {
-		const r = getTaxDetails(undefined, 0, undefined, "Weekly");
-		Object.values(r).forEach((v) => expect(Number.isFinite(v)).toBe(true));
+		const r = getTaxDetails(undefined, 0, undefined, "Weekly", MARCH_2026);
+		const { details, ...amounts } = r;
+		Object.values(amounts).forEach((v) => expect(Number.isFinite(v)).toBe(true));
 		expect(r.federalTaxDeductionByPayPeriod).toBe(0);
+		expect(details.sources.cpp).toBe("CRA 2026");
 	});
 
-	test("T-TAX-08 EI per period is capped at the annual maximum (documents current behaviour)", () => {
-		const r = getTaxDetails(0, 100000, {}, "Annually");
-		expect(r.EmployeeEIContribution).toBe(1002.45);
-		expect(r.EmployerEIContribution).toBe(1403.43);
+	test("T-TAX-08 one large payment: EI and CPP stop at the 2026 annual maximums", () => {
+		const r = getTaxDetails(0, 100000, {}, "Annually", MARCH_2026);
+		expect(round2(r.EmployeeEIContribution)).toBe(1123.07); // 1.63 % x 68,900
+		expect(round2(r.EmployerEIContribution)).toBe(1572.3);
+		// CPP 5.95 % x (74,600 - 3,500) + CPP2 4 % x (85,000 - 74,600)
+		expect(round2(r.CPPContribution)).toBe(round2(4230.45 + 416));
+		expect(round2(r.CPP2Contribution)).toBe(416);
 	});
 });
 

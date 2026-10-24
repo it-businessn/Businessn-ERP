@@ -1,0 +1,151 @@
+CHANGE LOG (newest first) - compared with erp_t.zip as uploaded
+
+12. Vacation accrual and carry-over (VAC-01) - built on the existing logic
+   - Accrued: now adds up every period (vacation % x gross + accrual
+     adjustments). Before, it stayed at period 1's amount all year.
+   - Carry-over: last year's CLOSING balance is the "balance forward" all year.
+     Before, period 1 carried last year's accrued total (vacation already taken
+     or paid out was carried again) and from period 2 the carry-over vanished.
+   - Used: vacation payouts + vacation pay taken (Payout treatment: the
+     accrual) + "vacation used" adjustments. Balance adjustments stay in the
+     balance forward.
+   - Balance = forward + accrued - used on every stub (the formula the code
+     already used for period 1). Extra runs, re-runs, out-of-order runs and
+     pay-schedule changes give the same balances.
+   - Unchanged: the per-period calculation (calcVacBalance), sick balances.
+   - Stubs processed before this fix carry their stored closing balance into
+     next year; if one is wrong, enter a vacation balance adjustment once on
+     the first pay run of the year.
+   - NOT changed, needs your decision (docs/CHANGES.md VAC-02): with the
+     "Payout" treatment the 4 % is shown as paid but is not added to gross pay.
+   - Tests: T-VAC-01..07 (fail on the previous code), 474 server tests pass.
+
+11. Full bug review (three independent reviews, every finding checked and tested)
+   - Year-to-date totals (and the CPP / EI annual maximums) are now the year's
+     earlier pay stubs added up, in pay-date order. Before, they continued from
+     "period N-1" only, which: double-counted a re-run extra run; restarted the
+     year after an extra run in period 1, an unpaid period or a pay-schedule
+     change; and could lose an extra run paid between two regular runs.
+     A full simulated year of real pay runs now ends exactly on the 2026
+     maximums (CPP 4,646.45 incl. CPP2, EI 1,123.07).
+   - Pay stub e-mails: one bad stub or a database error no longer stops the
+     batch or fails the whole Send Paystub request; a stub already being sent
+     shows "already being sent"; accented names kept in PDF file names.
+   - Stat holidays: cannot be filled in twice (database guard); duplicate names
+     answer "already exists" instead of an error.
+   - Time clock: early-morning punches on a stat holiday are no longer moved to
+     the previous day (a mistake in an earlier change of mine).
+   - Employee pickers: a deleted employee in the list no longer crashes the
+     screen; the accounting ledger filter can untick rows again.
+   - Holiday page shows any selected year; credential e-mails warn about names
+     not found; undated announcements listed last.
+   - Vacation accrual: fixed in 12.
+
+10. CPP / EI / income tax now follow the CRA formulas (T4127)
+   - CPP by year and stopped at the annual maximum (was never capped); CPP2
+     added (4% between $74,600 and $85,000 in 2026). 2027: CPP rate 5.75%.
+   - EI by year and stopped at the annual maximum (was capped per pay at the
+     2023 maximum). 2027: 1.64% up to $70,800.
+   - TD1: a blank or 0 tax credit (the screen's default) now means the basic
+     personal amount ($16,452 federal / $13,216 BC in 2026). Before, it meant
+     none, about $83 too much tax per $2,000 bi-weekly pay. New "Claim code 0"
+     checkbox for employees who claim nothing (e.g. a second job).
+   - CPP, EI and the Canada employment amount are credited, and enhanced CPP
+     is deducted from taxable income, as CRA requires.
+   - BC tax reduction applied (low earners pay less BC tax).
+   - Staying current: run  cd server && npm run check:rates  - it lists what is
+     loaded / missing for this year and next, and sample deductions to compare
+     with the CRA online calculator (PDOC). The server logs a warning every day
+     from Nov 1 while next year is incomplete, and npm test fails in December
+     until next year's tables are in. Calendar: docs/TECHNICAL.md 1.14.
+   - Due now: 2027 federal tables and 2027 CPP YMPE/YAMPE (published November).
+
+9. Alerts and Violations duplicates + Support panel for every company
+   - Duplicates: an alert was saved once per pay period, but the list ignores
+     the period, so the same problem showed once per pay run. Now one alert per
+     employee and problem, updated on every inputs review and removed when
+     fixed. Old copies are removed at the next inputs review (or right away
+     with: node scripts/resolve-duplicates.js --apply).
+   - Minimum wage check uses BC's current rate: 8.25 since June 1, 2026 (was
+     7.85). A rate of exactly the minimum now clears the alert.
+   - Support panel: general notices now show for every company (Cornerstone
+     saw none: the messages only existed for BusinessN). Each notice shows its
+     own text. Notices: BC tax change July 2026, minimum wage June 2026, moving
+     a statutory holiday. Edit server/constants/supportNotices.constants.js.
+
+8. Tax tables by pay date + BC statutory holidays by year
+   - BC income tax: was 5.06% for every pay date. Now 5.06% until June 30, 2026,
+     6.14% from July 1, 2026 (CRA July 2026 tables: BC Budget 2026 made 2026
+     5.60%), 5.60% from 2027 with 2026 thresholds (frozen 2027-2030).
+   - Federal: 2026 brackets confirmed (14/20.5/26/29/33%; 58,523 / 117,045 /
+     181,440 / 258,482). 2025 added (15% Jan-Jun, 14% Jul-Dec). 2027 not
+     published by CRA yet (November): the 2026 table is used and the server
+     logs "TAX-TABLES: no federal table for 2027" until it is added.
+   - Tables are picked by the pay date (CRA rule), so past, current and future
+     pay dates each use their own year: server/constants/taxTables.constants.js.
+     Update it each January and July (steps in docs/TECHNICAL.md 1.14).
+   - Stat holidays: BC holidays calculated for any year and filled in
+     automatically for an empty year (holiday page or daily job); year picker
+     on the holiday page; editing a date into another year moves the holiday;
+     evening punches on a stat now count as stat work (Vancouver day).
+
+7. E-mail wording: pay date vs actual deposit
+   - New note in every pay stub e-mail: "Please note: the pay date shown on your
+     pay stub is the scheduled pay date for this pay period. The date the funds
+     arrive in your bank account may be different, depending on when the payment
+     is processed and on your bank's processing times."
+   - "Your pay ... was issued on <date>" is now "Your pay stub for pay period ...
+     is attached" with a "Pay date" line; subject "(paid <date>)" is now
+     "(pay date <date>)". The e-mail no longer claims the money was paid that day.
+
+6. Cleanup + checkbox fix
+   - Removed unused API: POST /api/payroll/paystub-email/send, POST /test,
+     GET /logs, controllers/payStubEmailController.js and the service functions
+     only they used. routes/payrollRoutes.js is back to the original.
+   - Send Paystub API takes only {employees, companyName} (the optional
+     payPeriodNum / payDate were never sent by the app).
+   - FIX: ticked items showed as unchecked in every multi-select list
+     (Send Paystub, Send Login, filters...). The theme had no "facebook"
+     colour palette, used by 59 checkboxes, so a checked box was transparent
+     with an invisible white tick. Palette added in client/src/config/themeConfig.js.
+   - FIX: clicking a row beside the name did nothing; now the whole row toggles.
+   - FIX: string options and the timesheet filter could be selected without
+     ever showing as checked (toggle and checked state used different values).
+
+5. Only e-mail when net pay is above $0.00
+   - $0.00, negative net pay and superficial balance runs are never e-mailed,
+     by the pay-date job or by Send Paystub (the app message names them).
+
+4. E-mail text: removed the "View in employee portal" button; standard note:
+   "Please download the attached PDF to view, save or print your pay stub,
+   and keep it for your records." CLIENT_APP_URL no longer used.
+
+3. Send Paystub (Employees page) now sends the real pay stub
+   - Before: a "log in to view your paystub" notice with no attachment.
+   - Now: pay stub e-mail (period, pay date, net pay) + statement PDF to download.
+   - Recorded in the same delivery log as the pay-date job (no double sends).
+   - SendEmailList.jsx shows the server message (who was skipped and why) and
+     no longer leaves the Send button spinning after an error.
+
+2. The PDF attachment is the full printed PayStubStatement
+   - Logo header, pay/employee details, Employer Paid Benefits, Vacation,
+     Earnings / Deductions / Net Pay Summary, watermark, cheque part with the
+     amount in words. One A4 page. New dependency: to-words 4.1.0.
+
+1. Automatic pay stub e-mails on the pay date (opt-in)
+   - Hourly 08:00-18:00 Vancouver time, 3-day catch-up, never twice
+     (delivery log PayStubEmailLog), failures retried.
+   - Off unless PAYSTUB_EMAIL_ENABLED=true. New dependency: pdfkit 0.20.2.
+
+Files (see HOW_TO_UPDATE.txt for the full list):
+  client  components/ui/form/select/MultiSelectBox.jsx (+ .test.jsx),
+          components/ui/form/select/PayrollMultiSelectBox.jsx,
+          config/themeConfig.js, erp-modules/payroll/employees/listview/SendEmailList.jsx
+  server  controllers/userController.js, index.js, routes/payrollRoutes.js (original),
+          package.json, package-lock.json,
+          new: jobs/payStubEmail.js, services/payStubEmailService.js,
+          services/payStubPdfService.js, constants/paystub.constants.js,
+          models/PayStubEmailLog.js, views/emails/paystub.ejs,
+          assets/paystub/{logo.jpg,cover.jpg,email-logo.png},
+          tests/api.paystubEmail.test.js, tests/api.bugfixes.test.js
+  docs    TECHNICAL.md, CHANGES.md

@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access -- the tests click specific parts of a row (name, box, empty space) on purpose */
 import { ChakraProvider } from "@chakra-ui/react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
@@ -75,4 +76,34 @@ test("C-MSB-05 the app theme defines the facebook palette the checkboxes use (el
 	const theme = require("config/themeConfig").default;
 	expect(theme.colors.facebook[500]).toBe("#385898");
 	expect(theme.colors.facebook[600]).toBe("#314E89");
+});
+
+test("C-MSB-06 a row without a name (e.g. deleted employee) is left out instead of crashing", () => {
+	render(<Harness data={[{ _id: "x", fullName: undefined, empId: null }, ...EMPLOYEES]} />);
+	expect(screen.getAllByRole("checkbox", { hidden: true })).toHaveLength(2);
+	fireEvent.click(row("Luis Izquierdo"));
+	expect(selected()).toBe("Luis Izquierdo");
+});
+
+test("C-MSB-07 a filter that keeps option objects (accounting ledger) can untick and stays objects", () => {
+	const accounts = [
+		{ _id: "a1", accountName: "Cash" },
+		{ _id: "a2", accountName: "Payroll" },
+	];
+	const ObjectHarness = () => {
+		const [sel, setSel] = useState(accounts);
+		return (
+			<ChakraProvider>
+				<PayrollMultiSelectBox openMenu data={accounts} type="accountName" handleCloseMenu={() => {}} handleApply={() => {}} selectedOptions={sel} setSelectedOptions={setSel} />
+				<span data-testid="selected">{sel.map((s) => (typeof s === "object" ? `obj:${s.accountName}` : s)).join("|")}</span>
+			</ChakraProvider>
+		);
+	};
+	render(<ObjectHarness />);
+	expect(checked("Cash")).toBe(true);
+	fireEvent.click(row("Cash"));
+	expect(selected()).toBe("obj:Payroll");
+	expect(checked("Cash")).toBe(false);
+	fireEvent.click(row("Cash"));
+	expect(selected()).toBe("obj:Payroll|obj:Cash");
 });

@@ -226,7 +226,7 @@ describe("PAYYEAR-01 previous-period lookup is year-scoped", () => {
 	test("T-YEAR-04 period 7 of 2026 uses period 6 of 2026, not period 6 of 2025", async () => {
 		store.push(
 			stub(6, "2025-03-07", { YTDGrossPay: 9000 }),
-			stub(6, "2026-03-06", { YTDGrossPay: 600 }),
+			stub(6, "2026-03-06", { YTDGrossPay: 600, currentGrossPay: 600 }), // YTD = earlier stubs added up (YTD-01)
 		);
 		await request(app).post("/api/payroll/process").set(auth()).send(runBody());
 		const prevCall = EmployeePayStub.findOne.mock.calls.find(([f]) => f.payPeriodNum === 6);
@@ -235,10 +235,22 @@ describe("PAYYEAR-01 previous-period lookup is year-scoped", () => {
 		expect(written.YTDGrossPay).toBe(700);
 	});
 
+	test("T-YEAR-04b (PAYROLL-CALC) the run hands this year's CPP / CPP2 / EI so far and the pay date to the tax calculation", async () => {
+		const { buildNewEmpPayStubInfo } = require("../helpers/payrollHelper");
+		store.push(
+			stub(6, "2025-03-07", { YTD_CPPDeductions: 9999, YTD_EmployeeEIDeductions: 9999, YTDGrossPay: 99999 }),
+			stub(6, "2026-03-06", { currentCPPDeductions: 1500, currentCPP2Deductions: 40, currentEmployeeEIDeductions: 400, currentGrossPay: 76000 }),
+		);
+		await request(app).post("/api/payroll/process").set(auth()).send(runBody());
+		const args = buildNewEmpPayStubInfo.mock.calls[0];
+		expect(args[7]).toBeTruthy(); // pay date
+		expect(args[8]).toEqual({ cpp: 1460, cpp2: 40, ei: 400, pensionableEarnings: 76000 });
+	});
+
 	test("T-YEAR-05 period 1 of 2026 uses the last bi-weekly period (26) of 2025 as previous", async () => {
 		store.push(
-			stub(26, "2024-12-20", { YTDVacationAccrued: 1 }),
-			stub(26, "2025-12-19", { YTDVacationAccrued: 42 }),
+			stub(26, "2024-12-20", { YTDVacationBalance: 1 }),
+			stub(26, "2025-12-19", { YTDVacationBalance: 42 }),
 		);
 		const res = await request(app)
 			.post("/api/payroll/process")
@@ -256,12 +268,15 @@ describe("PAYYEAR-01 previous-period lookup is year-scoped", () => {
 		const prevCall = EmployeePayStub.findOne.mock.calls.find(([f]) => f.payPeriodNum == 26);
 		expect(prevCall[0].payPeriodPayDate).toEqual(WINDOW_2025);
 		const written = EmployeePayStub.findOneAndUpdate.mock.calls[0][1].$set;
-		expect(written.YTDVacationBalanceFwd).toBe(42); // carried from Dec 2025, not Dec 2024
+		expect(written.YTDVacationBalanceFwd).toBe(42); // VAC-01: closing balance of Dec 2025, not Dec 2024
 		expect(written.YTDGrossPay).toBe(100); // YTD restarts at period 1 (unchanged arithmetic)
+		// PAYROLL-CALC: last year's CPP / EI do not count towards this year's maximums
+		const { buildNewEmpPayStubInfo } = require("../helpers/payrollHelper");
+		expect(buildNewEmpPayStubInfo.mock.calls[0][8]).toEqual({ cpp: 0, cpp2: 0, ei: 0, pensionableEarnings: 0 });
 	});
 
 	test("T-YEAR-06 period 1 of a monthly schedule looks for period 12 of the previous year", async () => {
-		store.push(stub(12, "2025-12-05", { scheduleFrequency: "Monthly", YTDVacationAccrued: 7 }));
+		store.push(stub(12, "2025-12-05", { scheduleFrequency: "Monthly", YTDVacationBalance: 7 }));
 		await request(app)
 			.post("/api/payroll/process")
 			.set(auth())
@@ -275,7 +290,7 @@ describe("PAYYEAR-01 previous-period lookup is year-scoped", () => {
 	test("T-YEAR-07 extra run: previous = same period of the same year; upsert is year-scoped", async () => {
 		store.push(
 			stub(7, "2025-03-21", { YTDGrossPay: 9000 }),
-			stub(7, "2026-03-20", { YTDGrossPay: 700 }),
+			stub(7, "2026-03-20", { YTDGrossPay: 700, currentGrossPay: 700 }),
 			stub(7, "2025-03-21", { isExtraRun: true, currentNetPay: 5 }),
 		);
 		const res = await request(app)

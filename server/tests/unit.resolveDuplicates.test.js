@@ -144,6 +144,6 @@ describe("scripts/resolve-duplicates.js", () => {
 
 	test("T-DEDUP-05 only enforced keys are resolved (informational checks are never touched)", () => {
 		const enforced = CHECKS.filter((c) => c.enforced).map((c) => c.collection);
-		expect(enforced).toEqual(["employeepaystubs", "fundingtotalspays"]);
+		expect(enforced).toEqual(["employeepaystubs", "fundingtotalspays", "employeealertsviolationinfos", "holidays"]);
 	});
 });

@@ -34,8 +34,9 @@ const SettingService = {
 		return apiService.get(`/setup/crews/${id}`);
 	},
 
-	async getStatHolidays(id) {
-		return apiService.get(`/holiday/${id}/${CURRENT_YEAR}`);
+	// A BC company's empty year is filled in with the BC statutory holidays by the server.
+	async getStatHolidays(id, year = CURRENT_YEAR) {
+		return apiService.get(`/holiday/${id}/${year}`);
 	},
 
 	async addStatHoliday(data) {

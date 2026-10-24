@@ -214,7 +214,7 @@ const updateEmployeeBankingInfo = async (req, res) => {
 		let t = transitNum?.toString();
 		let a = accountNum?.toString();
 		if (b && t && a && b !== "" && t !== "" && a !== "") {
-			await deleteAlerts(empId, ALERTS_TYPE.BANK);
+			await deleteAlerts(empId, ALERTS_TYPE.BANK, existingInfo.companyName);
 		}
 		if (b && t && a && !b.includes("*") && !t.includes("*") && !a.includes("*")) {
 			const bankEncrypted = encryptData(b, BANKING_ENCRYPTION_KEY);

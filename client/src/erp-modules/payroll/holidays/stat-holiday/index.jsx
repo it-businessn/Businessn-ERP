@@ -4,6 +4,7 @@ import {
 	Flex,
 	HStack,
 	IconButton,
+	Select,
 	Stack,
 	Table,
 	Tbody,
@@ -19,9 +20,24 @@ import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
-import { dayMonthYear } from "utils/convertDate";
+import { CURRENT_YEAR, dayMonthYear } from "utils/convertDate";
 
-export const StatHolidayTable = ({ holidays, currentCompany, setHolidays, handleEdit }) => {
+// past, present and future years, plus the selected year (e.g. a holiday just
+// saved further out); computed on render so it follows the calendar
+const yearOptions = (selected) => {
+	const thisYear = new Date().getFullYear();
+	const years = Array.from({ length: 7 }, (_, i) => thisYear - 3 + i);
+	return [...new Set([...years, Number(selected)])].filter(Boolean).sort((a, b) => a - b);
+};
+
+export const StatHolidayTable = ({
+	holidays,
+	currentCompany,
+	setHolidays,
+	handleEdit,
+	year = CURRENT_YEAR,
+	setYear,
+}) => {
 	const toast = useToast();
 	const [deleteRecordId, setDeleteRecordId] = useState(null);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
@@ -32,11 +48,14 @@ export const StatHolidayTable = ({ holidays, currentCompany, setHolidays, handle
 	};
 
 	useEffect(() => {
+		// a slower answer for a previously chosen year must not replace this year's list
+		let current = true;
 		const fetchStatHolidays = async () => {
 			try {
-				const { data } = await SettingService.getStatHolidays(currentCompany);
-				setHolidays(data);
+				const { data } = await SettingService.getStatHolidays(currentCompany, year);
+				if (current) setHolidays(data);
 			} catch (error) {
+				if (!current) return;
 				toast({
 					title: "Error",
 					description: "Failed to fetch holidays",
@@ -47,7 +66,10 @@ export const StatHolidayTable = ({ holidays, currentCompany, setHolidays, handle
 			}
 		};
 		fetchStatHolidays();
-	}, []);
+		return () => {
+			current = false;
+		};
+	}, [currentCompany, year]);
 
 	const handleDelete = async () => {
 		try {
@@ -75,7 +97,24 @@ export const StatHolidayTable = ({ holidays, currentCompany, setHolidays, handle
 	return (
 		<Stack spacing={4}>
 			<Flex justify="space-between" align="center">
-				<TextTitle title="Holiday List" />{" "}
+				<HStack spacing={3}>
+					<TextTitle title="Holiday List" />
+					{setYear && (
+						<Select
+							aria-label="Year"
+							size="sm"
+							w="100px"
+							value={year}
+							onChange={(e) => setYear(Number(e.target.value))}
+						>
+							{yearOptions(year).map((y) => (
+								<option key={y} value={y}>
+									{y}
+								</option>
+							))}
+						</Select>
+					)}
+				</HStack>
 				<TextTitle title={`${holidays.length} ${holidays.length === 1 ? "holiday" : "holidays"}`} />
 			</Flex>
 

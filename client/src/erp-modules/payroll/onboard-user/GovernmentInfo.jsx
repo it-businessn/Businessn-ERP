@@ -199,7 +199,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 									onChange={(e) =>
 										handleChange("governmentInfo", "federalTaxCredit", e.target.value)
 									}
-									placeholder="Enter amount"
+									placeholder="Blank = basic personal amount"
 								/>
 							</FormControl>
 
@@ -212,7 +212,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 									onChange={(e) =>
 										handleChange("governmentInfo", "regionalTaxCredit", e.target.value)
 									}
-									placeholder="Enter amount"
+									placeholder="Blank = basic personal amount"
 								/>
 							</FormControl>
 						</SimpleGrid>

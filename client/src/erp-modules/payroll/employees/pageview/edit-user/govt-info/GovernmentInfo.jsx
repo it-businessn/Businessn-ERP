@@ -1,7 +1,9 @@
 import {
 	Box,
+	Checkbox,
 	Flex,
 	FormControl,
+	FormHelperText,
 	FormLabel,
 	Input,
 	Select,
@@ -52,8 +54,10 @@ const GovernmentInfo = ({ company, userId }) => {
 			// Income Tax
 			federalTax: "Canada",
 			regionalTax: "British Columbia",
-			federalTaxCredit: "0",
-			regionalTaxCredit: "0",
+			// blank = basic personal amount (TD1 claim code 1), see server taxService
+			federalTaxCredit: "",
+			regionalTaxCredit: "",
+			isTD1ClaimCodeZero: false,
 
 			// Federal Government Contributions
 			federalPensionEE: "",
@@ -79,6 +83,7 @@ const GovernmentInfo = ({ company, userId }) => {
 				regionalTax,
 				regionalTaxCredit,
 				federalTaxCredit,
+				isTD1ClaimCodeZero,
 				federalPensionEE,
 				federalEmploymentInsuranceEE,
 				federalEmploymentInsuranceER,
@@ -98,6 +103,7 @@ const GovernmentInfo = ({ company, userId }) => {
 					regionalTax,
 					regionalTaxCredit,
 					federalTaxCredit,
+					isTD1ClaimCodeZero: Boolean(isTD1ClaimCodeZero),
 					federalPensionEE,
 					federalEmploymentInsuranceEE,
 					federalEmploymentInsuranceER,
@@ -140,6 +146,7 @@ const GovernmentInfo = ({ company, userId }) => {
 				regionalTax,
 				regionalTaxCredit,
 				federalTaxCredit,
+				isTD1ClaimCodeZero,
 				federalPensionEE,
 				federalEmploymentInsuranceEE,
 				federalEmploymentInsuranceER,
@@ -158,6 +165,7 @@ const GovernmentInfo = ({ company, userId }) => {
 				regionalTax,
 				regionalTaxCredit,
 				federalTaxCredit,
+				isTD1ClaimCodeZero,
 				federalPensionEE,
 				federalEmploymentInsuranceEE,
 				federalEmploymentInsuranceER,
@@ -336,31 +344,57 @@ const GovernmentInfo = ({ company, userId }) => {
 
 						<SimpleGrid columns={2} spacing={6}>
 							<FormControl>
-								<FormLabel size="sm">Personal Federal Tax Credit</FormLabel>
+								<FormLabel size="sm">Personal Federal Tax Credit (TD1)</FormLabel>
 								<Input
 									size="sm"
 									type="number"
-									value={formData.governmentInfo.federalTaxCredit || ""}
+									value={
+										Number(formData.governmentInfo.federalTaxCredit) > 0
+											? formData.governmentInfo.federalTaxCredit
+											: ""
+									}
 									onChange={(e) =>
 										handleChange("governmentInfo", "federalTaxCredit", e.target.value)
 									}
-									placeholder="Enter amount"
+									isDisabled={formData.governmentInfo.isTD1ClaimCodeZero}
+									placeholder="Basic personal amount"
 								/>
+								<FormHelperText fontSize="xs">
+									Total claim from the employee's TD1. Leave blank for the basic personal amount.
+								</FormHelperText>
 							</FormControl>
 
 							<FormControl>
-								<FormLabel size="sm">Personal Regional Tax Credit</FormLabel>
+								<FormLabel size="sm">Personal Regional Tax Credit (TD1BC)</FormLabel>
 								<Input
 									size="sm"
 									type="number"
-									value={formData.governmentInfo.regionalTaxCredit || ""}
+									value={
+										Number(formData.governmentInfo.regionalTaxCredit) > 0
+											? formData.governmentInfo.regionalTaxCredit
+											: ""
+									}
 									onChange={(e) =>
 										handleChange("governmentInfo", "regionalTaxCredit", e.target.value)
 									}
-									placeholder="Enter amount"
+									isDisabled={formData.governmentInfo.isTD1ClaimCodeZero}
+									placeholder="Basic personal amount"
 								/>
+								<FormHelperText fontSize="xs">
+									Total claim from the employee's TD1BC. Leave blank for the basic personal amount.
+								</FormHelperText>
 							</FormControl>
 						</SimpleGrid>
+						<Checkbox
+							size="sm"
+							colorScheme="facebook"
+							isChecked={Boolean(formData.governmentInfo.isTD1ClaimCodeZero)}
+							onChange={(e) =>
+								handleChange("governmentInfo", "isTD1ClaimCodeZero", e.target.checked)
+							}
+						>
+							Claim code 0: no personal amounts (e.g. a second job; the employee claims them elsewhere)
+						</Checkbox>
 					</Stack>
 				)}
 

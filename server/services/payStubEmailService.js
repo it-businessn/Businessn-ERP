@@ -99,18 +99,8 @@ const buildPayStubEmail = async (stub, employee = {}, { company = {} } = {}) => 
 	const pdf = await buildPayStubPdf(stub, employee, company);
 	const attachments = [
 		// the statement, offered as a download (Content-Disposition: attachment)
-		{
-			filename: fileName,
-			content: pdf,
-			contentType: "application/pdf",
-			contentDisposition: "attachment",
-		},
-		{
-			filename: "BusinessN.png",
-			path: FOOTER_LOGO,
-			cid: "footerLogo",
-			contentDisposition: "inline",
-		},
+		{ filename: fileName, content: pdf, contentType: "application/pdf", contentDisposition: "attachment" },
+		{ filename: "BusinessN.png", path: FOOTER_LOGO, cid: "footerLogo", contentDisposition: "inline" },
 	];
 	return { subject, text, html, attachments };
 };
@@ -122,9 +112,7 @@ const loadEmployee = async (empId, companyName) => {
 		EmployeeProfileInfo.findOne({ empId: String(empId), companyName })
 			.select("personalEmail businessEmail")
 			.lean(),
-		EmployeeEmploymentInfo.findOne({ empId: String(empId), companyName })
-			.select("employeeNo")
-			.lean(),
+		EmployeeEmploymentInfo.findOne({ empId: String(empId), companyName }).select("employeeNo").lean(),
 	]);
 	if (!employee) return null;
 	return {
@@ -157,7 +145,10 @@ const claim = async (key, { force, triggeredBy }) => {
 	const claimable = force
 		? { $or: [{ status: { $ne: "SENDING" } }, { claimedAt: { $lt: staleBefore } }] }
 		: {
-				$or: [{ status: "FAILED" }, { status: "SENDING", claimedAt: { $lt: staleBefore } }],
+				$or: [
+					{ status: "FAILED" },
+					{ status: "SENDING", claimedAt: { $lt: staleBefore } },
+				],
 			};
 	const update = {
 		$set: { status: "SENDING", claimedAt: new Date(), triggeredBy },
@@ -184,33 +175,53 @@ const claim = async (key, { force, triggeredBy }) => {
 };
 
 /**
- * E-mails one processed stub. Returns "SENT" | "SKIPPED" | "FAILED".
- * Never throws for a single bad stub, so one failure cannot stop a batch.
+ * E-mails one processed stub. Returns "SENT" | "SKIPPED" | "IN_PROGRESS" | "FAILED".
+ * Never throws, so one bad stub or a database error cannot stop a batch:
+ *  SKIPPED      not payable, or already SENT (scheduled runs)
+ *  IN_PROGRESS  another run is sending this stub right now
+ *  FAILED       could not be sent (reason in the delivery log when it could be written)
+ * Delivery is at-least-once: if the server stops between the SMTP send and
+ * recording SENT, the stub is sent again after STALE_CLAIM_MINUTES.
  */
 const emailPayStub = async (stub, { triggeredBy = "SCHEDULE", force = false } = {}) => {
 	if (!isPayable(stub)) return "SKIPPED"; // net pay not above $0.00: never e-mailed
+	if (!normalisePayDate(stub.payPeriodPayDate)) {
+		console.error("Pay stub e-mail: stub without a pay date", { payStubId: String(stub?._id) });
+		return "FAILED";
+	}
 	const key = logKey(stub);
-	const row = await claim(key, { force, triggeredBy });
-	if (!row) return "SKIPPED";
+	let row;
+	try {
+		row = await claim(key, { force, triggeredBy });
+	} catch (error) {
+		console.error("Pay stub e-mail: delivery log unavailable", { message: error.message });
+		return "FAILED";
+	}
+	if (!row) return force ? "IN_PROGRESS" : "SKIPPED";
 
-	const finish = (fields) => PayStubEmailLog.updateOne({ _id: row._id }, { $set: fields });
+	const finish = async (fields) => {
+		try {
+			await PayStubEmailLog.updateOne({ _id: row._id }, { $set: fields });
+		} catch (error) {
+			// the e-mail outcome stands; a stale SENDING row is retried after STALE_CLAIM_MINUTES
+			console.error("Pay stub e-mail: could not update the delivery log", { message: error.message });
+		}
+	};
+	let sent = false;
 	try {
 		const [employee, company] = await Promise.all([
 			loadEmployee(stub.empId, stub.companyName),
 			loadCompany(stub.companyName),
 		]);
 		if (!employee?.email) {
-			await finish({
-				status: "FAILED",
-				error: "Employee has no e-mail address",
-				payStubId: stub._id,
-			});
+			await finish({ status: "FAILED", error: "Employee has no e-mail address", payStubId: stub._id });
 			return "FAILED";
 		}
 		const mail = await buildPayStubEmail(stub, employee, {
 			company: company || {},
 		});
 		await sendEmail(employee.email, mail.subject, mail.text, mail.html, mail.attachments);
+		sent = true;
 		await finish({
 			status: "SENT",
 			error: null,
@@ -220,6 +231,7 @@ const emailPayStub = async (stub, { triggeredBy = "SCHEDULE", force = false } = 
 		});
 		return "SENT";
 	} catch (error) {
+		if (sent) return "SENT";
 		await finish({ status: "FAILED", error: String(error?.message || error).slice(0, 500) });
 		return "FAILED";
 	}
@@ -245,7 +257,7 @@ const tally = async (stubs, options) => {
 	// sequential: keeps the SMTP provider within its rate limits
 	for (const stub of stubs) {
 		const result = await emailPayStub(stub, options);
-		summary[result.toLowerCase()] += 1;
+		summary[result === "IN_PROGRESS" ? "skipped" : result.toLowerCase()] += 1;
 	}
 	return summary;
 };

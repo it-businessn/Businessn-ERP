@@ -1,0 +1,93 @@
+Changes since erp_t.zip - files to copy into your erp_t project
+
+1. Back up your erp_t folder.
+2. Copy server/, client/ and docs/ from this zip over your erp_t folder ("Replace").
+   68 files (listed below; what changed: CHANGELOG.txt).
+3. If you copied an EARLIER version of this zip, also delete:
+     server/controllers/payStubEmailController.js
+4. cd server && npm install            (pdfkit 0.20.2 and to-words 4.1.0)
+5. cd server && npm test               (474 passed)
+   cd client && npm test               (58 passed)
+6. Rebuild/redeploy the client and restart the server.
+7. Optional, removes duplicate alerts / holidays right away: back up the
+   database, then
+     cd server && node scripts/resolve-duplicates.js          (dry run)
+     cd server && node scripts/resolve-duplicates.js --apply
+
+Payroll rates - stay current:
+   cd server && npm run check:rates
+   Due now: 2027 federal tables and 2027 CPP YMPE/YAMPE (published November).
+   Calendar and steps: docs/TECHNICAL.md section 1.14.
+
+Pay stub e-mails on the pay date: set PAYSTUB_EMAIL_ENABLED=true on the
+production server only, then restart.
+
+Files:
+  client/src/components/ui/form/select/MultiSelectBox.jsx
+  client/src/components/ui/form/select/MultiSelectBox.test.jsx
+  client/src/components/ui/form/select/PayrollMultiSelectBox.jsx
+  client/src/config/payroll/employees/governmentInfo.js
+  client/src/config/themeConfig.js
+  client/src/erp-modules/payroll/dashboard/leftpane/Announcements.jsx
+  client/src/erp-modules/payroll/dashboard/leftpane/Announcements.test.jsx
+  client/src/erp-modules/payroll/employees/listview/SendEmailList.jsx
+  client/src/erp-modules/payroll/employees/pageview/edit-user/govt-info/GovernmentInfo.jsx
+  client/src/erp-modules/payroll/employees/pageview/edit-user/govt-info/GovernmentInfo.test.jsx
+  client/src/erp-modules/payroll/holidays/Holiday.jsx
+  client/src/erp-modules/payroll/holidays/stat-holiday/StatHolidayTable.test.jsx
+  client/src/erp-modules/payroll/holidays/stat-holiday/index.jsx
+  client/src/erp-modules/payroll/onboard-user/GovernmentInfo.jsx
+  client/src/erp-modules/payroll/onboard-user/customInfo.js
+  client/src/services/SettingService.js
+  docs/CHANGES.md
+  docs/TECHNICAL.md
+  server/assets/paystub/cover.jpg
+  server/assets/paystub/email-logo.png
+  server/assets/paystub/logo.jpg
+  server/constants/minimumWage.constants.js
+  server/constants/paystub.constants.js
+  server/constants/supportNotices.constants.js
+  server/constants/taxTables.constants.js
+  server/controllers/alertsController.js
+  server/controllers/bankingInfoController.js
+  server/controllers/conversationController.js
+  server/controllers/governmentInfoController.js
+  server/controllers/payInfoController.js
+  server/controllers/payStubController.js
+  server/controllers/profileInfoController.js
+  server/controllers/statHolidayController.js
+  server/controllers/timecardController.js
+  server/controllers/userController.js
+  server/helpers/payrollHelper.js
+  server/index.js
+  server/jobs/payStubEmail.js
+  server/jobs/statHoliday.js
+  server/models/EmployeeAlertsViolationInfo.js
+  server/models/EmployeeGovernmentInfo.js
+  server/models/EmployeePayStub.js
+  server/models/Holiday.js
+  server/models/PayStubEmailLog.js
+  server/package-lock.json
+  server/package.json
+  server/routes/payrollRoutes.js
+  server/scripts/check-duplicates.js
+  server/scripts/check-payroll-rates.js
+  server/scripts/resolve-duplicates.js
+  server/services/payStubEmailService.js
+  server/services/payStubPdfService.js
+  server/services/taxService.js
+  server/tests/api.alerts.test.js
+  server/tests/api.bugfixes.test.js
+  server/tests/api.defects.test.js
+  server/tests/api.payrunYear.test.js
+  server/tests/api.paystubEmail.test.js
+  server/tests/api.payyear.test.js
+  server/tests/api.statHolidays.test.js
+  server/tests/unit.payroll.test.js
+  server/tests/unit.payrollCalc.test.js
+  server/tests/unit.ratesReadiness.test.js
+  server/tests/unit.resolveDuplicates.test.js
+  server/tests/unit.taxTables.test.js
+  server/utils/bcStatHolidays.util.js
+  server/utils/ratesReadiness.util.js
+  server/views/emails/paystub.ejs

@@ -8,7 +8,8 @@ const { logIndexErrors } = require("../utils/db.util");
  * of 2027 is a different e-mail from period 7 of 2026.
  *
  * The row is claimed atomically before sending (status SENDING), so hourly runs,
- * Send pay stub e-mail and several server instances can never e-mail a stub twice.
+ * Send pay stub e-mail and several server instances do not send a stub twice
+ * (a server stopping between the SMTP send and recording SENT can resend it).
  * FAILED rows are retried on the next run; `attempts` and `error` say why.
  */
 const payStubEmailLogSchema = new mongoose.Schema(

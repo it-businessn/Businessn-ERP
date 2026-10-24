@@ -27,17 +27,32 @@ const PayrollMultiSelectBox = ({
 	// differ (toggle added assignee[type], the check looked for fullName), so an
 	// option could be selected while its box stayed unchecked.
 	const optionValue = (option) =>
-		(type && option?.[type]) ||
-		option?.fullName ||
-		option?.empId?.fullName ||
-		option?.name ||
-		option;
+		typeof option === "string"
+			? option
+			: (type && option?.[type]) ||
+				option?.fullName ||
+				option?.empId?.fullName ||
+				option?.name ||
+				"";
+	const options = (data || []).filter((option) => optionValue(option));
+	const selected = Array.isArray(selectedOptions) ? selectedOptions : [];
+	// a selection item matches an option by its value, or (callers that keep the
+	// option objects, e.g. the accounting ledger) by the object's `type` field
+	const isSelected = (item, option) =>
+		item === optionValue(option) ||
+		(type &&
+			item &&
+			typeof item === "object" &&
+			item[type] !== undefined &&
+			item[type] === option?.[type]);
 
-	const handleCheckboxChange = (value) => {
-		if (selectedOptions.includes(value)) {
-			setSelectedOptions(selectedOptions.filter((option) => option !== value));
+	const handleCheckboxChange = (option) => {
+		if (selected.some((item) => isSelected(item, option))) {
+			setSelectedOptions(selected.filter((item) => !isSelected(item, option)));
 		} else {
-			setSelectedOptions([...selectedOptions, value]);
+			// keep the caller's form: objects stay objects, names stay names
+			const keepsObjects = selected.some((item) => item && typeof item === "object");
+			setSelectedOptions([...selected, keepsObjects ? option : optionValue(option)]);
 		}
 	};
 
@@ -75,18 +90,15 @@ const PayrollMultiSelectBox = ({
 					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
 				<Stack spacing={1} overflow={"auto"} maxHeight={"33vh"} w={w} css={tabScrollCss}>
-					{data?.map((assignee) => {
+					{options.map((assignee) => {
 						const value = optionValue(assignee);
-						const isChecked = Boolean(
-							selectedOptions?.includes(value) ||
-								(type && selectedOptions?.find((_) => _?.[type] === assignee[type])),
-						);
+						const isChecked = selected.some((item) => isSelected(item, assignee));
 						// The whole row toggles; the checkbox only shows the state (see MultiSelectBox).
 						return (
 							<MenuItem
 								key={assignee?._id || assignee?.empId?._id || value}
 								closeOnSelect={false}
-								onClick={() => handleCheckboxChange(value)}
+								onClick={() => handleCheckboxChange(assignee)}
 							>
 								<Checkbox
 									colorScheme="facebook"

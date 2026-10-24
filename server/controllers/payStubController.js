@@ -42,7 +42,14 @@ const buildPayStub = (
 	isExtraRun,
 	newEmpData,
 	prevPayPayInfo,
+	ytdBase,
+	vacationCarryIn = 0,
 ) => {
+	// YTD-01: year-to-date totals add this stub to `ytdBase`, the totals of the
+	// pay year's earlier stubs (findYtdBase); none = first stub of the year.
+	// Sick balances keep the original period-based logic with `prevPayPayInfo`.
+	// VAC-01: vacation balances, see below.
+	const isFirstOfYear = !ytdBase;
 	const {
 		regPay,
 		regPay2,
@@ -104,6 +111,7 @@ const buildPayStub = (
 		currentStateTaxDeductions,
 		currentIncomeTaxDeductions,
 		currentCPPDeductions,
+		currentCPP2Deductions,
 		currentUnionDuesDeductions,
 		currentEmployeeEIDeductions,
 		currentEmployerEIDeductions,
@@ -181,53 +189,53 @@ const buildPayStub = (
 		totalHoursWorked,
 
 		YTDRegHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalRegHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked, totalRegHoursWorked),
+				: getSumTotal(ytdBase?.YTDRegHoursWorked, totalRegHoursWorked),
 		YTDRegHoursWorked2:
-			payPeriod == 1
+			isFirstOfYear
 				? totalRegHoursWorked2
-				: getSumTotal(prevPayPayInfo?.YTDRegHoursWorked2, totalRegHoursWorked2),
+				: getSumTotal(ytdBase?.YTDRegHoursWorked2, totalRegHoursWorked2),
 		YTDOvertimeHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalOvertimeHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDOvertimeHoursWorked, totalOvertimeHoursWorked),
+				: getSumTotal(ytdBase?.YTDOvertimeHoursWorked, totalOvertimeHoursWorked),
 		YTDDblOvertimeHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalDblOvertimeHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDDblOvertimeHoursWorked, totalDblOvertimeHoursWorked),
+				: getSumTotal(ytdBase?.YTDDblOvertimeHoursWorked, totalDblOvertimeHoursWorked),
 		YTDStatDayHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalStatDayHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDStatDayHoursWorked, totalStatDayHoursWorked),
+				: getSumTotal(ytdBase?.YTDStatDayHoursWorked, totalStatDayHoursWorked),
 		YTDStatHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalStatHours
-				: getSumTotal(prevPayPayInfo?.YTDStatHoursWorked, totalStatHours),
+				: getSumTotal(ytdBase?.YTDStatHoursWorked, totalStatHours),
 		YTDSickHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalSickHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDSickHoursWorked, totalSickHoursWorked),
+				: getSumTotal(ytdBase?.YTDSickHoursWorked, totalSickHoursWorked),
 		YTDVacationHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalVacationHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDVacationHoursWorked, totalVacationHoursWorked),
+				: getSumTotal(ytdBase?.YTDVacationHoursWorked, totalVacationHoursWorked),
 		YTDPersonalDayHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalPersonalDayHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDPersonalDayHoursWorked, totalPersonalDayHoursWorked),
+				: getSumTotal(ytdBase?.YTDPersonalDayHoursWorked, totalPersonalDayHoursWorked),
 		YTDBereavementHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalBereavementHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDBereavementHoursWorked, totalBereavementHoursWorked),
+				: getSumTotal(ytdBase?.YTDBereavementHoursWorked, totalBereavementHoursWorked),
 		YTDSprayHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalSprayHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDSprayHoursWorked, totalSprayHoursWorked),
+				: getSumTotal(ytdBase?.YTDSprayHoursWorked, totalSprayHoursWorked),
 		YTDFirstAidHoursWorked:
-			payPeriod == 1
+			isFirstOfYear
 				? totalFirstAidHoursWorked
-				: getSumTotal(prevPayPayInfo?.YTDFirstAidHoursWorked, totalFirstAidHoursWorked),
+				: getSumTotal(ytdBase?.YTDFirstAidHoursWorked, totalFirstAidHoursWorked),
 
 		currentRegPayTotal,
 		currentRegPayTotal2,
@@ -246,6 +254,7 @@ const buildPayStub = (
 		currentStateTaxDeductions,
 		currentIncomeTaxDeductions,
 		currentCPPDeductions,
+		currentCPP2Deductions,
 		currentUnionDuesDeductions,
 		currentEmployeeEIDeductions,
 		currentEmployerEIDeductions,
@@ -267,154 +276,167 @@ const buildPayStub = (
 		sickBalance,
 
 		YTDRegPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentRegPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDRegPayTotal, currentRegPayTotal),
+				: getSumTotal(ytdBase?.YTDRegPayTotal, currentRegPayTotal),
 		YTDRegPayTotal2:
-			payPeriod == 1
+			isFirstOfYear
 				? currentRegPayTotal2
-				: getSumTotal(prevPayPayInfo?.YTDRegPayTotal2, currentRegPayTotal2),
+				: getSumTotal(ytdBase?.YTDRegPayTotal2, currentRegPayTotal2),
 		YTDOverTimePayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentOverTimePayTotal
-				: getSumTotal(prevPayPayInfo?.YTDOverTimePayTotal, currentOverTimePayTotal),
+				: getSumTotal(ytdBase?.YTDOverTimePayTotal, currentOverTimePayTotal),
 		YTDDblOverTimePayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentDblOverTimePayTotal
-				: getSumTotal(prevPayPayInfo?.YTDDblOverTimePayTotal, currentDblOverTimePayTotal),
+				: getSumTotal(ytdBase?.YTDDblOverTimePayTotal, currentDblOverTimePayTotal),
 		YTDStatWorkPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentStatWorkPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDStatWorkPayTotal, currentStatWorkPayTotal),
+				: getSumTotal(ytdBase?.YTDStatWorkPayTotal, currentStatWorkPayTotal),
 		YTDStatPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentStatPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDStatPayTotal, currentStatPayTotal),
+				: getSumTotal(ytdBase?.YTDStatPayTotal, currentStatPayTotal),
 		YTDSickPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentSickPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDSickPayTotal, currentSickPayTotal),
+				: getSumTotal(ytdBase?.YTDSickPayTotal, currentSickPayTotal),
 		YTDVacationPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentVacationPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDVacationPayTotal, currentVacationPayTotal),
+				: getSumTotal(ytdBase?.YTDVacationPayTotal, currentVacationPayTotal),
 		YTDBereavementPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentBereavementPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDBereavementPayTotal, currentBereavementPayTotal),
+				: getSumTotal(ytdBase?.YTDBereavementPayTotal, currentBereavementPayTotal),
 		YTDPersonalDayPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentPersonalDayPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDPersonalDayPayTotal, currentPersonalDayPayTotal),
+				: getSumTotal(ytdBase?.YTDPersonalDayPayTotal, currentPersonalDayPayTotal),
 		YTDSprayPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentSprayPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDSprayPayTotal, currentSprayPayTotal),
+				: getSumTotal(ytdBase?.YTDSprayPayTotal, currentSprayPayTotal),
 		YTDFirstAidPayTotal:
-			payPeriod == 1
+			isFirstOfYear
 				? currentFirstAidPayTotal
-				: getSumTotal(prevPayPayInfo?.YTDFirstAidPayTotal, currentFirstAidPayTotal),
+				: getSumTotal(ytdBase?.YTDFirstAidPayTotal, currentFirstAidPayTotal),
 		YTDPayInLieuPay:
-			payPeriod == 1 ? payInLieuPay : getSumTotal(prevPayPayInfo?.YTDPayInLieuPay, payInLieuPay),
+			isFirstOfYear ? payInLieuPay : getSumTotal(ytdBase?.YTDPayInLieuPay, payInLieuPay),
 		YTDBenefitPay:
-			payPeriod == 1 ? pILBenefitPay : getSumTotal(prevPayPayInfo?.YTDBenefitPay, pILBenefitPay),
+			isFirstOfYear ? pILBenefitPay : getSumTotal(ytdBase?.YTDBenefitPay, pILBenefitPay),
 		YTDBankedTimePay:
-			payPeriod == 1 ? bankedTimePay : getSumTotal(prevPayPayInfo?.YTDBankedTimePay, bankedTimePay),
+			isFirstOfYear ? bankedTimePay : getSumTotal(ytdBase?.YTDBankedTimePay, bankedTimePay),
 		YTDRegularByAmount:
-			payPeriod == 1
+			isFirstOfYear
 				? regularByAmount
-				: getSumTotal(prevPayPayInfo?.YTDRegularByAmount, regularByAmount),
+				: getSumTotal(ytdBase?.YTDRegularByAmount, regularByAmount),
 		YTDCommission:
-			payPeriod == 1 ? commission : getSumTotal(prevPayPayInfo?.YTDCommission, commission),
+			isFirstOfYear ? commission : getSumTotal(ytdBase?.YTDCommission, commission),
 		YTDRetroactive:
-			payPeriod == 1 ? retroactive : getSumTotal(prevPayPayInfo?.YTDRetroactive, retroactive),
+			isFirstOfYear ? retroactive : getSumTotal(ytdBase?.YTDRetroactive, retroactive),
 		YTDVacationPayout:
-			payPeriod == 1
+			isFirstOfYear
 				? vacationPayout
-				: getSumTotal(prevPayPayInfo?.YTDVacationPayout, vacationPayout),
-		YTDBonus: payPeriod == 1 ? bonus : getSumTotal(prevPayPayInfo?.YTDBonus, bonus),
+				: getSumTotal(ytdBase?.YTDVacationPayout, vacationPayout),
+		YTDBonus: isFirstOfYear ? bonus : getSumTotal(ytdBase?.YTDBonus, bonus),
 		YTDTerminationPayout:
-			payPeriod == 1
+			isFirstOfYear
 				? terminationPayout
-				: getSumTotal(prevPayPayInfo?.YTDTerminationPayout, terminationPayout),
+				: getSumTotal(ytdBase?.YTDTerminationPayout, terminationPayout),
 		YTD_FDTaxDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentFDTaxDeductions
-				: getSumTotal(prevPayPayInfo?.YTD_FDTaxDeductions, currentFDTaxDeductions),
+				: getSumTotal(ytdBase?.YTD_FDTaxDeductions, currentFDTaxDeductions),
 		YTDStateTaxDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentStateTaxDeductions
-				: getSumTotal(prevPayPayInfo?.YTDStateTaxDeductions, currentStateTaxDeductions),
+				: getSumTotal(ytdBase?.YTDStateTaxDeductions, currentStateTaxDeductions),
 		YTD_IncomeTaxDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentIncomeTaxDeductions
-				: getSumTotal(prevPayPayInfo?.YTD_IncomeTaxDeductions, currentIncomeTaxDeductions),
+				: getSumTotal(ytdBase?.YTD_IncomeTaxDeductions, currentIncomeTaxDeductions),
 		YTD_EmployeeEIDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentEmployeeEIDeductions
-				: getSumTotal(prevPayPayInfo?.YTD_EmployeeEIDeductions, currentEmployeeEIDeductions),
+				: getSumTotal(ytdBase?.YTD_EmployeeEIDeductions, currentEmployeeEIDeductions),
 		YTD_EmployerEIDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentEmployerEIDeductions
-				: getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions, currentEmployerEIDeductions) < 0
+				: getSumTotal(ytdBase?.YTD_EmployerEIDeductions, currentEmployerEIDeductions) < 0
 					? 0
-					: getSumTotal(prevPayPayInfo?.YTD_EmployerEIDeductions, currentEmployerEIDeductions),
+					: getSumTotal(ytdBase?.YTD_EmployerEIDeductions, currentEmployerEIDeductions),
+		// PAYROLL-CALC: CPP2 part of the CPP deduction, kept for the annual CPP2 maximum
+		YTD_CPP2Deductions:
+			isFirstOfYear
+				? safeNum(currentCPP2Deductions)
+				: getSumTotal(ytdBase?.YTD_CPP2Deductions, safeNum(currentCPP2Deductions)),
 		YTD_CPPDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentCPPDeductions
-				: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, currentCPPDeductions) < 0
+				: getSumTotal(ytdBase?.YTD_CPPDeductions, currentCPPDeductions) < 0
 					? 0
-					: getSumTotal(prevPayPayInfo?.YTD_CPPDeductions, currentCPPDeductions),
+					: getSumTotal(ytdBase?.YTD_CPPDeductions, currentCPPDeductions),
 		YTDUnionDuesDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentUnionDuesDeductions
-				: getSumTotal(prevPayPayInfo?.YTDUnionDuesDeductions, currentUnionDuesDeductions),
+				: getSumTotal(ytdBase?.YTDUnionDuesDeductions, currentUnionDuesDeductions),
 		YTDEmployeeHealthContributions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentEmployeeHealthContributions
 				: getSumTotal(
-						prevPayPayInfo?.YTDEmployeeHealthContributions,
+						ytdBase?.YTDEmployeeHealthContributions,
 						currentEmployeeHealthContributions,
 					),
-		YTDPrimaryDeposit: getSumTotal(prevPayPayInfo?.YTDPrimaryDeposit, currentPrimaryDeposit),
+		YTDPrimaryDeposit: getSumTotal(ytdBase?.YTDPrimaryDeposit, currentPrimaryDeposit),
 		YTDEmployeePensionContributions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentEmployeePensionContributions
 				: getSumTotal(
-						prevPayPayInfo?.YTDEmployeePensionContributions,
+						ytdBase?.YTDEmployeePensionContributions,
 						currentEmployeePensionContributions,
 					),
 		YTDOtherDeductions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentOtherDeductions
-				: getSumTotal(prevPayPayInfo?.YTDOtherDeductions, currentOtherDeductions),
+				: getSumTotal(ytdBase?.YTDOtherDeductions, currentOtherDeductions),
 
 		YTDGrossPay:
-			payPeriod == 1 ? currentGrossPay : getSumTotal(prevPayPayInfo?.YTDGrossPay, currentGrossPay),
+			isFirstOfYear ? currentGrossPay : getSumTotal(ytdBase?.YTDGrossPay, currentGrossPay),
 
 		YTDEmployerPensionContributions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentEmployerPensionContributions
 				: getSumTotal(
-						prevPayPayInfo?.YTDEmployerPensionContributions,
+						ytdBase?.YTDEmployerPensionContributions,
 						currentEmployerPensionContributions,
 					),
 		YTDEmployerHealthContributions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentEmployerHealthContributions
 				: getSumTotal(
-						prevPayPayInfo?.YTDEmployerHealthContributions,
+						ytdBase?.YTDEmployerHealthContributions,
 						currentEmployerHealthContributions,
 					),
 		YTDEmployerContributions:
-			payPeriod == 1
+			isFirstOfYear
 				? currentEmployerContributions
-				: getSumTotal(prevPayPayInfo?.YTDEmployerContributions, currentEmployerContributions),
-		YTDVacationAccrued:
-			payPeriod == 1 ? currentVacationAccrued : getSumTotal(prevPayPayInfo?.YTDVacationAccrued),
+				: getSumTotal(ytdBase?.YTDEmployerContributions, currentEmployerContributions),
+		// VAC-01: the per-period amounts of calcVacBalance (payrollHelper) added up
+		// over the pay year, like the other YTD totals. Balance forward = last
+		// year's closing balance (vacationCarryIn, findVacationCarryIn) plus this
+		// year's balance adjustments, so the carry-over stays all year.
+		YTDVacationAccrued: isFirstOfYear
+			? safeNum(currentVacationAccrued)
+			: getSumTotal(ytdBase?.YTDVacationAccrued, safeNum(currentVacationAccrued)),
 		YTDVacationBalanceFwd:
-			payPeriod == 1 ? prevPayPayInfo?.YTDVacationAccrued : currentVacationBalanceFwd,
+			safeNum(vacationCarryIn) +
+			safeNum(ytdBase?.vacationAdjustYTD) +
+			safeNum(currentVacationBalanceFwd),
 
+		// sick balances: unchanged from the original logic
 		YTDSickAccrued:
 			payPeriod == 1
 				? currentSickAccrued
@@ -434,18 +456,21 @@ const buildPayStub = (
 		YTD_IncomeTaxDeductions,
 		YTDGrossPay,
 		YTDVacationPayout,
-		YTDVacationPayTotal,
 		YTDVacationAccrued,
 		YTDVacationBalanceFwd,
 	} = newPayStub;
 
-	// YTDVacationUsed: getSumTotal(prevPayPayInfo?.YTDVacationUsed, currentVacationUsed),
-	// YTDVacationBalance: getSumTotal(prevPayPayInfo?.YTDVacationBalance, vacationBalance),
-	newPayStub.YTDVacationUsed = YTDVacationPayout + YTDVacationPayTotal;
+	// VAC-01: used = vacation payouts + this year's calcVacBalance "used" amounts
+	// (vacation pay taken, or the accrual itself for the Payout treatment, plus
+	// the "vacation used" adjustment); balance = forward + accrued - used, the
+	// period-1 formula, now for every stub of the year.
+	newPayStub.YTDVacationUsed =
+		safeNum(YTDVacationPayout) +
+		(isFirstOfYear
+			? safeNum(currentVacationUsed)
+			: getSumTotal(ytdBase?.vacationUsedYTD, safeNum(currentVacationUsed)));
 	newPayStub.YTDVacationBalance =
-		payPeriod == 1
-			? safeNum(YTDVacationBalanceFwd) + safeNum(YTDVacationAccrued) - newPayStub.YTDVacationUsed
-			: YTDVacationAccrued - newPayStub.YTDVacationUsed;
+		safeNum(YTDVacationBalanceFwd) + safeNum(YTDVacationAccrued) - newPayStub.YTDVacationUsed;
 
 	newPayStub.YTDDeductionsTotal =
 		YTDEmployeePensionContributions +
@@ -487,16 +512,6 @@ const buildPayStubDetails = async (
 	});
 	const empTaxCreditResult = await findEmployeeGovernmentInfoDetails(empId, companyName);
 
-	const payStubInfoData = buildNewEmpPayStubInfo(
-		empTimesheetData,
-		empPayInfoResult,
-		empAdditionalDataAllocated,
-		empBenefitInfoResult,
-		empTaxCreditResult,
-		isExtraRun,
-		scheduleFrequency,
-	);
-
 	// PAYYEAR-01: period numbers restart each payroll year (pay-date year), so the
 	// previous stub is looked up in this run's year; period 1 takes the last period
 	// of the previous year (26 bi-weekly, 12 monthly, ...). Extra runs: same period.
@@ -510,6 +525,37 @@ const buildPayStubDetails = async (
 		false,
 		scheduleFrequency,
 		payYear === null ? null : prevIsLastYear ? payYear - 1 : payYear,
+	);
+
+	// PAYROLL-CALC / YTD-01: CPP, CPP2 and EI already deducted this year (from the
+	// latest earlier stub of the year), so the annual maximums are applied.
+	const ytdThisYear = await findYtdBase({
+		companyName,
+		empId,
+		scheduleFrequency,
+		payPeriodPayDate,
+		payPeriodProcessingDate,
+		payPeriod,
+		isExtraRun,
+	});
+	const vacationCarryIn = await findVacationCarryIn({ companyName, empId, payPeriodPayDate });
+	const ytd = {
+		cpp: safeNum(ytdThisYear?.YTD_CPPDeductions) - safeNum(ytdThisYear?.YTD_CPP2Deductions),
+		cpp2: safeNum(ytdThisYear?.YTD_CPP2Deductions),
+		ei: safeNum(ytdThisYear?.YTD_EmployeeEIDeductions),
+		pensionableEarnings: safeNum(ytdThisYear?.YTDGrossPay),
+	};
+
+	const payStubInfoData = buildNewEmpPayStubInfo(
+		empTimesheetData,
+		empPayInfoResult,
+		empAdditionalDataAllocated,
+		empBenefitInfoResult,
+		empTaxCreditResult,
+		isExtraRun,
+		scheduleFrequency,
+		payPeriodPayDate, // TAX-TABLES: tax tables in force on the pay date
+		ytd,
 	);
 
 	const runBalances = async () => {
@@ -598,6 +644,8 @@ const buildPayStubDetails = async (
 		isExtraRun,
 		payStubInfoData,
 		prevPayPayInfo,
+		ytdThisYear,
+		vacationCarryIn,
 	);
 	// AUD-015: the stub is only computed here; addEmployeePayStubInfo writes all
 	// stubs of the run with upsertProcessedPayStub (find-then-create raced).
@@ -658,6 +706,171 @@ const upsertProcessedPayStub = (stub, session) => {
 			session: session || undefined,
 		},
 	);
+};
+
+/** YTD-01: year-to-date field -> the per-stub amount it totals. */
+const YTD_SUMS = [
+	["YTDRegHoursWorked", "totalRegHoursWorked"],
+	["YTDRegHoursWorked2", "totalRegHoursWorked2"],
+	["YTDOvertimeHoursWorked", "totalOvertimeHoursWorked"],
+	["YTDDblOvertimeHoursWorked", "totalDblOvertimeHoursWorked"],
+	["YTDStatDayHoursWorked", "totalStatDayHoursWorked"],
+	["YTDStatHoursWorked", "totalStatHours"],
+	["YTDSickHoursWorked", "totalSickHoursWorked"],
+	["YTDVacationHoursWorked", "totalVacationHoursWorked"],
+	["YTDPersonalDayHoursWorked", "totalPersonalDayHoursWorked"],
+	["YTDBereavementHoursWorked", "totalBereavementHoursWorked"],
+	["YTDSprayHoursWorked", "totalSprayHoursWorked"],
+	["YTDFirstAidHoursWorked", "totalFirstAidHoursWorked"],
+	["YTDRegPayTotal", "currentRegPayTotal"],
+	["YTDRegPayTotal2", "currentRegPayTotal2"],
+	["YTDOverTimePayTotal", "currentOverTimePayTotal"],
+	["YTDDblOverTimePayTotal", "currentDblOverTimePayTotal"],
+	["YTDStatWorkPayTotal", "currentStatWorkPayTotal"],
+	["YTDStatPayTotal", "currentStatPayTotal"],
+	["YTDSickPayTotal", "currentSickPayTotal"],
+	["YTDVacationPayTotal", "currentVacationPayTotal"],
+	["YTDBereavementPayTotal", "currentBereavementPayTotal"],
+	["YTDPersonalDayPayTotal", "currentPersonalDayPayTotal"],
+	["YTDSprayPayTotal", "currentSprayPayTotal"],
+	["YTDFirstAidPayTotal", "currentFirstAidPayTotal"],
+	["YTDPayInLieuPay", "payInLieuPay"],
+	["YTDBenefitPay", "pILBenefitPay"],
+	["YTDBankedTimePay", "bankedTimePay"],
+	["YTDRegularByAmount", "regularByAmount"],
+	["YTDCommission", "commission"],
+	["YTDRetroactive", "retroactive"],
+	["YTDVacationPayout", "vacationPayout"],
+	["YTDBonus", "bonus"],
+	["YTDTerminationPayout", "terminationPayout"],
+	["YTD_FDTaxDeductions", "currentFDTaxDeductions"],
+	["YTDStateTaxDeductions", "currentStateTaxDeductions"],
+	["YTD_IncomeTaxDeductions", "currentIncomeTaxDeductions"],
+	["YTD_EmployeeEIDeductions", "currentEmployeeEIDeductions"],
+	["YTD_EmployerEIDeductions", "currentEmployerEIDeductions"],
+	["YTD_CPP2Deductions", "currentCPP2Deductions"],
+	["YTD_CPPDeductions", "currentCPPDeductions"],
+	["YTDUnionDuesDeductions", "currentUnionDuesDeductions"],
+	["YTDEmployeeHealthContributions", "currentEmployeeHealthContributions"],
+	["YTDEmployeePensionContributions", "currentEmployeePensionContributions"],
+	["YTDOtherDeductions", "currentOtherDeductions"],
+	["YTDGrossPay", "currentGrossPay"],
+	["YTDEmployerPensionContributions", "currentEmployerPensionContributions"],
+	["YTDEmployerHealthContributions", "currentEmployerHealthContributions"],
+	["YTDEmployerContributions", "currentEmployerContributions"],
+	["YTDPrimaryDeposit", "currentPrimaryDeposit"],
+	// VAC-01: vacation (vacationUsedYTD / vacationAdjustYTD are only used to
+	// build YTDVacationUsed / YTDVacationBalanceFwd)
+	["YTDVacationAccrued", "currentVacationAccrued"],
+	["vacationUsedYTD", "currentVacationUsed"],
+	["vacationAdjustYTD", "currentVacationBalanceFwd"],
+];
+
+const YTD_FIELDS_NEEDED = [
+	"payPeriodNum",
+	"isExtraRun",
+	"scheduleFrequency",
+	"payPeriodPayDate",
+	"payPeriodProcessingDate",
+	...YTD_SUMS.map(([, key]) => key),
+].join(" ");
+
+/**
+ * YTD-01: the order stubs are paid in: by pay date; on the same pay date a
+ * regular run comes before extra runs; two runs of the same kind (two extra
+ * runs, or two pay schedules) by processing date, then schedule and period
+ * number, so each counts the other exactly once. < 0 = `a` paid before `b`.
+ */
+const compareRuns = (a, b) => {
+	const paidA = normalisePayDate(a.payPeriodPayDate)?.getTime() || 0;
+	const paidB = normalisePayDate(b.payPeriodPayDate)?.getTime() || 0;
+	if (paidA !== paidB) return paidA - paidB;
+	if (Boolean(a.isExtraRun) !== Boolean(b.isExtraRun)) return a.isExtraRun ? 1 : -1;
+	const processedA = new Date(a.payPeriodProcessingDate).getTime() || 0;
+	const processedB = new Date(b.payPeriodProcessingDate).getTime() || 0;
+	if (processedA !== processedB) return processedA - processedB;
+	const tie = (s) => `${s.scheduleFrequency || ""}|${String(s.payPeriodNum).padStart(4, "0")}`;
+	return tie(a) < tie(b) ? -1 : tie(a) > tie(b) ? 1 : 0;
+};
+
+/**
+ * YTD-01: the year-to-date base for a pay stub: the per-stub amounts of every
+ * processed stub of the employee in the same pay year paid BEFORE it, added up
+ * (pay schedules combined: the CPP / EI maximums are per employer and year).
+ * On the same pay date a regular run comes before extra runs; runs of the same
+ * kind follow their processing date. The stub being (re)built is left out. A sum
+ * gives the same result in any processing order; continuing from one
+ * "previous" stub (the old "period N-1" lookup) double-counted a re-run extra
+ * run, restarted the year after an extra run in period 1, a period without a
+ * stub or a pay-schedule change, and lost extra runs paid between two regular
+ * runs. Stored YTD fields are not read, so a wrong legacy total does not carry
+ * on. null = no earlier stub this year (first stub of the year). Opening
+ * balances from before the app are not supported (nothing records them).
+ */
+const findYtdBase = async ({
+	companyName,
+	empId,
+	scheduleFrequency,
+	payPeriodPayDate,
+	payPeriodProcessingDate,
+	payPeriod,
+	isExtraRun,
+}) => {
+	const day = normalisePayDate(payPeriodPayDate);
+	const year = payYearOf(payPeriodPayDate);
+	if (!day || year === null) return null;
+	const stubs = await EmployeePayStub.find({
+		companyName,
+		empId,
+		isProcessed: true,
+		reportType: null,
+		payPeriodPayDate: payYearWindow(year),
+	})
+		.select(YTD_FIELDS_NEEDED)
+		.lean();
+	const self = {
+		payPeriodPayDate: day,
+		payPeriodProcessingDate,
+		payPeriodNum: payPeriod,
+		isExtraRun,
+		scheduleFrequency,
+	};
+	const isSelf = (stub) =>
+		String(stub.payPeriodNum) === String(payPeriod) &&
+		Boolean(stub.isExtraRun) === Boolean(isExtraRun) &&
+		String(stub.scheduleFrequency || "") === String(scheduleFrequency || "");
+	const earlier = (stubs || []).filter((stub) => !isSelf(stub) && compareRuns(stub, self) < 0);
+	if (!earlier.length) return null;
+	return Object.fromEntries(
+		YTD_SUMS.map(([ytdKey, key]) => [ytdKey, earlier.reduce((t, stub) => t + safeNum(stub[key]), 0)]),
+	);
+};
+
+/**
+ * VAC-01: vacation balance carried into a pay year = the closing vacation
+ * balance (YTDVacationBalance) of the employee's last stub paid in the
+ * previous pay year (any pay schedule, same order as compareRuns). The old
+ * code carried last year's ACCRUED amount, in period 1 only, so vacation
+ * already taken or paid out last year was carried again, and from period 2 the
+ * carry-over was dropped. 0 when there is no stub last year.
+ */
+const findVacationCarryIn = async ({ companyName, empId, payPeriodPayDate }) => {
+	const year = payYearOf(payPeriodPayDate);
+	if (year === null) return 0;
+	const stubs = await EmployeePayStub.find({
+		companyName,
+		empId,
+		isProcessed: true,
+		reportType: null,
+		payPeriodPayDate: payYearWindow(year - 1),
+	})
+		.select(
+			"payPeriodNum isExtraRun scheduleFrequency payPeriodPayDate payPeriodProcessingDate YTDVacationBalance",
+		)
+		.lean();
+	if (!stubs?.length) return 0;
+	const last = stubs.reduce((a, b) => (compareRuns(a, b) >= 0 ? a : b));
+	return safeNum(last.YTDVacationBalance);
 };
 
 // PAYYEAR-01: payYear scopes the lookup to that payroll year (pay-date year).

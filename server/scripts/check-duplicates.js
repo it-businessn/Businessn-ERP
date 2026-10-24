@@ -66,6 +66,21 @@ const CHECKS = [
 		enforced: true,
 		keys: ["companyName", "payPeriodNum", "isExtraRun", "payPeriodPayDate", "scheduleFrequency"],
 	},
+	// ALERTS-01: one alert per problem; older versions stored one per pay period.
+	// Safe to resolve: alerts are recomputed on every inputs review.
+	{
+		collection: "employeealertsviolationinfos",
+		index: "uniq_alert_per_problem",
+		enforced: true,
+		keys: ["companyName", "empId", "type"],
+	},
+	// STAT-HOLIDAYS: one holiday per name per company and year.
+	{
+		collection: "holidays",
+		index: "uniq_holiday_per_year",
+		enforced: true,
+		keys: ["companyName", "year", "name"],
+	},
 	// One-per-employee records (docs/TECHNICAL.md risk U3). Not enforced: onboarding
 	// creates them without an existence check, so the report is informational.
 	...[

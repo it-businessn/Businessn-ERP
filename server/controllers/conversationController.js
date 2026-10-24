@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const Announcement = require("../models/Announcement");
+const { SUPPORT_NOTICES, RETIRED_TITLES } = require("../constants/supportNotices.constants");
 const Conversation = require("../models/Conversation");
 const Employee = require("../models/Employee");
 const Message = require("../models/Message");
@@ -142,7 +143,13 @@ const getAnnouncement = async (req, res) => {
 			.sort({ createdOn: -1 })
 			.lean();
 
-		return res.status(200).json(announcements);
+		// SUPPORT-01: general notices for every company + this company's own,
+		// without retired notices or old copies of a general notice
+		const hidden = new Set([...RETIRED_TITLES, ...SUPPORT_NOTICES.map((n) => n.title)]);
+		const own = (announcements || []).filter((a) => !hidden.has(a?.title));
+		const time = (a) => new Date(a?.createdOn).getTime() || 0; // no date: last
+		const all = [...SUPPORT_NOTICES, ...own].sort((a, b) => time(b) - time(a));
+		return res.status(200).json(all);
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({ message: "Internal Server Error", error });

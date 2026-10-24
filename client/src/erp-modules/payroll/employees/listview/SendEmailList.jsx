@@ -60,11 +60,13 @@ const SendEmailList = ({ title, company, isOpen, onClose, selectedPayGroupOption
 			const { data } = payStubEmail
 				? await UserService.sendEmailPaystubs({ employees: selectedOptions, companyName: company })
 				: await UserService.sendEmailLoginCreds({ employees: selectedOptions, companyName: company });
-			// send-paystub lists employees it could not e-mail (no pay stub, not found)
-			const partial = data.message !== "Email sent successfully";
+			// both endpoints list employees they could not e-mail (not found, no pay stub, ...)
+			const notFound = data.notFound?.length ? ` Not found: ${data.notFound.join(", ")}.` : "";
+			const partial = data.message !== "Email sent successfully" || Boolean(notFound);
 			toast({
 				title: partial ? "Sent with exceptions" : "Success",
-				description: data.message,
+				description:
+					data.message !== "Email sent successfully" ? data.message : `${data.message}.${notFound}`,
 				status: partial ? "warning" : "success",
 				duration: partial ? 8000 : 3000,
 				isClosable: true,

@@ -23,14 +23,19 @@ const MultiSelectBox = ({
 	// One value per option, used both for the checked state and for toggling.
 	// (They used to differ: string options were toggled as `undefined`, so the
 	// selection changed but the box never showed as checked.)
-	const optionValue = (option) => option?.fullName || option?.name || option;
-	const optionLabel = (option) => option?.fullName || option?.name || option;
+	// Rows without a name (e.g. a deleted employee) are left out: rendering the
+	// row object itself would crash React and send the object to the server.
+	const optionValue = (option) =>
+		typeof option === "string" ? option : option?.fullName || option?.name || "";
+	const options = (data || []).filter((option) => optionValue(option));
+	// some screens pass a non-list while loading (e.g. a company name string)
+	const selected = Array.isArray(selectedOptions) ? selectedOptions : [];
 
 	const handleCheckboxChange = (value) => {
-		if (selectedOptions?.includes(value)) {
-			setSelectedOptions(selectedOptions.filter((option) => option !== value));
+		if (selected.includes(value)) {
+			setSelectedOptions(selected.filter((option) => option !== value));
 		} else {
-			setSelectedOptions([...(selectedOptions || []), value]);
+			setSelectedOptions([...selected, value]);
 		}
 	};
 
@@ -53,9 +58,9 @@ const MultiSelectBox = ({
 					<CloseButton onClick={handleClose} position={"sticky"} top={0} />
 				</MenuItem>
 				<Stack spacing={1} overflow={"auto"} height={height} maxHeight={"33vh"} w={w}>
-					{data?.map((assignee) => {
+					{options.map((assignee) => {
 						const value = optionValue(assignee);
-						const isChecked = Boolean(selectedOptions?.includes(value));
+						const isChecked = selected.includes(value);
 						// The whole row toggles; the checkbox only shows the state. A clickable
 						// checkbox inside the menu item (a <button>) is invalid HTML and some
 						// browsers send the click to the button instead of the checkbox.
@@ -71,7 +76,7 @@ const MultiSelectBox = ({
 									pointerEvents="none"
 									tabIndex={-1}
 								>
-									{optionLabel(assignee)}
+									{value}
 								</Checkbox>
 							</MenuItem>
 						);

@@ -19,6 +19,9 @@ const employeeGovernmentInfoSchema = new mongoose.Schema(
 		regionalEmployerHealth: String,
 		isCPPExempt: { type: Boolean, default: false },
 		isEIExempt: { type: Boolean, default: false },
+		// PAYROLL-CALC: TD1 claim code 0 - no personal amounts (e.g. a second job).
+		// Otherwise a blank or 0 tax credit means the basic personal amount.
+		isTD1ClaimCodeZero: { type: Boolean, default: false },
 		isPIPExempt: Boolean,
 		employmentCode: String,
 	},

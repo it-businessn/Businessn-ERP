@@ -248,6 +248,8 @@ const buildNewEmpPayStubInfo = (
 	empTaxCreditResult,
 	isExtraRun,
 	frequency,
+	payDate,
+	ytd,
 ) => {
 	const newEmpData = empTimesheetData ? empTimesheetData : {};
 	newEmpData.regPay = safeNum(empPayInfoResult?.roles[0]?.payRate);
@@ -268,7 +270,14 @@ const buildNewEmpPayStubInfo = (
 	calcCurrentGrossPay(newEmpData);
 
 	if (empTaxCreditResult) {
-		calcEmpContributions(newEmpData, empTaxCreditResult, empAdditionalDataAllocated, frequency);
+		calcEmpContributions(
+			newEmpData,
+			empTaxCreditResult,
+			empAdditionalDataAllocated,
+			frequency,
+			payDate,
+			ytd,
+		);
 	}
 	calcContrDeductions(newEmpData);
 	calcVacBalance(newEmpData, empBenefitInfoResult, empAdditionalDataAllocated);
@@ -335,14 +344,25 @@ const calcCurrentDeductionsTotal = (newEmpData) => {
 	return newEmpData;
 };
 
-const calcEmpContributions = (newEmpData, empTaxCreditResult, amtAllocated, frequency) => {
+const calcEmpContributions = (
+	newEmpData,
+	empTaxCreditResult,
+	amtAllocated,
+	frequency,
+	payDate,
+	ytd,
+) => {
 	const {
 		CPPContribution,
 		totalProvincialTaxDeduction,
 		federalTaxDeductionByPayPeriod,
 		EmployeeEIContribution,
 		EmployerEIContribution,
-	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay, empTaxCreditResult, frequency);
+		CPP2Contribution,
+	} = getTaxDetails(newEmpData?.regPay, newEmpData?.currentGrossPay, empTaxCreditResult, frequency, {
+		payDate,
+		ytd,
+	});
 
 	// const employeeContribution = calcEmployeeContribution(
 	// 	newEmpData.currentGrossPay,
@@ -363,6 +383,7 @@ const calcEmpContributions = (newEmpData, empTaxCreditResult, amtAllocated, freq
 		newEmpData.currentStateTaxDeductions +
 		convertHrsToFloat(amtAllocated?.incomeTax);
 	newEmpData.currentCPPDeductions = CPPContribution; //only added superficial
+	newEmpData.currentCPP2Deductions = CPP2Contribution || 0; // part of currentCPPDeductions
 	newEmpData.currentEmployeeEIDeductions = EmployeeEIContribution; //only added superficial;
 	newEmpData.currentEmployerEIDeductions = EmployerEIContribution; //only added superficial;
 

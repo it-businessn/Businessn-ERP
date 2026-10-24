@@ -525,3 +525,34 @@ describe("Pay stub e-mail: only when net pay is above $0.00", () => {
 		expect(logRows).toHaveLength(0);
 	});
 });
+
+/** Review fixes: emailPayStub never throws; overlapping sends; file names. */
+describe("Pay stub e-mail: robustness", () => {
+	test("T-PSE-37 a delivery-log error or a stub without a pay date is FAILED, never thrown", async () => {
+		PayStubEmailLog.findOneAndUpdate.mockRejectedValueOnce(new Error("db down"));
+		await expect(service.emailPayStub(stub(), { force: true })).resolves.toBe("FAILED");
+		await expect(service.emailPayStub(stub({ payPeriodPayDate: null }), { force: true })).resolves.toBe("FAILED");
+		expect(sendEmail).not.toHaveBeenCalled();
+		// the e-mail went out but recording it failed: still reported as sent
+		PayStubEmailLog.updateOne.mockRejectedValueOnce(new Error("db blip"));
+		await expect(service.emailPayStub(stub())).resolves.toBe("SENT");
+	});
+
+	test("T-PSE-38 a manual send while the same stub is being sent is reported as in progress, not failed", async () => {
+		logRows.push({ _id: "busy", ...{ companyName: "Acme", empId: EMP, payPeriodNum: "7", isExtraRun: false, reportType: null, payPeriodPayDate: new Date("2026-10-23T00:00:00Z") }, status: "SENDING", claimedAt: new Date(), attempts: 1 });
+		await expect(service.emailPayStub(stub(), { force: true })).resolves.toBe("IN_PROGRESS");
+		Company.find.mockImplementation(() => query([{ name: "Acme", _id: "65b000000000000000000001", employees: [USER_ID, EMP] }]));
+		Employee.findOne.mockImplementation(() => query({ _id: EMP, fullName: "Jane Employee", email: "jane@acme.test" }));
+		const res = await request(app).post("/api/user/send-paystub").set(auth()).send({ employees: ["Jane Employee"], companyName: "Acme" });
+		expect(res.status).toBe(201);
+		expect(res.body).toMatchObject({ inProgress: ["Jane Employee"], failed: [] });
+		expect(sendEmail).not.toHaveBeenCalled();
+	});
+
+	test("T-PSE-39 PDF file names keep accented letters and never have empty parts", () => {
+		const { payStubFileName } = require("../services/payStubPdfService");
+		expect(payStubFileName(stub(), { fullName: "José Ñúñez" })).toBe("Paystub_PP7_23-10-2026_JoseNunez.pdf");
+		expect(payStubFileName(stub({ payPeriodPayDate: null }), { fullName: "李" })).toBe("Paystub_PP7_employee.pdf");
+		expect(payStubFileName(stub({ payPeriodNum: "7/../x", isExtraRun: true }), {})).toBe("Paystub_PP7x-extra_23-10-2026_employee.pdf");
+	});
+});

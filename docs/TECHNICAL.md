@@ -190,7 +190,7 @@ Every employee gets their earnings statement as a PDF by e-mail on the pay date.
 **How a run works:**
 1. **Switch.** The job does nothing unless `PAYSTUB_EMAIL_ENABLED=true`. It is always off with `NODE_ENV=development`. Opt-in is deliberate: these e-mails go to real employees, and a staging server pointed at production data must not send them.
 2. **What is due.** Processed stubs (`isProcessed: true`) whose pay date is today in Vancouver, plus the 3 days before (catch-up after an outage). Pay dates are compared as whole UTC days (stubs are stored at UTC start of day; older ones may carry a time part).
-3. **Exactly once.** Before sending, the stub is claimed in `PayStubEmailLog` (status `SENDING`). The log has a unique key on the stub's natural key **plus its pay date**, because period numbers restart every year. A second hourly run, a manual send or a second server instance cannot claim the same stub. A claim older than 30 minutes (server died mid-send) can be taken over.
+3. **Once per stub.** Before sending, the stub is claimed in `PayStubEmailLog` (status `SENDING`). The log has a unique key on the stub's natural key **plus its pay date**, because period numbers restart every year. A second hourly run, a manual send or a second server instance cannot claim the same stub. A claim older than 30 minutes (server died mid-send) can be taken over. Delivery is at-least-once in one case: if the server stops between handing the e-mail to SMTP and recording SENT, the stub is sent again after 30 minutes. A delivery-log or database error never stops the batch: that stub is FAILED and retried.
 4. **Recipient.** `Employee.email` (the login e-mail, as used by Employees > Send pay stub e-mail). If it is empty: the payroll profile's `personalEmail`, then `businessEmail`. No address: the stub is logged `FAILED` with "Employee has no e-mail address" and retried every run, so it goes out once an address is added (within the catch-up window, otherwise send it manually).
 5. **PDF rules.** Rows, visibility and formats follow the client components: `EarningsTable` (Federal and Provincial Tax never listed; Regular, Gross and Net Pay always; others only with a current, YTD-hours or YTD value above 0), `ItemRow` (bold totals, rate hidden at 0, hours hidden on amount-only lines, `toFixed(2)` without `$`), `InformationSection` (benefit and vacation rows; Available Balance shows YTD only) and `ChequeDetails` (amount in words by `to-words` with the same settings; payment method "Manual" for report type 3, otherwise DIRECT DEPOSIT; a superficial balance run, type 4, shows 0). Long values are cut after 3 lines, so the statement is always one page. **When the statement layout or its rows change in the client, change `payStubPdfService.js` and `paystub.constants.js` too.**
 6. **Manual send from the app.** Employees > "Send pay stub e-mail" (`POST /api/user/send-paystub`, `userController.sendMailPaystub`) sends this same e-mail and PDF for each selected employee's latest processed pay stub. It goes through the delivery log (`triggeredBy: MANUAL`, re-sends when clicked again), so the pay-date run does not send that stub a second time. The response lists `sent`, `notFound`, `noPayStub` and `failed` names; the app shows its message.
@@ -202,6 +202,58 @@ Every employee gets their earnings statement as a PDF by e-mail on the pay date.
 |---|---|---|
 | `PAYSTUB_EMAIL_ENABLED` | off | `true` switches the pay-date e-mails on for this server |
 | `NODEMAILER_ZOHO_SMTP*` | existing | the SMTP account used by every other e-mail |
+
+### 1.14 Tax tables and statutory holidays by year (TAX-TABLES, STAT-HOLIDAYS)
+
+**Income tax tables are chosen by the pay date** (CRA rule: the tables in force on the day the employee is paid). `services/taxService.js` `getTaxTables(payDate)` picks, separately for federal and BC, the latest edition in `constants/taxTables.constants.js` that started on or before the pay date. The pay run passes the stub's `payPeriodPayDate` (`payStubController.buildPayStubDetails` → `payrollHelper.buildNewEmpPayStubInfo` → `getTaxDetails(..., { payDate })`), so a re-run of an old pay date uses that year's table and a future pay date uses the next year's.
+
+| Pay dates | Federal (lowest rate; thresholds) | BC (lowest rate; thresholds) |
+|---|---|---|
+| 2025-01-01 .. 06-30 | 15 %; 57,375 / 114,750 / 177,882 / 253,414 | 5.06 %; 49,279 / 98,560 / 113,158 / 137,407 / 186,306 / 259,829 |
+| 2025-07-01 .. 12-31 | 14 % (T4127 July 2025) | as above |
+| 2026-01-01 .. 06-30 | 14 %; 58,523 / 117,045 / 181,440 / 258,482 | 5.06 %; 50,363 / 100,728 / 115,648 / 140,430 / 190,405 / 265,545 |
+| 2026-07-01 .. 12-31 | as above | **6.14 %** (T4127 July 2026: BC Budget 2026 made 2026 5.60 %; Jan-Jun was withheld at 5.06 %) |
+| 2027 .. 2030 | **not published yet**: uses the 2026 table and logs `TAX-TABLES: no federal table for 2027` | 5.60 %, 2026 thresholds (frozen for 2027-2030 by BC Budget 2026) |
+
+Other brackets: federal 20.5 / 26 / 29 / 33 %; BC 7.7 / 10.5 / 12.29 / 14.7 / 16.8 / 20.5 %. BC tax reduction: 2025 $562 above $25,020; 2026 $575 (Jan-Jun), $805 prorated (Jul-Dec; $690 for the year) above $25,570; 2027 $690 (frozen), all less 3.56 % of income above the threshold.
+
+**How a deduction is calculated** (`services/taxService.js` `getTaxDetails`, CRA T4127 "Option 1", annualised):
+
+| Step | Rule |
+|---|---|
+| CPP | 5.95 % (2027: 5.75 %, base 4.75 %) of pay less the $3,500 exemption per period, stopped at the annual maximum less CPP already deducted this year |
+| CPP2 | 4 % of this year's earnings between the YMPE and the YAMPE (2026: 74,600 / 85,000; max $416) |
+| EI | 1.63 % (2027: 1.64 %) up to the annual maximum less EI already deducted; employer 1.4 x |
+| Taxable income | P x (pay - enhanced CPP), enhanced = first additional CPP + CPP2 |
+| Federal tax | brackets - 14 % x (personal amount + base CPP + EI + Canada employment amount) |
+| BC tax | brackets - lowest BC rate x (personal amount + base CPP + EI) - BC tax reduction |
+| Personal amount | the TD1 / TD1BC total entered on the employee; **blank or 0 = the basic personal amount** (federal reduced for incomes above the 4th bracket); "Claim code 0" on the employee = none |
+
+Year to date (YTD-01): every YTD total on a stub, and the CPP / CPP2 / EI caps, are **the year's earlier stubs added up**: the per-pay amounts of every processed stub of the employee in the same pay year paid before this one, all pay schedules combined (CPP / EI maximums are per employer and year); on the same pay date the regular run comes first and extra runs follow their processing date; the stub being re-run is left out (`payStubController.findYtdBase`, field list `YTD_SUMS`). The result does not depend on the order runs were processed in, and stored YTD fields are never re-used, so a wrong legacy total does not carry on. Opening balances from before the app are not supported (nothing records them). It used to continue from "period N-1", which double-counted a re-run extra run, restarted the year after an extra run in period 1, a period without a stub or a schedule change, and lost extra runs paid between two regular runs. Vacation (VAC-01): accrued and used are added up the same way (`YTD_SUMS`); balance forward = last year's closing `YTDVacationBalance` (`findVacationCarryIn`, last stub paid the previous pay year) + this year's balance adjustments; balance = forward + accrued - used on every stub. Sick balances keep the original logic. Re-running an old period does not update the stored YTD of later stubs until they are re-run.
+
+**Staying current: the yearly calendar.** `npm run check:rates` (server) lists, for this year and next, each table as ok / CHECK / PENDING / MISSING with where it is published, and prints sample deductions to compare with the [CRA Payroll Deductions Online Calculator](https://www.canada.ca/en/revenue-agency/services/e-services/digital-services-businesses/payroll-deductions-online-calculator.html).
+
+| When | What | Where to change |
+|---|---|---|
+| September | EI rate and maximum for next year (CEIC) | `EI_EDITIONS` |
+| early November | CPP YMPE / YAMPE for next year (CRA news release) | `CPP_EDITIONS` (remove `pending`) |
+| November - mid-December | indexed federal brackets, basic personal amount, Canada employment amount; BC amounts (T4127 January edition) | `FEDERAL_EDITIONS`, `BC_EDITIONS` |
+| before January 1 | run `npm run check:rates`, compare the samples with PDOC for January 1, deploy | |
+| February - May | BC budget (may change BC tax mid-year) | `BC_EDITIONS` |
+| spring | BC minimum wage for June 1 | `constants/minimumWage.constants.js` |
+| June | T4127 July edition (mid-year changes) | the affected editions |
+
+Safety nets: from November 1 the daily job logs `PAYROLL RATES DUE` while next year is incomplete; `tests/unit.ratesReadiness.test.js` (T-RR-03) **fails in December** while next year's federal, CPP, EI or BC table is missing or pending, so `npm test` before a deploy goes red; a pay date without a table uses the latest one and logs `TAX-TABLES: no ... table`.
+
+**Due now (October 2026):** 2027 federal brackets / basic personal amount / Canada employment amount (MISSING) and 2027 CPP YMPE / YAMPE (PENDING; the 2027 rate cut to 5.75 % is already in). To confirm: the July 2026 BC tax reduction between $41,722 and $44,952 and the 2027 BC tax reduction (marked CHECK).
+
+**Statutory holidays.** `utils/bcStatHolidays.util.js` computes BC's statutory holidays for any year from the Employment Standards rules (Family Day 3rd Monday of February from 2019, Good Friday from Easter, Victoria Day the Monday before May 25, Canada Day July 2 when July 1 is a Sunday, Truth and Reconciliation from 2023; no Easter Monday or Boxing Day). A BC company (`Company.address.state` BC or not set) gets them filled in for a year the first time that year has none: when the holiday page opens it (`GET /api/holiday/:company/:year`, year picker shows 3 years back and 3 ahead) or when the daily stat job runs (current year, and next year in December). Filled-in rows have `source: "BC_STATUTORY"`; the company can still add, edit and delete holidays, and a year that has any holiday is never refilled. Editing a holiday's date into another year moves it to that year. Punches are matched to a holiday on the Vancouver calendar day.
+
+### 1.15 Alerts and Violations, Support notices (ALERTS-01, SUPPORT-01)
+
+**Alerts** (`controllers/alertsController.js`, `EmployeeAlertsViolationInfo`): the Inputs Review step posts the pay run's employees to `POST /api/alert`. For each employee the current problems are worked out (bank details missing, pay rate below the BC minimum wage in force today or missing, SIN missing) and stored as **one row per (company, employee, type)**: updated if it exists, deleted when the problem is gone. Saving bank details, pay rates or a SIN also clears the alert for that company. The BC minimum wage is in `constants/minimumWage.constants.js` (add a row when BC announces an increase; $18.25 from June 1, 2026).
+
+**Support notices** (`constants/supportNotices.constants.js`): `GET /api/announcements/:companyName` returns these general notices to every company plus the company's own announcements, newest first; titles in `RETIRED_TITLES` and stored copies of a general notice are left out. To publish a notice for all companies, add it to the list and deploy.
 
 ## 2. API reference
 

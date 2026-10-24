@@ -1,4 +1,4 @@
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 const EmployeeTADProfileInfo = require("../models/EmployeeTADProfile");
 const EmployeeProfileInfo = require("../models/EmployeeProfileInfo");
@@ -289,9 +289,16 @@ const addTimecardEntry = async (entry, isBreak) => {
 			const currentYrSTAT_HOLIDAYS = await getHolidays({
 				companyName: empRec?.companyName,
 			});
+			// STAT-HOLIDAYS: a holiday is a Vancouver calendar day. Time-clock punches
+			// are local wall-clock times stored as if UTC (getUTCTime: moment.utc of
+			// the device time), so their UTC date is already the local day. Punches
+			// from the app (notDevice) are real instants: convert them to Vancouver
+			// (on the UTC server a punch after 4-5 pm fell on the next day).
+			const punchDay = (
+				notDevice ? moment(clockIn).tz("America/Vancouver") : moment.utc(clockIn)
+			).format("YYYY-MM-DD");
 			const isStatHoliday = currentYrSTAT_HOLIDAYS.find(
-				({ date }) =>
-					moment.utc(date).format("YYYY-MM-DD") === moment(clockIn).format("YYYY-MM-DD"),
+				({ date }) => moment.utc(date).format("YYYY-MM-DD") === punchDay,
 			);
 			const newTimesheetRecord = {
 				employeeId: entry.employeeId,

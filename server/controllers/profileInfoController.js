@@ -414,7 +414,7 @@ const updateEmployeeProfileInfo = async (req, res) => {
 		};
 
 		if (SIN && SIN !== "") {
-			await deleteAlerts(empId, ALERTS_TYPE.SIN);
+			await deleteAlerts(empId, ALERTS_TYPE.SIN, companyName);
 		}
 		await updateEmployee(empId, data);
 

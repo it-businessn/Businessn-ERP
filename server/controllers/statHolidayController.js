@@ -2,7 +2,9 @@ const moment = require("moment");
 
 const { addTimesheetEntry } = require("../services/timecardService");
 
+const Company = require("../models/Company");
 const Holiday = require("../models/Holiday");
+const { bcStatHolidays, isBCCompany } = require("../utils/bcStatHolidays.util");
 const Timesheet = require("../models/Timesheet");
 const EmployeePayInfo = require("../models/EmployeePayInfo");
 const { PAY_TYPES_TITLE } = require("../constants/pay.constants");
@@ -126,9 +128,45 @@ const getHolidays = async (record) =>
 		date: 1,
 	});
 
+const isYear = (year) => /^\d{4}$/.test(String(year)) && Number(year) >= 1990 && Number(year) <= 2100;
+
+/**
+ * STAT-HOLIDAYS: a BC company's statutory holidays for a year are filled in
+ * from the BC rules the first time that year is used (holiday page, daily stat
+ * job), so nobody has to type them in every year, for past or future years
+ * alike. Only a year with no holidays at all is filled in, so holidays the
+ * company deleted or renamed stay as the company left them. Upsert by
+ * (company, year, name) with a unique index (uniq_holiday_per_year), so two
+ * requests at the same moment cannot double them.
+ * Returns the number of holidays added.
+ */
+const ensureStatHolidays = async (companyName, year) => {
+	if (!companyName || !isYear(year)) return 0;
+	const existing = await Holiday.countDocuments({ companyName, year: String(year) });
+	if (existing > 0) return 0;
+	const company = await Company.findOne({ name: companyName }).select("address").lean();
+	if (!company || !isBCCompany(company)) return 0;
+	const holidays = bcStatHolidays(year);
+	await Promise.all(
+		holidays.map(({ name, date }) =>
+			Holiday.updateOne(
+				{ companyName, year: String(year), name },
+				{ $setOnInsert: { companyName, year: String(year), name, date, source: "BC_STATUTORY" } },
+				{ upsert: true },
+			).catch((error) => {
+				// another request inserted it at the same moment (unique index)
+				if (error?.code !== 11000) throw error;
+			}),
+		),
+	);
+	return holidays.length;
+};
+
 const getStatHoliday = async (req, res) => {
 	const { companyName, year } = req.params;
+	if (!isYear(year)) return res.status(400).json({ message: "year must be a 4-digit year" });
 	try {
+		await ensureStatHolidays(companyName, year);
 		const holidays = await getHolidays({ companyName, year });
 		return res.status(200).json(holidays);
 	} catch (error) {
@@ -150,7 +188,7 @@ const addStatHoliday = async (req, res) => {
 	// NEW-16: the duplicate check used the current year, so the same holiday could
 	// be added twice for another year and a next-year holiday was reported as a
 	// duplicate of this year's. Use the year of `date` (as the create below does).
-	const holidayDate = typeof date === "string" || typeof date === "number" ? moment(date) : null;
+	const holidayDate = typeof date === "string" || typeof date === "number" ? moment.utc(date) : null;
 	if (!holidayDate?.isValid()) {
 		return res.status(400).json({ message: "A valid holiday date is required" });
 	}
@@ -173,11 +211,13 @@ const addStatHoliday = async (req, res) => {
 		const newHoliday = await Holiday.create({
 			...data,
 			date,
-			year: moment(date).format("YYYY"),
+			year: holidayDate.format("YYYY"),
 		});
 
 		return res.status(201).json(newHoliday);
 	} catch (error) {
+		// same name already in that year (unique index), e.g. two adds at once
+		if (error?.code === 11000) return res.status(409).json({ message: "Record already exists" });
 		console.error("[addStatHoliday Error]:", {
 			message: error.message,
 			stack: error.stack,
@@ -198,11 +238,23 @@ const updateStatHoliday = async (req, res) => {
 			});
 		}
 
-		const { _id, ...updateData } = req.body;
+		const { _id, year: _ignored, ...updateData } = req.body;
+		// STAT-HOLIDAYS: moving a holiday to a date in another year moves it to that
+		// year's list (the year used to stay as it was).
+		if (updateData.date !== undefined) {
+			const newDate = moment.utc(updateData.date);
+			if (!newDate.isValid()) {
+				return res.status(400).json({ message: "A valid holiday date is required" });
+			}
+			updateData.year = newDate.format("YYYY");
+		}
 
 		const updatedInfo = await updateHolidayRecord(id, updateData);
 		return res.status(200).json(updatedInfo);
 	} catch (error) {
+		if (error?.code === 11000) {
+			return res.status(409).json({ message: "A holiday with this name already exists in that year" });
+		}
 		console.error("[updateStatHoliday Error]:", {
 			message: error.message,
 			stack: error.stack,
@@ -254,5 +306,6 @@ module.exports = {
 	addStatHolidayTimesheet,
 	getHolidays,
 	getStatHoliday,
+	ensureStatHolidays,
 	deleteStatHoliday,
 };

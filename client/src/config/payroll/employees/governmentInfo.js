@@ -78,8 +78,9 @@ export const getInitialGovernmentInfo = (empId, companyName) => {
 		companyName,
 		federalTax: "Canada",
 		regionalTax: "British Columbia",
-		federalTaxCredit: 0,
-		regionalTaxCredit: 0,
+		// blank = basic personal amount (TD1 claim code 1)
+		federalTaxCredit: "",
+		regionalTaxCredit: "",
 		federalPensionEE: "",
 		federalPensionER: "",
 		federalEmploymentInsuranceEE: "",

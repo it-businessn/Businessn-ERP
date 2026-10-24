@@ -151,6 +151,9 @@ const employeePayStubSchema = new mongoose.Schema(
 
 		currentCPPDeductions: { type: Number, default: 0 },
 		YTD_CPPDeductions: { type: Number, default: 0 },
+		// PAYROLL-CALC: CPP2 (second additional CPP) part of the CPP deduction above
+		currentCPP2Deductions: { type: Number, default: 0 },
+		YTD_CPP2Deductions: { type: Number, default: 0 },
 
 		currentEmployerCPPDeductions: { type: Number, default: 0 },
 		YTD_EmployerCPPDeductions: { type: Number, default: 0 },

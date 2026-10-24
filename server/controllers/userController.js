@@ -457,6 +457,7 @@ const sendMailPaystub = async (req, res) => {
 		const sent = [];
 		const noPayStub = [];
 		const notPayable = [];
+		const inProgress = [];
 		const failed = [];
 		// sequential: keeps the SMTP provider within its rate limits
 		for (const user of users) {
@@ -471,23 +472,28 @@ const sendMailPaystub = async (req, res) => {
 			}
 			// force: the administrator asked for it, so re-send even if already e-mailed
 			const result = await emailPayStub(stub, { triggeredBy: "MANUAL", force: true });
-			(result === "SENT" ? sent : failed).push(user.fullName);
+			(result === "SENT" ? sent : result === "IN_PROGRESS" ? inProgress : failed).push(
+				user.fullName,
+			);
 		}
 		const problems = [
 			notFound.length && `not found: ${notFound.join(", ")}`,
 			noPayStub.length && `no processed pay stub: ${noPayStub.join(", ")}`,
 			notPayable.length && `net pay not above $0.00: ${notPayable.join(", ")}`,
+			inProgress.length && `already being sent: ${inProgress.join(", ")}`,
 			failed.length && `could not be sent: ${failed.join(", ")}`,
 		].filter(Boolean);
 		const message = problems.length
 			? `Pay stub e-mailed to ${sent.length} of ${req.body.employees.length} employee(s); ${problems.join("; ")}`
 			: "Email sent successfully";
-		return res.status(sent.length || !problems.length ? 201 : 422).json({
+		const ok = sent.length || inProgress.length || !problems.length;
+		return res.status(ok ? 201 : 422).json({
 			message,
 			sent,
 			notFound,
 			noPayStub,
 			notPayable,
+			inProgress,
 			failed,
 		});
 	} catch (err) {
