@@ -133,6 +133,32 @@ const deleteAlerts = async (empId, type, companyName) => {
 	return EmployeeAlertsViolationInfo.deleteMany(filter);
 };
 
+/**
+ * ALERTS-02: after banking, SIN or pay rate is saved (add or update), re-check
+ * the saved data with the same rules as the inputs review and remove every
+ * alert whose problem is fixed. It only clears: new problems are still added
+ * by the inputs review. Never throws (a save must not fail because of it).
+ */
+const refreshEmployeeAlerts = async (empId, companyName) => {
+	try {
+		if (!empId || !companyName) return;
+		empId = String(empId);
+		const [bank, profile, payInfo] = await Promise.all([
+			EmployeeBankingInfo.findOne({ companyName, empId })
+				.select("empId bankNum transitNum accountNum")
+				.lean(),
+			EmployeeProfileInfo.findOne({ companyName, empId }).select("empId SIN").lean(),
+			EmployeePayInfo.findOne({ companyName, empId }).select("empId roles").lean(),
+		]);
+		const problems = findEmployeeProblems({ bank, profile, payInfo }, minimumWageOn());
+		for (const [type, problem] of Object.entries(problems)) {
+			if (!problem) await clearAlert({ companyName, empId, type });
+		}
+	} catch (error) {
+		console.error("[Alerts] refresh after save failed", { empId, companyName, message: error.message });
+	}
+};
+
 /** Newest row per (employee, type): hides legacy per-period copies not yet cleaned up. */
 const latestPerProblem = (alerts) => {
 	const seen = new Set();
@@ -214,6 +240,7 @@ const getTotalAlertsAndViolationsInfo = async (req, res) => {
 };
 
 module.exports = {
+	refreshEmployeeAlerts,
 	addAlertInfo,
 	addAlertsAndViolations,
 	deleteAlerts,

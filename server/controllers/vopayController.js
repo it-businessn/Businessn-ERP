@@ -212,7 +212,7 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs = [])
 		// 	.toFixed(2);
 		if (fundTotals?.totalEmpPaymentRemitCost > 0) {
 			try {
-				await apiFetch(`${BASE_URL}account/client-accounts/fund-transfer-withdraw`, {
+				const response = await apiFetch(`${BASE_URL}account/client-accounts/fund-transfer-withdraw`, {
 					method: "POST",
 					data: {
 						AccountID: ACCOUNT_ID,
@@ -225,7 +225,12 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs = [])
 						Notes: "Processed Payroll Transfer",
 					},
 				});
-				return { status: "sent" };
+				// VoPay reports most errors as HTTP 200 with Success: false; only Success: true is sent.
+				if (response?.Success !== true && String(response?.Success).toLowerCase() !== "true") {
+					throw new Error(response?.ErrorMessage || "VoPay did not confirm the transfer");
+				}
+				// VoPay's id of the transfer (needed to cancel it: cancelVopayTransaction)
+				return { status: "sent", transactionId: response?.TransactionID ?? null };
 			} catch (error) {
 				const message = redactUrls(error?.message);
 				console.error("vopayFundTransfer failed", {
@@ -240,6 +245,52 @@ const vopayFundTransfer = async (companyName, fundTotals, employeePayStubs = [])
 		return { status: "skipped", reason: "NO_AMOUNT" };
 	}
 	return { status: "skipped", reason: "COMPANY_NOT_ENABLED" };
+};
+
+/** The VoPay account a company's payroll transactions are on (as in vopayFundTransfer). */
+const vopayAccountFor = (companyName) =>
+	companyName === COMPANIES.CORNERSTONE ? VOPAY_CONFIG.CORNERSTONE : DEFAULT_ENV;
+
+/**
+ * Cancels a VoPay transaction by its TransactionID (POST account/transactions/cancel).
+ * VoPay can only cancel a transaction that has not been processed yet (pending);
+ * it answers Success: false otherwise. Returns { status: "cancelled" | "failed",
+ * transactionId, error? }; never throws. Nothing is written to the database.
+ */
+const cancelVopayTransaction = async (companyName, transactionId) => {
+	const id = transactionId === undefined || transactionId === null ? "" : String(transactionId).trim();
+	if (!id) return { status: "failed", transactionId: null, error: "TransactionID is required" };
+	const { SHARED_KEY, SHARED_SECRET, ACCOUNT_ID, BASE_URL } = vopayAccountFor(companyName);
+	try {
+		const response = await apiFetch(`${BASE_URL}account/transactions/cancel`, {
+			method: "POST",
+			data: {
+				AccountID: ACCOUNT_ID,
+				Key: SHARED_KEY,
+				Signature: generateVopaySignature(SHARED_KEY, SHARED_SECRET),
+				TransactionID: id,
+			},
+		});
+		if (response?.Success !== true && String(response?.Success).toLowerCase() !== "true") {
+			const error = redactUrls(response?.ErrorMessage || "VoPay did not confirm the cancellation");
+			console.error("cancelVopayTransaction rejected by VoPay", { companyName, transactionId: id, error });
+			return { status: "failed", transactionId: id, error };
+		}
+		console.log("VoPay transaction cancelled", { companyName, transactionId: id });
+		return { status: "cancelled", transactionId: id };
+	} catch (error) {
+		const message = redactUrls(error?.message);
+		console.error("cancelVopayTransaction failed", { companyName, transactionId: id, error: message });
+		return { status: "failed", transactionId: id, error: message };
+	}
+};
+
+/** POST /api/vopay/account/transactions/cancel { companyName, transactionId } */
+const cancelTransaction = async (req, res) => {
+	const { companyName, transactionId } = req.body || {};
+	const result = await cancelVopayTransaction(companyName, transactionId);
+	if (result.status === "cancelled") return res.status(200).json(result);
+	return res.status(result.error === "TransactionID is required" ? 400 : 422).json(result);
 };
 
 // CHANGES.md API #3: this handler hit a bare `return;` before responding, so the request
@@ -717,6 +768,8 @@ const getAccountBalance = async (req, res) => {
 };
 
 module.exports = {
+	cancelVopayTransaction,
+	cancelTransaction,
 	createPartnerEmployerAccount,
 	createClientAccountEmployee,
 	getClientAccountWallets,

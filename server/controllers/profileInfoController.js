@@ -14,9 +14,8 @@ const {
 	addUserBenefitInfo,
 	addUserBankInfo,
 } = require("./empDataController");
-const { deleteAlerts } = require("./alertsController");
+const { refreshEmployeeAlerts } = require("./alertsController");
 const CONFIG = require("../config/app.config");
-const { ALERTS_TYPE } = require("../constants/pay.constants");
 const { addEmployee, findCompany } = require("../services/userService");
 
 const getAllProfileInfo = async (req, res) => {
@@ -271,6 +270,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 		if (existingProfileInfo) {
 			const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
 			await updateEmployee(existingProfileInfo.empId, data);
+			await refreshEmployeeAlerts(existingProfileInfo.empId, companyName);
 			return res.status(200).json(updatedProfileInfo);
 		}
 
@@ -299,6 +299,7 @@ const addEmployeeProfileInfo = async (req, res) => {
 
 		updatedData.empId = profileInfoEmpId;
 		const newProfileInfo = await EmployeeProfileInfo.create(updatedData);
+		await refreshEmployeeAlerts(profileInfoEmpId, companyName);
 
 		return res.status(201).json(newProfileInfo);
 	} catch (error) {
@@ -413,9 +414,6 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			phoneNumber: personalPhoneNum,
 		};
 
-		if (SIN && SIN !== "") {
-			await deleteAlerts(empId, ALERTS_TYPE.SIN, companyName);
-		}
 		await updateEmployee(empId, data);
 
 		const existingProfileInfo = await EmployeeProfileInfo.findById(id);
@@ -433,14 +431,20 @@ const updateEmployeeProfileInfo = async (req, res) => {
 			updatedData.SINIv = encrypted.iv;
 		}
 		const updatedProfileInfo = await updateProfileInfo(existingProfileInfo._id, updatedData);
+		await refreshEmployeeAlerts(
+			existingProfileInfo.empId || empId,
+			existingProfileInfo.companyName || companyName,
+		);
 		return res.status(201).json(updatedProfileInfo);
 	} catch (error) {
+		// empId / companyName are declared inside the try: read them from the body
+		// (referencing them here threw, and the request never got an answer)
 		console.error("❌ updateEmployeeProfileInfo error:", {
 			message: error.message,
 			stack: error.stack,
 			id,
-			empId,
-			companyName,
+			empId: req.body?.empId,
+			companyName: req.body?.companyName,
 		});
 
 		return res.status(500).json({
