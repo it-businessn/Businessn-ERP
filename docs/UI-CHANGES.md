@@ -86,6 +86,22 @@ no new warnings (153 before, 152 after on the changed files); 131 files.
 - Accessibility: labels on icon-only buttons (sidebar, user menu, password
   eye, delete icons, workview row buttons — now the whole button is clickable).
 
+## 3. Consistent look (second round)
+- One primary button style everywhere: solid var(--banner_bg) purple, white
+  text, one hover colour (new token --primary_btn_hover, #4a2b4a), one corner
+  radius (new token --radius, 10px, set once in the theme). The shared
+  PrimaryButton, ActionButton and LeftIconButton ("Add New") now use it (they
+  were a lighter purple, a grey "Add New", and a hover that turned the button
+  white with an outline). Screens that pass their own colours (approve/reject,
+  leave colours) keep them.
+- Hard-coded values replaced with the tokens across screens: #4a2b4a ->
+  var(--primary_btn_hover), #371f37 -> var(--banner_bg), #718096 -> gray.500
+  (same colour); hovers unified.
+- Selects now have the same grey fill and border as inputs (set in the theme,
+  so a screen's own select colour still wins).
+- Secondary (Cancel / No: light grey), outline and link buttons unchanged.
+- Not changed (your call, see 2.1): the global button press rule.
+
 ## 2. Suggested, not changed (needs your decision: changes behaviour)
 1. `button:active { background: transparent !important; }` (App.css) makes
    filled buttons lose their background while pressed (white text vanishes
@@ -116,3 +132,16 @@ no new warnings (153 before, 152 after on the changed files); 131 files.
 15. The uploaded package has no `client/src/assets/cover.mp4` and
     `support_bg.mp4`, but the payroll dashboard imports `support_bg.mp4`, so
     this package alone does not build. Keep your copies of those files.
+
+## 4. Timesheets: "Invalid time range" on Statutory Pay rows (TS-01)
+- The stat holiday job adds a Statutory Pay row starting at 1:00 PM and ending
+  1:00 PM + the employee's stat hours. Payroll pays it from its stat hours
+  (statDayHours), not from start/end. With 0 stat hours (no earnings in the
+  30 days before the holiday) start = end, and "Approve all" showed
+  "Invalid time range" for every such row.
+- Approve all no longer checks the time range of Statutory Pay rows.
+- Rows that really have an invalid range (start not before end) were shown the
+  error but approved anyway; they are now left out of "Approve all", as the
+  message says.
+- Total Hours on a Statutory Pay row shows its stat hours (e.g. 0.00) instead
+  of blank.

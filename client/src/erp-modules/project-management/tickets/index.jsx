@@ -59,7 +59,7 @@ const Tickets = () => {
 					size="sm"
 					icon={<FaPlus color="#fff" fontSize="14px" />}
 					handleClick={() => setShowAddEntry(true)}
-					bg="#371f37"
+					bg="var(--banner_bg)"
 					color="white"
 					_hover={{
 						bg: "#4e2847",

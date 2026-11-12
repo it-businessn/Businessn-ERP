@@ -739,6 +739,8 @@ const Timesheet = ({
 										startTime,
 										endTime,
 										totalHours,
+										payType,
+										statDayHours,
 										sourceBtnCss,
 										regBreakHoursWorked,
 										source,
@@ -894,7 +896,14 @@ const Timesheet = ({
 												) : ( */}
 												<NormalTextTitle
 													size="sm"
-													title={totalHours ? totalHours?.toFixed(2) : ""}
+													title={
+														// TS-01: Statutory Pay is paid from its stat hours
+														payType === PAY_TYPES_TITLE.STAT_PAY
+															? Number(statDayHours || 0).toFixed(2)
+															: totalHours
+															? totalHours?.toFixed(2)
+															: ""
+													}
 												/>
 												{/* )} */}
 											</Td>

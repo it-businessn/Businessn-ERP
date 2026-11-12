@@ -36,7 +36,7 @@ const EmployerInfo = ({
 					</Text>
 				)}
 				<HStack justify="end">
-					<Button bg="var(--banner_bg)" color="white" _hover={{ bg: "#4a2b4a" }} onClick={onConfirm}>
+					<Button bg="var(--banner_bg)" color="white" _hover={{ bg: "var(--primary_btn_hover)" }} onClick={onConfirm}>
 						Confirm Selection
 					</Button>
 				</HStack>

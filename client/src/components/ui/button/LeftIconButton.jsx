@@ -32,11 +32,13 @@ const LeftIconButton = ({
 			onClick={handleClick}
 			flex={flex}
 			color={!colorScheme && color}
-			bg={bg || (!colorScheme && !isFilter && "var(--primary_button_bg)")}
+			bg={bg || (!colorScheme && !isFilter && "var(--banner_bg)")}
 			colorScheme={colorScheme}
 			variant={variant}
 			fontWeight={!isFilter && "bold"}
-			_hover={_hover || { bg: "transparent", color: "var(--main_color_black)" }}
+			_hover={
+				_hover || (isFilter ? { bg: "transparent", color: "var(--main_color_black)" } : { bg: "var(--primary_btn_hover)" })
+			}
 			leftIcon={icon}
 			borderRadius={borderRadius}
 		>

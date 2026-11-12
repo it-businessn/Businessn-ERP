@@ -297,7 +297,7 @@ export const tabStyleCss = {
 		boxShadow: "none",
 	},
 	".chakra-tabs__tab:hover": {
-		bg: generateLighterShade("#371f37", 0.8),
+		bg: generateLighterShade("var(--banner_bg)", 0.8),
 	},
 };
 

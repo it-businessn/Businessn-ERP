@@ -156,7 +156,7 @@ const Support = () => {
 							isLoading={isLastStep && isSubmitting}
 							bg={"var(--banner_bg)"}
 							color="white"
-							_hover={{ bg: "#4a2b4a" }}
+							_hover={{ bg: "var(--primary_btn_hover)" }}
 							px={6}
 						>
 							{isLastStep ? "Submit" : "Next"}

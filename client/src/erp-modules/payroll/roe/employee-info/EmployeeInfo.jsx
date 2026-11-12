@@ -61,7 +61,7 @@ const EmployeeInfo = ({
 						<Button
 							bg="var(--banner_bg)"
 							color="white"
-							_hover={{ bg: "#4a2b4a" }}
+							_hover={{ bg: "var(--primary_btn_hover)" }}
 							isDisabled={!selectedEmpId}
 							isLoading={isLoading}
 							onClick={onConfirmSelection}
@@ -110,7 +110,7 @@ const EmployeeInfo = ({
 							<Button
 								bg="var(--banner_bg)"
 								color="white"
-								_hover={{ bg: "#4a2b4a" }}
+								_hover={{ bg: "var(--primary_btn_hover)" }}
 								onClick={onConfirmPersonal}
 							>
 								Confirm

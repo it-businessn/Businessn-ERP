@@ -5,6 +5,17 @@ const theme = extendTheme(
 	{
 		initialColorMode: "light",
 		useSystemColorMode: false,
+		// UI-02: consistent controls. Explicit props on a screen still win.
+		components: {
+			Button: { baseStyle: { borderRadius: "var(--radius)" } },
+			Select: {
+				variants: {
+					outline: {
+						field: { bg: "var(--input_bg)", borderColor: "var(--filter_border_color)" },
+					},
+				},
+			},
+		},
 		colors: {
 			// Chakra's standard "facebook" palette. The pro theme does not include it,
 			// but 59 components use colorScheme="facebook" (mostly checkboxes); without

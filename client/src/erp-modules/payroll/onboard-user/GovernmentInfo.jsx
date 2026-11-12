@@ -84,7 +84,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 									CPP/QPP Exemption
 									<FaInfoCircle
 										size="0.8em"
-										color="#718096"
+										color="gray.500"
 										style={{ display: "inline", marginBottom: "3px" }}
 									/>
 								</FormLabel>
@@ -117,7 +117,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 									EI Exemption
 									<FaInfoCircle
 										size="0.8em"
-										color="#718096"
+										color="gray.500"
 										style={{ display: "inline", marginBottom: "3px" }}
 									/>
 								</FormLabel>

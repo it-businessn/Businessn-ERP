@@ -72,6 +72,9 @@
 	--gray2_color: #959595;
 	--tas_item_color: #858181;
 	--banner_bg: #371f37;
+	/* UI-02: one primary button look across the app */
+	--primary_btn_hover: #4a2b4a;
+	--radius: 10px;
 	--nav_gradient: linear-gradient(180deg, rgb(108 118 134) 0%, rgb(237 243 255) 100%);
 	--nav_gradient_blue: linear-gradient(180deg, rgb(219, 217, 228) 0%, rgb(237 243 255) 100%);
 	--nav_gradient_orange: linear-gradient(180deg, rgb(231, 223, 207) 0%, rgb(237 243 255) 100%);

@@ -246,7 +246,7 @@ const GovernmentInfo = ({ company, userId }) => {
 									CPP/QPP Exemption
 									<FaInfoCircle
 										size="0.8em"
-										color="#718096"
+										color="gray.500"
 										style={{ display: "inline", marginBottom: "3px" }}
 									/>
 								</FormLabel>
@@ -279,7 +279,7 @@ const GovernmentInfo = ({ company, userId }) => {
 									EI Exemption
 									<FaInfoCircle
 										size="0.8em"
-										color="#718096"
+										color="gray.500"
 										style={{ display: "inline", marginBottom: "3px" }}
 									/>
 								</FormLabel>
@@ -419,7 +419,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Pension (EE)
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>
@@ -444,7 +444,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Employment Insurance (EE)
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>
@@ -467,7 +467,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Pension (ER)
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>
@@ -492,7 +492,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Employment Insurance (ER)
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>
@@ -521,7 +521,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Employee Injury
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>
@@ -542,7 +542,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Employee Health
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>
@@ -569,7 +569,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Employer Injury
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>
@@ -594,7 +594,7 @@ const GovernmentInfo = ({ company, userId }) => {
 										Employer Health
 										<FaInfoCircle
 											size="0.8em"
-											color="#718096"
+											color="gray.500"
 											style={{ display: "inline", marginBottom: "3px" }}
 										/>
 									</FormLabel>

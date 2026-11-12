@@ -76,7 +76,7 @@ export const VacationBenefit = ({ formData, handleChange }) => {
 					leftIcon={<FaPlus />}
 					bg={"var(--banner_bg)"}
 					color="white"
-					_hover={{ bg: "#4a2b4a" }}
+					_hover={{ bg: "var(--primary_btn_hover)" }}
 					onClick={() => {
 						// This would typically call an API to add the adjustment
 						console.log("Adding adjustment:", formData.benefitsInfo.vacationAdjustment);

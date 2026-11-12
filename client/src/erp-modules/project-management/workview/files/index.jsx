@@ -282,7 +282,8 @@ const FilesList = ({ managers, company, isDashboard }) => {
 					onClick={onOpen}
 					color={"var(--main_color)"}
 					bg={"var(--banner_bg)"}
-					borderRadius={"8px"}
+					_hover={{ bg: "var(--primary_btn_hover)" }}
+					borderRadius={"var(--radius)"}
 					size={"sm"}
 					px={"2em"}
 				>

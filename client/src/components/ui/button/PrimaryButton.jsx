@@ -11,13 +11,10 @@ const PrimaryButton = ({
 	minW,
 	flex,
 	rightIcon,
-	bg = "var(--nav_menu)",
-	color = "var(--primary_bg)",
-	hover = {
-		color: "var(--main_color_black)",
-		bg: "transparent",
-		border: "1px solid var(--primary_button_bg)",
-	},
+	// UI-02: the app's primary button (screens may still pass their own colours)
+	bg = "var(--banner_bg)",
+	color = "var(--main_color)",
+	hover = { bg: "var(--primary_btn_hover)" },
 	cursor,
 	w,
 	ml,
@@ -27,7 +24,7 @@ const PrimaryButton = ({
 	fontWeight,
 	fontSize,
 	whiteSpace,
-	borderRadius = "10px",
+	borderRadius = "var(--radius)",
 }) => {
 	return (
 		<Button

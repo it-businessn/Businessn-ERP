@@ -23,7 +23,7 @@ export const PUBLIC_THEME = {
 export const primaryButtonProps = {
 	bg: "var(--banner_bg)",
 	color: "white",
-	_hover: { bg: "#4a2b4a" },
+	_hover: { bg: "var(--primary_btn_hover)" },
 	_active: { bg: "#2c182c" },
 };
 

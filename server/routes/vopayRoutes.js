@@ -28,6 +28,9 @@ router.post("/account/client-accounts/wallets/create", canMoveFunds, vopayContro
 router.post("/account/client-accounts/individual", canMoveFunds, vopayController.createClientAccountEmployee);
 router.post("/account/fund-my-account", canMoveFunds, vopayController.fundBankAccount);
 router.get("/account/transactions/:clientAccountId", vopayController.getTransactions);
+
+// cancel a pending VoPay transaction by its TransactionID (body: companyName, transactionId)
+router.post("/account/transactions/cancel", canMoveFunds, vopayController.cancelTransaction);
 router.get("/account/balance", vopayController.getAccountBalance);
 router.get("/account/webhooks", vopayController.getAccountWebHooks);
 

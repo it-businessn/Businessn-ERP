@@ -12,6 +12,7 @@ const Setup = require("../models/Setup");
 const WorkShift = require("../models/WorkShift");
 const { getShadowUserIds } = require("../services/userService");
 const { getCurrentYear } = require("../utils/date.util");
+const { payPeriodDates } = require("../utils/payCalendar.util");
 
 const getAllSetup = async (req, res) => {
 	try {
@@ -564,8 +565,8 @@ const addPaygroupSchedules = async (groupID, frequency) => {
 			} else {
 				endDate = getPeriodEndDate(currentStart);
 			}
-			const processingDate = addDays(endDate, 2);
-			const payDate = addDays(processingDate, 3);
+			// PAYCAL-01: submit-by and pay date on business days (was end + 2 / + 5)
+			const { processingDate, payDate } = payPeriodDates(endDate);
 
 			// const payPeriodStartDate = new Date(startDate);
 			// payPeriodStartDate.setDate(startDate.getDate() + i * 14);
@@ -614,11 +615,27 @@ const addPaygroupSchedules = async (groupID, frequency) => {
 		if (recordExists === -1) {
 			yearSchedules.push({ year: CURRENT_YEAR, payPeriods });
 		} else {
-			yearSchedules[recordExists].payPeriods = payPeriods;
+			// PAYCAL-01: rebuilding a year that already exists keeps each existing
+			// period's stored submit-by and pay dates. Payroll set up for a period
+			// (pay stubs, funding totals) is found by its pay date when it is
+			// submitted and the VoPay transfer runs, so those dates must not move
+			// here. scripts/apply-business-day-pay-dates.js moves them safely.
+			const stored = yearSchedules[recordExists].payPeriods || [];
+			yearSchedules[recordExists].payPeriods = payPeriods.map((period) => {
+				const old = stored.find((p) => Number(p?.payPeriod) === period.payPeriod);
+				return old?.payPeriodPayDate
+					? {
+							...period,
+							payPeriodProcessingDate: old.payPeriodProcessingDate,
+							payPeriodPayDate: old.payPeriodPayDate,
+						}
+					: period;
+			});
 		}
 
 		await updatePayGroup(groupID, {
-			scheduleSettings: payPeriods,
+			// PAYCAL-01: the same periods as saved in yearSchedules (stored dates kept)
+			scheduleSettings: yearSchedules.find((rec) => rec.year === CURRENT_YEAR)?.payPeriods || payPeriods,
 			yearSchedules,
 		});
 	} catch (error) {

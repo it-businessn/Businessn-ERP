@@ -7,17 +7,13 @@ const ActionButton = ({ name, isLoading, onClick, px, mt, isDisabled = false, si
 			isDisabled={isDisabled}
 			isLoading={isLoading}
 			onClick={onClick}
-			bg={"var(--nav_menu)"}
+			bg={"var(--banner_bg)"}
 			mt={mt}
 			px={{ base: px ? px : "2em" }}
-			color={"var(--primary_bg)"}
-			_hover={{
-				color: "var(--primary_button_bg)",
-				bg: "var(--lead_cards_bg)",
-				border: "1px solid var(--primary_button_bg)",
-			}}
+			color={"var(--main_color)"}
+			_hover={{ bg: "var(--primary_btn_hover)" }}
 			type="submit"
-			borderRadius={"10px"}
+			borderRadius={"var(--radius)"}
 			leftIcon={leftIcon}
 		>
 			{name}

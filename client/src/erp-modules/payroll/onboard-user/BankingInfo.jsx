@@ -190,7 +190,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 							mt={4}
 							bg={"var(--banner_bg)"}
 							color="white"
-							_hover={{ bg: "#4a2b4a" }}
+							_hover={{ bg: "var(--primary_btn_hover)" }}
 							onClick={() => {
 								toast({
 									title: "Saved with the employee when you click Save Employee.",
@@ -279,7 +279,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 							mt={4}
 							bg={"var(--banner_bg)"}
 							color="white"
-							_hover={{ bg: "#4a2b4a" }}
+							_hover={{ bg: "var(--primary_btn_hover)" }}
 							onClick={handleBankingSubmit}
 						>
 							Save Banking Information

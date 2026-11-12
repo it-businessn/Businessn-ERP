@@ -402,7 +402,7 @@ const NewEmployeeOnboardingModal = ({
 							onClick={getNextButtonAction()}
 							bg={isLastStep ? "var(--banner_bg)" : "var(--banner_bg)"}
 							color="white"
-							_hover={{ bg: "#4a2b4a" }}
+							_hover={{ bg: "var(--primary_btn_hover)" }}
 							px={6}
 						>
 							{getNextButtonText()}
@@ -418,7 +418,7 @@ const NewEmployeeOnboardingModal = ({
 								isLoading={isSubmitting}
 								variant="ghost"
 								bg={"var(--banner_bg)"}
-								_hover={{ bg: "var(--banner_bg)", opacity: 0.9 }}
+								_hover={{ bg: "var(--primary_btn_hover)" }}
 								px={6}
 								color="white"
 							>

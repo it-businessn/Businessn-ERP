@@ -344,7 +344,7 @@ const NewTicket = ({
 					isLoading={isSubmitting}
 					loadingText="Loading"
 					onOpen={handleSubmit}
-					bg="#371f37"
+					bg="var(--banner_bg)"
 				/>
 				<CancelButton name="Cancel" onClick={handleClose} size="md" />
 			</HStack>

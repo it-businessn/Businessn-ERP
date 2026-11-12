@@ -212,7 +212,7 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 							onClick={getNextButtonAction}
 							bg={"var(--banner_bg)"}
 							color="white"
-							_hover={{ bg: "var(--nav_menu)" }}
+							_hover={{ bg: "var(--primary_btn_hover)" }}
 							px={6}
 						>
 							{tabIndex === 0 ? "Next" : "Save"}

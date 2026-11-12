@@ -8,6 +8,9 @@
 		"start": "node index.js",
 		"devStart": "nodemon index.js",
 		"test": "jest --runInBand",
+		"vopay:transfer": "node scripts/run-vopay-transfer.js",
+		"vopay:cancel": "node scripts/cancel-vopay-transfer.js",
+		"paydates:business": "node scripts/apply-business-day-pay-dates.js",
 		"test:watch": "jest --watch"
 	},
 	"keywords": [],

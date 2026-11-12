@@ -1,8 +1,7 @@
 const CONFIG = require("../config/app.config");
-const { ALERTS_TYPE } = require("../constants/pay.constants");
 const EmployeeBankingInfo = require("../models/EmployeeBankingInfo");
 const { encryptData, decryptData, shouldDecrypt } = require("../services/encryptDataService");
-const { deleteAlerts } = require("./alertsController");
+const { refreshEmployeeAlerts } = require("./alertsController");
 // const { saveKeyToEnv } = require("../services/fileService");
 
 const BANKING_ENCRYPTION_KEY = CONFIG.BANKING_KEY;
@@ -119,8 +118,15 @@ const updateBankingInfo = async (id, data) =>
 const addEmployeeBankingInfo = async (req, res) => {
 	const start = Date.now();
 	try {
-		const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail, bankDetails } =
-			req.body;
+		const { empId, companyName, directDeposit, payStubSendByEmail, paymentEmail } = req.body;
+		// ALERTS-02: the Banking info screen sends bankNum / transitNum / accountNum
+		// at the top level; only a `bankDetails` object was read, so a new
+		// employee's bank numbers were never saved.
+		const bankDetails = req.body.bankDetails || {
+			bankNum: req.body.bankNum,
+			transitNum: req.body.transitNum,
+			accountNum: req.body.accountNum,
+		};
 		// const ENCRYPTION_KEY = newEncryptionKey;
 		// saveKeyToEnv("BANKING_ENCRYPTION_KEY", ENCRYPTION_KEY);
 
@@ -167,6 +173,7 @@ const addEmployeeBankingInfo = async (req, res) => {
 		} else {
 			result = await EmployeeBankingInfo.create(updatedData);
 		}
+		await refreshEmployeeAlerts(empId, companyName);
 		console.log("✅ Banking info saved", {
 			empId,
 			companyName,
@@ -213,9 +220,6 @@ const updateEmployeeBankingInfo = async (req, res) => {
 		let b = bankNum?.toString();
 		let t = transitNum?.toString();
 		let a = accountNum?.toString();
-		if (b && t && a && b !== "" && t !== "" && a !== "") {
-			await deleteAlerts(empId, ALERTS_TYPE.BANK, existingInfo.companyName);
-		}
 		if (b && t && a && !b.includes("*") && !t.includes("*") && !a.includes("*")) {
 			const bankEncrypted = encryptData(b, BANKING_ENCRYPTION_KEY);
 			const transitEncrypted = encryptData(t, BANKING_ENCRYPTION_KEY);
@@ -231,6 +235,7 @@ const updateEmployeeBankingInfo = async (req, res) => {
 		}
 
 		const updatedInfo = await updateBankingInfo(id, updatedData);
+		await refreshEmployeeAlerts(existingInfo.empId || empId, existingInfo.companyName);
 		console.log("✅ Banking info updated", {
 			id,
 			empId,

@@ -20,7 +20,7 @@ import DateFilterPopup from "./DateFilterPopup";
 import OtherFilter from "./OtherFilter";
 import Timecard from "./Timecard";
 import Timesheet from "./Timesheet";
-import { convertToMinutes, TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./data";
+import { convertToMinutes, PAY_TYPES_TITLE, TIMESHEET_STATUS, TIMESHEET_STATUS_LABEL } from "./data";
 
 const Timesheets = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -104,6 +104,10 @@ const Timesheets = () => {
 
 	const checkOverlaps = (currentRecord) => {
 		if (!currentRecord) return;
+		// TS-01: a system Statutory Pay row is paid from its stat hours, not from
+		// start/end (both are 1:00 PM when the employee earned no stat hours), so
+		// the time range does not apply to it.
+		if (currentRecord.payType === PAY_TYPES_TITLE.STAT_PAY) return false;
 
 		const newStart = convertToMinutes(currentRecord.startTime);
 		const newEnd = convertToMinutes(currentRecord.endTime);
@@ -117,7 +121,7 @@ const Timesheets = () => {
 				isClosable: true,
 				position: "top-right",
 			});
-			return;
+			return true; // TS-01: was undefined, so the row was approved anyway
 		}
 		const currentDate = moment(currentRecord.clockIn).format("YYYY-MM-DD");
 		const sameDayRecords = timesheetData.filter(

@@ -136,7 +136,7 @@ const EarningsInfo = ({ formData, isLoading, sections, toggleSection, done, onCo
 						<Button
 							bg="var(--banner_bg)"
 							color="white"
-							_hover={{ bg: "#4a2b4a" }}
+							_hover={{ bg: "var(--primary_btn_hover)" }}
 							isDisabled={isLoading || !periods.length}
 							onClick={onConfirm}
 						>

@@ -2,11 +2,9 @@ const EmployeePayInfo = require("../models/EmployeePayInfo");
 const Group = require("../models/Group");
 const { findGroupEmployees } = require("./setUpController");
 const { getEmployeeId } = require("./userController");
-const { deleteAlerts } = require("./alertsController");
-const { meetsMinimumWage } = require("../constants/minimumWage.constants");
+const { refreshEmployeeAlerts } = require("./alertsController");
 const { getRecordId } = require("./payStubController");
 const { checkExtraRun } = require("../helpers/payrollHelper");
-const { ALERTS_TYPE } = require("../constants/pay.constants");
 const { getPayrollActiveEmployees } = require("../services/userService");
 const { findEmpPayStubDetail } = require("../services/payrollService");
 
@@ -224,12 +222,6 @@ const addEmployeePayInfo = async (req, res) => {
 				return role;
 			});
 
-			const allAboveMin = processedRoles.every(
-				(r) => typeof r.payRate === "number" && meetsMinimumWage(r.payRate),
-			);
-			if (allAboveMin) {
-				await deleteAlerts(empId, ALERTS_TYPE.WAGE, companyName);
-			}
 		}
 		const existingPayInfo = await findEmployeePayInfoDetails(empId, companyName);
 		let result;
@@ -244,6 +236,7 @@ const addEmployeePayInfo = async (req, res) => {
 				roles: processedRoles,
 			});
 		}
+		await refreshEmployeeAlerts(empId, companyName);
 
 		console.log("✅ Pay info saved", {
 			empId,
@@ -307,16 +300,11 @@ const updateEmployeePayInfo = async (req, res) => {
 			};
 		});
 
-		const allAboveMin = processedRoles.every(
-			(r) => typeof r.payRate === "number" && meetsMinimumWage(r.payRate),
-		);
-		if (allAboveMin) {
-			await deleteAlerts(empId, ALERTS_TYPE.WAGE, existingRecord.companyName);
-		}
 
 		const updatedPayInfo = await updatePayInfo(id, {
 			roles: processedRoles,
 		});
+		await refreshEmployeeAlerts(existingRecord.empId || empId, existingRecord.companyName);
 
 		console.log("✅ Pay info updated", {
 			id,

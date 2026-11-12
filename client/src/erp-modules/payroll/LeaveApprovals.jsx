@@ -32,7 +32,7 @@ const LeaveApprovals = () => {
 	};
 	const [formData, setFormData] = useState(initialFormData);
 	const [leaveRecords, setLeaveRecords] = useState(null);
-	const [isAllChecked, setIsAllChecked] = useState(true);
+	const [, setIsAllChecked] = useState(true);
 	const [checkedRows, setCheckedRows] = useState([]);
 	const [allRequestIDs, setAllRequestIDs] = useState([]);
 	const [rowAction, setRowAction] = useState(ACTION_STATUS[0].title);
@@ -87,7 +87,7 @@ const LeaveApprovals = () => {
 									...record,
 									status: data?.status,
 									statusBtnCss: getStatusStyle(data?.status),
-								}
+							  }
 							: record,
 					);
 					setLeaveRecords(updatedData);
@@ -149,8 +149,8 @@ const LeaveApprovals = () => {
 									<Th key={`action_${col}_${colIndex}`} bg="var(--th_bg)">
 										<Checkbox
 											isChecked={
-												allRequestIDs?.length > 0 && checkedRows.length === allRequestIDs.length
-											}
+											allRequestIDs?.length > 0 && checkedRows.length === allRequestIDs.length
+										}
 											colorScheme="facebook"
 											onChange={(e) => handleHeaderCheckboxChange(e)}
 										/>
