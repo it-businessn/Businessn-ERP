@@ -16,11 +16,14 @@ import SettingService from "services/SettingService";
 const AddCostCenter = ({ companyName, isOpen, onClose, setCcAdded }) => {
 	const toast = useToast();
 	const [name, setName] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [description, setDescription] = useState("");
 
 	const handleSubmit = async () => {
+		if (isSubmitting) return;
 		try {
 			if (!name.trim()) return;
+			setIsSubmitting(true);
 			await SettingService.addCC({
 				name,
 				description,
@@ -29,20 +32,21 @@ const AddCostCenter = ({ companyName, isOpen, onClose, setCcAdded }) => {
 			toast({
 				title: "Cost Center added successfully",
 				status: "success",
-				duration: 1500,
-				isClosable: true,
-			});
-			setCcAdded((prev) => !prev);
-		} catch (error) {
-			toast({
-				title: "Error",
-				description: error?.response?.data?.message,
-				status: "error",
 				duration: 3000,
 				isClosable: true,
 			});
-		} finally {
+			setCcAdded((prev) => !prev);
 			onClose();
+		} catch (error) {
+			toast({
+				title: "Could not add cost center",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -77,6 +81,7 @@ const AddCostCenter = ({ companyName, isOpen, onClose, setCcAdded }) => {
 						size={"sm"}
 						isDisabled={!name || !description}
 						name="Add"
+						isLoading={isSubmitting}
 						onClick={handleSubmit}
 					/>
 				</ModalFooter>

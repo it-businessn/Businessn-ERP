@@ -53,7 +53,7 @@ const ProjectOverview = ({ expenseData }) => {
 			fontWeight="bold"
 		>
 			<TextTitle title={"Cost Overview"} />
-			<Box w={{ base: "650px" }} mx={"auto"}>
+			<Box w="100%" maxW="650px" mx={"auto"}>
 				<Bar data={expenseData} options={options} />
 			</Box>
 		</Box>

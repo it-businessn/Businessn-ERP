@@ -159,10 +159,10 @@ const EmployeeListView = () => {
 						size="sm"
 						icon={<FaPlus color="#fff" fontSize="14px" />}
 						handleClick={openOnboard}
-						bg="#381c34"
+						bg="var(--banner_bg)"
 						color="white"
 						_hover={{
-							bg: "#4e2847",
+							bg: "var(--nav_menu)",
 							transform: "scale(1.02)",
 							transition: "all 0.2s ease-in-out",
 						}}

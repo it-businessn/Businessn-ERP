@@ -57,7 +57,7 @@ const Affiliates = ({ affiliates }) => {
 		}
 		return (
 			<Text {...props} bg="gray.100" color="gray.700">
-				{status}
+				{status || "-"}
 			</Text>
 		);
 	};
@@ -126,11 +126,11 @@ const Affiliates = ({ affiliates }) => {
 									<Text fontSize="sm">{positions?.[0]?.employmentDepartment || ""}</Text>
 								</Td>
 								<Td py={0} borderBottomColor={borderColor}>
-									<Text fontSize="sm">{employmentRole}</Text>
+									<Text fontSize="sm">{employmentRole || "-"}</Text>
 								</Td>
 								<Td py={0} borderBottomColor={borderColor}>
 									<Text fontSize="sm" fontFamily="mono">
-										{employeeNo}
+										{employeeNo || "-"}
 									</Text>
 								</Td>
 								<Td py={0} borderBottomColor={borderColor}>

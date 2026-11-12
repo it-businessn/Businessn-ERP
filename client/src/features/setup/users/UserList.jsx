@@ -1,4 +1,4 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -38,7 +38,7 @@ const UserList = ({
 				</Thead>
 				<Tbody>
 					{(!filteredEmployees || filteredEmployees?.length === 0) && (
-						<EmptyRowRecord data={filteredEmployees} colSpan={5} />
+						<EmptyRowRecord data={filteredEmployees} colSpan={isUser ? 5 : 6} />
 					)}
 					{filteredEmployees?.map(
 						({
@@ -72,8 +72,11 @@ const UserList = ({
 								</Td>
 								<Td>
 									{isGroup && (
-										<FaRegTrashAlt
-											cursor={"pointer"}
+										<IconButton
+											aria-label="Delete"
+											icon={<FaRegTrashAlt />}
+											variant="ghost"
+											size="sm"
 											onClick={() => {
 												setShowConfirmationPopUp(true);
 												setDeleteRecord(empId?._id || _id);

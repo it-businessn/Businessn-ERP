@@ -46,7 +46,8 @@ const EmployeeInfo = ({
 					<HStack align="end" spacing={3}>
 						<Select
 							aria-label="Select employee"
-							placeholder="Select employee"
+							placeholder={employees ? "Select employee" : "Loading employees..."}
+							isDisabled={!employees}
 							maxW="sm"
 							value={selectedEmpId || ""}
 							onChange={(e) => setSelectedEmpId(e.target.value)}

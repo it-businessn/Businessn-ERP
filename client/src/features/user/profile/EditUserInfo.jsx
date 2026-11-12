@@ -34,6 +34,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 	const [userData, setUserData] = useState(loggedInUser);
 	const [availableProvinces, setAvailableProvinces] = useState([]);
 	const [openAssigneeMenu, setOpenAssigneeMenu] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	useEffect(() => {
 		if (allCompanies) {
@@ -59,6 +60,8 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 
 	const handleSaveClick = async (e) => {
 		e.preventDefault();
+		if (isSubmitting) return;
+		setIsSubmitting(true);
 		try {
 			userData.assignedCompanies = userData.companyId;
 			if (userData.assignedCompanies.length > 0) {
@@ -73,7 +76,9 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 			setError(null);
 		} catch (error) {
 			console.error("Error adding user:", error?.response?.data);
-			setError(error?.response?.data?.message);
+			setError(error?.response?.data?.message || "Could not save your profile. Please try again.");
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -313,7 +318,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 						</FormControl>
 					)} */}
 					</HStack>
-					<PrimaryButton hover="none" name="Save" size="sm" w={"100px"} />
+					<PrimaryButton hover="none" name="Save" size="sm" w={"100px"} isLoading={isSubmitting} />
 					{error && (
 						<Alert status="error" mt={4}>
 							<AlertIcon />

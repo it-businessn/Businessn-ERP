@@ -37,7 +37,6 @@ const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, compa
 				<PrimaryButton
 					size="sm"
 					name={"Add Group"}
-					isLoading={isSubmitting}
 					onOpen={() => setOpenAddGroup(true)}
 				/>
 				{isPaygroup(selectedGroup) && (
@@ -99,6 +98,7 @@ const GroupsPanel = ({ employees, setFilteredEmployees, filteredEmployees, compa
 				selectedGroup={selectedGroup}
 				selectedModules={selectedModules}
 				setFilteredEmployees={setFilteredEmployees}
+				isSubmitting={isSubmitting}
 				setIsSubmitting={setIsSubmitting}
 			/>
 		</BoxCard>

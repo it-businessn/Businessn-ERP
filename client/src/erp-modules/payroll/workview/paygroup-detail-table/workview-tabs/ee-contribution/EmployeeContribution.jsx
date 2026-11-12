@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { EditableInputControl } from "erp-modules/payroll/controls/EditableInputControl";
 import useEmployeeEEContribution from "hooks/useEmployeeEEContribution";
 import { useEffect, useState } from "react";
@@ -38,6 +39,7 @@ const EmployeeContribution = ({
 	const [payrunAmtData, setPayrunAmtData] = useState(null);
 	const [contributionData, setContributionData] = useState(null);
 	const [formData, setFormData] = useState(null);
+	const toast = useToast();
 
 	useEffect(() => {
 		setPayrunAmtData(EE_CONTRIBUTION_COL_DATA[payrunOption]);
@@ -79,7 +81,15 @@ const EmployeeContribution = ({
 				setRefresh((prev) => !prev);
 				setFormData(data);
 			}
-		} catch (error) {}
+		} catch (error) {
+			toast({
+				title: "Change not saved.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const renderEditableInput = (id, field, value) => (

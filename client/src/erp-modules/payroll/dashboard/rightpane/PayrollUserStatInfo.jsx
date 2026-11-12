@@ -31,13 +31,16 @@ const PayrollUserStatInfo = ({
       const daysTillNextPayrun = daysAgo(nextPayrun?.payPeriodProcessingDate);
       const absoluteDaysNum = Math.abs(daysTillNextPayrun);
 
-      const payRollDueDays = `${daysTillNextPayrun < 0 ? absoluteDaysNum : daysTillNextPayrun} day${
-        absoluteDaysNum > 1 ? "s" : ""
-      }`;
+      // after the year's last payroll there is no next one (was "in 0 day")
+      const payRollDueDays = nextPayrun
+        ? `${absoluteDaysNum} day${absoluteDaysNum === 1 ? "" : "s"}`
+        : "Not scheduled";
 
       setStats({
         dayTill: {
-          name: `Next Payroll ${daysTillNextPayrun < 0 ? "overdue by" : "in"}`,
+          name: nextPayrun
+            ? `Next Payroll ${daysTillNextPayrun < 0 ? "overdue by" : "in"}`
+            : "Next Payroll",
           value: payRollDueDays,
           icon: RepeatIcon,
           iconColor: "gray.600",

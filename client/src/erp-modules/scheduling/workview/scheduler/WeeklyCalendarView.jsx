@@ -56,7 +56,7 @@ const WeeklyCalendarView = ({
 			} catch (error) {
 				console.error(error);
 			} finally {
-				setIsLoading(true);
+				setIsLoading(false);
 			}
 		};
 		if (selectedCrew || newShiftAdded) fetchShifts();
@@ -187,15 +187,15 @@ const WeeklyCalendarView = ({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{(!isLoading || employeeShifts?.length === 0) && (
+					{(isLoading || !employeeShifts?.length) && (
 						<EmptyRowRecord
-							data={employeeShifts}
+							data={isLoading ? null : []}
 							colSpan={weekDays?.length + 1}
 							title="No shift found"
 							description="Add shift to see them listed here"
 						/>
 					)}
-					{employeeShifts?.map((emp) => {
+					{!isLoading && employeeShifts?.map((emp) => {
 						emp.emailSent = sentEmailUsers?.find(({ employeeName }) => employeeName === emp.name);
 						return (
 							<Tr key={emp?.name} bg={emp.emailSent ? "var(--phoneCall_bg_light)" : "transparent"}>
@@ -218,7 +218,7 @@ const WeeklyCalendarView = ({
 							</Tr>
 						);
 					})}
-					{employeeShifts?.length > 0 &&
+					{!isLoading && employeeShifts?.length > 0 &&
 						totalsRow?.map((totalRow, i) => (
 							<Tr
 								key={totalRow.label}
@@ -228,12 +228,12 @@ const WeeklyCalendarView = ({
 								bottom={`${(totalsRow.length - 1 - i) * 32}px`}
 								zIndex="1"
 							>
-								<Td py={0} px={1} w="200px">
+								<Td h="32px" py={0} px={1} w="200px">
 									{totalRow.label}
 								</Td>
 								{totalRow?.value?.map((record, dayIdx) => (
-									<Td w="200px" py={2} key={`${totalRow.key}_${dayIdx}`}>
-										<TextTitle align="center" title={record.toFixed(2)} />
+									<Td h="32px" w="200px" py={0} key={`${totalRow.key}_${dayIdx}`}>
+										<TextTitle align="center" title={Number(record || 0).toFixed(2)} />
 									</Td>
 								))}
 							</Tr>

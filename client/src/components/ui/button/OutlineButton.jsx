@@ -16,6 +16,7 @@ const OutlineButton = ({
 	isDisabled,
 	h,
 	minH,
+	"aria-label": ariaLabel,
 }) => (
 	<Button
 		isDisabled={isDisabled}
@@ -35,6 +36,7 @@ const OutlineButton = ({
 		name={name}
 		w={w}
 		borderColor={borderColor}
+		aria-label={ariaLabel}
 	>
 		{label}
 	</Button>

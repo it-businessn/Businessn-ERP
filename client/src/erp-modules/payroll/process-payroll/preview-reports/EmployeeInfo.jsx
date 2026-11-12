@@ -3,7 +3,7 @@ import BoxCard from "components/ui/card";
 import TextTitle from "components/ui/text/TextTitle";
 import { getReportName } from "constant";
 import React from "react";
-import { getAmount } from "utils/convertAmt";
+import { getSignedAmount } from "utils/convertAmt";
 import { formatDateBar } from "utils/convertDate";
 import InformationSection from "../statement/InformationSection";
 import { ACCRUAL_TYPES } from "./data";
@@ -42,7 +42,7 @@ const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 				<Box w={"100%"} bg={"var(--primary_bg_1)"} p={2}>
 					<VStack mt={1} spacing={0}>
 						<BasicInfo title1="Report Type:" title2={getReportName(data?.reportType)} />
-						<BasicInfo title1={"Net Pay:"} title2={getAmount(data?.currentNetPay)} />
+						<BasicInfo title1={"Net Pay:"} title2={getSignedAmount(data?.currentNetPay)} />
 						<BasicInfo title1={"Pay Date:"} title2={formatDateBar(data?.payPeriodPayDate)} />
 						<BasicInfo
 							title1={"Pay Start Date:"}

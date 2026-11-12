@@ -28,7 +28,6 @@ const Finalize = ({ handleClick, isPayPeriodInactive }) => {
 						</Td>
 						<Td>
 							<Checkbox
-								border={"1px solid red"}
 								colorScheme={"facebook"}
 								isChecked={!hasChecklist}
 								onChange={() => setHasChecklist(!hasChecklist)}

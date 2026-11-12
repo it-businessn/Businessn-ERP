@@ -17,7 +17,7 @@ const Login = () => {
 		}
 	}, []);
 	return (
-		<Box position="relative" minH="100vh" width="100%" overflow="hidden" bg={PUBLIC_THEME.pageBg}>
+		<Box position="relative" h="100vh" width="100%" overflowX="hidden" overflowY="auto" bg={PUBLIC_THEME.pageBg}>
 			<Box position="relative" zIndex="1">
 				<PublicNavbar action="contact" />
 			</Box>

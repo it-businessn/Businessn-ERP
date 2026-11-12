@@ -30,7 +30,7 @@ const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 	const [isError, setIsError] = useState(false);
 
 	useEffect(() => {
-		setIsError(parseFloat(formData?.payInfo?.salary) < 17.85);
+		setIsError(parseFloat(formData?.payInfo?.salary) <= 17.85);
 		if (formData?.payInfo?.salary && parseFloat(formData?.payInfo?.salary) > 17.85) {
 			setIsDisabled(false);
 		} else {
@@ -43,6 +43,7 @@ const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 			<Box
 				p={6}
 				width="280px"
+				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
 				borderColor="gray.200"
 				flexShrink={0}
@@ -75,7 +76,7 @@ const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 				<Stack spacing={4} p={5}>
 					<TextTitle size="xl" title="Compensation Information" />
 
-					<Flex gap={4}>
+					<Flex gap={4} direction={{ base: "column", md: "row" }}>
 						<FormControl>
 							<RequiredLabel required label="Pay Rate" />
 							<Input
@@ -85,7 +86,7 @@ const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 								onChange={(e) => handleChange("payInfo", "salary", e.target.value)}
 								placeholder="Pay Rate"
 							/>
-							{isError && <FormLabel color={"red"}>Pay rate must be at least $17.85</FormLabel>}
+							{isError && <FormLabel color={"red"}>Pay rate must be greater than $17.85</FormLabel>}
 						</FormControl>
 
 						<FormControl isRequired>
@@ -105,7 +106,7 @@ const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 						</FormControl>
 					</Flex>
 
-					<Flex gap={4}>
+					<Flex gap={4} direction={{ base: "column", md: "row" }}>
 						{formData.payInfo.payType === EARNING_TYPE.FT ? (
 							<FormControl>
 								<FormLabel size="sm">Standard Hours (FT)</FormLabel>

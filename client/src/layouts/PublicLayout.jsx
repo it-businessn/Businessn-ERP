@@ -89,7 +89,9 @@ export const PublicCard = ({ size = "sm", showLogo = true, children, ...rest }) 
  * forms); pass card={false} when the page lays out its own card.
  */
 const PublicLayout = ({ action = "contact", card = true, size = "sm", showLogo = true, children }) => (
-	<Box minH="100vh" bg={PUBLIC_THEME.pageBg} display="flex" flexDirection="column">
+	// the app's body is overflow: hidden, so the page scrolls inside this box
+	// (tall forms such as Support and the ambassador sign-up were cut off)
+	<Box h="100vh" overflowY="auto" bg={PUBLIC_THEME.pageBg} display="flex" flexDirection="column">
 		<PublicNavbar action={action} />
 		<Flex flex="1" align={{ base: "start", md: "center" }} justify="center" px={{ base: 3, md: 6 }} py={{ base: 6, md: 10 }}>
 			{card ? (

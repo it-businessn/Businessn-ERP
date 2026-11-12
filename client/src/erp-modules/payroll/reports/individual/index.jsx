@@ -1,4 +1,4 @@
-import { Avatar, HStack, Spacer, Tbody, Td, Tr, VStack } from "@chakra-ui/react";
+import { Avatar, HStack, Spacer, Tbody, Td, Tr, useToast, VStack } from "@chakra-ui/react";
 import ActiveBadge from "components/ActiveBadge";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -21,6 +21,7 @@ import PreviewReportsModal from "../PreviewReportsModal";
 
 const Reports = () => {
 	const { isMobile } = useBreakpointValue();
+	const toast = useToast();
 	const company = LocalStorageService.getItem("selectedCompany");
 	const [showReport, setShowReport] = useState(undefined);
 	const REPORT_COLS = ["Pay number", "Pay date", "Pay period", "Status", "Action"];
@@ -55,11 +56,20 @@ const Reports = () => {
 	useEffect(() => {
 		const fetchEmpPayStubs = async () => {
 			try {
+				setEmpPayStub(null);
 				const { data } = await PayrollService.getEmpPayReportDetails(company, userId);
 				const sortedResult = sortRecordsByDate(data, "payPeriodNum", false, false);
 				setEmpPayStub(sortedResult);
 			} catch (error) {
 				console.error(error);
+				setEmpPayStub([]);
+				toast({
+					title: "Could not load pay stubs",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		if (userId) fetchEmpPayStubs();
@@ -123,8 +133,17 @@ const Reports = () => {
 				css={tabScrollCss}
 			>
 				<Tbody>
-					{empPayStub?.length === 0 && (
-						<EmptyRowRecord description="" data={empPayStub} colSpan={REPORT_COLS.length} />
+					{!userId ? (
+						<EmptyRowRecord
+							title="Select an employee"
+							description=""
+							data={[]}
+							colSpan={REPORT_COLS.length}
+						/>
+					) : (
+						(!empPayStub || empPayStub.length === 0) && (
+							<EmptyRowRecord description="" data={empPayStub} colSpan={REPORT_COLS.length} />
+						)
 					)}
 					{empPayStub?.map(
 						(

@@ -279,7 +279,12 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 									required
 								/>
 								<InputRightElement>
-									<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
+									<Button
+										size="sm"
+										variant="unstyled"
+										onClick={handleTogglePassword}
+										aria-label={showPassword ? "Hide password" : "Show password"}
+									>
 										{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 									</Button>
 								</InputRightElement>

@@ -3,7 +3,7 @@ import TextTitle from "components/ui/text/TextTitle";
 
 export const CrewFilter = ({ crews, selectedCrew, setSelectedCrew, timeFormat, setTimeFormat }) => {
 	return (
-		<HStack justify="space-between">
+		<HStack justify="space-between" flexWrap="wrap">
 			<HStack alignItems={"center"}>
 				<FormLabel>
 					<TextTitle title="Crew" />

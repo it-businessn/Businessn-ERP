@@ -22,7 +22,7 @@ const DateCell = ({
 	return (
 		<Td fontSize={"xs"} w="100%" p={"1em"} display={"flex"} py={0}>
 			<VStack alignItems="start">
-				{file[date] && <FormattedDateCell date={file[date]} main />}
+				<FormattedDateCell date={file?.[date]} main />
 
 				{(!isDashboard || expandedIndex === index) &&
 					file?.projects?.map((project, project_index) => (

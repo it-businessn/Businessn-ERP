@@ -64,7 +64,7 @@ const StaffOverview = ({ avgHeadCountTotals }) => {
 			fontWeight="bold"
 		>
 			<TextTitle title={"Average Headcount By Location"} />
-			<Box w={{ base: "650px" }} mx={"auto"}>
+			<Box w="100%" maxW="650px" mx={"auto"}>
 				<Line data={avgHeadCountTotals} options={options} />
 			</Box>
 		</Box>

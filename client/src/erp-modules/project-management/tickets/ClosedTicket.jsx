@@ -7,6 +7,7 @@ import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
+import useDepartment from "hooks/useDepartment";
 import { useEffect, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import TicketService from "services/TicketService";
@@ -15,10 +16,11 @@ import NewTicket from "./NewTicket";
 import NoteDetails from "./NoteDetails";
 
 const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees }) => {
-	const [ticketData, setTicketData] = useState([]);
+	const [ticketData, setTicketData] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const [rowData, setRowData] = useState(null);
+	const depts = useDepartment(company);
 
 	useEffect(() => {
 		const fetchAllTickets = async () => {
@@ -31,6 +33,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 				setTicketData(data);
 			} catch (error) {
 				console.error(error);
+				setTicketData([]);
 			}
 		};
 		fetchAllTickets();
@@ -187,6 +190,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 					setShowAddEntry={setShowAddEntry}
 					userId={userId}
 					employees={employees}
+					depts={depts}
 				/>
 			)}
 			{openNote && <NoteDetails isOpen={openNote} setIsOpen={setOpenNote} data={rowData} />}

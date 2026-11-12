@@ -14,7 +14,7 @@ export const PaygroupList = ({ allPaygroup, handleEdit }) => {
 			</Thead>
 			<Tbody>
 				{(!allPaygroup || allPaygroup?.length === 0) && (
-					<EmptyRowRecord data={allPaygroup} colSpan={2} />
+					<EmptyRowRecord data={allPaygroup} colSpan={3} />
 				)}
 				{allPaygroup?.map((paygroup) => (
 					<Tr key={paygroup?._id}>

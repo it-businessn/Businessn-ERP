@@ -16,6 +16,7 @@ const EditCrew = ({ crew, isOpen, costCenters, employees, managers, onClose, set
 	const [filteredDepartments, setFilteredDepartments] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState([]);
 	const [openMenu, setOpenMenu] = useState(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	useEffect(() => {
 		if (crew) {
@@ -54,6 +55,8 @@ const EditCrew = ({ crew, isOpen, costCenters, employees, managers, onClose, set
 	};
 
 	const handleUpdateCrew = async () => {
+		if (isSubmitting) return;
+		setIsSubmitting(true);
 		const result = {
 			createdBy: publisher,
 			crewName,
@@ -74,13 +77,22 @@ const EditCrew = ({ crew, isOpen, costCenters, employees, managers, onClose, set
 			toast({
 				title: "Crew updated successfully",
 				status: "success",
-				duration: 1500,
+				duration: 3000,
 				isClosable: true,
 			});
 			onClose();
 			setRefresh((prev) => !prev);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
+			toast({
+				title: "Failed to update crew",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -171,6 +183,7 @@ const EditCrew = ({ crew, isOpen, costCenters, employees, managers, onClose, set
 				<PrimaryButton
 					size="sm"
 					isDisabled={!crewName}
+					isLoading={isSubmitting}
 					name="Submit"
 					onOpen={() => handleUpdateCrew()}
 				/>

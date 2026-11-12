@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, IconButton, Stack } from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Stack, useToast } from "@chakra-ui/react";
 import { HiOutlineMenu } from "react-icons/hi";
 import { redirectLogin } from "api";
 import { Menu, UserProfile } from "components";
@@ -17,6 +17,7 @@ const Navbar = ({
 	consoleAccess,
 	onOpen,
 }) => {
+	const toast = useToast();
 	const handleLogout = async () => {
 		try {
 			await LoginService.signOut(user._id);
@@ -24,6 +25,13 @@ const Navbar = ({
 			setUser(null);
 		} catch (error) {
 			console.log(error?.response?.data?.message);
+			toast({
+				title: "Logout failed",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 

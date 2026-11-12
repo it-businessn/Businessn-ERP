@@ -152,6 +152,14 @@ const Timesheet = ({
 				console.error(error);
 				clearInterval(interval);
 				setLoading(false);
+				setTimesheetData([]);
+				toast({
+					title: "Could not load timesheets.",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		if (filter?.selectedPayGroupOption) {
@@ -475,7 +483,15 @@ const Timesheet = ({
 					setIsActioned(true);
 				}
 			}
-		} catch (error) {}
+		} catch (error) {
+			toast({
+				title: "Could not update the role.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -533,7 +549,15 @@ const Timesheet = ({
 					setIsActioned(true);
 				}
 			}
-		} catch (error) {}
+		} catch (error) {
+			toast({
+				title: "Could not update the timesheet.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const handlePayTypeSubmit = async () => {
@@ -587,7 +611,15 @@ const Timesheet = ({
 					setIsPayTypeChanged(false);
 				}
 			}
-		} catch (error) {}
+		} catch (error) {
+			toast({
+				title: "Could not update the pay type.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const handleUpdateData = (id, field, value, paramHours, param_hours_worked) => {
@@ -624,7 +656,7 @@ const Timesheet = ({
 				title: "Action Incomplete!",
 				description: "Please check the row to apply the action.",
 				status: "warning",
-				duration: 1500,
+				duration: 4000,
 				isClosable: true,
 			});
 			return;

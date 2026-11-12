@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { EditableInputControl } from "erp-modules/payroll/controls/EditableInputControl";
 import useEmployeeHoursWorked from "hooks/useEmployeeHoursWorked";
 import { useEffect, useState } from "react";
@@ -40,6 +41,7 @@ const HourlyAllocation = ({
 
 	const [payrunHoursData, setPayrunHoursData] = useState(null);
 	const [formData, setFormData] = useState(null);
+	const toast = useToast();
 	const [colKeys, setColKeys] = useState(null);
 	const [totalColumnKey, setTotalColumnKey] = useState(null);
 
@@ -120,7 +122,15 @@ const HourlyAllocation = ({
 				const { data } = await PayrollService.addAdditionalHoursAllocation(updatedRec);
 				setFormData(data);
 			}
-		} catch (error) {}
+		} catch (error) {
+			toast({
+				title: "Change not saved.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
 	};
 
 	const renderEditableInput = (id, field, value) => (

@@ -83,7 +83,8 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 	const groups = useGroup(company, false, currentTab === 2);
 
 	useEffect(() => {
-		if (groups) {
+		// a company with no groups gets [] (truthy): groups[0] crashed the page
+		if (groups?.length) {
 			setGroupMembers(groups[0].members);
 		}
 	}, [groups]);
@@ -187,7 +188,7 @@ const Meetings = ({ contactId, user, company, currentTab }) => {
 					}}
 				/>
 			</form>
-			{meetings?.length && <MeetingList meetings={meetings} />}
+			{meetings?.length > 0 && <MeetingList meetings={meetings} />}
 		</VStack>
 	);
 };

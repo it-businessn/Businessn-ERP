@@ -48,7 +48,7 @@ const ReportListView = () => {
 	// Update years list when paygroup changes
 	useEffect(() => {
 		if (selectedPayGroup) {
-			setYearsList(selectedPayGroup?.yearSchedules.map(({ year }) => year));
+			setYearsList(selectedPayGroup?.yearSchedules?.map(({ year }) => year) || []);
 		}
 	}, [selectedPayGroup]);
 
@@ -79,7 +79,8 @@ const ReportListView = () => {
 		>
 			<Select
 				float="right"
-				w={"10%"}
+				w={{ base: "100px", md: "10%" }}
+				minW="90px"
 				size={"sm"}
 				border="1px solid var(--primary_button_bg)"
 				borderRadius="10px"

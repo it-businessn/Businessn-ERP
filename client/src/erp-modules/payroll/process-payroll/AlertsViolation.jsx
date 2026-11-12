@@ -51,13 +51,14 @@ const AlertsViolation = ({
 	if (isExtraRun && alertsReviewData) {
 		const selectedEmp = closestRecord.selectedEmp;
 		selectedEmp.forEach((emp) => {
-			const empExists = alertsReviewData?.find((_) => _.empId.fullName === emp);
+			const empExists = alertsReviewData?.find((_) => _.empId?.fullName === emp);
 			if (empExists) {
 				filteredEmp.push(empExists);
 			}
 		});
 	}
-	const data = isExtraRun ? filteredEmp : alertsReviewData;
+	// extra run: keep null (skeleton) until the alerts arrive, not "No violations"
+	const data = isExtraRun ? (alertsReviewData ? filteredEmp : null) : alertsReviewData;
 	const isDisabled = data?.find((_) => _.actionRequired) || isPayPeriodInactive;
 
 	return (

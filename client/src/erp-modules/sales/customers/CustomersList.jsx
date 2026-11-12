@@ -18,6 +18,7 @@ import {
 import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useManager from "hooks/useManager";
@@ -163,6 +164,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 							</Tr>
 						</Thead>
 						<Tbody color={"var(--nav_color)"}>
+							{contacts.length === 0 && <EmptyRowRecord data={contacts} colSpan={5} />}
 							{contacts.map(({ _id, leadId, meetings, notes }) => (
 								<Tr key={_id}>
 									<Td fontSize={"xs"} p={0} textTransform={"capitalize"}>

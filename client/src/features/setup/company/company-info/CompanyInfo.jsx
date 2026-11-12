@@ -19,7 +19,7 @@ const CompanyInfo = ({ company, modules }) => {
 	const companyInfo = useSelectedCompanyInfo(company, refresh);
 
 	return (
-		<Stack margin={"auto"} m="1em auto" w={"50%"}>
+		<Stack margin={"auto"} m="1em auto" w={{ base: "100%", lg: "50%" }}>
 			{isNotEnrollerOrEmployee(loggedInUser?.role) && (
 				<HStack justify={"end"}>
 					<LeftIconButton

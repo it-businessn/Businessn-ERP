@@ -31,6 +31,7 @@ const Support = () => {
 	};
 	const [tabIndex, setTabIndex] = useState(0);
 	const [formData, setFormData] = useState(ticketBasicInfo);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const SUPPORT_TABS = [
 		{
@@ -56,24 +57,27 @@ const Support = () => {
 	};
 
 	const handleSubmit = async () => {
+		if (isSubmitting) return;
+		setIsSubmitting(true);
 		try {
 			await TicketService.addSupportTicket(formData);
 			toast({
 				title: "Ticket submitted!",
 				description: "Your support request has been sent successfully.",
 				status: "success",
-				duration: 2000,
+				duration: 3000,
 				isClosable: true,
 			});
 			setTimeout(() => {
 				handleRedirect();
 			}, 2000);
 		} catch (error) {
+			setIsSubmitting(false);
 			toast({
-				title: "Something went wrong.",
-				description: "Please try again.",
+				title: "Could not submit ticket",
+				description: error?.response?.data?.message || "Please try again.",
 				status: "error",
-				duration: 3000,
+				duration: 5000,
 				isClosable: true,
 			});
 		}
@@ -149,6 +153,7 @@ const Support = () => {
 						<Button
 							rightIcon={getNextButtonIcon()}
 							onClick={() => getNextButtonAction()}
+							isLoading={isLastStep && isSubmitting}
 							bg={"var(--banner_bg)"}
 							color="white"
 							_hover={{ bg: "#4a2b4a" }}

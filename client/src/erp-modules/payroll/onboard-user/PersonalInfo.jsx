@@ -41,8 +41,8 @@ const PersonalInfo = ({
 	useEffect(() => {
 		const { firstName, lastName, userEmail } = formData.personalInfo;
 		if (tabIndex === 0) {
-			if (personalSubStep === 0 && firstName && lastName && userEmail) {
-				setIsDisabled(false);
+			if (personalSubStep === 0) {
+				setIsDisabled(!(firstName && lastName && userEmail));
 			} else if (personalSubStep === 1) {
 				const {
 					personalEmail,
@@ -106,6 +106,7 @@ const PersonalInfo = ({
 			<Box
 				p={6}
 				width="280px"
+				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
 				borderColor="gray.200"
 				flexShrink={0}
@@ -140,7 +141,7 @@ const PersonalInfo = ({
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Basic Information" />
 
-						<Flex gap={4}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }}>
 							<FormControl isRequired>
 								<FormLabel size="sm">First Name</FormLabel>
 								<Input
@@ -178,7 +179,7 @@ const PersonalInfo = ({
 							</FormControl>
 						</Flex>
 
-						<Flex gap={4}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }}>
 							<FormControl isRequired>
 								<FormLabel size="sm">User Email</FormLabel>
 								<Input
@@ -229,7 +230,7 @@ const PersonalInfo = ({
 							/>
 						</FormControl>
 
-						<Flex gap={4}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }}>
 							<FormControl>
 								<FormLabel size="sm">Work Permit Number</FormLabel>
 								<Input
@@ -282,7 +283,7 @@ const PersonalInfo = ({
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Contact Information" />
 
-						<Flex gap={4}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }}>
 							<FormControl isRequired>
 								<FormLabel size="sm">Personal Email</FormLabel>
 								<Input
@@ -313,7 +314,7 @@ const PersonalInfo = ({
 							</FormControl>
 						</Flex>
 
-						<Flex gap={4}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }}>
 							<FormControl isRequired>
 								<FormLabel size="sm">Personal Phone</FormLabel>
 								<Input
@@ -337,7 +338,7 @@ const PersonalInfo = ({
 							</FormControl>
 						</Flex>
 						<TextTitle size="sm" title="Address" />
-						<Flex gap={4} mb={2}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }} mb={2}>
 							<FormControl>
 								<FormLabel size="sm">Suite</FormLabel>
 								<Input
@@ -360,7 +361,7 @@ const PersonalInfo = ({
 							</FormControl>
 						</Flex>
 
-						<Flex gap={4}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }}>
 							<FormControl isRequired>
 								<FormLabel size="sm">City</FormLabel>
 								<Input
@@ -381,7 +382,7 @@ const PersonalInfo = ({
 								/>
 							</FormControl>
 						</Flex>
-						<Flex gap={4} mb={2}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }} mb={2}>
 							<FormControl isRequired>
 								<FormLabel size="sm">Country</FormLabel>
 								<Select
@@ -426,7 +427,7 @@ const PersonalInfo = ({
 					<Stack spacing={4} p={5}>
 						<TextTitle size="xl" title="Emergency Contact" />
 
-						<Flex gap={4}>
+						<Flex gap={4} direction={{ base: "column", md: "row" }}>
 							<FormControl>
 								<FormLabel size="sm">First Name</FormLabel>
 								<Input

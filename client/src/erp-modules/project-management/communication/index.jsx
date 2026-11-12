@@ -79,7 +79,7 @@ const Communications = ({ isDashboard }) => {
 				<Box
 					display={isDashboard && "none"}
 					borderRight="2px solid #eee"
-					h={`calc(var(--comms)`}
+					h={"calc(var(--comms))"}
 					maxW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
 					p={"1em"}
 					minW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
@@ -159,12 +159,23 @@ const Communications = ({ isDashboard }) => {
 									>
 										<Avatar src={member?.fullName} name={member?.fullName} />
 
-										<Button justifyContent={"space-between"} p={0} variant="ghost" fontSize="xs">
+										<Button
+											justifyContent={"space-between"}
+											p={0}
+											variant="ghost"
+											fontSize="xs"
+											h="auto"
+											whiteSpace="normal"
+											textAlign="left"
+											minW={0}
+											py={1}
+										>
 											<VStack align={"self-start"}>
 												<Text fontWeight="bold">{member?.fullName}</Text>
 												<NormalTextTitle
 													whiteSpace="wrap"
 													align={"start"}
+													size="xs"
 													title={
 														conversations
 															?.slice()

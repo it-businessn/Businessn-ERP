@@ -112,6 +112,7 @@ const AddNewSale = ({ isOpen, onClose, setIsAdded, company }) => {
 						bg={"var(--banner_bg)"}
 						submitBtnName={"Add"}
 						isLoading={isSubmitting}
+						isDisabled={!formData?.affiliate}
 						onClose={onClose}
 					/>
 				</Stack>

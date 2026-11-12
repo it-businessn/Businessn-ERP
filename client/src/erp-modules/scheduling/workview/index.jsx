@@ -49,7 +49,7 @@ const ScheduleWorkView = () => {
 
 	return (
 		<PageLayout title="">
-			<Flex justify="space-between" alignItems="center" mb={3}>
+			<Flex justify="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
 				<CrewFilter
 					crews={crews}
 					selectedCrew={selectedCrew}

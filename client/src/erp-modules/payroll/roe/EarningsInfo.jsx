@@ -137,7 +137,7 @@ const EarningsInfo = ({ formData, isLoading, sections, toggleSection, done, onCo
 							bg="var(--banner_bg)"
 							color="white"
 							_hover={{ bg: "#4a2b4a" }}
-							isDisabled={!periods.length}
+							isDisabled={isLoading || !periods.length}
 							onClick={onConfirm}
 						>
 							Confirm

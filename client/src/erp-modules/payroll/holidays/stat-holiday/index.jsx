@@ -56,11 +56,12 @@ export const StatHolidayTable = ({
 				if (current) setHolidays(data);
 			} catch (error) {
 				if (!current) return;
+				setHolidays([]);
 				toast({
-					title: "Error",
-					description: "Failed to fetch holidays",
+					title: "Could not load holidays",
+					description: error?.response?.data?.message || "Please try again.",
 					status: "error",
-					duration: 3000,
+					duration: 5000,
 					isClosable: true,
 				});
 			}
@@ -74,7 +75,7 @@ export const StatHolidayTable = ({
 	const handleDelete = async () => {
 		try {
 			await SettingService.deleteHoliday({}, deleteRecordId);
-			setHolidays(holidays.filter((holiday) => holiday._id !== deleteRecordId));
+			setHolidays((holidays || []).filter((holiday) => holiday._id !== deleteRecordId));
 			toast({
 				title: "Success",
 				description: "Holiday deleted successfully",
@@ -115,7 +116,9 @@ export const StatHolidayTable = ({
 						</Select>
 					)}
 				</HStack>
-				<TextTitle title={`${holidays.length} ${holidays.length === 1 ? "holiday" : "holidays"}`} />
+				<TextTitle
+					title={`${holidays?.length ?? 0} ${holidays?.length === 1 ? "holiday" : "holidays"}`}
+				/>
 			</Flex>
 
 			<Box overflowX="auto" css={tabScrollCss}>

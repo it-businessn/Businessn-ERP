@@ -1,4 +1,6 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import Loader from "components/Loader";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -43,6 +45,7 @@ const Orders = () => {
 
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile } = useBreakpointValue();
+	const toast = useToast();
 
 	const [selectedDateFilter, setSelectedDateFilter] = useState("This Week");
 
@@ -68,6 +71,14 @@ const Orders = () => {
 				setOrders(data);
 			} catch (error) {
 				console.error(error);
+				setOrders([]);
+				toast({
+					title: "Failed to load orders",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		fetchAllOrders();
@@ -121,7 +132,15 @@ const Orders = () => {
 				}
 				setStatusChanged(false);
 			}
-		} catch (error) {}
+		} catch (error) {
+			toast({
+				title: "Failed to update order",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
 	};
 	const handleInputChange = (value) => console.log(value);
 
@@ -135,6 +154,7 @@ const Orders = () => {
 				color={"var(--nav_color)"}
 			>
 				<CustomFilter isMobile={isMobile} handleInputChange={handleInputChange} />
+				{!orders && <Loader autoHeight />}
 				{orders && (
 					<Box overflow="auto" css={tabScrollCss} height={"calc(100vh - 210px)"}>
 						<Table color={"var(--nav_color)"} variant="small">
@@ -148,6 +168,9 @@ const Orders = () => {
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
+								{orders.length === 0 && (
+									<EmptyRowRecord data={orders} colSpan={ORDER_COLS.length} />
+								)}
 								{orders.map(
 									({
 										_id,

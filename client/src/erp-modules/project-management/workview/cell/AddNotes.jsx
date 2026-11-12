@@ -9,6 +9,7 @@ import {
 	ModalFooter,
 	ModalOverlay,
 	Textarea,
+	useToast,
 } from "@chakra-ui/react";
 import ActionButton from "components/ui/button/ActionButton";
 import { useState } from "react";
@@ -23,6 +24,7 @@ const AddNotes = ({ content, type, setIsOpen, isOpen, handleActionUpdate }) => {
 
 	const [isEdit, setIsEdit] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const toast = useToast();
 
 	const handleConfirm = async () => {
 		setIsSubmitting(true);
@@ -34,8 +36,13 @@ const AddNotes = ({ content, type, setIsOpen, isOpen, handleActionUpdate }) => {
 			setIsEdit(false);
 		} catch (error) {
 			setIsSubmitting(false);
-			setIsOpen(false);
-			setIsEdit(false);
+			toast({
+				title: "Could not save notes",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 

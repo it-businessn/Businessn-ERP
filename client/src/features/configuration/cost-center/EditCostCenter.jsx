@@ -16,11 +16,14 @@ import SettingService from "services/SettingService";
 export const EditCostCenter = ({ companyName, isOpen, onClose, setCcAdded, cc }) => {
 	const toast = useToast();
 	const [name, setName] = useState(cc.name);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [description, setDescription] = useState(cc.description);
 
 	const handleSubmit = async () => {
+		if (isSubmitting) return;
 		try {
 			if (!name.trim()) return;
+			setIsSubmitting(true);
 			await SettingService.addCC({
 				name,
 				description,
@@ -29,20 +32,21 @@ export const EditCostCenter = ({ companyName, isOpen, onClose, setCcAdded, cc })
 			toast({
 				title: "Cost Center added successfully",
 				status: "success",
-				duration: 1500,
-				isClosable: true,
-			});
-			setCcAdded((prev) => !prev);
-		} catch (error) {
-			toast({
-				title: "Error",
-				description: error?.response?.data?.message,
-				status: "error",
 				duration: 3000,
 				isClosable: true,
 			});
-		} finally {
+			setCcAdded((prev) => !prev);
 			onClose();
+		} catch (error) {
+			toast({
+				title: "Could not save cost center",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 	return (
@@ -76,7 +80,7 @@ export const EditCostCenter = ({ companyName, isOpen, onClose, setCcAdded, cc })
 					<Button mr={3} onClick={onClose}>
 						Cancel
 					</Button>
-					<Button colorScheme="green" onClick={handleSubmit}>
+					<Button colorScheme="green" onClick={handleSubmit} isLoading={isSubmitting}>
 						Save
 					</Button>
 				</ModalFooter>

@@ -17,6 +17,7 @@ import {
 	StepSeparator,
 	StepStatus,
 	StepTitle,
+	useToast,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useState } from "react";
@@ -24,6 +25,7 @@ import { BankingFormSchema } from "validation/BankDetails";
 import { bankingSubSteps, tabPanelStyleCss, tabScrollCss } from "./customInfo";
 
 const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange }) => {
+	const toast = useToast();
 	// State for form validation errors
 	const [bankingErrors, setBankingErrors] = useState({
 		bankNum: "",
@@ -105,12 +107,12 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 	// Handle banking form submission
 	const handleBankingSubmit = () => {
 		if (formData.bankingInfo.directDeposit === "No" || validateBankingForm()) {
-			// toast({
-			// 	title: "Banking information saved",
-			// 	status: "success",
-			// 	duration: 3000,
-			// 	isClosable: true,
-			// });
+			toast({
+				title: "Banking information saved",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
 		}
 	};
 	return (
@@ -118,6 +120,7 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 			<Box
 				p={6}
 				width="280px"
+				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
 				borderColor="gray.200"
 				flexShrink={0}
@@ -189,12 +192,12 @@ const BankingInfo = ({ bankingSubStep, setBankingSubStep, formData, handleChange
 							color="white"
 							_hover={{ bg: "#4a2b4a" }}
 							onClick={() => {
-								// toast({
-								// 	title: "Payment notification settings saved",
-								// 	status: "success",
-								// 	duration: 3000,
-								// 	isClosable: true,
-								// });
+								toast({
+									title: "Saved with the employee when you click Save Employee.",
+									status: "info",
+									duration: 3000,
+									isClosable: true,
+								});
 							}}
 						>
 							Save Notification Settings

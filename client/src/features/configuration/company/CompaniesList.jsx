@@ -13,7 +13,7 @@ export const CompaniesList = ({ companies, handleEdit }) => {
 				</Tr>
 			</Thead>
 			<Tbody>
-				{(!companies || companies?.length === 0) && <EmptyRowRecord data={companies} colSpan={2} />}
+				{(!companies || companies?.length === 0) && <EmptyRowRecord data={companies} colSpan={3} />}
 				{companies?.map((company) => (
 					<Tr key={company._id}>
 						<Td>{company.name}</Td>

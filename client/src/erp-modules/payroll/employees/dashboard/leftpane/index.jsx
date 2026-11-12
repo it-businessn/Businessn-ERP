@@ -67,7 +67,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 					>
 						<Tbody>
 							{(!empPayStub || empPayStub?.length === 0) && (
-								<EmptyRowRecord px={0} data={empPayStub} colSpan={empPayStub?.length} />
+								<EmptyRowRecord px={0} data={empPayStub} colSpan={4} />
 							)}
 							{empPayStub?.map(
 								({
@@ -136,7 +136,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 							isEarningTable
 							cols={EARNING_TABLE_COLS}
 							payGroupSchedule={empPayStub}
-							height="calc(100vh - 700px)"
+							height="max(240px, calc(100vh - 700px))"
 							css={tabScrollCss}
 							viewLabel="View Paystub"
 							handleRegister={handleRegister}

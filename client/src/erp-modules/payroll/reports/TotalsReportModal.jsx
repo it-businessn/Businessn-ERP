@@ -20,8 +20,10 @@ const TotalsReportModal = ({
 	isReport,
 	companyDetails,
 }) => {
-	const fileName = `${formatDateBar(reportData?.payPeriodEndDate)}_PayPeriod#${
-		reportData?.payPeriodNum
+	// no funding record yet: the dates are missing, show "-" (not today's date)
+	const showDate = (d, format) => (d ? format(d) : "-");
+	const fileName = `${showDate(reportData?.payPeriodEndDate, formatDateBar)}_PayPeriod#${
+		reportData?.payPeriodNum ?? "-"
 	}_Funding Report`;
 	const IS_CORNERSTONE = isCornerStone(company);
 	const totalIncomeTaxContr = reportData?.totalIncomeTaxContr?.toFixed(2);
@@ -170,7 +172,7 @@ const TotalsReportModal = ({
 					<VStack flex={0.6} spacing={0}>
 						<NormalTextTitle title={companyDetails.name} />
 						<NormalTextTitle title={companyDetails.registration_number} />
-						<NormalTextTitle title={dayMonthYear(reportData?.updatedOn)} />
+						<NormalTextTitle title={showDate(reportData?.updatedOn, dayMonthYear)} />
 					</VStack>
 				</HStack>
 				<Divider />
@@ -188,8 +190,8 @@ const TotalsReportModal = ({
 							size="sm"
 							title={isExtraPay(reportData?.payPeriodNum, reportData?.isExtraRun)}
 						/>
-						<NormalTextTitle size="sm" title={formatDateBar(reportData?.payPeriodStartDate)} />
-						<NormalTextTitle size="sm" title={formatDateBar(reportData?.payPeriodEndDate)} />
+						<NormalTextTitle size="sm" title={showDate(reportData?.payPeriodStartDate, formatDateBar)} />
+						<NormalTextTitle size="sm" title={showDate(reportData?.payPeriodEndDate, formatDateBar)} />
 						<NormalTextTitle size="sm" title={getAmount(reportData?.totalGovtContr)} />
 						<NormalTextTitle size="sm" title={getAmount(reportData?.totalEmpPaymentRemitCost)} />
 						<NormalTextTitle size="sm" title={getAmount(reportData?.totalFundingWithDrawals)} />

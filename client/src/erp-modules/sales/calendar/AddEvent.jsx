@@ -1,4 +1,4 @@
-import { Flex, FormLabel, ModalBody, ModalFooter, Select } from "@chakra-ui/react";
+import { Flex, FormLabel, ModalBody, ModalFooter, Select, useToast } from "@chakra-ui/react";
 import FormControlMain from "components/ui/form";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
@@ -26,11 +26,13 @@ const AddEvent = ({
 	user,
 	groups,
 }) => {
+	const toast = useToast();
 	const [eventType, setEventType] = useState(filter);
 	const [groupMembers, setGroupMembers] = useState(null);
 
 	useEffect(() => {
-		if (groups) {
+		// a company with no groups gets [] (truthy): groups[0] crashed the page
+		if (groups?.length) {
 			setGroupMembers(groups[0].members);
 		}
 	}, [groups]);
@@ -155,6 +157,15 @@ const AddEvent = ({
 			setIsRefresh((prev) => !prev);
 		} catch (error) {
 			console.error(error);
+			toast({
+				title: isEdit ? "Failed to update event" : "Failed to add event",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 	useEffect(() => {

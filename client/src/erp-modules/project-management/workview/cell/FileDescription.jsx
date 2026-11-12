@@ -8,6 +8,7 @@ export const FileDescription = ({ isFile, name, textSize = "sm", width = "100%",
 				<NormalTextTitle width={width} size={textSize} title={name} whiteSpace={"nowrap"} />
 			) : (
 				<Editable
+					key={name}
 					defaultValue={name}
 					onSubmit={(nextValue) => {
 						if (nextValue !== name) onSave(nextValue);

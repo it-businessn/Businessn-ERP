@@ -63,7 +63,7 @@ const BudgetList = ({ filteredAccounts, setFilteredAccounts }) => {
 			textAlign="center"
 		>
 			<Tbody>
-				{!filteredAccounts && <EmptyRowRecord data={filteredAccounts} colSpan={cols.length} />}
+				{(!filteredAccounts || filteredAccounts.length === 0) && <EmptyRowRecord data={filteredAccounts} colSpan={cols.length} />}
 				{filteredAccounts?.map(({ _id, accCode, accountName, monthlyBudget }) => {
 					return (
 						<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>

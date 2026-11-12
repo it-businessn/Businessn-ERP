@@ -1,4 +1,4 @@
-import { HStack, Table, Tbody, Td, Tr } from "@chakra-ui/react";
+import { HStack, Spinner, Table, Tbody, Td, Tr, useToast } from "@chakra-ui/react";
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import TextTitle from "components/ui/text/TextTitle";
@@ -24,28 +24,56 @@ const ReportsPreview = ({
 	const [showReport, setShowReport] = useState(false);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
 	const [showJournalReport, setShowJournalReport] = useState(false);
-
-	const REPORTS = [
-		{ name: "Payroll Register", handleClick: () => setShowReport(true) },
-		{ name: "Funding Totals Report", handleClick: () => setShowTotalsReport(true) },
-		{ name: "Journal Entry Report", handleClick: () => setShowJournalReport(true) },
-	];
+	const toast = useToast();
 
 	const fundingTotalsData = useFundingTotalsReport(company, closestRecord, showTotalsReport);
 	const journalReport = useJournalReport(company, closestRecord, showJournalReport);
+
+	const REPORTS = [
+		{
+			name: "Payroll Register",
+			handleClick: () => {
+				if (!reportData) {
+					toast({
+						title: "Confirm Inputs Review first to load the register.",
+						status: "info",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+				setShowReport(true);
+			},
+		},
+		{
+			name: "Funding Totals Report",
+			handleClick: () => setShowTotalsReport(true),
+			isLoading: showTotalsReport && !fundingTotalsData,
+		},
+		{
+			name: "Journal Entry Report",
+			handleClick: () => setShowJournalReport(true),
+			isLoading: showJournalReport && !journalReport,
+		},
+	];
 
 	return (
 		<HStack alignItems={"end"}>
 			<Table w={"100%"}>
 				<Tbody>
-					{REPORTS?.map(({ name, handleClick }) => (
+					{REPORTS?.map(({ name, handleClick, isLoading }) => (
 						<Tr key={name}>
 							<Td>
 								<TextTitle title={name} textTransform="uppercase" />
 							</Td>
 
 							<Td>
-								<OutlineButton label="Preview report" size={"sm"} onClick={handleClick} />
+								<OutlineButton
+									label="Preview report"
+									size={"sm"}
+									onClick={handleClick}
+									isDisabled={isLoading}
+								/>
+								{isLoading && <Spinner size="sm" ml={2} color="var(--banner_bg)" />}
 							</Td>
 						</Tr>
 					))}

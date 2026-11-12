@@ -42,12 +42,12 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 			{
 				name: "Clock IN",
 				bg: "var(--action_status_approve)",
-				isClicked: false,
+				punch: "0",
 				onClick: () => updateSubmit("0", `Clock In successful!`),
 			},
 			{
 				name: "Break START",
-				isClicked: false,
+				punch: "3",
 				onClick: () => updateSubmit("3", `Break Started!`),
 				isDisabled: true,
 			},
@@ -56,13 +56,13 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 			{
 				name: "Clock OUT",
 				bg: "var(--action_status_reject)",
-				isClicked: false,
+				punch: "1",
 				onClick: () => updateSubmit("1", `Clock Out Successful!`),
 			},
 			{
 				name: "Break END",
 				bg: "var(--event_color)",
-				isClicked: false,
+				punch: "2",
 				onClick: () => updateSubmit("2", `Break Ended!`),
 				isDisabled: true,
 			},
@@ -75,12 +75,15 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const [showLeaveForm, setShowLeaveForm] = useState(false);
 	const [refresh, setRefresh] = useState(false);
 	const [timesheetData, setTimesheetData] = useState([]);
+	// [] (not null): without a pay group the fetch never runs, and null would
+	// show the loading skeleton forever
 	const [leaveRequests, setLeaveRequests] = useState([]);
 	const [filter, setFilter] = useState(null);
 	const { closestRecord } = usePaygroup(company, false);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 	const toast = useToast();
+	const [pendingPunch, setPendingPunch] = useState(null);
 
 	useEffect(() => {
 		if (!closestRecord) {
@@ -125,6 +128,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 				setLeaveRequests(data);
 			} catch (error) {
 				console.error(error);
+				setLeaveRequests((prev) => prev ?? []);
 			}
 		};
 		if (filter) {
@@ -148,6 +152,8 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	});
 
 	const updateSubmit = async (punch, message) => {
+		if (pendingPunch) return;
+		setPendingPunch(punch);
 		try {
 			await TimesheetService.addTimesheetManual({
 				punch,
@@ -165,11 +171,14 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 		} catch (error) {
 			console.error(error);
 			toast({
-				title: "Please try again.",
+				title: "Punch not recorded.",
+				description: error?.response?.data?.message || "Please try again.",
 				status: "error",
-				duration: 1500,
+				duration: 5000,
 				isClosable: true,
 			});
+		} finally {
+			setPendingPunch(null);
 		}
 	};
 
@@ -195,11 +204,11 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						</VStack>
 					)}
 					<HStack justify="space-between" w="100%">
-						{CLOCK_TYPES.row_1.map(({ name, onClick, bg, isClicked, isDisabled }) => (
+						{CLOCK_TYPES.row_1.map(({ name, onClick, bg, punch, isDisabled }) => (
 							<LeftIconButton
-								isDisabled={isDisabled}
+								isDisabled={isDisabled || !!pendingPunch}
 								key={name}
-								isLoading={isClicked}
+								isLoading={pendingPunch === punch}
 								size={{ base: "sm", md: "xl" }}
 								name={name}
 								variant="solid"
@@ -211,11 +220,11 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 						))}
 					</HStack>
 					<HStack justify="space-between" w="100%">
-						{CLOCK_TYPES.row_2.map(({ name, onClick, bg, isClicked, isDisabled }) => (
+						{CLOCK_TYPES.row_2.map(({ name, onClick, bg, punch, isDisabled }) => (
 							<LeftIconButton
 								key={name}
-								isDisabled={isDisabled}
-								isLoading={isClicked}
+								isDisabled={isDisabled || !!pendingPunch}
+								isLoading={pendingPunch === punch}
 								size={{ base: "sm", md: "xl" }}
 								name={name}
 								variant="solid"

@@ -43,6 +43,7 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 	const [tabIndex, setTabIndex] = useState(0);
 	const [formData, setFormData] = useState(defaultInfo);
 	const [isDisabled, setIsDisabled] = useState(true);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleClose = () => {
 		onClose();
@@ -74,24 +75,28 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 	const isLastStep = tabIndex === ONBOARD_TABS.length - 1;
 
 	const handleSubmit = async () => {
+		if (isSubmitting) return;
+		setIsSubmitting(true);
 		try {
 			await UserService.addMasterUser(formData);
 			toast({
 				title: "Action successful!",
 				description: "New user created successfully.",
 				status: "success",
-				duration: 1000,
+				duration: 3000,
 				isClosable: true,
 			});
 			handleClose();
 		} catch (error) {
 			toast({
-				title: "Something went wrong.",
-				description: "Please try again.",
+				title: "Failed to create user",
+				description: error?.response?.data?.message || "Please try again.",
 				status: "error",
-				duration: 3000,
+				duration: 5000,
 				isClosable: true,
 			});
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 	const getNextButtonIcon = () => {
@@ -202,11 +207,12 @@ const OnboardUserModal = ({ showOnboard, setShowOnboard, title, company }) => {
 
 						<Button
 							isDisabled={isDisabled}
+							isLoading={isSubmitting}
 							rightIcon={getNextButtonIcon()}
 							onClick={getNextButtonAction}
 							bg={"var(--banner_bg)"}
 							color="white"
-							_hover={{ bg: "#4a2b4a" }}
+							_hover={{ bg: "var(--nav_menu)" }}
 							px={6}
 						>
 							{tabIndex === 0 ? "Next" : "Save"}

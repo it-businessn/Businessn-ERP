@@ -87,13 +87,20 @@ const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) 
 			toast({
 				title: "Time-off request sent!",
 				status: "success",
-				duration: 1500,
+				duration: 3000,
 				isClosable: true,
 			});
 			setRefresh((prev) => !prev);
 			handleClose();
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
+			toast({
+				title: "Could not send the time-off request.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -142,7 +149,7 @@ const AddLeave = ({ isOpen, handleClose, company, userId, source, setRefresh }) 
 							</Select>
 						</FormControl>
 						<TextTitle
-							title={`Total: ${totalDays} day${totalDays > 1 ? "s" : ""} (${totalHours} hours)`}
+							title={`Total: ${totalDays} day${totalDays === 1 ? "" : "s"} (${totalHours} hours)`}
 						></TextTitle>
 						{/* <FormControl>
 							<FormLabel>Reason</FormLabel>

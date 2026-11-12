@@ -67,6 +67,8 @@ const UserProfile = ({ user, handleLogout, consoleAccess }) => {
 			<Popover isOpen={isOpen} onClose={handleToggle}>
 				<PopoverTrigger>
 					<Avatar
+						as="button"
+						aria-label="Open user menu"
 						_hover={{ cursor: "pointer" }}
 						onClick={handleToggle}
 						name={user?.fullName}

@@ -1,4 +1,4 @@
-import { HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { HStack, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import InputFormControl from "components/ui/form/InputFormControl";
@@ -20,6 +20,7 @@ const PayrunSetup = ({
 	deptName,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
+	const toast = useToast();
 	const company = LocalStorageService.getItem("selectedCompany");
 
 	const handleConfirm = async () => {
@@ -39,6 +40,15 @@ const PayrunSetup = ({
 			}
 		} catch (error) {
 			console.error(error);
+			toast({
+				title: "Could not start the payrun.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 	const PAY_DETAILS = [

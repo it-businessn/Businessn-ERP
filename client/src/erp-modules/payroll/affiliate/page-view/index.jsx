@@ -165,13 +165,14 @@ const Affiliates = () => {
 				isLazy
 				lazyBehavior="unmount"
 			>
-				<TabList bg="gray.50" px={6} pt={5} pb={2} justifyContent="space-between">
+				<TabList bg="gray.50" px={6} pt={5} pb={2} justifyContent="space-between" overflowX="auto">
 					{EMP_INFO_TABS.map(({ name }) => (
 						<Tab
-							w="100%"
+							w={{ base: "auto", md: "100%" }}
+							flexShrink={{ base: 0, md: 1 }}
 							key={name}
 							fontWeight="semibold"
-							px={8}
+							px={{ base: 3, md: 8 }}
 							_selected={{ color: "white", bg: "var(--banner_bg)" }}
 						>
 							{name}

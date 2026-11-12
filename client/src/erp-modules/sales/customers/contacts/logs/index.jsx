@@ -55,7 +55,7 @@ const Logs = ({ contactId, user, company, currentTab }) => {
 				setLogActivity={setLogActivity}
 				handleInputChange={handleInputChange}
 			/>
-			{activities.length && <LogActivityList activities={activities} />}
+			{activities?.length > 0 && <LogActivityList activities={activities} />}
 		</VStack>
 	);
 };

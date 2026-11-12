@@ -16,7 +16,7 @@ const ModalForm = ({ title, children, isOpen, onClose }) => {
 					{title}
 					<ModalCloseButton />
 				</ModalHeader>
-				<ModalBody zIndex="0" bg={"#fff"} height={"100vh"}>
+				<ModalBody zIndex="0" bg={"#fff"} maxH={"calc(100vh - 8rem)"} overflowY={"auto"}>
 					{children}
 				</ModalBody>
 			</ModalContent>

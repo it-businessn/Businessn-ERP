@@ -1,7 +1,9 @@
+import { useToast } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import PayrollService from "services/PayrollService";
 
 export const usePayrollReports = (company, selectedYear, payGroupSchedule, selectedPayGroup) => {
+	const toast = useToast();
 	const selectedPayPeriodDetails = useRef(null);
 	const [showReport, setShowReport] = useState(false);
 	const [showTotalsReport, setShowTotalsReport] = useState(false);
@@ -41,6 +43,14 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				setTotalsReport(data);
 			} catch (error) {
 				console.error(error);
+				setShowTotalsReport(false);
+				toast({
+					title: "Could not load totals report",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 
@@ -59,6 +69,14 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				setHasLoaded(true);
 			} catch (error) {
 				console.error(error);
+				setShowReport(false);
+				toast({
+					title: "Could not load register report",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 
@@ -74,8 +92,25 @@ export const usePayrollReports = (company, selectedYear, payGroupSchedule, selec
 				);
 				setHasLoaded(true);
 				setJournalReport(data);
+				if (!data || (Array.isArray(data) && data.length === 0)) {
+					setShowJournalsReport(false);
+					toast({
+						title: "No journal entry for this pay period.",
+						status: "info",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
 			} catch (error) {
 				console.error(error);
+				setShowJournalsReport(false);
+				toast({
+					title: "Could not load journal report",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 

@@ -76,6 +76,7 @@ const UserProfileDetails = () => {
 			/>
 			<OutlineButton
 				label={<FaUndoAlt />}
+				aria-label="Reset"
 				size={"sm"}
 				onClick={handleReset}
 				colorScheme="gray"
@@ -104,10 +105,12 @@ const UserProfileDetails = () => {
 					>
 						<VStack alignItems="self-start" spacing={5}>
 							<Icon as={FaAddressCard} boxSize={10} />
-							<Text fontSize="xl" fontWeight="bold">
+							<Text fontSize="xl" fontWeight="bold" wordBreak="break-all">
 								{fullName}
 							</Text>
-							<Text mr="3">{email}</Text>
+							<Text mr="3" wordBreak="break-all">
+								{email}
+							</Text>
 						</VStack>
 					</Box>
 					<BoxCard>

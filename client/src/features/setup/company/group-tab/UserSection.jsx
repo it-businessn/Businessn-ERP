@@ -17,6 +17,7 @@ const UserSection = ({
 	selectedGroup,
 	selectedModules,
 	setFilteredEmployees,
+	isSubmitting,
 	setIsSubmitting,
 	setGroupMembers,
 }) => {
@@ -98,6 +99,7 @@ const UserSection = ({
 						bg="var(--banner_bg)"
 						px={{ base: "2em" }}
 						type="submit"
+						isLoading={isSubmitting}
 					/>
 				</HStack>
 			</HStack>

@@ -7,6 +7,7 @@ import {
 	Select,
 	SimpleGrid,
 	Text,
+	Tooltip,
 	VStack,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -150,10 +151,15 @@ const AgentsView = ({
 													title={email}
 												/>
 												<Box>
-													<CopyIcon
-														cursor={"pointer"}
-														onClick={() => handleCopy(_id, opportunityName, email, phone, stage)}
-													/>
+													<Tooltip
+														label={copied ? "Copied!" : "Copy email"}
+														closeOnClick={false}
+													>
+														<CopyIcon
+															cursor={"pointer"}
+															onClick={() => handleCopy(_id, opportunityName, email, phone, stage)}
+														/>
+													</Tooltip>
 												</Box>
 											</HStack>
 											<HStack w={"100%"} justifyContent={"space-between"}>

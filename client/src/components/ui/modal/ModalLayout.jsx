@@ -140,7 +140,10 @@ const ModalLayout = ({
           className="print-root"
           ref={componentRef}
           bg={"#fff"}
-          height={"100vh"}
+          // was height="100vh": even a two-line dialog filled the screen; now it
+          // fits its content and scrolls when taller than the window
+          maxH={"calc(100vh - 8rem)"}
+          overflowY={"auto"}
           css={tabScrollCss}
         >
           <Stack w={w} mx={mx} p={p} spacing={spacing}>

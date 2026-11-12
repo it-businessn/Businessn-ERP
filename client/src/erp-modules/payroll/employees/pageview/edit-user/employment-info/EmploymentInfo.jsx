@@ -220,10 +220,19 @@ const EmploymentInfo = ({
 			toast({
 				title: "Employment info updated successfully.",
 				status: "success",
-				duration: 1000,
+				duration: 3000,
 				isClosable: true,
 			});
-		} catch (error) {}
+		} catch (error) {
+			setIsLoading(false);
+			toast({
+				title: "Could not save.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
 	};
 
 	return (
@@ -231,6 +240,7 @@ const EmploymentInfo = ({
 			<Box
 				p={6}
 				width="280px"
+				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
 				borderColor="gray.200"
 				flexShrink={0}

@@ -54,6 +54,14 @@ const LeaveApprovals = () => {
 				setLeaveRecords(data);
 			} catch (error) {
 				console.error(error);
+				setLeaveRecords([]);
+				toast({
+					title: "Could not load leave requests.",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		fetchLeaveRequests();
@@ -66,7 +74,7 @@ const LeaveApprovals = () => {
 				toast({
 					title: "Action completed successfully!",
 					status: "success",
-					duration: 1500,
+					duration: 3000,
 					isClosable: true,
 				});
 				const updatedRecordIndex = leaveRecords?.findIndex(
@@ -79,12 +87,20 @@ const LeaveApprovals = () => {
 									...record,
 									status: data?.status,
 									statusBtnCss: getStatusStyle(data?.status),
-							  }
+								}
 							: record,
 					);
 					setLeaveRecords(updatedData);
 				}
-			} catch (error) {}
+			} catch (error) {
+				toast({
+					title: "Could not update the leave request.",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			}
 		};
 		if (formData?.recordId) updateLeaveRequest();
 	}, [formData?.recordId]);
@@ -110,7 +126,7 @@ const LeaveApprovals = () => {
 				title: "Action Incomplete!",
 				description: "Please check the row to apply the action.",
 				status: "warning",
-				duration: 1500,
+				duration: 4000,
 				isClosable: true,
 			});
 			return;
@@ -132,7 +148,9 @@ const LeaveApprovals = () => {
 								colIndex === leaveRequestCols?.length - 2 ? (
 									<Th key={`action_${col}_${colIndex}`} bg="var(--th_bg)">
 										<Checkbox
-											isChecked={isAllChecked}
+											isChecked={
+												allRequestIDs?.length > 0 && checkedRows.length === allRequestIDs.length
+											}
 											colorScheme="facebook"
 											onChange={(e) => handleHeaderCheckboxChange(e)}
 										/>

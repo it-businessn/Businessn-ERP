@@ -18,9 +18,11 @@ import {
 	Thead,
 	Tr,
 	useDisclosure,
+	useToast,
 	VStack,
 } from "@chakra-ui/react";
 import Loader from "components/Loader";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import RightIconButton from "components/ui/button/RightIconButton";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
@@ -47,6 +49,7 @@ const Payouts = () => {
 	const [payouts, setPayouts] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const toast = useToast();
 	const isManagerRole = isNotEnrollerOrEmployee(loggedInUser.role);
 
 	useEffect(() => {
@@ -67,6 +70,14 @@ const Payouts = () => {
 				);
 			} catch (error) {
 				console.error(error);
+				setPayouts([]);
+				toast({
+					title: "Failed to load payouts",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		fetchAllPayouts();
@@ -298,6 +309,7 @@ const Payouts = () => {
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
+								{payouts?.length === 0 && <EmptyRowRecord data={payouts} colSpan={7} />}
 								{payouts?.map((payout) => (
 									<Tr key={payout._id}>
 										<Td fontSize={"xs"} p={0}>

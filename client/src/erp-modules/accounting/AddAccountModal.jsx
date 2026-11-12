@@ -1,4 +1,4 @@
-import { useDisclosure, VStack } from "@chakra-ui/react";
+import { useDisclosure, useToast, VStack } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import ModalLayout from "components/ui/modal/ModalLayout";
@@ -13,6 +13,8 @@ const AddAccountModal = ({
 	selectedBudget,
 }) => {
 	const { onClose } = useDisclosure();
+	const toast = useToast();
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleClose = () => {
 		onClose();
@@ -36,9 +38,23 @@ const AddAccountModal = ({
 	};
 
 	const handleSubmit = async () => {
-		await AccountService.addAccount(formData);
-		handleClose();
-		if (setIsRefresh) setIsRefresh((prev) => !prev);
+		if (isSubmitting) return;
+		setIsSubmitting(true);
+		try {
+			await AccountService.addAccount(formData);
+			handleClose();
+			if (setIsRefresh) setIsRefresh((prev) => !prev);
+		} catch (error) {
+			toast({
+				title: "Failed to add account",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -69,6 +85,7 @@ const AddAccountModal = ({
 			</VStack>
 			<ActionButtonGroup
 				isDisabled={!formData?.accCode || !formData?.accountName}
+				isLoading={isSubmitting}
 				submitBtnName={"Add"}
 				onClose={handleClose}
 				onOpen={handleSubmit}

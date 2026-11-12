@@ -1,4 +1,4 @@
-import { Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Spacer, useDisclosure, useToast } from "@chakra-ui/react";
 import SkeletonLoader from "components/SkeletonLoader";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
@@ -21,6 +21,7 @@ const FilesList = ({ managers, company, isDashboard }) => {
 
 	const [files, setFiles] = useState(null);
 	const [isDataLoaded, setIsDataLoaded] = useState(false);
+	const toast = useToast();
 
 	useEffect(() => {
 		setIsDataLoaded(false);
@@ -32,6 +33,14 @@ const FilesList = ({ managers, company, isDashboard }) => {
 				setFiles(data);
 			} catch (error) {
 				console.error(error);
+				setFiles([]);
+				toast({
+					title: "Could not load files",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 			setIsDataLoaded(true);
 		};

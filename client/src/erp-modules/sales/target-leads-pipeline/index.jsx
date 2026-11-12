@@ -65,6 +65,7 @@ const Pipeline = () => {
 		try {
 			await LeadsService.deleteLead({}, deleteRecord);
 			setIsUpdated((prev) => !prev);
+			setShowConfirmationPopUp(false);
 		} catch (error) {
 			console.error(error);
 		}

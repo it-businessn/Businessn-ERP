@@ -1,4 +1,4 @@
-import { HStack } from "@chakra-ui/react";
+import { HStack, IconButton } from "@chakra-ui/react";
 import { AddTaskButton } from "components/AddTaskButton";
 import { TaskDropdown } from "components/TaskDropdown";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -50,7 +50,15 @@ const CellAction = ({
 					onNoteIconClick={noteIconClicked}
 					isFile={isFile}
 				/>
-				{type !== "file" && <FaRegTrashAlt cursor={"pointer"} onClick={handleDelete} />}
+				{type !== "file" && (
+					<IconButton
+						aria-label="Delete"
+						icon={<FaRegTrashAlt />}
+						variant="ghost"
+						size="sm"
+						onClick={handleDelete}
+					/>
+				)}
 			</HStack>
 		</>
 	);

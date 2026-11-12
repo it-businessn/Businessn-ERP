@@ -46,6 +46,13 @@ const InnerSubTaskActionCell = ({
 			handleInnerSubTaskUpdate(data, fileId, ACTION.EDIT, subTaskId);
 		} catch (error) {
 			console.error("Error updating task status:", error);
+			toast({
+				title: "Could not update subtask status",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 
@@ -63,6 +70,13 @@ const InnerSubTaskActionCell = ({
 			handleSubTaskToggle();
 		} catch (error) {
 			console.error("Error updating task status:", error);
+			toast({
+				title: "Could not delete subtask",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 
@@ -75,6 +89,13 @@ const InnerSubTaskActionCell = ({
 			handleInnerSubTaskUpdate(data, fileId, ACTION.EDIT, subTaskId);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
+			toast({
+				title: "Could not rename subtask",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 

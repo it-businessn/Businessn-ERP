@@ -119,6 +119,7 @@ const EmploymentInfo = ({
 			<Box
 				p={6}
 				width="280px"
+				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
 				borderColor="gray.200"
 				flexShrink={0}

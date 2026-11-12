@@ -20,7 +20,7 @@ import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
-import { convertDecimal, getAmount } from "utils/convertAmt";
+import { convertDecimal, getSignedAmount } from "utils/convertAmt";
 import { tabScrollCss } from "../onboard-user/customInfo";
 import EmpPayStatement from "../reports/EmpPayStatement";
 import { getClosestRecord } from "../workview/data";
@@ -60,7 +60,11 @@ const InputsReview = ({
 		onOpen();
 	};
 
+	const [isConfirming, setIsConfirming] = useState(false);
+
 	const handleConfirmInputsReview = async () => {
+		if (isConfirming) return;
+		setIsConfirming(true);
 		try {
 			if (inputsReviewData && !selectedPayPeriod.isProcessed) {
 				await PayrollService.addAlertsAndViolations({
@@ -70,6 +74,8 @@ const InputsReview = ({
 			}
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setIsConfirming(false);
 		}
 		handleClick(inputsReviewData);
 	};
@@ -109,7 +115,7 @@ const InputsReview = ({
 												title.includes("Employee")
 													? data?.empId?.[value]
 													: round
-													? getAmount(data[value])
+													? getSignedAmount(data[value])
 													: nearest
 													? convertDecimal(data[value])
 													: data[value]
@@ -133,7 +139,7 @@ const InputsReview = ({
 				bg="var(--action_status_approve)"
 				name={"CONFIRM"}
 				rightIcon={<MdCheckCircle />}
-				// isLoading={isLoading}
+				isLoading={isConfirming}
 				loadingText="Loading"
 				onOpen={handleConfirmInputsReview}
 				isDisabled={isPayPeriodInactive}

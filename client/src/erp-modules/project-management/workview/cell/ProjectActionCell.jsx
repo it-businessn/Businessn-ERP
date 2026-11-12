@@ -1,4 +1,4 @@
-import { HStack, Image, VStack } from "@chakra-ui/react";
+import { HStack, Image, useToast, VStack } from "@chakra-ui/react";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { useState } from "react";
 import ProjectService from "services/ProjectService";
@@ -33,6 +33,7 @@ const ProjectActionCell = ({
 	const [currentTask, setCurrentTask] = useState(null);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
 	const [showNote, setShowNote] = useState(false);
+	const toast = useToast();
 
 	const handleClose = () => {
 		setShowConfirmationPopUp(false);
@@ -59,6 +60,13 @@ const ProjectActionCell = ({
 			handleFileToggle();
 		} catch (error) {
 			console.error("Error updating task status:", error);
+			toast({
+				title: "Could not delete project",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 
@@ -71,6 +79,13 @@ const ProjectActionCell = ({
 			handleProjectUpdate(data, ACTION.EDIT);
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
+			toast({
+				title: "Could not rename project",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 	const width = project?.tasks?.length ? "38.5em" : "44em";

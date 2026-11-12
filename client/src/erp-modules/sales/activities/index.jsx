@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, useToast } from "@chakra-ui/react";
 
 import useSalesAgentData from "hooks/useSalesAgentData";
 import PageLayout from "layouts/PageLayout";
@@ -25,6 +25,7 @@ const Activities = () => {
 	const [showSelectCustomer, setShowSelectCustomer] = useState(false);
 	const [logType, setLogType] = useState(null);
 	const [userActivities, setUserActivities] = useState(null);
+	const toast = useToast();
 
 	const employees = useSalesAgentData(company, false, true);
 
@@ -94,6 +95,15 @@ const Activities = () => {
 				});
 			} catch (error) {
 				console.error(error);
+				// show the panes anyway instead of leaving the page blank
+				setUserActivities((prev) => prev ?? []);
+				toast({
+					title: "Failed to load activities",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		fetchAllUserActivities();

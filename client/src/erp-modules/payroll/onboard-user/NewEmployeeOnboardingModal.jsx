@@ -230,7 +230,11 @@ const NewEmployeeOnboardingModal = ({
 		}
 	};
 
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
 	const handleSubmit = async () => {
+		if (isSubmitting) return;
+		setIsSubmitting(true);
 		try {
 			formData.companyName = company;
 			if (isAffiliate) formData.isAffiliate = true;
@@ -242,16 +246,17 @@ const NewEmployeeOnboardingModal = ({
 				isClosable: true,
 			});
 			if (setIsRefresh) setIsRefresh((prev) => !prev);
+			onClose();
 		} catch (error) {
 			toast({
 				title: "Something went wrong.",
-				description: "Please try again.",
+				description: error?.response?.data?.message || "Please try again.",
 				status: "error",
-				duration: 3000,
+				duration: 5000,
 				isClosable: true,
 			});
 		} finally {
-			onClose();
+			setIsSubmitting(false);
 		}
 	};
 
@@ -351,11 +356,14 @@ const NewEmployeeOnboardingModal = ({
 							pb={2}
 							flexShrink={0}
 							justifyContent="space-between"
+							overflowX="auto"
 						>
 							{ONBOARD_TABS.map(({ name }) => (
 								<Tab
-									w="100%"
+									w={{ base: "auto", md: "100%" }}
 									key={name}
+									flexShrink={{ base: 0, md: 1 }}
+									px={{ base: 3, md: 8 }}
 									fontWeight="semibold"
 									_selected={{ color: "white", bg: "var(--banner_bg)" }}
 								>
@@ -389,6 +397,7 @@ const NewEmployeeOnboardingModal = ({
 
 						<Button
 							isDisabled={isDisabled}
+							isLoading={isLastStep && isSubmitting}
 							rightIcon={getNextButtonIcon()}
 							onClick={getNextButtonAction()}
 							bg={isLastStep ? "var(--banner_bg)" : "var(--banner_bg)"}
@@ -406,9 +415,10 @@ const NewEmployeeOnboardingModal = ({
 							<Button
 								rightIcon={<FaSave />}
 								onClick={handleSubmit}
+								isLoading={isSubmitting}
 								variant="ghost"
 								bg={"var(--banner_bg)"}
-								_hover="none"
+								_hover={{ bg: "var(--banner_bg)", opacity: 0.9 }}
 								px={6}
 								color="white"
 							>

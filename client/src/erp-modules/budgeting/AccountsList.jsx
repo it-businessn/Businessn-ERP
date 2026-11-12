@@ -14,7 +14,7 @@ const AccountsList = ({ accounts, handleEdit }) => {
 				</Tr>
 			</Thead>
 			<Tbody>
-				{(!accounts || accounts?.length === 0) && <EmptyRowRecord data={accounts} colSpan={3} />}
+				{(!accounts || accounts?.length === 0) && <EmptyRowRecord data={accounts} colSpan={4} />}
 				{accounts?.map((acc) => (
 					<Tr key={acc?._id}>
 						<Td>{acc?.accCode}</Td>

@@ -2,6 +2,9 @@ import { Avatar, Box, HStack, Spacer, Text, VStack } from "@chakra-ui/react";
 import moment from "moment";
 import LocalStorageService from "services/LocalStorageService";
 
+// Applied once (on first render, as before) instead of on every render.
+let isLocaleUpdated = false;
+
 const MessageBubble = ({
 	message,
 	isMyMessage,
@@ -11,24 +14,27 @@ const MessageBubble = ({
 }) => {
 	const userName = LocalStorageService.getItem("user").fullName;
 
-	moment.updateLocale("en", {
-		relativeTime: {
-			future: "in %s",
-			past: "%s ago",
-			s: "a few seconds",
-			ss: "%ds",
-			m: "a minute",
-			mm: "%dm",
-			h: "an hour",
-			hh: "%dh",
-			d: "a day",
-			dd: "%dd",
-			M: "a month",
-			MM: "%dM",
-			y: "a year",
-			yy: "%dY",
-		},
-	});
+	if (!isLocaleUpdated) {
+		isLocaleUpdated = true;
+		moment.updateLocale("en", {
+			relativeTime: {
+				future: "in %s",
+				past: "%s ago",
+				s: "a few seconds",
+				ss: "%ds",
+				m: "a minute",
+				mm: "%dm",
+				h: "an hour",
+				hh: "%dh",
+				d: "a day",
+				dd: "%dd",
+				M: "a month",
+				MM: "%dM",
+				y: "a year",
+				yy: "%dY",
+			},
+		});
+	}
 	timestamp = moment(timestamp).fromNow();
 	return (
 		<HStack w={"100%"} spacing={isDashboard ? 1 : 0}>
@@ -66,7 +72,7 @@ const MessageBubble = ({
 							</Text>
 						)}
 
-						<Text fontSize="xs" fontWeight={"normal"}>
+						<Text fontSize="xs" fontWeight={"normal"} wordBreak="break-word" whiteSpace="pre-wrap">
 							{message}
 						</Text>
 					</VStack>

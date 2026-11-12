@@ -78,7 +78,10 @@ const AccountingLedger = () => {
 	const handleInputChange = (value) => {
 		setAccName(value);
 		setFilteredAccounts(
-			accounts.filter((acc) => acc?.accountName.toLowerCase().includes(value.toLowerCase())),
+			// accounts is null until loaded: typing early crashed the page
+			accounts?.filter((acc) =>
+				acc?.accountName?.toLowerCase().includes(value.toLowerCase()),
+			) ?? accounts,
 		);
 	};
 

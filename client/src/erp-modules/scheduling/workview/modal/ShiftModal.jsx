@@ -40,6 +40,8 @@ const ShiftModal = ({
 	const [newRoleAdded, setNewRoleAdded] = useState(false);
 	const [showAddNewRole, setShowAddNewRole] = useState(false);
 	const [showAddNewLocation, setShowAddNewLocation] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	const roles = usePositionRoles(company, newRoleAdded);
 	const defaultShiftInfo = {
@@ -79,6 +81,16 @@ const ShiftModal = ({
 		}));
 	}, [formData?.shiftStart, formData?.shiftEnd]);
 
+	// label only (the saved values are unchanged): an overnight shift such as
+	// 22:00-06:00 showed "-8h 0m"; it now shows 8h 0m
+	const shiftDurationLabel = ({ shiftStart, shiftEnd, shiftDuration }) => {
+		const start = moment(shiftStart, "HH:mm");
+		const end = moment(shiftEnd, "HH:mm");
+		if (!start.isValid() || !end.isValid()) return shiftDuration;
+		const mins = (((end.diff(start, "minutes") % 1440) + 1440) % 1440);
+		return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+	};
+
 	const handleClose = () => {
 		onClose();
 		setShowModal(false);
@@ -93,37 +105,65 @@ const ShiftModal = ({
 	};
 
 	const handleSubmit = async () => {
-		const { data } = shift?._id
-			? await SchedulerService.updateShift(formData, shift._id)
-			: await SchedulerService.addWorkShifts(formData);
-		handleClose();
-		setNewShiftAdded(data);
+		if (isSubmitting || isDeleting) return;
+		setIsSubmitting(true);
+		try {
+			const { data } = shift?._id
+				? await SchedulerService.updateShift(formData, shift._id)
+				: await SchedulerService.addWorkShifts(formData);
+			handleClose();
+			setNewShiftAdded(data);
+		} catch (error) {
+			toast({
+				title: shift?._id ? "Failed to update shift" : "Failed to add shift",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	const deleteShift = async () => {
-		const { data } = await SchedulerService.deleteShift(formData, shift._id);
-		setEmployeeShifts((prev) =>
-			prev.map((employee) => {
-				if (employee?.name === shift?.empName) {
-					return {
-						...employee,
-						shifts: employee.shifts.map((s) =>
-							s?.shiftId === data ? { ...s, shift: "Off", shiftId: null } : s,
-						),
-					};
-				}
-				return employee;
-			}),
-		);
+		if (isSubmitting || isDeleting) return;
+		setIsDeleting(true);
+		try {
+			const { data } = await SchedulerService.deleteShift(formData, shift._id);
+			setEmployeeShifts((prev) =>
+				prev.map((employee) => {
+					if (employee?.name === shift?.empName) {
+						return {
+							...employee,
+							shifts: employee.shifts.map((s) =>
+								s?.shiftId === data ? { ...s, shift: "Off", shiftId: null } : s,
+							),
+						};
+					}
+					return employee;
+				}),
+			);
 
-		toast({
-			title: "Success",
-			description: "Employee shift deleted successfully.",
-			status: "success",
-			duration: 4000,
-			isClosable: true,
-		});
-		handleClose();
+			toast({
+				title: "Success",
+				description: "Employee shift deleted successfully.",
+				status: "success",
+				duration: 4000,
+				isClosable: true,
+			});
+			handleClose();
+		} catch (error) {
+			toast({
+				title: "Failed to delete shift",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsDeleting(false);
+		}
 	};
 
 	return (
@@ -256,7 +296,7 @@ const ShiftModal = ({
 					/>
 				</HStack>
 				{formData?.shiftDuration && (
-					<TextTitle size="sm" title={`Shift duration: ${formData?.shiftDuration}`} />
+					<TextTitle size="sm" title={`Shift duration: ${shiftDurationLabel(formData)}`} />
 				)}
 				{!shift?._id && (
 					<Checkbox
@@ -277,6 +317,8 @@ const ShiftModal = ({
 						size="sm"
 						name="Delete Shift"
 						onOpen={deleteShift}
+						isLoading={isDeleting}
+						isDisabled={isSubmitting}
 						hover="none"
 					/>
 				) : (
@@ -288,8 +330,10 @@ const ShiftModal = ({
 						!formData?.shiftStart ||
 						formData?.shiftStart === "Off" ||
 						!formData?.role ||
-						formData?.role === "Role"
+						formData?.role === "Role" ||
+						isDeleting
 					}
+					isLoading={isSubmitting}
 					name={`${shift?._id ? "Save" : "Add"}`}
 					onOpen={handleSubmit}
 					hover="none"

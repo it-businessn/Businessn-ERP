@@ -9,6 +9,7 @@ import {
 	Td,
 	Tr,
 	useDisclosure,
+	useToast,
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
@@ -104,12 +105,22 @@ const Opportunities = () => {
 		companyName: company,
 	});
 
+	const toast = useToast();
+
 	useEffect(() => {
 		const updateOpportunity = async () => {
 			try {
 				await LeadsService.updateLeadInfo(formData, formData?.id);
 				fetchAllOpportunities();
-			} catch (error) {}
+			} catch (error) {
+				toast({
+					title: "Failed to update lead",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			}
 		};
 		const updateAgentsLead = async () => {
 			try {
@@ -127,7 +138,15 @@ const Opportunities = () => {
 					await UserService.updateUserInfoById({ leads: [formData?.id] }, agent._id);
 					return;
 				}
-			} catch (error) {}
+			} catch (error) {
+				toast({
+					title: "Failed to assign lead",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			}
 		};
 		if (formData?.id) {
 			updateOpportunity();
@@ -184,7 +203,7 @@ const Opportunities = () => {
 		try {
 			await LeadsService.deleteLead({}, deleteRecord);
 			setIsAdded((prev) => !prev);
-			setShowConfirmationPopUp(true);
+			setShowConfirmationPopUp(false);
 		} catch (error) {
 			console.error(error);
 		}

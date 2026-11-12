@@ -119,7 +119,12 @@ const ChangePassword = ({ setPasswordMode, setError, error }) => {
 							onChange={handlePasswordChange}
 						/>
 						<InputRightElement>
-							<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
+							<Button
+								size="sm"
+								variant="unstyled"
+								onClick={handleTogglePassword}
+								aria-label={showPassword ? "Hide password" : "Show password"}
+							>
 								{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 							</Button>
 						</InputRightElement>
@@ -137,7 +142,12 @@ const ChangePassword = ({ setPasswordMode, setError, error }) => {
 							// onBlur={validatePasswordMatch}
 						/>
 						<InputRightElement>
-							<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
+							<Button
+								size="sm"
+								variant="unstyled"
+								onClick={handleTogglePassword}
+								aria-label={showPassword ? "Hide password" : "Show password"}
+							>
 								{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 							</Button>
 						</InputRightElement>
@@ -154,7 +164,12 @@ const ChangePassword = ({ setPasswordMode, setError, error }) => {
 							onBlur={validatePasswordMatch}
 						/>
 						<InputRightElement>
-							<Button size="sm" variant="unstyled" onClick={handleTogglePassword}>
+							<Button
+								size="sm"
+								variant="unstyled"
+								onClick={handleTogglePassword}
+								aria-label={showPassword ? "Hide password" : "Show password"}
+							>
 								{showPassword ? <ViewOffIcon /> : <ViewIcon />}
 							</Button>
 						</InputRightElement>

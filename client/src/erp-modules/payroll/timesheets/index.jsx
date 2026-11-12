@@ -241,7 +241,7 @@ const Timesheets = () => {
 				title: "Action Incomplete!",
 				description: "Please check the row to apply the action.",
 				status: "warning",
-				duration: 1500,
+				duration: 4000,
 				isClosable: true,
 			});
 			return;

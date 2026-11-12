@@ -51,7 +51,15 @@ export const ROEForm = ({ formData, employer, payPeriodType, isCopy }) => {
 	const er = formData?.employerInfo || {};
 	const employerBlock = { ...employer, name: employer?.name || er.name };
 	return (
-		<Box position="relative" bg="white" fontFamily="Arial, sans-serif" fontSize="10px" p={6}>
+		<Box
+			position="relative"
+			bg="white"
+			fontFamily="Arial, sans-serif"
+			fontSize="10px"
+			p={6}
+			minW="760px"
+			sx={{ "@media print": { minWidth: "auto" } }}
+		>
 			{!isCopy && (
 				<Text
 					position="absolute"

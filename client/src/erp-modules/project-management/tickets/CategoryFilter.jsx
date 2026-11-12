@@ -20,6 +20,11 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 		: data?.statuses?.find(({ status }) => status === TICKET_ACTION.PROGRESS)?.count;
 
 	const totalTickets = (pending || 0) + (onHold || 0) + (inProgress || 0);
+	// a missing status count made the percentages NaN, the gradient was dropped
+	// and the bar showed full; an empty category now shows an empty bar
+	const pct = (n) => (totalTickets ? (n / totalTickets) * 100 : 0);
+	const openPct = pct(pending || 0);
+	const holdPct = pct((pending || 0) + (onHold || 0));
 
 	const handleTabChange = (index) => {
 		setSelectedTab(index);
@@ -82,18 +87,13 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 
 				<Box>
 					<Progress
-						value={100}
+						value={totalTickets ? 100 : 0}
 						size="sm"
 						borderRadius="full"
 						bg="gray.100"
 						sx={{
 							"& > div": {
-								backgroundImage: `linear-gradient(to right, 
-                  var(--open) ${(pending / totalTickets) * 100}%, 
-                  var(--ticket_hold) ${(pending / totalTickets) * 100}% ${
-									((pending + onHold) / totalTickets) * 100
-								}%, 
-                  var(--ticket_progress) ${((pending + onHold) / totalTickets) * 100}% 100%)`,
+								backgroundImage: `linear-gradient(to right, var(--open) ${openPct}%, var(--ticket_hold) ${openPct}% ${holdPct}%, var(--ticket_progress) ${holdPct}% 100%)`,
 							},
 						}}
 					/>

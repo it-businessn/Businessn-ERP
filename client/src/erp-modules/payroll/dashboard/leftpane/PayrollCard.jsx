@@ -20,7 +20,7 @@ const PayrollCard = ({ payGroupSchedule, closestRecordIndex }) => {
 					closestRecordIndex={closestRecordIndex || 0}
 				/>
 			) : (
-				<Text>No pay periods available</Text>
+				payGroupSchedule && <Text>No pay periods available</Text>
 			)}
 		</Box>
 	);

@@ -186,6 +186,14 @@ const ROE = () => {
 				setEmployer(employerRes?.data || null);
 			} catch (error) {
 				console.error(error);
+				setEmployees((prev) => prev || []);
+				toast({
+					title: "Could not load ROE data",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		load();
@@ -242,6 +250,13 @@ const ROE = () => {
 			}));
 		} catch (error) {
 			console.error(error);
+			toast({
+				title: "Could not load earnings. Please try again.",
+				description: error?.response?.data?.message,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		} finally {
 			setLoading((l) => ({ ...l, earnings: false }));
 		}
@@ -319,6 +334,13 @@ const ROE = () => {
 			await PayrollService.addEmployeeROEEmploymentInfo(toPayload(formData));
 		} catch (error) {
 			console.error(error);
+			toast({
+				title: "Draft not saved — your entries are still on screen.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "warning",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 
@@ -445,13 +467,14 @@ const ROE = () => {
 				sx={tabStyleCss}
 				isLazy
 			>
-				<TabList bg="gray.50" px={6} pt={5} pb={2}>
+				<TabList bg="gray.50" px={6} pt={5} pb={2} overflowX="auto">
 					{tabs.map(({ name, enabled }) => (
 						<Tab
-							w="100%"
+							w={{ base: "auto", md: "100%" }}
+							flexShrink={{ base: 0, md: 1 }}
 							key={name}
 							fontWeight="semibold"
-							px={8}
+							px={{ base: 3, md: 8 }}
 							isDisabled={!enabled}
 							_selected={{ color: "white", bg: "var(--banner_bg)" }}
 						>

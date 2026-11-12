@@ -7,6 +7,7 @@ import {
 	InputRightElement,
 	SimpleGrid,
 	useDisclosure,
+	useToast,
 } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import SendEmailList from "erp-modules/payroll/employees/listview/SendEmailList";
@@ -33,6 +34,7 @@ const AffiliateListView = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { isOpen: showOnboard, onOpen: openOnboard, onClose: closeOnboard } = useDisclosure();
+	const toast = useToast();
 
 	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
 		usePaygroup(company, false);
@@ -52,9 +54,19 @@ const AffiliateListView = () => {
 				setFilteredAffiliates(data);
 			} catch (error) {
 				console.error(error);
+				setAffiliates([]);
+				setFilteredAffiliates([]);
+				toast({
+					title: "Could not load affiliates",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		fetchAllAffiliates();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [company]);
 
 	const handleClick = (val) => {};
@@ -128,10 +140,10 @@ const AffiliateListView = () => {
 						size="sm"
 						icon={<FaPlus color="#fff" fontSize="14px" />}
 						handleClick={openOnboard}
-						bg="#381c34"
+						bg="var(--banner_bg)"
 						color="white"
 						_hover={{
-							bg: "#4e2847",
+							bg: "var(--nav_menu)",
 							transform: "scale(1.02)",
 							transition: "all 0.2s ease-in-out",
 						}}

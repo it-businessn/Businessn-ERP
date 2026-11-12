@@ -81,10 +81,14 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 			value: getFormattedAddress(address),
 		},
 	];
+	// stored as an array of { name }, as [] (bulk import) or as a plain name
+	const assigneeName = Array.isArray(primaryAssignee)
+		? primaryAssignee[0]?.name ?? ""
+		: primaryAssignee ?? "";
 	const DETAILS2 = [
 		{
 			title: "Name",
-			value: primaryAssignee[0].name,
+			value: assigneeName,
 		},
 		{
 			title: "Email",
@@ -103,7 +107,7 @@ const ContactDetailsInfo = ({ contact, showLogForm }) => {
 				</Avatar>
 				<Box textAlign="center">
 					<TextTitle size="xl" title={name} />
-					<TextTitle size="sm" title={`Primary Contact: ${primaryAssignee[0].name}`} />
+					<TextTitle size="sm" title={`Primary Contact: ${assigneeName || "-"}`} />
 				</Box>
 			</VStack>
 			<HStack spacing="5" justifyContent="center">

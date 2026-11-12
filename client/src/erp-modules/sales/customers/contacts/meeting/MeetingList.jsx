@@ -4,12 +4,12 @@ import {
 	Card,
 	CardBody,
 	Flex,
+	Link,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import moment from "moment";
-import { Link } from "react-router-dom";
 
 const MeetingList = ({ meetings }) => {
 	return (
@@ -63,7 +63,7 @@ const MeetingList = ({ meetings }) => {
 								</Text>
 								<Text fontWeight={"bold"}>
 									Meeting Link:{" "}
-									<Link href={meetingLink} isexternal={true}>
+									<Link href={meetingLink} isExternal wordBreak="break-all">
 										<Text as="span" color="blue.400">
 											{meetingLink}
 										</Text>

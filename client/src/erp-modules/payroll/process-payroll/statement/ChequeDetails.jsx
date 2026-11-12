@@ -3,7 +3,7 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { PAYRUN_TYPE_CODE } from "constant";
 import { toWords } from "utils";
-import { getAmount } from "utils/convertAmt";
+import { getSignedAmount } from "utils/convertAmt";
 import { monthDayYearFormat } from "utils/convertDate";
 import PayStubHeader from "./PayStubHeader";
 
@@ -43,7 +43,7 @@ const ChequeDetails = ({ data, companyInfo, flex, isMobile }) => {
 	data.currentNetPay = isSuperficialType ? 0 : data.currentNetPay;
 	const paymentType = isManualType ? "Manual" : "DIRECT DEPOSIT";
 
-	const netPay = getAmount(data?.currentNetPay);
+	const netPay = getSignedAmount(data?.currentNetPay);
 	const amountInWords = toWords.convert(data?.currentNetPay);
 
 	return isMobile ? (

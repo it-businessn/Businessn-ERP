@@ -34,14 +34,23 @@ const DateFilterPopup = ({
 				ranges: {
 					Today: [TODAY_DATE, TODAY_DATE],
 					Yesterday: [yesterday, yesterday],
-					"Last pay period": [
-						getMomentDate(lastRecord?.payPeriodStartDate),
-						getMomentDate(lastRecord?.payPeriodEndDate),
-					],
-					"This pay period": [
-						getMomentDate(closestRecord?.payPeriodStartDate),
-						getMomentDate(closestRecord?.payPeriodEndDate),
-					],
+					// only offered when the pay period exists (a missing one meant "today")
+					...(lastRecord?.payPeriodStartDate
+						? {
+								"Last pay period": [
+									getMomentDate(lastRecord.payPeriodStartDate),
+									getMomentDate(lastRecord.payPeriodEndDate),
+								],
+							}
+						: {}),
+					...(closestRecord?.payPeriodStartDate
+						? {
+								"This pay period": [
+									getMomentDate(closestRecord.payPeriodStartDate),
+									getMomentDate(closestRecord.payPeriodEndDate),
+								],
+							}
+						: {}),
 					"Last 7 Days": [moment().subtract(6, "days"), moment()],
 					"Last 30 Days": [moment().subtract(29, "days"), moment()],
 					"This Year": [moment().startOf("year"), moment().endOf("year")],

@@ -66,9 +66,9 @@ const CrewList = ({ company, refresh, setRefresh, employees, managers, costCente
 										<LeftIconButton
 											name="Edit Configuration"
 											size="xs"
-											icon={<HiPencil color="#4e2847" />}
+											icon={<HiPencil color="var(--nav_menu)" />}
 											handleClick={() => setEditRecord(crew)}
-											color="#4e2847"
+											color="var(--nav_menu)"
 											_hover={{
 												bg: "transparent",
 												transform: "scale(1.02)",

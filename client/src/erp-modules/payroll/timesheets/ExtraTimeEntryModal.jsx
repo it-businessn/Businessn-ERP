@@ -1,4 +1,4 @@
-import { HStack, Stack, useDisclosure } from "@chakra-ui/react";
+import { HStack, Stack, useDisclosure, useToast } from "@chakra-ui/react";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import DateTimeFormControl from "components/ui/form/DateTimeFormControl";
 import SelectFormControl from "components/ui/form/SelectFormControl";
@@ -20,6 +20,7 @@ const ExtraTimeEntryModal = ({
 	selectedPayGroupOption,
 }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const toast = useToast();
 	const initialFormData = {
 		type: "",
 		clockIn: moment(),
@@ -85,6 +86,13 @@ const ExtraTimeEntryModal = ({
 			handleClose();
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
+			toast({
+				title: "Could not add the time entry.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -160,7 +168,7 @@ const ExtraTimeEntryModal = ({
 				<ActionButtonGroup
 					bg="var(--banner_bg)"
 					submitBtnName={"Add"}
-					isDisabled={formData?.fullName === ""}
+					isDisabled={!formData?.employeeId || !formData?.type}
 					isLoading={isSubmitting}
 					onClose={handleClose}
 					onOpen={handleSubmit}

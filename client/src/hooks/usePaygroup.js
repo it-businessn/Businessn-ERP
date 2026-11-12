@@ -66,12 +66,13 @@ const usePaygroup = (company, refresh, year = CURRENT_YEAR, isReport = false) =>
 				closestPayPeriod = schedules[schedules.length - 1];
 			}
 			if (isReport) {
-				const lastIndex = schedules.length - 1;
+				// no schedule for the selected year: no pay period instead of a crash
+				const lastIndex = (schedules?.length ?? 0) - 1;
 				const closestPayPeriodIndex = closestPayPeriod
 					? schedules?.findIndex(({ payPeriod }) => payPeriod === closestPayPeriod?.payPeriod)
 					: lastIndex;
 
-				setClosestRecord(closestPayPeriod || schedules[lastIndex]);
+				setClosestRecord(closestPayPeriod || schedules?.[lastIndex] || null);
 				setClosestRecordIndex(closestPayPeriodIndex);
 			} else {
 				const getClosestScheduleByProcessingDate = (schedules) => {

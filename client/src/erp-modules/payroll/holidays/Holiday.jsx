@@ -21,7 +21,7 @@ import { StatHolidayTable } from "./stat-holiday";
 const Holiday = ({ company }) => {
 	const currentCompany = company || LocalStorageService.getItem("selectedCompany");
 
-	const [holidays, setHolidays] = useState([]);
+	const [holidays, setHolidays] = useState(null);
 	const [name, setName] = useState("");
 	const [date, setDate] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +59,7 @@ const Holiday = ({ company }) => {
 				await SettingService.updateHoliday({ name, date, company: currentCompany }, editingId);
 				if (showYearOf(date)) {
 					setHolidays(
-						holidays.map((holiday) =>
+						(holidays || []).map((holiday) =>
 							holiday._id === editingId ? { ...holiday, name, date } : holiday,
 						),
 					);
@@ -77,7 +77,7 @@ const Holiday = ({ company }) => {
 					date,
 					company: currentCompany,
 				});
-				if (showYearOf(date)) setHolidays([...holidays, data]);
+				if (showYearOf(date)) setHolidays([...(holidays || []), data]);
 				toast({
 					title: "Success",
 					description: "Holiday added successfully",

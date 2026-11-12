@@ -42,7 +42,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 		{ name: "Days Open", key: "ticketDaysOpened" },
 		{ name: "Status", key: "" },
 	];
-	const [ticketData, setTicketData] = useState([]);
+	const [ticketData, setTicketData] = useState(null);
 	const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
@@ -68,6 +68,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 				setTicketData(data);
 			} catch (error) {
 				console.error(error);
+				setTicketData([]);
 			}
 		};
 		const fetchAggregateTickets = async () => {
@@ -128,7 +129,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 		}
 	};
 
-	const sortedData = [...ticketData].sort((a, b) => {
+	const sortedData = [...(ticketData ?? [])].sort((a, b) => {
 		if (!sortConfig.key) return 0;
 		const aVal = a[sortConfig.key];
 		const bVal = b[sortConfig.key];

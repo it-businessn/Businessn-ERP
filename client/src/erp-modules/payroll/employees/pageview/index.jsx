@@ -174,13 +174,14 @@ const Employees = () => {
 					isLazy
 					lazyBehavior="unmount"
 				>
-					<TabList bg="gray.50" justifyContent="space-between">
+					<TabList bg="gray.50" justifyContent="space-between" overflowX="auto">
 						{EMP_INFO_TABS.map(({ name }) => (
 							<Tab
-								w="100%"
+								w={{ base: "auto", md: "100%" }}
 								key={name}
+								flexShrink={{ base: 0, md: 1 }}
 								fontWeight="semibold"
-								px={8}
+								px={{ base: 3, md: 8 }}
 								_selected={{ color: "white", bg: "var(--banner_bg)", borderRadius: 0 }}
 							>
 								{name}

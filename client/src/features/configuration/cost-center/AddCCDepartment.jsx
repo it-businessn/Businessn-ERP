@@ -16,11 +16,14 @@ import SettingService from "services/SettingService";
 const AddCCDepartment = ({ isOpen, onClose, cc, addDeptCCId, companyName, addDepartment }) => {
 	const toast = useToast();
 	const [name, setName] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [description, setDescription] = useState("");
 
 	const handleSubmit = async () => {
+		if (isSubmitting) return;
 		try {
 			if (!name.trim()) return;
+			setIsSubmitting(true);
 			const { data } = await SettingService.updateCCDept(
 				{ name, description, companyName },
 				addDeptCCId,
@@ -28,20 +31,21 @@ const AddCCDepartment = ({ isOpen, onClose, cc, addDeptCCId, companyName, addDep
 			toast({
 				title: "Cost Center department added successfully",
 				status: "success",
-				duration: 1500,
-				isClosable: true,
-			});
-			addDepartment(data.deptId, name);
-		} catch (error) {
-			toast({
-				title: "Error",
-				description: error?.response?.data?.message,
-				status: "error",
 				duration: 3000,
 				isClosable: true,
 			});
-		} finally {
+			addDepartment(data.deptId, name);
 			onClose();
+		} catch (error) {
+			toast({
+				title: "Could not add department",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -78,6 +82,7 @@ const AddCCDepartment = ({ isOpen, onClose, cc, addDeptCCId, companyName, addDep
 						size={"sm"}
 						isDisabled={!name || !description}
 						name="Add"
+						isLoading={isSubmitting}
 						onClick={handleSubmit}
 					/>
 				</ModalFooter>

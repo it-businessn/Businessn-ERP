@@ -28,7 +28,7 @@ const EarningInfo = ({
 
 	return (
 		<Stack spacing={4}>
-			<SimpleGrid columns={4} spacing={3}>
+			<SimpleGrid columns={{ base: 1, md: 4 }} spacing={3}>
 				<FormControl>
 					<RequiredLabel required label="Pay Rate" />
 					<Input

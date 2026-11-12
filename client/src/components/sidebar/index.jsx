@@ -66,6 +66,7 @@ const Sidebar = ({
 					)
 				}
 				onClick={handleToggleCollapse}
+				aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
 				position="absolute"
 				right="-12px"
 				top="1rem"

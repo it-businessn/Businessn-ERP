@@ -186,11 +186,17 @@ const SchedulingDashboard = () => {
 			title={""}
 			p={{ base: "0.5em", md: "1.5em", xl: "2em 2.5em", "2xl": "3em 5em" }}
 		>
-			<HStack pb={3} alignItems={"center"} justifyContent={"space-between"} spacing={4}>
+			<HStack
+				pb={3}
+				alignItems={"center"}
+				justifyContent={"space-between"}
+				spacing={4}
+				flexWrap="wrap"
+			>
 				<HStack flex={0.7} alignItems={"center"} justifyContent={"space-between"}>
 					<TextTitle ml={3} title={"Dashboard"} />
 					<Select
-						width="200px"
+						w={{ base: "100%", md: "200px" }}
 						size={"sm"}
 						value={selectedCrew || ""}
 						onChange={(event) => {
@@ -206,7 +212,7 @@ const SchedulingDashboard = () => {
 				</HStack>
 				<HStack flex={0.3}>
 					<Select
-						width="200px"
+						w={{ base: "100%", md: "200px" }}
 						size={"sm"}
 						value={selectedMonth || ""}
 						onChange={(event) => {

@@ -7,6 +7,7 @@ import WorkviewTable from "components/ui/table/WorkviewTable";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS, HRS_DECIMAL_COLS, TOTAL_AMT_HRS_COLS } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAmount } from "utils/convertAmt";
 
@@ -46,7 +47,7 @@ const WorkviewTab = ({
 		<WorkviewTable
 			cols={cols.map((_) => _.key)}
 			isSmall
-			height="calc(100vh - 690px)"
+			height="max(240px, calc(100vh - 690px))"
 			whiteSpace="wrap"
 			textAlign={"center"}
 			overflowX={overflowX}
@@ -95,7 +96,12 @@ const WorkviewTab = ({
 									col?.isPayRate ? (
 										<NormalTextTitle
 											align="end"
-											title={getAmount(row?.payInfoMapResult?.roles?.[col.pair]?.payRate)}
+											title={
+												// no second role: blank, not "$0.00"
+												row?.payInfoMapResult?.roles?.[col.pair]?.payRate == null
+													? ""
+													: getAmount(row.payInfoMapResult.roles[col.pair].payRate)
+											}
 										/>
 									) : TOTAL_AMT_HRS_COLS.includes(col.pair) ? (
 										<TextTitle title={getAmount(row[col.pair])} />
@@ -128,9 +134,13 @@ const WorkviewTab = ({
 									// right={col.key === "" && "0"}
 									// zIndex="1"
 								>
-									{col.isEditable
-										? renderEditableInput(row?.empId?._id, col.pair, fieldValue)
-										: fieldValue}
+									{col.isEditable ? (
+										<Fragment key={`${col.pair ?? col.key}_${String(fieldValue)}`}>
+											{renderEditableInput(row?.empId?._id, col.pair, fieldValue)}
+										</Fragment>
+									) : (
+										fieldValue
+									)}
 								</Td>
 							);
 						})}

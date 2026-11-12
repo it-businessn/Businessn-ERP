@@ -1,4 +1,5 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SettingService from "services/SettingService";
 
 export const ModulesList = ({ modules, handleEdit, handleDelete, setModuleList }) => {
@@ -22,7 +23,7 @@ export const ModulesList = ({ modules, handleEdit, handleDelete, setModuleList }
 	};
 	return (
 		<>
-			<Table variant="simple" w={"30%"}>
+			<Table variant="simple" w={{ base: "100%", md: "30%" }}>
 				<Thead>
 					<Tr>
 						<Th>Name</Th>
@@ -30,6 +31,7 @@ export const ModulesList = ({ modules, handleEdit, handleDelete, setModuleList }
 					</Tr>
 				</Thead>
 				<Tbody>
+					{(!modules || modules?.length === 0) && <EmptyRowRecord data={modules} colSpan={2} />}
 					{modules?.map((module) => (
 						<Tr key={module._id}>
 							<Td>{module.name}</Td>

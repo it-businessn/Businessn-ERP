@@ -10,6 +10,8 @@ export const AddTaskButton = ({ handleAdd, handleEdit, isInner, onNoteIconClick,
 			{!isInner && (
 				<>
 					<Button
+						onClick={handleAdd}
+						aria-label="Add item"
 						size={isFile ? "xs" : "xxs"}
 						display={"flex"}
 						variant="solid"
@@ -23,9 +25,11 @@ export const AddTaskButton = ({ handleAdd, handleEdit, isInner, onNoteIconClick,
 							color: "var(--nav_color)",
 						}}
 					>
-						<AddIcon onClick={handleAdd} />
+						<AddIcon />
 					</Button>
 					<Button
+						onClick={onNoteIconClick}
+						aria-label="Notes"
 						minW={"unset"}
 						display={"flex"}
 						variant="ghost"
@@ -34,12 +38,14 @@ export const AddTaskButton = ({ handleAdd, handleEdit, isInner, onNoteIconClick,
 						_hover={"unset"}
 						size={isFile ? "sm" : "xxs"}
 					>
-						<CgNotes onClick={onNoteIconClick} fontSize={isFile && "1.5em"} />
+						<CgNotes fontSize={isFile && "1.5em"} />
 					</Button>
 				</>
 			)}
 
 			<Button
+				onClick={handleEdit}
+				aria-label="Edit"
 				padding={!isFile && 0}
 				minW={"unset"}
 				display={"flex"}
@@ -50,7 +56,7 @@ export const AddTaskButton = ({ handleAdd, handleEdit, isInner, onNoteIconClick,
 				_hover={"unset"}
 				size={isFile ? "sm" : "xxs"}
 			>
-				<SettingsIcon onClick={handleEdit} fontSize={isFile && "1.5em"} />
+				<SettingsIcon fontSize={isFile && "1.5em"} />
 			</Button>
 		</HStack>
 	);

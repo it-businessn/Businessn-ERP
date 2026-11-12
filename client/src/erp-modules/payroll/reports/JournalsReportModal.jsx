@@ -89,6 +89,7 @@ const JournalsReportModal = ({
 				objectFit="cover"
 				height={"50px"}
 				w={"450px"}
+				maxW="100%"
 				mx="auto"
 				src={payStubLogo}
 				alt="Company logo"
@@ -101,14 +102,14 @@ const JournalsReportModal = ({
 					<TextTitle title="Date Pulled:" />
 				</VStack>
 				<VStack flex={0.6} spacing={0}>
-					<NormalTextTitle title={companyDetails.name} />
-					<NormalTextTitle title={companyDetails.registration_number} />
-					<NormalTextTitle title={dayMonthYear(reportData?.updatedOn)} />
+					<NormalTextTitle whiteSpace="normal" title={companyDetails?.name} />
+					<NormalTextTitle whiteSpace="normal" title={companyDetails?.registration_number} />
+					<NormalTextTitle whiteSpace="normal" title={dayMonthYear(reportData?.updatedOn)} />
 				</VStack>
 			</HStack>
 			<Divider />
 			{reportData && (
-				<Table variant="simple" size="small">
+				<Table variant="simple" size="sm">
 					<Thead>
 						<Tr>
 							<Th />

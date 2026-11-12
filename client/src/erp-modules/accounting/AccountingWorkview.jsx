@@ -42,6 +42,7 @@ const ACTIONS = [
 const AccountingWorkview = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 
+	const [isPosting, setIsPosting] = useState(false);
 	const [accounts, setAccounts] = useState(null);
 	const [totalCredit, setTotalCredit] = useState(0);
 	const [totalDebit, setTotalDebit] = useState(0);
@@ -99,13 +100,15 @@ const AccountingWorkview = () => {
 	};
 
 	const handleSubmit = async () => {
+		if (isPosting) return; // a double click posted the journal twice
+		setIsPosting(true);
 		try {
 			formData.entries = rows;
 			if (totalCredit !== totalDebit) {
 				toast({
 					title: `Total Credit ${getAmount(totalCredit)} and Total Debit ${getAmount(
 						totalDebit,
-					)} do not match."`,
+					)} do not match.`,
 					status: "error",
 					duration: 5000,
 					isClosable: true,
@@ -115,19 +118,22 @@ const AccountingWorkview = () => {
 			const { data } = await AccountService.addJournalEntry(formData);
 			if (data)
 				toast({
-					title: "Entry logged successful!",
+					title: "Entry logged successfully!",
 					status: "success",
-					duration: 1500,
+					duration: 3000,
 					isClosable: true,
 				});
 		} catch (error) {
 			console.error(error);
 			toast({
-				title: "Please try again.",
+				title: "The entry was not logged.",
+				description: error?.response?.data?.message || "Please try again.",
 				status: "error",
-				duration: 1500,
+				duration: 5000,
 				isClosable: true,
 			});
+		} finally {
+			setIsPosting(false);
 		}
 	};
 
@@ -226,10 +232,10 @@ const AccountingWorkview = () => {
 										<NormalTextTitle size="sm" title="Totals" />
 									</Td>
 									<Td>
-										<TextTitle title={totalDebit} />
+										<TextTitle title={Number(totalDebit || 0).toFixed(2)} />
 									</Td>
 									<Td>
-										<TextTitle title={totalCredit} />
+										<TextTitle title={Number(totalCredit || 0).toFixed(2)} />
 									</Td>
 								</Tr>
 							</Tbody>
@@ -246,6 +252,7 @@ const AccountingWorkview = () => {
 							isDisabled={!rows[0].accountName}
 							size="xs"
 							name="Post"
+							isLoading={isPosting}
 							onOpen={handleSubmit}
 						/>
 					</Stack>

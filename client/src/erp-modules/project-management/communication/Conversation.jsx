@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Box, Button, HStack, Input, Text, VStack, useToast } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
 import { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
@@ -18,6 +18,8 @@ const Conversation = ({
 }) => {
 	const [message, setMessage] = useState("");
 	const [isRefresh, setIsRefresh] = useState(false);
+	const [sending, setSending] = useState(false);
+	const toast = useToast();
 
 	useEffect(() => {
 		const fetchGroupConversations = async () => {
@@ -68,11 +70,14 @@ const Conversation = ({
 			});
 			return { id: data._id, type: data.conversationType };
 		} catch (error) {
-			setMessage("An error occurred. Please try again.", error);
+			console.error("Error creating conversation:", error);
+			throw error;
 		}
 	};
 
 	const sendMessage = async () => {
+		if (!message?.trim() || sending) return;
+		setSending(true);
 		try {
 			const { id, type } = await createConversation();
 
@@ -94,11 +99,20 @@ const Conversation = ({
 			setIsRefresh((prev) => !prev);
 			setMessage("");
 		} catch (error) {
-			setMessage("An error occurred. Please try again.", error);
+			toast({
+				title: "Message not sent",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		} finally {
+			setSending(false);
 		}
 	};
 	const handleKeyPress = (event) => {
 		if (event.key === "Enter") {
+			if (!message?.trim() || sending) return;
 			sendMessage();
 		}
 	};
@@ -151,7 +165,8 @@ const Conversation = ({
 
 					<Button
 						onClick={sendMessage}
-						isDisabled={!selectedGroup}
+						isDisabled={!selectedGroup || !message?.trim() || sending}
+						isLoading={sending}
 						variant={"ghost"}
 						size={"sm"}
 						rightIcon={<BsFillSendFill />}

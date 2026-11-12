@@ -65,7 +65,7 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, setRefresh, employees,
 			toast({
 				title: "Crew added successfully",
 				status: "success",
-				duration: 1500,
+				duration: 3000,
 				isClosable: true,
 				position: "top-right",
 			});
@@ -74,6 +74,13 @@ const AddCrew = ({ company, isOpen, onClose, costCenters, setRefresh, employees,
 			onClose();
 		} catch (error) {
 			console.log("An error occurred. Please try again.", error);
+			toast({
+				title: "Failed to add crew",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		} finally {
 			setIsSubmitting(false);
 		}
