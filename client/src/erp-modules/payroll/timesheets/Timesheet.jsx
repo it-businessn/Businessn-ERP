@@ -4,8 +4,10 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 // import { GoPlusCircle } from "react-icons/go";
 // import { TbCornerRightUp } from "react-icons/tb";
@@ -32,6 +34,19 @@ import {
 	TIMESHEET_STATUS_LABEL,
 } from "./data";
 import ExtraTimeEntryModal from "./ExtraTimeEntryModal";
+
+// TABLE-SORT: read-only columns only. Role, Pay Type, Start Time and End Time
+// are edited in the row, so sorting on them would move the row while editing.
+const TIMESHEET_SORT_KEYS = {
+	[COLS.EMP_NAME]: "employeeId.fullName",
+	"Worked Date": "clockIn",
+	Department: (row) => row.department ?? row.positions?.[0]?.employmentDepartment,
+	Origin: "source",
+	"Pay Rate": "param_pay_type",
+	"Total Hours": ({ payType, statDayHours, totalHours }) =>
+		payType === PAY_TYPES_TITLE.STAT_PAY ? Number(statDayHours || 0) : totalHours || "",
+	Status: "approveStatus",
+};
 
 const Timesheet = ({
 	company,
@@ -98,6 +113,7 @@ const Timesheet = ({
 	const [rowId, setRowId] = useState("");
 	const [formData, setFormData] = useState(initialFormData);
 	const [isPayTypeChanged, setIsPayTypeChanged] = useState(false);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(timesheetData);
 
 	useEffect(() => {
 		const fetchAllTimecards = async () => {
@@ -698,7 +714,10 @@ const Timesheet = ({
 										/>
 									</Th>
 								) : (
-									<Th
+									<SortableTh
+										sortKey={TIMESHEET_SORT_KEYS[col]}
+										sortConfig={sortConfig}
+										onSort={requestSort}
 										position={colIndex === 0 && "sticky"}
 										left={colIndex === 0 && "0"}
 										zIndex={colIndex === 0 && 1}
@@ -711,7 +730,7 @@ const Timesheet = ({
 											whiteSpace={col.includes("Hours") && "wrap"}
 											title={col}
 										/>
-									</Th>
+									</SortableTh>
 								),
 							)}
 						</Tr>
@@ -721,7 +740,7 @@ const Timesheet = ({
 							<EmptyRowRecord data={timesheetData} colSpan={cols?.length} progress={progress} />
 						)}
 						{!loading &&
-							timesheetData?.map(
+							sortedItems?.map(
 								(
 									{
 										_id,

@@ -1,19 +1,36 @@
 import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useGroup from "hooks/useGroup";
 import useSelectUser from "hooks/useSelectUser";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import { BsPlus } from "react-icons/bs";
 import CalendarService from "services/CalendarService";
 import { formatDate } from "utils/convertDate";
 import AddEvent from "../../calendar/AddEvent";
+import LocalStorageService from "services/LocalStorageService";
+
+// TABLE-SORT: the From / To cells show the (local) date followed by the time
+const pad = (n) => String(n).padStart(2, "0");
+const dateTimeSortValue = (date, time) => {
+	if (!date) return null;
+	const d = new Date(date);
+	if (Number.isNaN(d.getTime())) return null;
+	return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${time ?? ""}`.trim();
+};
+const byFrom = (item) => dateTimeSortValue(item.fromDate, item.fromTime);
+const byTo = (item) => dateTimeSortValue(item.toDate, item.toTime);
+// keys follow the cell order of each row
+const SORT_KEYS_BY_INDEX = ["description", byFrom, byTo, "eventLink", "location"];
 
 const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user, company }) => {
 	const [showEventForm, setShowEventForm] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [data, setData] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(data);
 	const { selectedUser } = useSelectUser(user);
 	const groups = useGroup(company, false, showEventForm);
 
@@ -74,16 +91,24 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 						setShowEventForm(false);
 					}}
 					groups={groups}
+					// BUG-CAL-01: the dashboard opened "New" without the company and the user,
+					// so the event was saved without them; like the calendar page, the
+					// creator is the signed-in user
+					company={company}
+					user={LocalStorageService.getItem("user")}
 				/>
 			)}
 			<Table variant={"simple"} size={"small"}>
 				<Thead>
 					<Tr>
-						{cols?.map((col) =>
+						{cols?.map((col, index) =>
 							col === "hideCol1" || col === "hideCol2" ? (
 								<Th fontSize={"xs"} key={col} />
 							) : (
-								<Th
+								<SortableTh
+									sortKey={SORT_KEYS_BY_INDEX[index]}
+									sortConfig={sortConfig}
+									onSort={requestSort}
 									fontSize={"xs"}
 									key={col}
 									textAlign={
@@ -91,14 +116,14 @@ const CalendarTable = ({ cols, setIsRefresh, filterText, filter, setStats, user,
 									}
 								>
 									{col}
-								</Th>
+								</SortableTh>
 							),
 						)}
 					</Tr>
 				</Thead>
 				<Tbody>
 					{(!data || data?.length === 0) && <EmptyRowRecord data={data} colSpan={cols?.length} />}
-					{data?.map((item) => (
+					{sortedItems?.map((item) => (
 						<Tr key={item._id}>
 							<Td pl={5} fontSize={"xs"} whiteSpace={"wrap"} width={"100px"}>
 								{item.description}

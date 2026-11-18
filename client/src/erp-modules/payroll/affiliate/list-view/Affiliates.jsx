@@ -13,11 +13,23 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import { COLS } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import { HiEye, HiPencil } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 
+const SORT_KEYS = {
+	[COLS.EMP_NAME]: ({ firstName, middleName, lastName }) =>
+		`${firstName} ${middleName || ""} ${lastName}`,
+	Department: (row) => row?.positions?.[0]?.employmentDepartment,
+	Role: "employmentRole",
+	"Employee No": "employeeNo",
+	"Badge ID": (row) => row?.positions?.[0]?.timeManagementBadgeID,
+	Status: "payrollStatus",
+};
+
 const Affiliates = ({ affiliates }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(affiliates);
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.AFFILIATE}/info`;
 	const navigate = useNavigate();
 
@@ -27,7 +39,11 @@ const Affiliates = ({ affiliates }) => {
 	const nameBoxBg = useColorModeValue("blue.50", "blue.900");
 	const nameColor = useColorModeValue("blue.600", "blue.200");
 
-	const handleClick = (id) => {
+	// BUG-AFF-01: empId is sometimes the id and sometimes the populated employee;
+	// the row passed the whole object and opened /info/[object Object] or undefined
+	const handleClick = (emp) => {
+		const id = emp?._id || emp;
+		if (!id || typeof id !== "string") return;
 		navigate(`${empPath}/${id}/0`);
 	};
 
@@ -71,6 +87,9 @@ const Affiliates = ({ affiliates }) => {
 			top={-1}
 			zIndex={1}
 			textAlign="left"
+			sortKeys={SORT_KEYS}
+			sortConfig={sortConfig}
+			onSort={requestSort}
 		>
 			<Tbody>
 				{(!affiliates || affiliates?.length === 0) && (
@@ -81,7 +100,7 @@ const Affiliates = ({ affiliates }) => {
 						description="Add member to see them listed here"
 					/>
 				)}
-				{affiliates?.map(
+				{sortedItems?.map(
 					({
 						_id,
 						firstName,
@@ -151,7 +170,7 @@ const Affiliates = ({ affiliates }) => {
 											aria-label="View details"
 											onClick={(e) => {
 												e.stopPropagation();
-												handleClick(empId._id);
+												handleClick(empId);
 											}}
 										/>
 										<IconButton
@@ -162,7 +181,7 @@ const Affiliates = ({ affiliates }) => {
 											aria-label="Edit employee"
 											onClick={(e) => {
 												e.stopPropagation();
-												handleClick(empId._id);
+												handleClick(empId);
 											}}
 										/>
 									</HStack>

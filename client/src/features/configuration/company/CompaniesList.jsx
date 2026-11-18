@@ -1,20 +1,27 @@
 import { EditIcon } from "@chakra-ui/icons";
 import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
+import useSortableData from "hooks/useSortableData";
 
 export const CompaniesList = ({ companies, handleEdit }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(companies);
 	return (
 		<Table variant="simple" size="sm">
 			<Thead>
 				<Tr>
-					<Th>Name</Th>
-					<Th>Registration Number</Th>
+					<SortableTh sortKey="name" sortConfig={sortConfig} onSort={requestSort}>
+						Name
+					</SortableTh>
+					<SortableTh sortKey="registration_number" sortConfig={sortConfig} onSort={requestSort}>
+						Registration Number
+					</SortableTh>
 					<Th>Action</Th>
 				</Tr>
 			</Thead>
 			<Tbody>
 				{(!companies || companies?.length === 0) && <EmptyRowRecord data={companies} colSpan={3} />}
-				{companies?.map((company) => (
+				{sortedItems?.map((company) => (
 					<Tr key={company._id}>
 						<Td>{company.name}</Td>
 						<Td>{company.registration_number}</Td>

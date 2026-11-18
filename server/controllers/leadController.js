@@ -89,6 +89,20 @@ const getOpportunityNames = async (req, res) => {
 	}
 };
 
+// BUG-SEARCH-02: the "Search here" boxes on Opportunities and Lead docket did
+// nothing (the lists ignored any search). `?search=` matches opportunity name,
+// company or e-mail, case-insensitive; the text is escaped, so it is never read
+// as a regular expression, and capped at 100 characters.
+const LEAD_SEARCH_FIELDS = ["opportunityName", "name", "email"];
+const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const leadSearchFilter = (search) => {
+	if (typeof search !== "string") return {};
+	const term = search.trim().slice(0, 100);
+	if (!term) return {};
+	const pattern = new RegExp(escapeRegex(term), "i");
+	return { $or: LEAD_SEARCH_FIELDS.map((field) => ({ [field]: pattern })) };
+};
+
 const getOpportunities = async (req, res) => {
 	const { companyName, filter } = req.params;
 	// const updatedData = { companyName: "Fractional Departments Inc." };
@@ -100,8 +114,9 @@ const getOpportunities = async (req, res) => {
 		limit = parseInt(limit) || 10;
 
 		const skip = (page - 1) * limit;
-		const leads = await Lead.find({ companyName }).skip(skip).limit(limit).sort({ createdOn: -1 });
-		const totalLeads = await Lead.countDocuments({ companyName });
+		const query = { companyName, ...leadSearchFilter(req.query.search) };
+		const leads = await Lead.find(query).skip(skip).limit(limit).sort({ createdOn: -1 });
+		const totalLeads = await Lead.countDocuments(query);
 
 		return res.status(200).json({
 			page,
@@ -136,14 +151,15 @@ const getDisbursedLeads = async (req, res) => {
 const getLeadsNotDisbursed = async (req, res) => {
 	const { companyName, filter } = req.params;
 	try {
-		const totalLeads = await Lead.countDocuments({ isDisbursed: false, companyName });
+		const query = { isDisbursed: false, companyName, ...leadSearchFilter(req.query.search) };
+		const totalLeads = await Lead.countDocuments(query);
 
 		let { page, limit } = req.query;
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 10;
 
 		const skip = (page - 1) * limit;
-		const leads = await Lead.find({ isDisbursed: false, companyName })
+		const leads = await Lead.find(query)
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdOn: -1 });

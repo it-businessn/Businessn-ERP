@@ -1,8 +1,11 @@
 import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
+import useSortableData from "hooks/useSortableData";
 import SettingService from "services/SettingService";
 
 export const ModulesList = ({ modules, handleEdit, handleDelete, setModuleList }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(modules);
 	const handleToggle = async (module) => {
 		try {
 			module.isActive = !module.isActive;
@@ -26,13 +29,15 @@ export const ModulesList = ({ modules, handleEdit, handleDelete, setModuleList }
 			<Table variant="simple" w={{ base: "100%", md: "30%" }}>
 				<Thead>
 					<Tr>
-						<Th>Name</Th>
+						<SortableTh sortKey="name" sortConfig={sortConfig} onSort={requestSort}>
+							Name
+						</SortableTh>
 						<Th>Active</Th>
 					</Tr>
 				</Thead>
 				<Tbody>
 					{(!modules || modules?.length === 0) && <EmptyRowRecord data={modules} colSpan={2} />}
-					{modules?.map((module) => (
+					{sortedItems?.map((module) => (
 						<Tr key={module._id}>
 							<Td>{module.name}</Td>
 							<Td>

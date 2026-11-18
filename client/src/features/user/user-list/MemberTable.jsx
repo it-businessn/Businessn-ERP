@@ -21,8 +21,10 @@ import {
 } from "@chakra-ui/react";
 import { PersonalInfoCard } from "components";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
 import { signUpFormFields } from "config/formfields";
 import { UserSchema } from "config/schema";
+import useSortableData from "hooks/useSortableData";
 import { useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { IoArrowDown } from "react-icons/io5";
@@ -34,6 +36,7 @@ export const MemberTable = (props) => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const [record, setRecord] = useState(null);
 	const [userFormInitialValues, setUserFormInitialValues] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(props?.employees);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const openModal = (employee) => {
@@ -86,10 +89,18 @@ export const MemberTable = (props) => {
 							</HStack>
 						</Th>
 						{/* <Th>Status</Th> */}
-						<Th>Email</Th>
-						<Th>Role</Th>
-						<Th>Department</Th>
-						<Th> Salary</Th>
+						<SortableTh sortKey="email" sortConfig={sortConfig} onSort={requestSort}>
+							Email
+						</SortableTh>
+						<SortableTh sortKey="role" sortConfig={sortConfig} onSort={requestSort}>
+							Role
+						</SortableTh>
+						<SortableTh sortKey="department" sortConfig={sortConfig} onSort={requestSort}>
+							Department
+						</SortableTh>
+						<SortableTh sortKey="annualSalary" sortConfig={sortConfig} onSort={requestSort}>
+							 Salary
+						</SortableTh>
 						<Th></Th>
 					</Tr>
 				</Thead>
@@ -97,7 +108,7 @@ export const MemberTable = (props) => {
 					{(!props?.employees || props?.employees?.length === 0) && (
 						<EmptyRowRecord data={props?.employees} colSpan={6} />
 					)}
-					{props?.employees?.map((member) => (
+					{sortedItems?.map((member) => (
 						<Tr key={member._id}>
 							<Td>
 								<HStack spacing="3">

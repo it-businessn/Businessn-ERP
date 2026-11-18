@@ -1,16 +1,21 @@
-import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, HStack, Table, Tbody, Td, Thead, Tr } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import ContactService from "services/ContactService";
 import LocalStorageService from "services/LocalStorageService";
 import OnboardUserModal from "./OnboardUserModal";
+
+// TABLE-SORT: only the Customer column holds data; the others are action menus
+const SORT_KEYS = { Customer: "leadId.opportunityName" };
 
 const Onboarding = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
@@ -36,6 +41,7 @@ const Onboarding = () => {
 	];
 	const [showAddUser, setShowAddUser] = useState(false);
 	const [contacts, setContacts] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(contacts);
 
 	useEffect(() => {
 		const fetchAllContacts = async () => {
@@ -59,9 +65,15 @@ const Onboarding = () => {
 					<Thead position="sticky" top={-1} zIndex={3}>
 						<Tr>
 							{cols?.map((col, index) => (
-								<Th key={`${col}_${index}`} w="200px">
+								<SortableTh
+									key={`${col}_${index}`}
+									sortKey={SORT_KEYS[col]}
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									w="200px"
+								>
 									<TextTitle size="xs" w="200px" whiteSpace="wrap" title={col} />
-								</Th>
+								</SortableTh>
 							))}
 						</Tr>
 					</Thead>
@@ -69,7 +81,7 @@ const Onboarding = () => {
 						{(!contacts || contacts?.length === 0) && (
 							<EmptyRowRecord data={contacts} colSpan={cols?.length} />
 						)}
-						{contacts?.map(({ _id, leadId }) => (
+						{sortedItems?.map(({ _id, leadId }) => (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 								<Td py={0}>
 									<NormalTextTitle

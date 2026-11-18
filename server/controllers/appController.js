@@ -201,7 +201,6 @@ const signUp = async (req, res) => {
 		manager,
 		phoneNumber,
 		primaryAddress,
-		employmentType,
 	} = req.body;
 	const { streetNumber, city, state, postalCode, country } = primaryAddress || {};
 
@@ -232,7 +231,6 @@ const signUp = async (req, res) => {
 			manager,
 			phoneNumber,
 			primaryAddress: { streetNumber, city, state, postalCode, country },
-			employmentType,
 			password: hashedPassword,
 			fullName: [firstName, middleName, lastName].filter(Boolean).join(" "),
 		};

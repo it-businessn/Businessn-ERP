@@ -4,12 +4,16 @@ import TableLayout from "components/ui/table/TableLayout";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import LocalStorageService from "services/LocalStorageService";
 import { isNotEnrollerOrEmployee } from "utils";
 import { LEADS_COLS } from "../lead docket/data";
 import LeadContacts from "./LeadContacts";
+
+// TABLE-SORT: column title -> field shown in that column
+const LEADS_SORT_KEYS = { "Opportunity name": "opportunityName", Company: "name", Email: "email" };
 
 export const totalLeads = (name, isManager, leads, userName) => {
 	return isManager
@@ -40,6 +44,8 @@ const ListView = ({
 	const leadList = isNotEnrollerOrEmployee(role)
 		? leads
 		: leads?.filter((lead) => lead.primaryAssignee[0]?.name === fullName);
+
+	const { sortedItems, sortConfig, requestSort } = useSortableData(leadList);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [formData, setFormData] = useState(defaultLeadInfo);
@@ -78,12 +84,19 @@ const ListView = ({
 					company={company}
 				/>
 			) : (
-				<TableLayout css={tabScrollCss} cols={LEADS_COLS} height="calc(100vh - 210px)">
+				<TableLayout
+					css={tabScrollCss}
+					cols={LEADS_COLS}
+					height="calc(100vh - 210px)"
+					sortKeys={LEADS_SORT_KEYS}
+					sortConfig={sortConfig}
+					onSort={requestSort}
+				>
 					<Tbody>
 						{(!leadList || leadList?.length === 0) && (
 							<EmptyRowRecord data={leadList} colSpan={LEADS_COLS?.length} />
 						)}
-						{leadList?.map((_) => (
+						{sortedItems?.map((_) => (
 							<Tr key={_._id}>
 								<Td py={0.5}>
 									<NormalTextTitle

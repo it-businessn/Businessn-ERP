@@ -16,8 +16,10 @@ import {
 } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import DeletePopUp from "components/ui/modal/DeletePopUp";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import SettingService from "services/SettingService";
 import { CURRENT_YEAR, dayMonthYear } from "utils/convertDate";
@@ -41,6 +43,7 @@ export const StatHolidayTable = ({
 	const toast = useToast();
 	const [deleteRecordId, setDeleteRecordId] = useState(null);
 	const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(holidays);
 
 	const handleClose = () => {
 		setShowConfirmationPopUp(false);
@@ -125,8 +128,12 @@ export const StatHolidayTable = ({
 				<Table variant="simple" size="sm">
 					<Thead>
 						<Tr>
-							<Th>Name</Th>
-							<Th>Date</Th>
+							<SortableTh sortKey="name" sortConfig={sortConfig} onSort={requestSort}>
+								Name
+							</SortableTh>
+							<SortableTh sortKey="date" sortConfig={sortConfig} onSort={requestSort}>
+								Date
+							</SortableTh>
 							<Th width="100px">Actions</Th>
 						</Tr>
 					</Thead>
@@ -139,7 +146,7 @@ export const StatHolidayTable = ({
 								description="Add record to see them listed here"
 							/>
 						)}
-						{holidays?.map((holiday) => (
+						{sortedItems?.map((holiday) => (
 							<Tr key={holiday._id}>
 								<Td>{holiday.name}</Td>
 								<Td>{dayMonthYear(holiday.date)}</Td>

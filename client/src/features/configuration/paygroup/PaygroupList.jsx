@@ -1,14 +1,23 @@
 import { EditIcon } from "@chakra-ui/icons";
 import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
+import useSortableData from "hooks/useSortableData";
+
+const sortByPayrollActivated = (paygroup) => (paygroup?.payrollActivated ? "Yes" : "No");
 
 export const PaygroupList = ({ allPaygroup, handleEdit }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(allPaygroup);
 	return (
 		<Table variant="simple" size="sm">
 			<Thead>
 				<Tr>
-					<Th>Name</Th>
-					<Th>Payroll Activated</Th>
+					<SortableTh sortKey="name" sortConfig={sortConfig} onSort={requestSort}>
+						Name
+					</SortableTh>
+					<SortableTh sortKey={sortByPayrollActivated} sortConfig={sortConfig} onSort={requestSort}>
+						Payroll Activated
+					</SortableTh>
 					<Th>Action</Th>
 				</Tr>
 			</Thead>
@@ -16,7 +25,7 @@ export const PaygroupList = ({ allPaygroup, handleEdit }) => {
 				{(!allPaygroup || allPaygroup?.length === 0) && (
 					<EmptyRowRecord data={allPaygroup} colSpan={3} />
 				)}
-				{allPaygroup?.map((paygroup) => (
+				{sortedItems?.map((paygroup) => (
 					<Tr key={paygroup?._id}>
 						<Td>{paygroup?.name}</Td>
 						<Td>{paygroup?.payrollActivated ? "Yes" : "No"}</Td>

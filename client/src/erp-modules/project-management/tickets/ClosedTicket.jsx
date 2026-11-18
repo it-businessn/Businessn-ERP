@@ -9,6 +9,7 @@ import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import useDepartment from "hooks/useDepartment";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import TicketService from "services/TicketService";
@@ -18,6 +19,7 @@ import NoteDetails from "./NoteDetails";
 
 const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees }) => {
 	const [ticketData, setTicketData] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(ticketData);
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const [rowData, setRowData] = useState(null);
@@ -83,12 +85,26 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 				height="calc(100vh - 230px)"
 				specifyPaddingCols={["Category", "Topic", "Description"]}
 				css={tabScrollCss}
+				sortKeys={{
+					"Ticket Number": "ticketNumber",
+					Category: "category",
+					Priority: "priority",
+					Assignee: "assignee",
+					Originator: ticketPersonName,
+					Topic: "topic",
+					Description: "issue",
+					"Ticket Opened": "createdOn",
+					"Ticket Closed": "ticketClosedDate",
+					"Days Opened": "ticketDaysOpened",
+				}}
+				sortConfig={sortConfig}
+				onSort={requestSort}
 			>
 				<Tbody>
 					{(!ticketData || ticketData?.length === 0) && (
 						<EmptyRowRecord data={ticketData} colSpan={cols.length} />
 					)}
-					{ticketData?.map(
+					{sortedItems?.map(
 						({
 							ticketNumber,
 							category,

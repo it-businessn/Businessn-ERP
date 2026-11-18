@@ -1,8 +1,15 @@
-import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Table, Tbody, Td, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
+import useSortableData from "hooks/useSortableData";
 import VoPayService from "services/VoPayService";
 
+// TABLE-SORT: the address cell is built from its parts
+const sortByAddress = (partner) =>
+	`${partner?.Address}, ${partner?.City} ${partner?.Province} ${partner?.Country} ${partner?.PostalCode}`;
+
 export const PartnerList = ({ partners, setClientAccountID }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(partners);
 	const getOnboardingLink = async (id) => {
 		try {
 			const { data } = await VoPayService.getAccountOnboardingLink(id);
@@ -14,16 +21,26 @@ export const PartnerList = ({ partners, setClientAccountID }) => {
 		<Table variant="simple" size="sm">
 			<Thead>
 				<Tr>
-					<Th>Name</Th>
-					<Th>Email</Th>
-					<Th>Phone</Th>
-					<Th>Address</Th>
-					<Th>Status</Th>
+					<SortableTh sortKey="AccountName" sortConfig={sortConfig} onSort={requestSort}>
+						Name
+					</SortableTh>
+					<SortableTh sortKey="Email" sortConfig={sortConfig} onSort={requestSort}>
+						Email
+					</SortableTh>
+					<SortableTh sortKey="Phone" sortConfig={sortConfig} onSort={requestSort}>
+						Phone
+					</SortableTh>
+					<SortableTh sortKey={sortByAddress} sortConfig={sortConfig} onSort={requestSort}>
+						Address
+					</SortableTh>
+					<SortableTh sortKey="AccountStatus" sortConfig={sortConfig} onSort={requestSort}>
+						Status
+					</SortableTh>
 				</Tr>
 			</Thead>
 			<Tbody>
-				{(!partners || partners?.length === 0) && <EmptyRowRecord data={partners} colSpan={3} />}
-				{partners?.map((partner) => (
+				{(!partners || partners?.length === 0) && <EmptyRowRecord data={partners} colSpan={5} />}
+				{sortedItems?.map((partner) => (
 					<Tr key={partner?.AccountID} onClick={() => getOnboardingLink(partner?.AccountID)}>
 						<Td>{partner?.AccountName}</Td>
 						<Td whiteSpace="pre-wrap">{partner?.Email}</Td>

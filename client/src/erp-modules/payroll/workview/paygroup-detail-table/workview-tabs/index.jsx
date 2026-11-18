@@ -124,7 +124,7 @@ const PaygroupDetailTable = ({
 	return (
 		<BoxCard pb={0}>
 			<Stack>
-				<HStack w="30%" alignItems="center" justifyContent="start" mb="2px">
+				<HStack w={{ base: "auto", md: "30%" }} alignItems="center" justifyContent="start" mb="2px">
 					<TextTitle mb={2} width="200px" title={`Pay Number: ${payNum}`} />
 					<PopupMessage
 						isOpen={isOpen}

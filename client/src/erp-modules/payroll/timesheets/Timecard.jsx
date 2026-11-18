@@ -5,14 +5,31 @@ import Pagination from "components/ui/Pagination";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { COLS } from "constant";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import TimesheetService from "services/TimesheetService";
 import { getTimeCardFormat } from "utils/convertDate";
 import { tabScrollCss } from "../onboard-user/customInfo";
 
+// clock and break times sort by their timestamp
+const SORT_KEYS = {
+	[COLS.EMP_NAME]: "employeeName",
+	"TM Badge ID": "badge_id",
+	"Clock In": "clockIn",
+	"Clock Out": "clockOut",
+	"Start Break1": (row) => row.startBreaks?.[0],
+	"End Break1": (row) => row.endBreaks?.[0],
+	"Start Break2": (row) => row.startBreaks?.[1],
+	"End Break2": (row) => row.endBreaks?.[1],
+	"Start Break3": (row) => row.startBreaks?.[2],
+	"End Break3": (row) => row.endBreaks?.[2],
+	"Total Hours (HH:mm)": "totalWorkedHours",
+};
+
 const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => {
 	const [totalPage, setTotalPages] = useState(1);
 	const [timeRecords, setTimeRecords] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(timeRecords);
 	const limit = 30;
 	useEffect(() => {
 		const fetchAllTimecards = async () => {
@@ -52,6 +69,9 @@ const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => 
 		<>
 			<TableLayout
 				cols={cols}
+				sortKeys={SORT_KEYS}
+				sortConfig={sortConfig}
+				onSort={requestSort}
 				height="calc(100vh - 260px)"
 				position="sticky"
 				zIndex={3}
@@ -62,7 +82,7 @@ const Timecard = ({ company, timecardRefresh, filter, pageNum, setPageNum }) => 
 					{(!timeRecords || timeRecords?.length === 0) && (
 						<EmptyRowRecord data={timeRecords} colSpan={cols.length} />
 					)}
-					{timeRecords?.map(
+					{sortedItems?.map(
 						({
 							_id,
 							employeeName,

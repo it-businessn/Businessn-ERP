@@ -19,12 +19,14 @@ import HighlightButton from "components/ui/button/HighlightButton";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -36,6 +38,20 @@ import AddNewOpportunity from "../opportunities/AddNewOpportunity";
 
 const CustomersList = ({ user, handleProfileView, icons, company }) => {
 	const [contacts, setContacts] = useState(false);
+	// BUG-SEARCH-01: searching filtered the loaded list itself, so rows removed by a
+	// search never came back (deleting letters or clearing the box). The search
+	// is now a filter on top of the loaded list.
+	const [search, setSearch] = useState("");
+	const shownContacts = useMemo(() => {
+		const term = search.trim().toLowerCase();
+		if (!Array.isArray(contacts) || !term) return contacts;
+		return contacts.filter(
+			(acc) =>
+				acc?.leadId?.opportunityName?.toLowerCase().includes(term) ||
+				acc?.leadId?.name?.toLowerCase().includes(term),
+		);
+	}, [contacts, search]);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(shownContacts);
 	const { isMobile } = useBreakpointValue();
 	const [isAdded, setIsAdded] = useState(false);
 
@@ -57,15 +73,7 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 		fetchAllCompanies();
 	}, [refresh]);
 
-	const handleInputChange = (value) => {
-		setContacts(
-			contacts?.filter(
-				(acc) =>
-					acc?.leadId?.opportunityName?.toLowerCase().includes(value?.toLowerCase()) ||
-					acc?.leadId?.name?.toLowerCase().includes(value?.toLowerCase()),
-			),
-		);
-	};
+	const handleInputChange = (value) => setSearch(value || "");
 	const handleEdit = (id) => {
 		console.log(id);
 	};
@@ -153,19 +161,39 @@ const CustomersList = ({ user, handleProfileView, icons, company }) => {
 					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr>
-								<Th fontWeight={"bolder"} p={0}>
+								<SortableTh
+									sortKey="leadId.opportunityName"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"}
+									p={0}
+								>
 									Customer name
-								</Th>
-								<Th fontWeight={"bolder"}>Company </Th>
-								<Th fontWeight={"bolder"}>Email</Th>
+								</SortableTh>
+								<SortableTh
+									sortKey="leadId.name"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"}
+								>
+									Company{" "}
+								</SortableTh>
+								<SortableTh
+									sortKey="leadId.email"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"}
+								>
+									Email
+								</SortableTh>
 								<Th fontWeight={"bolder"}>Communication History</Th>
 								<Th></Th>
 								{/* <Th></Th> */}
 							</Tr>
 						</Thead>
 						<Tbody color={"var(--nav_color)"}>
-							{contacts.length === 0 && <EmptyRowRecord data={contacts} colSpan={5} />}
-							{contacts.map(({ _id, leadId, meetings, notes }) => (
+							{shownContacts.length === 0 && <EmptyRowRecord data={shownContacts} colSpan={5} />}
+							{sortedItems.map(({ _id, leadId, meetings, notes }) => (
 								<Tr key={_id}>
 									<Td fontSize={"xs"} p={0} textTransform={"capitalize"}>
 										{leadId.opportunityName}

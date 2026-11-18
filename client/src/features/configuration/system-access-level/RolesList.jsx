@@ -1,20 +1,27 @@
 import { EditIcon } from "@chakra-ui/icons";
 import { HStack, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
+import useSortableData from "hooks/useSortableData";
 
 export const RolesList = ({ roleList, handleEdit }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(roleList);
 	return (
 		<Table variant="simple" size="sm">
 			<Thead>
 				<Tr>
-					<Th>Name</Th>
-					<Th>Description</Th>
+					<SortableTh sortKey="name" sortConfig={sortConfig} onSort={requestSort}>
+						Name
+					</SortableTh>
+					<SortableTh sortKey="description" sortConfig={sortConfig} onSort={requestSort}>
+						Description
+					</SortableTh>
 					<Th>Action</Th>
 				</Tr>
 			</Thead>
 			<Tbody>
 				{(!roleList || roleList?.length === 0) && <EmptyRowRecord data={roleList} colSpan={3} />}
-				{roleList?.map((role) => (
+				{sortedItems?.map((role) => (
 					<Tr key={role?._id}>
 						<Td>{role?.name}</Td>
 						<Td whiteSpace="pre-wrap">{role?.description}</Td>

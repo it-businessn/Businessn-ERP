@@ -1,17 +1,25 @@
-import { Button, HStack, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, HStack, Table, Tbody, Td, Thead, Tr } from "@chakra-ui/react";
 
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import { ALERTS_TYPE } from "constant";
 import useEmployeeAlertsInfo from "hooks/useEmployeeAlertsInfo";
+import useSortableData from "hooks/useSortableData";
 import { MdCheckCircle } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 import LocalStorageService from "services/LocalStorageService";
 import { getClosestRecord } from "../workview/data";
+
+const SORT_KEYS = {
+	Description: "description",
+	"Employee name": "empId.fullName",
+	Status: (record) => (record.actionRequired ? "Action required" : "Attention Needed"),
+};
 
 const AlertsViolation = ({
 	handleClick,
@@ -60,6 +68,7 @@ const AlertsViolation = ({
 	// extra run: keep null (skeleton) until the alerts arrive, not "No violations"
 	const data = isExtraRun ? (alertsReviewData ? filteredEmp : null) : alertsReviewData;
 	const isDisabled = data?.find((_) => _.actionRequired) || isPayPeriodInactive;
+	const { sortedItems, sortConfig, requestSort } = useSortableData(data);
 
 	return (
 		<HStack alignItems={"end"}>
@@ -67,9 +76,14 @@ const AlertsViolation = ({
 				<Thead>
 					<Tr>
 						{COLS.map((_) => (
-							<Th key={_}>
+							<SortableTh
+								key={_}
+								sortKey={SORT_KEYS[_]}
+								sortConfig={sortConfig}
+								onSort={requestSort}
+							>
 								<TextTitle size={"md"} title={_} />
-							</Th>
+							</SortableTh>
 						))}
 					</Tr>
 				</Thead>
@@ -82,7 +96,7 @@ const AlertsViolation = ({
 							colSpan={COLS.length}
 						/>
 					)}
-					{data?.map((record) => (
+					{sortedItems?.map((record) => (
 						<Tr key={record._id}>
 							<Td>
 								<NormalTextTitle title={record?.description} />

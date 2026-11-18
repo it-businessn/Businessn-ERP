@@ -1,8 +1,22 @@
-import { Box, Table, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Table, Thead, Tr } from "@chakra-ui/react";
 import { ALIGN_COLS, COLS, TITLE_COLS } from "constant";
 import TextTitle from "../text/TextTitle";
+import SortableTh from "./SortableTh";
 
-const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX, css }) => {
+// TABLE-SORT: optional sortKeys ({ [column title]: key }), sortConfig and onSort
+// from hooks/useSortableData, as in TableLayout
+const WorkviewTable = ({
+	cols,
+	isSmall,
+	height,
+	whiteSpace,
+	children,
+	overflowX,
+	css,
+	sortKeys,
+	sortConfig,
+	onSort,
+}) => {
 	const hideLabel = (text, label) => text.startsWith(label);
 
 	return (
@@ -11,7 +25,10 @@ const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX,
 				<Thead position="sticky" zIndex="docked" top={-1} textAlign="center">
 					<Tr>
 						{cols?.map((col, index) => (
-							<Th
+							<SortableTh
+								sortKey={sortKeys?.[col]}
+								sortConfig={sortConfig}
+								onSort={onSort}
 								position={index === 0 && "sticky"}
 								left={index === 0 && "0"}
 								zIndex={index === 0 && 1}
@@ -33,7 +50,7 @@ const WorkviewTable = ({ cols, isSmall, height, whiteSpace, children, overflowX,
 									title={col}
 									align={ALIGN_COLS.includes(col) && "end"}
 								/>
-							</Th>
+							</SortableTh>
 						))}
 					</Tr>
 				</Thead>

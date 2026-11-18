@@ -17,8 +17,10 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import SortableTh from "components/ui/table/SortableTh";
 import { activityChartData, doughnutOptions } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import { Doughnut } from "components/ui/charts";
 import { FaSearch } from "react-icons/fa";
@@ -31,6 +33,7 @@ import InvoiceReceipt from "./InvoiceReceipt";
 const Invoice = () => {
 	const { isMobile } = useBreakpointValue();
 	const [contacts, setContacts] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(contacts);
 	const fetchAllContacts = async () => {
 		try {
 			const { data } = await ContactService.getContacts();
@@ -243,18 +246,37 @@ const Invoice = () => {
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr>
-									<Th fontWeight={"bolder"} p={0}>
+									<SortableTh
+										sortKey="InvoiceNumber"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+										p={0}
+									>
 										Invoice number
-									</Th>
-									<Th fontWeight={"bolder"}>Client name </Th>
-									<Th fontWeight={"bolder"}>Amount</Th>
-									<Th fontWeight={"bolder"}>Due date</Th>
-									<Th>Status</Th>
+									</SortableTh>
+									<SortableTh
+										sortKey="ClientName"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+									>
+										Client name{" "}
+									</SortableTh>
+									<SortableTh sortKey="Amount" sortConfig={sortConfig} onSort={requestSort} fontWeight={"bolder"}>
+										Amount
+									</SortableTh>
+									<SortableTh sortKey="DueDate" sortConfig={sortConfig} onSort={requestSort} fontWeight={"bolder"}>
+										Due date
+									</SortableTh>
+									<SortableTh sortKey="Status" sortConfig={sortConfig} onSort={requestSort}>
+										Status
+									</SortableTh>
 									<Th></Th>
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
-								{contacts.map((invoice, index) => (
+								{sortedItems.map((invoice, index) => (
 									<Tr key={invoice.InvoiceNumber}>
 										<Td fontSize={"xs"} p={0}>
 											{`#${invoice.InvoiceNumber}`}

@@ -4,10 +4,12 @@ import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import { EditableInputControl } from "erp-modules/payroll/controls/EditableInputControl";
+import useSortableData from "hooks/useSortableData";
 import BudgetService from "services/BudgetService";
 
 const BudgetList = ({ filteredAccounts, setFilteredAccounts }) => {
 	const toast = useToast();
+	const { sortedItems, sortConfig, requestSort } = useSortableData(filteredAccounts);
 
 	const cols = [
 		"Account Code",
@@ -61,10 +63,28 @@ const BudgetList = ({ filteredAccounts, setFilteredAccounts }) => {
 			top={-1}
 			zIndex={1}
 			textAlign="center"
+			sortKeys={{
+				"Account Code": "accCode",
+				"Account Name": "accountName",
+				Sep: "monthlyBudget.Sep",
+				Oct: "monthlyBudget.Oct",
+				Nov: "monthlyBudget.Nov",
+				Dec: "monthlyBudget.Dec",
+				Jan: "monthlyBudget.Jan",
+				Feb: "monthlyBudget.Feb",
+				Mar: "monthlyBudget.Mar",
+				Apr: "monthlyBudget.Apr",
+				May: "monthlyBudget.May",
+				Jun: "monthlyBudget.Jun",
+				Jul: "monthlyBudget.Jul",
+				Aug: "monthlyBudget.Aug",
+			}}
+			sortConfig={sortConfig}
+			onSort={requestSort}
 		>
 			<Tbody>
 				{(!filteredAccounts || filteredAccounts.length === 0) && <EmptyRowRecord data={filteredAccounts} colSpan={cols.length} />}
-				{filteredAccounts?.map(({ _id, accCode, accountName, monthlyBudget }) => {
+				{sortedItems?.map(({ _id, accCode, accountName, monthlyBudget }) => {
 					return (
 						<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 							<Td p={0} px={"2em"} borderBottomColor={"var(--filter_border_color)"}>

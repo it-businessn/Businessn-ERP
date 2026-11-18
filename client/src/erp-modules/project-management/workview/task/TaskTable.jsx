@@ -19,13 +19,16 @@ import {
 	UnorderedList,
 	VStack,
 	useDisclosure,
+	useToast,
 } from "@chakra-ui/react";
 import { RenderPriorityBars } from "components/RenderPriorityBars";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import Caption from "erp-modules/sales/lead docket/Caption";
+import useSortableData from "hooks/useSortableData";
 import React, { useEffect, useState } from "react";
-import { FaChevronDown, FaSort } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import TaskService from "services/TaskService";
 import { TaskButton, statusColor } from "utils";
 import { formatDate } from "utils/convertDate";
@@ -37,10 +40,33 @@ import AddNewActivity from "./AddNewActivity";
 import AddNewSubTask from "./AddNewSubTask";
 import AddNewTask from "./AddNewTask";
 
+// TABLE-SORT: priority shows as bars, assignees as avatars; sort by rank / names
+const PRIORITY_RANK = { high: 3, medium: 2 };
+const sortByPriority = (row) =>
+	row?.priority ? PRIORITY_RANK[String(row.priority).toLowerCase()] || 1 : null;
+const sortByAssignees = (row) => row?.selectedAssignees?.join(", ");
+const TASK_SORT_KEYS = {
+	"Task name": "taskName",
+	"Assignee(s)": sortByAssignees,
+	Priority: sortByPriority,
+	Project: "projectName",
+	"Last Updated": "updatedOn",
+	"Due Date": "dueDate",
+	Status: "status",
+};
+
 const TaskTable = ({ data, isFiltered, allProjects, allTasks, allProjectTasks, allActivities }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [expandedIndex, setExpandedIndex] = useState(null);
+	const [completedById, setCompletedById] = useState({});
+	const toast = useToast();
 	const [filteredData, setFilteredData] = useState(data);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(filteredData);
+	// TABLE-SORT: the open row is remembered by position, so close it when the order changes
+	const handleSort = (key) => {
+		setExpandedIndex(null);
+		requestSort(key);
+	};
 	const [openEditTask, setOpenEditTask] = useState(false);
 	const [openSubTask, setOpenSubTask] = useState(false);
 	const [openActivity, setOpenActivity] = useState(false);
@@ -54,12 +80,18 @@ const TaskTable = ({ data, isFiltered, allProjects, allTasks, allProjectTasks, a
 	}, [data]);
 
 	const headerCell = (key) => (
-		<Th fontWeight={"bolder"} key={key} fontSize={"xs"}>
+		<SortableTh
+			sortKey={TASK_SORT_KEYS[key]}
+			sortConfig={sortConfig}
+			onSort={handleSort}
+			fontWeight={"bolder"}
+			key={key}
+			fontSize={"xs"}
+		>
 			<Flex alignItems={"center"} gap={0.5}>
 				{key}
-				<FaSort sx={{ width: "5px" }} />
 			</Flex>
-		</Th>
+		</SortableTh>
 	);
 
 	useEffect(() => {
@@ -89,15 +121,25 @@ const TaskTable = ({ data, isFiltered, allProjects, allTasks, allProjectTasks, a
 	};
 
 	const Task = ({ task, index }) => {
-		const [isOpenTask, setIsOpenTask] = useState(task.completed);
+		// BUG-PM-03: the tick was state inside this row component, which is re-created
+		// on every render of the table, so a ticked task un-ticked itself; it is kept
+		// in the table (by task id) and undone if the save fails
+		const isOpenTask = completedById[task._id] ?? task.completed;
 
 		const handleTaskStatus = async (e, taskId) => {
 			const isOpen = e.target.checked;
-			setIsOpenTask(isOpen);
+			setCompletedById((prev) => ({ ...prev, [taskId]: isOpen }));
 			try {
 				await TaskService.updateTaskStatus({ isOpen }, taskId);
 			} catch (error) {
-				console.error("Error updating task status:", error);
+				setCompletedById((prev) => ({ ...prev, [taskId]: !isOpen }));
+				toast({
+					title: "Could not update the task.",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		return (
@@ -158,7 +200,7 @@ const TaskTable = ({ data, isFiltered, allProjects, allTasks, allProjectTasks, a
 							color={statusColor(task.status).color}
 							bgColor={statusColor(task.status).bg}
 						>
-							<Text> {task?.status}d</Text>
+							<Text> {task?.status}</Text>
 						</HStack>
 					</Td>
 					<Td fontSize={"12px"}>
@@ -270,7 +312,7 @@ const TaskTable = ({ data, isFiltered, allProjects, allTasks, allProjectTasks, a
 								colSpan={workView_Table?.task_view_cols?.length}
 							/>
 						)}
-						{filteredData?.map((task, index) => {
+						{sortedItems?.map((task, index) => {
 							return <Task key={task._id} task={task} index={index} />;
 						})}
 					</Tbody>

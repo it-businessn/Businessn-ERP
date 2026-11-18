@@ -4,6 +4,8 @@ const router = express.Router();
 const permissionController = require("../controllers/permissionController");
 const { requireRole, ROLE_GROUPS } = require("../middleware/rbac");
 
+// ACCESS-01: before "/:empId/:companyName", which would match "my-role" as an empId
+router.get("/my-role/:companyName", permissionController.getMyRole);
 router.get("/:empId/:companyName", permissionController.getPermission);
 
 // AUD-028: permission writes are admin level (client isAdminLevelRole).

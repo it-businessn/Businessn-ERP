@@ -343,7 +343,7 @@ const Timesheets = () => {
 			</HStack>
 
 			<HStack justifyContent="space-between">
-				<Flex w="100%" gap={3}>
+				<Flex w="100%" gap={3} flexWrap={{ base: "wrap", md: "nowrap" }}>
 					<TabsButtonGroup
 						mt={4}
 						isOutlineTab

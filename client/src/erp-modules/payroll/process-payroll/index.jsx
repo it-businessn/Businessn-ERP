@@ -117,8 +117,13 @@ const ProcessPayroll = () => {
 
 	const selectedPayPeriod = getClosestRecord(payNo, isExtra, payGroupSchedule, closestRecord);
 	const isPayPeriodInactive = selectedPayPeriod?.isDisabledAction;
+	// BUG-PAY-01: when payroll was saved but the VoPay transfer failed, the period is
+	// processed, so "Submit payroll" stayed disabled and the transfer could not be
+	// retried. Submitting again is safe: the server saves the schedule and only
+	// sends a transfer that was never sent (a sent one is never sent twice).
+	const transferFailed = submitResult?.transfer?.status === "error";
 	const isPayrollSubmitDisabled =
-		currentStep !== 5 || selectedPayPeriod?.isProcessed || isPayPeriodInactive;
+		currentStep !== 5 || (selectedPayPeriod?.isProcessed && !transferFailed) || isPayPeriodInactive;
 
 	const handleChange = (value) => {
 		if (value !== "") {
@@ -172,7 +177,7 @@ const ProcessPayroll = () => {
 				}
 			}
 		} catch (error) {
-			selectedPayPeriod.isProcessed = false;
+			if (!transferFailed) selectedPayPeriod.isProcessed = false; // a retry: payroll stays saved
 			toast({
 				title: "Payroll was not processed.",
 				description: error?.response?.data?.message || "Please try again.",
@@ -231,7 +236,7 @@ const ProcessPayroll = () => {
 							<PrimaryButton
 								minW={"100%"}
 								isDisabled={isPayrollSubmitDisabled}
-								name={"Submit payroll"}
+								name={transferFailed ? "Retry VoPay transfer" : "Submit payroll"}
 								onOpen={handleClick}
 								// isLoading={isLoading}
 								loadingText="Loading"
@@ -262,7 +267,11 @@ const ProcessPayroll = () => {
 					isOpen={showConfirmationPopUp}
 					onClose={handleClick}
 				>
-					<FormLabel>Would you like to submit final processing?</FormLabel>
+					<FormLabel>
+						{transferFailed
+							? "Payroll is saved. Send the VoPay fund transfer again?"
+							: "Would you like to submit final processing?"}
+					</FormLabel>
 					<ActionButtonGroup
 						submitBtnName={"Yes"}
 						closeLabel="No"

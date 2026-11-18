@@ -14,6 +14,7 @@ import {
 } from "erp-modules/payroll/timesheets/data";
 import ExtraTimeEntryModal from "erp-modules/payroll/timesheets/ExtraTimeEntryModal";
 import usePaygroup from "hooks/usePaygroup";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
 import TimesheetService from "services/TimesheetService";
@@ -27,6 +28,38 @@ import {
 	monthDayYear,
 } from "utils/convertDate";
 import AddLeave from "./AddLeave";
+
+const LEAVE_SORT_KEYS = {
+	Type: "type",
+	"Start Date": "startDate",
+	"End Date": "endDate",
+	Status: "status",
+	Days: "totalLeaveDays",
+};
+
+// same hours field the "Total Hours" cell shows for the row's pay type
+const HOURS_PARAMS = [
+	"regHoursWorked",
+	"overtimeHoursWorked",
+	"dblOvertimeHoursWorked",
+	"statDayHoursWorked",
+	"statDayHours",
+	"sickPayHours",
+	"vacationPayHours",
+	"personalPayHours",
+	"bereavementPayHours",
+	"breakHoursWorked",
+];
+
+const TIME_SORT_KEYS = {
+	"Worked Date": "clockIn",
+	"Start Time": ({ clockIn, notDevice }) => (clockIn ? getTimeFormat(clockIn, notDevice) : ""),
+	"End Time": ({ clockOut, notDevice }) => (clockOut ? getTimeFormat(clockOut, notDevice) : ""),
+	"Total Hours": (row) => {
+		const param_hours = getParamKey(row.payType)?.param_hours || "";
+		return HOURS_PARAMS.includes(param_hours) ? row[param_hours] : 0;
+	},
+};
 
 const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const cols = [
@@ -84,6 +117,16 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 	const [endDate, setEndDate] = useState(null);
 	const toast = useToast();
 	const [pendingPunch, setPendingPunch] = useState(null);
+	const {
+		sortedItems: sortedLeaveRequests,
+		sortConfig: leaveSortConfig,
+		requestSort: requestLeaveSort,
+	} = useSortableData(leaveRequests);
+	const {
+		sortedItems: sortedTimesheetData,
+		sortConfig: timeSortConfig,
+		requestSort: requestTimeSort,
+	} = useSortableData(timesheetData);
 
 	useEffect(() => {
 		if (!closestRecord) {
@@ -271,6 +314,9 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 					</HStack>
 					<TableLayout
 						cols={leaveRequestCols}
+						sortKeys={LEAVE_SORT_KEYS}
+						sortConfig={leaveSortConfig}
+						onSort={requestLeaveSort}
 						isSmall
 						w="100%"
 						position="sticky"
@@ -284,7 +330,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							{(!leaveRequests || leaveRequests?.length === 0) && (
 								<EmptyRowRecord px={0} data={leaveRequests} colSpan={leaveRequestCols.length} />
 							)}
-							{leaveRequests?.map(
+							{sortedLeaveRequests?.map(
 								({
 									type,
 									startDate,
@@ -361,6 +407,9 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 					)}
 					<TableLayout
 						cols={cols}
+						sortKeys={TIME_SORT_KEYS}
+						sortConfig={timeSortConfig}
+						onSort={requestTimeSort}
 						isSmall
 						w="100%"
 						position="sticky"
@@ -374,7 +423,7 @@ const EmployeeTimeCard = ({ selectedUser, company, isMobile }) => {
 							{(!timesheetData || timesheetData?.length === 0) && (
 								<EmptyRowRecord px={0} data={timesheetData} colSpan={cols.length} />
 							)}
-							{timesheetData?.map(
+							{sortedTimesheetData?.map(
 								({
 									_id,
 									payType,

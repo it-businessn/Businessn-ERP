@@ -8,6 +8,7 @@ import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
 import useCompanyEmployees from "hooks/useCompanyEmployees";
 import usePaygroup from "hooks/usePaygroup";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
@@ -18,6 +19,13 @@ import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import EmpProfileSearch from "../../employees/EmpProfileSearch";
 import { tabScrollCss } from "../../onboard-user/customInfo";
 import PreviewReportsModal from "../PreviewReportsModal";
+
+const REPORT_SORT_KEYS = {
+	"Pay number": ({ payPeriodNum, isExtraRun }) => isExtraPay(payPeriodNum, isExtraRun),
+	"Pay date": "payPeriodPayDate",
+	"Pay period": "payPeriodStartDate",
+	Status: "name",
+};
 
 const Reports = () => {
 	const { isMobile } = useBreakpointValue();
@@ -33,6 +41,7 @@ const Reports = () => {
 	const [defaultDept, setDefaultDept] = useState(null);
 	const [empPayStub, setEmpPayStub] = useState(null);
 	const [filteredEmployees, setFilteredEmployees] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(empPayStub);
 
 	const { hasMultiPaygroups, selectedPayGroupOption, setSelectedPayGroupOption, payGroups } =
 		usePaygroup(company, false);
@@ -126,6 +135,9 @@ const Reports = () => {
 			<TextTitle title="Reports" />
 			<TableLayout
 				cols={REPORT_COLS}
+				sortKeys={REPORT_SORT_KEYS}
+				sortConfig={sortConfig}
+				onSort={requestSort}
 				w={"100%"}
 				top={-1}
 				textAlign="center"
@@ -145,7 +157,7 @@ const Reports = () => {
 							<EmptyRowRecord description="" data={empPayStub} colSpan={REPORT_COLS.length} />
 						)
 					)}
-					{empPayStub?.map(
+					{sortedItems?.map(
 						(
 							{
 								payPeriod,

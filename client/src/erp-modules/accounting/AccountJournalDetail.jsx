@@ -3,6 +3,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import AccountService from "services/AccountService";
 import { getAmount } from "utils/convertAmt";
@@ -10,6 +11,7 @@ import { getDefaultDate } from "utils/convertDate";
 
 const AccountJournalDetail = ({ accName, company }) => {
 	const [entries, setEntries] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(entries);
 
 	useEffect(() => {
 		const fetchAccountJournalEntries = async () => {
@@ -33,12 +35,20 @@ const AccountJournalDetail = ({ accName, company }) => {
 			top={-1}
 			zIndex={1}
 			textAlign="center"
+			sortKeys={{
+				"Account Name": "accountName",
+				Date: "transactionDate",
+				Debit: "debit",
+				Credit: "credit",
+			}}
+			sortConfig={sortConfig}
+			onSort={requestSort}
 		>
 			<Tbody>
 				{(!entries || entries?.length === 0) && (
 					<EmptyRowRecord data={entries} colSpan={cols.length} />
 				)}
-				{entries?.map(({ _id, transactionDate, accountName, credit, debit }) => {
+				{sortedItems?.map(({ _id, transactionDate, accountName, credit, debit }) => {
 					return (
 						<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 							<Td p={0} px={"2em"} borderBottomColor={"var(--filter_border_color)"}>

@@ -11,6 +11,7 @@
 		"vopay:transfer": "node scripts/run-vopay-transfer.js",
 		"vopay:cancel": "node scripts/cancel-vopay-transfer.js",
 		"paydates:business": "node scripts/apply-business-day-pay-dates.js",
+		"cleanup:employee-fields": "node scripts/remove-unused-employee-fields.js",
 		"test:watch": "jest --watch"
 	},
 	"keywords": [],

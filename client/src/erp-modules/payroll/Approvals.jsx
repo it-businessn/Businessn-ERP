@@ -2,6 +2,7 @@ import { Tbody, Td, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import useEmployees from "hooks/useEmployees";
+import useSortableData from "hooks/useSortableData";
 import usePaygroup from "hooks/usePaygroup";
 import PageLayout from "layouts/PageLayout";
 import LocalStorageService from "services/LocalStorageService";
@@ -19,11 +20,15 @@ const Approvals = () => {
 		getDeptName(loggedInUser),
 		selectedPayGroup?.name,
 	);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(employees);
 
 	return (
 		<PageLayout title={"Approvals"}>
 			<TableLayout
 				cols={["fullName", "email", "role"]}
+				sortKeys={{ fullName: "fullName", email: "email", role: "role" }}
+				sortConfig={sortConfig}
+				onSort={requestSort}
 				height="75vh"
 				// position="sticky"
 				// zIndex="docked"
@@ -33,7 +38,7 @@ const Approvals = () => {
 					{(!employees || employees?.length === 0) && (
 						<EmptyRowRecord data={employees} colSpan={3} />
 					)}
-					{employees?.map(({ fullName, email, _id, role }) => (
+					{sortedItems?.map(({ fullName, email, _id, role }) => (
 						<Tr key={_id}>
 							<Td p={0}>{fullName}</Td>
 							<Td p={0}>{email}</Td>

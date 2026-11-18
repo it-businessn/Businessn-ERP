@@ -6,6 +6,8 @@ const {
 } = require("../constants/permissions.constants");
 const { ROLES } = require("../constants/roles.constants");
 const UserPermissions = require("../models/permissions");
+const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
+const { getEffectiveRole } = require("../middleware/rbac");
 
 const getUserPermissions = async (req, res) => {
 	try {
@@ -52,6 +54,32 @@ const getPermission = async (req, res) => {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
+
+/**
+ * ACCESS-01: the signed-in user's current role in a company, read from the
+ * database on every call. The client used the role saved at sign-in, so a
+ * changed System Access Level (or another company) only showed after signing in
+ * again. `role` is the role the server checks (a BusinessN Corporate Shadow Admin
+ * is Shadow Admin in every company they belong to, middleware/rbac.js);
+ * `employmentRole` is the role stored for this company.
+ */
+const getMyRole = async (req, res) => {
+	const { companyName } = req.params;
+	try {
+		const userId = String(req.user?.id);
+		const [role, own] = await Promise.all([
+			getEffectiveRole(userId, companyName),
+			findEmploymentRole(userId, companyName),
+		]);
+		return res.status(200).json({ role: role || null, employmentRole: own || null });
+	} catch (error) {
+		console.error("getMyRole error:", error.message);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+};
+
+const findEmploymentRole = async (empId, companyName) =>
+	(await EmployeeEmploymentInfo.findOne({ empId, companyName }).select("employmentRole"))?.employmentRole;
 
 const addPermission = async (req, res) => {
 	let { empId, accessName, name, companyName } = req.body;
@@ -208,4 +236,5 @@ module.exports = {
 	updatePermission,
 	getPermission,
 	findPermission,
+	getMyRole,
 };

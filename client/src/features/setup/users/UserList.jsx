@@ -1,7 +1,15 @@
 import { Box, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import { FaRegTrashAlt } from "react-icons/fa";
+
+// TABLE-SORT: sort by what each cell shows
+const sortByName = ({ empId, fullName }) => empId?.fullName || fullName;
+const sortByEmail = ({ personalEmail, email }) => personalEmail || email;
+const sortByBaseModule = ({ baseModule }) => baseModule || baseModule?.[0] || "Payroll";
+const sortByRole = ({ employmentRole, role }) => employmentRole || role;
 
 const UserList = ({
 	filteredEmployees,
@@ -11,28 +19,29 @@ const UserList = ({
 	isUser,
 	height,
 }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(filteredEmployees);
 	return (
 		<Box css={tabScrollCss} overflow="auto" height={height} fontWeight={"normal"}>
 			<Table variant={"simple"} width="100%" position="sticky" top={-1} zIndex={0}>
 				<Thead>
 					<Tr>
-						<Th px={1.5} w={"200px"}>
+						<SortableTh sortKey={sortByName} sortConfig={sortConfig} onSort={requestSort} px={1.5} w={"200px"}>
 							Name
-						</Th>
-						<Th px={1.5} w={"200px"}>
+						</SortableTh>
+						<SortableTh sortKey={sortByEmail} sortConfig={sortConfig} onSort={requestSort} px={1.5} w={"200px"}>
 							Email
-						</Th>
-						<Th px={1.5} w={"200px"}>
+						</SortableTh>
+						<SortableTh sortKey={sortByBaseModule} sortConfig={sortConfig} onSort={requestSort} px={1.5} w={"200px"}>
 							Base Module
-						</Th>
+						</SortableTh>
 						{!isUser && (
-							<Th px={1.5} w={"200px"}>
+							<SortableTh sortKey="group" sortConfig={sortConfig} onSort={requestSort} px={1.5} w={"200px"}>
 								Team
-							</Th>
+							</SortableTh>
 						)}
-						<Th px={1.5} w={"200px"}>
+						<SortableTh sortKey={sortByRole} sortConfig={sortConfig} onSort={requestSort} px={1.5} w={"200px"}>
 							Role
-						</Th>
+						</SortableTh>
 						<Th px={1.5} w={"100px"}></Th>
 					</Tr>
 				</Thead>
@@ -40,7 +49,7 @@ const UserList = ({
 					{(!filteredEmployees || filteredEmployees?.length === 0) && (
 						<EmptyRowRecord data={filteredEmployees} colSpan={isUser ? 5 : 6} />
 					)}
-					{filteredEmployees?.map(
+					{sortedItems?.map(
 						({
 							empId,
 							personalEmail,

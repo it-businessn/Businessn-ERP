@@ -45,6 +45,7 @@ const AffiliateListView = () => {
 	const [empName, setEmpName] = useState("");
 	const [selectEmpList, setSelectEmpList] = useState(false);
 	const [emailType, setEmailType] = useState(null);
+	const [isRefresh, setIsRefresh] = useState(false);
 
 	useEffect(() => {
 		const fetchAllAffiliates = async () => {
@@ -67,7 +68,7 @@ const AffiliateListView = () => {
 		};
 		fetchAllAffiliates();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [company]);
+	}, [company, isRefresh]);
 
 	const handleClick = (val) => {};
 
@@ -176,6 +177,7 @@ const AffiliateListView = () => {
 					title="Affiliate"
 					isOpen={showOnboard}
 					onClose={closeOnboard}
+					setIsRefresh={setIsRefresh}
 				/>
 			)}
 			{selectEmpList && (

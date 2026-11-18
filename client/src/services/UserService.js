@@ -101,6 +101,11 @@ const UserService = {
 		return apiService.post("/user/verify-email", data);
 	},
 
+	// ACCESS-01: the signed-in user's current role in a company (not the one saved at sign-in)
+	async getMyRole(company) {
+		return apiService.get(`/permissions/my-role/${encodeURIComponent(company)}`);
+	},
+
 	async getUserPermission(data) {
 		return apiService.get(`/permissions/${data.userId}/${data.company}`);
 	},

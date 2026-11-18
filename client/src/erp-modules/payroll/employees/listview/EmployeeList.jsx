@@ -14,11 +14,23 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import { COLS } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import { HiEye, HiPencil } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_PATH } from "routes";
 
+const SORT_KEYS = {
+	[COLS.EMP_NAME]: "empId.fullName",
+	Department: (row) => row?.positions?.[0]?.employmentDepartment,
+	Role: "employmentRole",
+	"Employee No": ({ positions, employeeNo }) =>
+		positions?.[0]?.cardNum || positions?.[0]?.employeeCardNumber || employeeNo,
+	"Badge ID": (row) => row?.positions?.[0]?.timeManagementBadgeID,
+	Status: "payrollStatus",
+};
+
 const EmployeeList = ({ employees }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(employees);
 	const empPath = `${ROUTE_PATH.PAYROLL}${ROUTE_PATH.EMPLOYEES}/info`;
 	const navigate = useNavigate();
 
@@ -73,6 +85,9 @@ const EmployeeList = ({ employees }) => {
 				top={-1}
 				zIndex={1}
 				textAlign="left"
+				sortKeys={SORT_KEYS}
+				sortConfig={sortConfig}
+				onSort={requestSort}
 			>
 				<Tbody>
 					{(!employees || employees?.length === 0) && (
@@ -84,7 +99,7 @@ const EmployeeList = ({ employees }) => {
 						/>
 					)}
 
-					{employees?.map(
+					{sortedItems?.map(
 						({ _id, empId, payrollStatus, employmentRole, employeeNo, positions }) => {
 							return (
 								<Tr

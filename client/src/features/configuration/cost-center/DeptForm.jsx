@@ -1,8 +1,10 @@
-import { Box, Stack, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import { Box, Stack, Table, Tbody, Td, Thead, Tr, useToast } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
 import ActionButtonGroup from "components/ui/form/ActionButtonGroup";
 import InputFormControl from "components/ui/form/InputFormControl";
 import TextTitle from "components/ui/text/TextTitle";
+import useSortableData from "hooks/useSortableData";
 import { useState } from "react";
 import SettingService from "services/SettingService";
 
@@ -11,6 +13,7 @@ const DeptForm = ({ companyName, setOptionDataRefresh, handleClose, showList, de
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [deptName, setDeptName] = useState("");
 	const [deptDescription, setDeptDescription] = useState("");
+	const { sortedItems, sortConfig, requestSort } = useSortableData(dept);
 
 	const handleDepartmentSubmit = async () => {
 		setIsSubmitting(true);
@@ -69,12 +72,14 @@ const DeptForm = ({ companyName, setOptionDataRefresh, handleClose, showList, de
 					<Table variant="simple" size="sm">
 						<Thead>
 							<Tr>
-								<Th>Name</Th>
+								<SortableTh sortKey="name" sortConfig={sortConfig} onSort={requestSort}>
+									Name
+								</SortableTh>
 							</Tr>
 						</Thead>
 						<Tbody>
 							{(!dept || dept?.length === 0) && <EmptyRowRecord data={dept} colSpan={2} />}
-							{dept?.map(({ _id, name, isActive }) => (
+							{sortedItems?.map(({ _id, name, isActive }) => (
 								<Tr key={_id}>
 									<Td>{name}</Td>
 								</Tr>

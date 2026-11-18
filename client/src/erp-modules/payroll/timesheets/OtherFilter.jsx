@@ -60,7 +60,7 @@ const OtherFilter = ({
 					{showOtherFilter && (
 						<Stack spacing={3} justifyContent={"end"}>
 							<PayrollMultiSelectBox
-								w="15vw"
+								w={{ base: "100%", md: "15vw" }}
 								data={data}
 								openMenu={openMenu}
 								handleCloseMenu={handleCloseMenu}

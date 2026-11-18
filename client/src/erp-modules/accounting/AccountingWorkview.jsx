@@ -88,7 +88,8 @@ const AccountingWorkview = () => {
 	}, [rows]);
 
 	const addRow = () => {
-		setRows([...rows, { account: "", debit: "", credit: "" }]);
+		// BUG-ACC-02: new rows used `account`; every other row and the save use accountName
+		setRows([...rows, { accountName: "", debit: "", credit: "" }]);
 	};
 
 	const handleChange = (e) => {
@@ -104,7 +105,9 @@ const AccountingWorkview = () => {
 		setIsPosting(true);
 		try {
 			formData.entries = rows;
-			if (totalCredit !== totalDebit) {
+			// BUG-ACC-01: compare in cents; float totals (0.1 + 0.2 vs 0.3) never matched
+			const toCents = (v) => Math.round((Number(v) || 0) * 100);
+			if (toCents(totalCredit) !== toCents(totalDebit)) {
 				toast({
 					title: `Total Credit ${getAmount(totalCredit)} and Total Debit ${getAmount(
 						totalDebit,
@@ -241,8 +244,16 @@ const AccountingWorkview = () => {
 							</Tbody>
 						</Table>
 
-						<HStack mt={4} spacing={0} onClick={addRow}>
-							<IconButton size="lg" icon={<FaPlusCircle />} aria-label="Print" variant="round" />
+						{/* BUG-ACC-03: the button sat inside a box that also added a row on
+						    click, so one click on "Add New Row" added two rows */}
+						<HStack mt={4} spacing={0}>
+							<IconButton
+								size="lg"
+								icon={<FaPlusCircle />}
+								aria-label="Add new row"
+								variant="round"
+								onClick={addRow}
+							/>
 							<PrimaryButton w="100px" size="xs" name="Add New Row" onOpen={addRow} />
 						</HStack>
 					</Box>

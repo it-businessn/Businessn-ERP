@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { payrollEmpDashboardPath } from "routes";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
+import UserService from "services/UserService";
 import { isAdminLevelRole, isEnroller, isNotEnrollerOrEmployee, isShadowUser } from "utils";
 import ErrorBoundary from "./ErrorBoundary";
 import Loader from "./Loader";
@@ -22,6 +23,28 @@ const Home = () => {
 	);
 
 	const [user, setUser] = useState(LocalStorageService.getItem("user"));
+
+	// ACCESS-01: the role (System Access Level) was only read at sign-in, so a
+	// changed access level or another company's role showed only after signing in
+	// again. Read the current role for the selected company; the module bar and
+	// every screen that reads the saved user follow it.
+	useEffect(() => {
+		if (!company || !user?._id) return;
+		let cancelled = false;
+		UserService.getMyRole(company)
+			.then(({ data }) => {
+				const role = data?.role;
+				if (cancelled || !role || role === user?.role) return;
+				const updated = { ...user, role, employmentType: data?.employmentRole || role };
+				LocalStorageService.setItem("user", updated);
+				setUser(updated);
+			})
+			.catch((error) => console.error("Could not refresh the access level", error));
+		return () => {
+			cancelled = true;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [company, user?._id]);
 	const consoleAccess = isAdminLevelRole(user?.role);
 
 	const { isMobile } = useBreakpointValue();

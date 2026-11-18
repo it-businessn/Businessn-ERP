@@ -73,7 +73,8 @@ const DateFilterPopup = ({
 
 	return (
 		<HStack
-			w={"30%"}
+			w={{ base: "auto", md: "30%" }}
+			minW={{ base: "200px", md: "auto" }}
 			justifyContent={"space-between"}
 			onClick={() => {
 				handleDateRangeChange();

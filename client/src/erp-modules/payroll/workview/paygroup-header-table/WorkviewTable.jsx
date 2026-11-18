@@ -17,6 +17,7 @@ import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useRef } from "react";
 import { FaBook, FaEye, FaFileAlt, FaMoneyBillWave } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +25,15 @@ import { payrollReportPath, ROUTE_PATH } from "routes";
 import { isExtraPay } from "utils";
 import { dayMonthYear, formatDateRange } from "utils/convertDate";
 import { PAYGROUP_COLS } from "../data";
+
+const SORT_KEYS = {
+	"Pay number": ({ payPeriodNum, payPeriod, isExtraRun }) =>
+		isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+	"Pay date": "payPeriodPayDate",
+	"Pay period": "payPeriodStartDate",
+	"Submit by": "payPeriodProcessingDate",
+	Status: "name",
+};
 
 const WorkviewTable = ({
 	payGroupSchedule,
@@ -41,6 +51,7 @@ const WorkviewTable = ({
 	css,
 }) => {
 	const rowRefs = useRef([]);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(payGroupSchedule);
 	const scrollToRow = (index) => {
 		if (rowRefs.current[index]) {
 			rowRefs.current[index].scrollIntoView({
@@ -159,6 +170,9 @@ const WorkviewTable = ({
 		<TableLayout
 			css={css}
 			cols={cols}
+			sortKeys={SORT_KEYS}
+			sortConfig={sortConfig}
+			onSort={requestSort}
 			w={"100%"}
 			height={height}
 			position="sticky"
@@ -171,7 +185,7 @@ const WorkviewTable = ({
 				{(!payGroupSchedule || payGroupSchedule?.length === 0) && (
 					<EmptyRowRecord data={payGroupSchedule} colSpan={cols.length} />
 				)}
-				{payGroupSchedule?.map(
+				{sortedItems?.map(
 					(
 						{
 							payPeriod,
@@ -192,7 +206,10 @@ const WorkviewTable = ({
 						},
 						index,
 					) => (
-						<Tr key={`${payPeriod}_${index}`} ref={(el) => (rowRefs.current[index] = el)}>
+						<Tr
+							key={`${payPeriod}_${index}`}
+							ref={(el) => (rowRefs.current[payGroupSchedule.indexOf(sortedItems[index])] = el)}
+						>
 							<Td p={1} pl={8}>
 								{`${isExtraPay(payPeriodNum || payPeriod, isExtraRun)}`}
 							</Td>

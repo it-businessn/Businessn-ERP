@@ -2,7 +2,9 @@ import { Badge, Checkbox, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@cha
 import BoxCard from "components/ui/card";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import LocalStorageService from "services/LocalStorageService";
@@ -36,13 +38,20 @@ const LeaveApprovals = () => {
 	const [checkedRows, setCheckedRows] = useState([]);
 	const [allRequestIDs, setAllRequestIDs] = useState([]);
 	const [rowAction, setRowAction] = useState(ACTION_STATUS[0].title);
-	const [rowId, setRowId] = useState("");
+	const { sortedItems, sortConfig, requestSort } = useSortableData(leaveRecords);
+	const leaveSortKeys = {
+		"Employee Name": "employeeId.fullName",
+		Type: "type",
+		"Start Date": "startDate",
+		"End Date": "endDate",
+		Status: "status",
+		"Total Days": "totalLeaveDays",
+	};
 
-	useEffect(() => {
-		if (rowId && !checkedRows.includes(rowId)) {
-			setCheckedRows([...checkedRows, rowId]);
-		}
-	}, [rowId]);
+	// Picking an action from a row's menu checks that row (every time, even for the same row).
+	const checkRow = (id) => {
+		if (id) setCheckedRows((prev) => (prev.includes(id) ? prev : [...prev, id]));
+	};
 
 	useEffect(() => {
 		const fetchLeaveRequests = async () => {
@@ -67,43 +76,36 @@ const LeaveApprovals = () => {
 		fetchLeaveRequests();
 	}, []);
 
-	useEffect(() => {
-		const updateLeaveRequest = async () => {
-			try {
-				const { data } = await TimesheetService.updateLeave(formData, formData.recordId);
-				toast({
-					title: "Action completed successfully!",
-					status: "success",
-					duration: 3000,
-					isClosable: true,
-				});
-				const updatedRecordIndex = leaveRecords?.findIndex(
-					(record) => record._id === formData?.recordId,
-				);
-				if (updatedRecordIndex > -1) {
-					const updatedData = leaveRecords?.map((record) =>
-						record._id === formData?.recordId
-							? {
-									...record,
-									status: data?.status,
-									statusBtnCss: getStatusStyle(data?.status),
-							  }
-							: record,
-					);
-					setLeaveRecords(updatedData);
-				}
-			} catch (error) {
-				toast({
-					title: "Could not update the leave request.",
-					description: error?.response?.data?.message || "Please try again.",
-					status: "error",
-					duration: 5000,
-					isClosable: true,
-				});
-			}
-		};
-		if (formData?.recordId) updateLeaveRequest();
-	}, [formData?.recordId]);
+	const updateLeaveRequest = async (payload) => {
+		try {
+			const { data } = await TimesheetService.updateLeave(payload, payload.recordId);
+			toast({
+				title: "Action completed successfully!",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
+			setLeaveRecords((prev) =>
+				prev?.map((record) =>
+					record._id === payload.recordId
+						? {
+								...record,
+								status: data?.status,
+								statusBtnCss: getStatusStyle(data?.status),
+						  }
+						: record,
+				),
+			);
+		} catch (error) {
+			toast({
+				title: "Could not update the leave request.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+	};
 
 	const handleHeaderCheckboxChange = (e) => {
 		setIsAllChecked(e.target.checked);
@@ -132,11 +134,10 @@ const LeaveApprovals = () => {
 			return;
 		}
 		value = TIMESHEET_STATUS.find((_) => _.value.includes(value)).value;
-		setFormData((prev) => ({
-			...prev,
-			recordId: id,
-			status: value,
-		}));
+		// Send every action directly (an effect keyed on recordId skipped repeat actions on the same row).
+		const payload = { ...formData, recordId: id, status: value };
+		setFormData(payload);
+		updateLeaveRequest(payload);
 	};
 	return (
 		<PageLayout title={"Leave Requests"}>
@@ -156,7 +157,10 @@ const LeaveApprovals = () => {
 										/>
 									</Th>
 								) : (
-									<Th
+									<SortableTh
+										sortKey={leaveSortKeys[col]}
+										sortConfig={sortConfig}
+										onSort={requestSort}
 										position={colIndex === 0 && "sticky"}
 										left={colIndex === 0 && "0"}
 										zIndex={colIndex === 0 && 1}
@@ -165,7 +169,7 @@ const LeaveApprovals = () => {
 										bg="var(--th_bg)"
 									>
 										<TextTitle title={col} />
-									</Th>
+									</SortableTh>
 								),
 							)}
 						</Tr>
@@ -174,7 +178,7 @@ const LeaveApprovals = () => {
 						{(!leaveRecords || leaveRecords?.length === 0) && (
 							<EmptyRowRecord data={leaveRecords} colSpan={leaveRequestCols?.length} />
 						)}
-						{leaveRecords?.map(
+						{sortedItems?.map(
 							({
 								_id,
 								employeeId,
@@ -229,7 +233,7 @@ const LeaveApprovals = () => {
 											status={status}
 											handleButtonClick={(action) => handleAction(_id, action)}
 											setRowAction={setRowAction}
-											setRowId={setRowId}
+											setRowId={checkRow}
 										/>
 									</Td>
 								</Tr>

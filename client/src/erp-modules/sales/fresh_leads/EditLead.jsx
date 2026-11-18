@@ -16,16 +16,15 @@ const EditLead = ({ defaultLeadInfo, formData, isOpen, onClose, setFormData, set
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 
-		if (value) {
-			if (name === "phone") {
-				if (isValidPhoneNumber(value)) {
-					setPhoneNumberError("");
-				} else {
-					setPhoneNumberError("Invalid phone number. Please enter 10 digits.");
-				}
+		if (!value && e.target.tagName === "SELECT") return;
+		if (name === "phone") {
+			if (isValidPhoneNumber(value)) {
+				setPhoneNumberError("");
+			} else {
+				setPhoneNumberError("Invalid phone number. Please enter 10 digits.");
 			}
-			setFormData((prevData) => ({ ...prevData, [name]: value }));
 		}
+		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
 	const handleSubmit = async (e) => {

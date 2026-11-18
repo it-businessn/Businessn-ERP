@@ -12,12 +12,13 @@ import {
 	Tbody,
 	Td,
 	Text,
-	Th,
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import SortableTh from "components/ui/table/SortableTh";
 import { doughnutOptions } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { Doughnut } from "components/ui/charts";
@@ -47,6 +48,8 @@ const Products = () => {
 			console.error(error);
 		}
 	};
+
+	const { sortedItems, sortConfig, requestSort } = useSortableData(productsInfo);
 
 	const [totalCost, setTotalCost] = useState(0);
 	const [totalQuantity, setTotalQuantity] = useState(0);
@@ -346,26 +349,58 @@ const Products = () => {
 					<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 						<Thead>
 							<Tr fontSize="xs">
-								<Th fontWeight={"bolder"} p={0}>
+								<SortableTh
+									sortKey="_id"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"} p={0}
+								>
 									Product ID
-								</Th>
-								<Th fontWeight={"bolder"} p={0}>
+								</SortableTh>
+								<SortableTh
+									sortKey="name"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"} p={0}
+								>
 									Name
-								</Th>
-								<Th fontWeight={"bolder"} p={0}>
+								</SortableTh>
+								<SortableTh
+									sortKey="category"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"} p={0}
+								>
 									Product Category
-								</Th>
-								<Th fontWeight={"bolder"} p={0}>
+								</SortableTh>
+								<SortableTh
+									sortKey="base_price"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"} p={0}
+								>
 									Price
-								</Th>
-								<Th p={0}>Cost</Th>
-								<Th fontWeight={"bolder"} p={0}>
+								</SortableTh>
+								<SortableTh
+									sortKey="cost"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									p={0}
+								>
+									Cost
+								</SortableTh>
+								<SortableTh
+									sortKey="quantity"
+									sortConfig={sortConfig}
+									onSort={requestSort}
+									fontWeight={"bolder"} p={0}
+								>
 									Qty on hand
-								</Th>
+								</SortableTh>
 							</Tr>
 						</Thead>
 						<Tbody color={"var(--nav_color)"}>
-							{productsInfo.map(({ _id, name, category, base_price, cost, quantity }, index) => (
+							{sortedItems.map(({ _id, name, category, base_price, cost, quantity }, index) => (
 								<Tr key={_id}>
 									<Td fontSize={"xs"} p={0}>
 										{_id}

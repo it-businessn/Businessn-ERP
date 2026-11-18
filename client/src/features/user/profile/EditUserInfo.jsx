@@ -84,23 +84,23 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		if (value)
-			setUserData((prevData) => ({
-				...prevData,
-				[name]: value,
-			}));
+		if (!value && e.target.tagName === "SELECT") return;
+		setUserData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}));
 	};
 
 	const handleAddressChange = (e) => {
 		const { name, value } = e.target;
-		if (value)
-			setUserData({
-				...userData,
-				primaryAddress: {
-					...userData.primaryAddress,
-					[name]: value,
-				},
-			});
+		if (!value && e.target.tagName === "SELECT") return;
+		setUserData({
+			...userData,
+			primaryAddress: {
+				...userData.primaryAddress,
+				[name]: value,
+			},
+		});
 	};
 
 	const handleCloseMenu = (selectedOptions) => {

@@ -21,6 +21,7 @@ import {
 	WEIGHTING,
 } from "erp-modules/project-management/workview/project/data";
 import useSalesAgentData from "hooks/useSalesAgentData";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaCaretRight } from "react-icons/fa";
@@ -35,6 +36,22 @@ import AutoAssign from "./AutoAssign";
 import Disburse from "./Disburse";
 import { caption, columns, showFilterSearchOption, showRegion } from "./data";
 
+// TABLE-SORT: sort by what each cell shows
+const shownSelectValue = (value) => (Array.isArray(value) ? value[0] : value);
+// Last Login shows "Is logged In", "Xhr Ym ago" or "Not logged in": sort by how long ago
+const byLastLogin = ({ lastLoginStatus, lastLogin }) =>
+	lastLoginStatus ? 0 : lastLogin ? Date.now() - new Date(lastLogin).getTime() : null;
+const SORT_KEYS = {
+	Name: "fullName",
+	Leads: ({ assignedLeads }) => assignedLeads || 0,
+	"Last Login": byLastLogin,
+	Role: "role",
+	Address: ({ primaryAddress }) => getFormattedAddress(primaryAddress),
+	Areas: ({ assignedAreas }) => shownSelectValue(assignedAreas),
+	"Product Service": ({ assignedProducts }) => shownSelectValue(assignedProducts),
+	Weighting: ({ assignedWeight }) => shownSelectValue(assignedWeight),
+};
+
 const LeadsDisbursed = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile, isIpad } = useBreakpointValue();
@@ -42,6 +59,7 @@ const LeadsDisbursed = () => {
 	const [activity, setActivity] = useState(null);
 	const [refresh, setRefresh] = useState(false);
 	const agents = useSalesAgentData(company, refresh);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(agents);
 
 	const [leads, setLeads] = useState(null);
 	const [checkedRows, setCheckedRows] = useState([]);
@@ -229,12 +247,20 @@ const LeadsDisbursed = () => {
 				</HStack>
 			)}
 
-			<TableLayout css={tabScrollCss} cols={columns} isSmall height="calc(100vh - 308px)">
+			<TableLayout
+				css={tabScrollCss}
+				cols={columns}
+				isSmall
+				height="calc(100vh - 308px)"
+				sortKeys={SORT_KEYS}
+				sortConfig={sortConfig}
+				onSort={requestSort}
+			>
 				<Tbody>
 					{(!agents || agents?.length === 0) && (
 						<EmptyRowRecord data={agents} colSpan={columns?.length} />
 					)}
-					{agents?.map(
+					{sortedItems?.map(
 						({
 							_id,
 							isActive,

@@ -1,12 +1,14 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import { Box, Table, Tbody, Td, Thead, Tr, useToast } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import SortableTh from "components/ui/table/SortableTh";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useBreakpointValue } from "services/Breakpoint";
 import LocalStorageService from "services/LocalStorageService";
 import OrderService from "services/OrderService";
@@ -32,16 +34,23 @@ const Orders = () => {
 		"CRA Deposited Status",
 		"Fulfillment Status",
 	];
-	const ORDER_STATUS = [{ name: "Settled" }, { name: "Unsettled" }];
-
-	const initialFormData = {
-		fundsReceivedStatus: "",
-		craDepositedStatus: "",
-		craSentStatus: "",
-		empEFTDepositedStatus: "",
-		empEFTSentStatus: "",
-		recordId: null,
+	const ORDER_SORT_KEYS = {
+		Order: "orderNumber",
+		"Created On ": "createdOn",
+		Customer: "customer",
+		Type: "type",
+		"Total Withdrawn": "totalsRemitted",
+		"Funds Received Status": "fundsReceivedStatus",
+		"Total Employee Remittance": "totalEmpRemitted",
+		"Total Recipients": "totalRecipients",
+		"Emp EFTSent Status": "empEFTSentStatus",
+		"Emp EFTDeposited Status": "empEFTDepositedStatus",
+		"Total CRA Remittance": "totalCRARemitted",
+		"CRA Sent Status": "craSentStatus",
+		"CRA Deposited Status": "craDepositedStatus",
+		"Fulfillment Status": "fulfillmentStatus",
 	};
+	const ORDER_STATUS = [{ name: "Settled" }, { name: "Unsettled" }];
 
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile } = useBreakpointValue();
@@ -54,8 +63,21 @@ const Orders = () => {
 		// Fetch data based on the selected date filter
 	};
 	const [orders, setOrders] = useState(null);
-	const [statusChanged, setStatusChanged] = useState(false);
-	const [formData, setFormData] = useState(initialFormData);
+	const [searchTerm, setSearchTerm] = useState("");
+
+	// Search filters on top of the loaded orders; clearing it shows them all again.
+	const filteredOrders = useMemo(() => {
+		const term = searchTerm.trim().toLowerCase();
+		if (!orders || !term) return orders;
+		return orders.filter(({ orderNumber, customer, type }) =>
+			[orderNumber, customer, type].some((field) =>
+				String(field ?? "")
+					.toLowerCase()
+					.includes(term),
+			),
+		);
+	}, [orders, searchTerm]);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(filteredOrders);
 
 	useEffect(() => {
 		const fetchAllOrders = async () => {
@@ -84,53 +106,52 @@ const Orders = () => {
 		fetchAllOrders();
 	}, []);
 
-	useEffect(() => {
-		if (statusChanged) {
-			handleUpdate();
-		}
-	}, [statusChanged]);
-
+	// Each status change is saved right away (a "statusChanged" flag that stayed true after a
+	// failed save used to block every later save).
 	const handleSelect = (type, value, id) => {
-		const updatedData = orders?.map((record) =>
-			record._id === id ? { ...record, [type]: value } : record,
+		const savedRec = orders?.find(({ _id }) => _id === id);
+		if (!savedRec) return;
+		const updatedRec = { ...savedRec, [type]: value };
+		setOrders((prev) =>
+			prev?.map((record) => (record._id === id ? { ...record, [type]: value } : record)),
 		);
-		setFormData({
-			recordId: id,
-			[type]: value,
-		});
-		setStatusChanged(true);
-		setOrders(updatedData);
+		handleUpdate(
+			{
+				recordId: id,
+				[type]: value,
+				fundsReceivedStatus: updatedRec.fundsReceivedStatus,
+				craDepositedStatus: updatedRec.craDepositedStatus,
+				craSentStatus: updatedRec.craSentStatus,
+				empEFTDepositedStatus: updatedRec.empEFTDepositedStatus,
+				empEFTSentStatus: updatedRec.empEFTSentStatus,
+			},
+			type,
+			savedRec[type],
+		);
 	};
 
-	const handleUpdate = async () => {
+	const handleUpdate = async (formData, type, savedValue) => {
 		try {
-			const updatedRec = orders.find(({ _id }) => _id === formData?.recordId);
-			formData.fundsReceivedStatus = updatedRec.fundsReceivedStatus;
-			formData.craDepositedStatus = updatedRec.craDepositedStatus;
-			formData.craSentStatus = updatedRec.craSentStatus;
-			formData.empEFTDepositedStatus = updatedRec.empEFTDepositedStatus;
-			formData.empEFTSentStatus = updatedRec.empEFTSentStatus;
-
 			if (formData?.recordId) {
 				const { data } = await OrderService.updateOrder(formData, formData?.recordId);
 
 				if (data) {
-					const updatedData = orders?.map((record) =>
-						record._id === formData?.recordId
-							? {
-									...record,
-									fundsReceivedStatus: data?.fundsReceivedStatus,
-									craDepositedStatus: data?.craDepositedStatus,
-									craSentStatus: data?.craSentStatus,
-									empEFTDepositedStatus: data?.empEFTDepositedStatus,
-									empEFTSentStatus: data?.empEFTSentStatus,
-									fulfillmentStatus: data?.fulfillmentStatus,
-							  }
-							: record,
+					setOrders((prev) =>
+						prev?.map((record) =>
+							record._id === formData?.recordId
+								? {
+										...record,
+										fundsReceivedStatus: data?.fundsReceivedStatus,
+										craDepositedStatus: data?.craDepositedStatus,
+										craSentStatus: data?.craSentStatus,
+										empEFTDepositedStatus: data?.empEFTDepositedStatus,
+										empEFTSentStatus: data?.empEFTSentStatus,
+										fulfillmentStatus: data?.fulfillmentStatus,
+								  }
+								: record,
+						),
 					);
-					setOrders(updatedData);
 				}
-				setStatusChanged(false);
 			}
 		} catch (error) {
 			toast({
@@ -140,9 +161,15 @@ const Orders = () => {
 				duration: 5000,
 				isClosable: true,
 			});
+			// Put the dropdown back to the saved value.
+			setOrders((prev) =>
+				prev?.map((record) =>
+					record._id === formData?.recordId ? { ...record, [type]: savedValue } : record,
+				),
+			);
 		}
 	};
-	const handleInputChange = (value) => console.log(value);
+	const handleInputChange = (value) => setSearchTerm(value);
 
 	return (
 		<PageLayout title="Orders">
@@ -161,17 +188,25 @@ const Orders = () => {
 							<Thead position="sticky" zIndex="docked" top={-1} bg="var(--lead_cards_bg)">
 								<Tr fontSize="xs">
 									{ORDER_COLS.map((col) => (
-										<Th key={col} fontWeight={"bolder"} p={col === "Order" && 0} whiteSpace="wrap">
+										<SortableTh
+											key={col}
+											sortKey={ORDER_SORT_KEYS[col]}
+											sortConfig={sortConfig}
+											onSort={requestSort}
+											fontWeight={"bolder"}
+											p={col === "Order" && 0}
+											whiteSpace="wrap"
+										>
 											{col}
-										</Th>
+										</SortableTh>
 									))}
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
-								{orders.length === 0 && (
-									<EmptyRowRecord data={orders} colSpan={ORDER_COLS.length} />
+								{filteredOrders.length === 0 && (
+									<EmptyRowRecord data={filteredOrders} colSpan={ORDER_COLS.length} />
 								)}
-								{orders.map(
+								{sortedItems.map(
 									({
 										_id,
 										orderNumber,

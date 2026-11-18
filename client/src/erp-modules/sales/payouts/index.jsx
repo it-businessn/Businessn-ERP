@@ -14,7 +14,6 @@ import {
 	Tbody,
 	Td,
 	Text,
-	Th,
 	Thead,
 	Tr,
 	useDisclosure,
@@ -25,9 +24,11 @@ import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import RightIconButton from "components/ui/button/RightIconButton";
+import SortableTh from "components/ui/table/SortableTh";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { TIMESHEET_STATUS_LABEL } from "erp-modules/payroll/timesheets/data";
 import { COLORS } from "erp-modules/project-management/workview/project/data";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import { Bar } from "components/ui/charts";
 import { CiPercent } from "react-icons/ci";
@@ -47,6 +48,7 @@ const Payouts = () => {
 	const loggedInUser = LocalStorageService.getItem("user");
 	const company = LocalStorageService.getItem("selectedCompany");
 	const [payouts, setPayouts] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(payouts);
 	const [refresh, setRefresh] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const toast = useToast();
@@ -297,20 +299,58 @@ const Payouts = () => {
 						<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"}>
 							<Thead>
 								<Tr fontSize="xs">
-									<Th fontWeight={"bolder"} p={0}>
+									<SortableTh
+										sortKey="saleId"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+										p={0}
+									>
 										Sales ID
-									</Th>
-									<Th fontWeight={"bolder"}>Date </Th>
-									<Th fontWeight={"bolder"}>Amount</Th>
-									<Th fontWeight={"bolder"}>Affiliate</Th>
-									<Th fontWeight={"bolder"}>Customer Name </Th>
-									<Th fontWeight={"bolder"}>Customer Code </Th>
-									<Th p={0}>Status</Th>
+									</SortableTh>
+									<SortableTh
+										sortKey="createdOn"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+									>
+										Date{" "}
+									</SortableTh>
+									<SortableTh sortKey="amount" sortConfig={sortConfig} onSort={requestSort} fontWeight={"bolder"}>
+										Amount
+									</SortableTh>
+									<SortableTh
+										sortKey="affiliate"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+									>
+										Affiliate
+									</SortableTh>
+									<SortableTh
+										sortKey="customerName"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+									>
+										Customer Name{" "}
+									</SortableTh>
+									<SortableTh
+										sortKey="customerCode"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+									>
+										Customer Code{" "}
+									</SortableTh>
+									<SortableTh sortKey="status" sortConfig={sortConfig} onSort={requestSort} p={0}>
+										Status
+									</SortableTh>
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
 								{payouts?.length === 0 && <EmptyRowRecord data={payouts} colSpan={7} />}
-								{payouts?.map((payout) => (
+								{sortedItems?.map((payout) => (
 									<Tr key={payout._id}>
 										<Td fontSize={"xs"} p={0}>
 											{payout.saleId}

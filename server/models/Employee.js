@@ -16,14 +16,6 @@ const employeeSchema = new mongoose.Schema(
 			postalCode: String,
 			country: String,
 		},
-		secondaryAddress: {
-			type: Object,
-			streetNumber: String,
-			city: String,
-			state: String,
-			postalCode: String,
-			country: String,
-		},
 		firstName: String,
 		middleName: String,
 		lastName: String,
@@ -32,26 +24,13 @@ const employeeSchema = new mongoose.Schema(
 		password: String,
 		position: String,
 		isActive: Boolean,
-		lastLogin: String,
-		employmentType: { type: String, ref: "EmploymentType" },
 		dateOfJoining: Date,
-		emailVerified: Boolean,
 		phoneNumber: String,
-		emergencyContact: {
-			firstName: String,
-			middleName: String,
-			lastName: String,
-			relationShip: String,
-			emergencyContactNumber: String,
-		},
-		otp: String,
 		userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 		manager: String,
-		managerId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 		assignedLeads: { type: Number, default: 0 },
 		leads: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lead" }],
 		assignedWeight: { type: Number, default: 0 },
-		updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
 		companyId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
 		baseModule: [{ type: String, ref: "Module" }],
 		department: [{ type: String, ref: "Department" }],
@@ -60,10 +39,26 @@ const employeeSchema = new mongoose.Schema(
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
+// SCHEMA-CLEANUP: removed fields that nothing reads or writes: secondaryAddress,
+// lastLogin, employmentType (the role is EmployeeEmploymentInfo.employmentRole),
+// emailVerified, emergencyContact (kept in EmployeeProfileInfo), otp, managerId,
+// updatedBy. Values already stored are cleared by
+// scripts/remove-unused-employee-fields.js.
+const REMOVED_EMPLOYEE_FIELDS = [
+	"secondaryAddress",
+	"lastLogin",
+	"employmentType",
+	"emailVerified",
+	"emergencyContact",
+	"otp",
+	"managerId",
+	"updatedBy",
+];
 
 const Employee = mongoose.model("Employee", employeeSchema);
 
 module.exports = Employee;
+module.exports.REMOVED_EMPLOYEE_FIELDS = REMOVED_EMPLOYEE_FIELDS;
 
 // assignedLeads: Number,
 // assignedAreas: Object,

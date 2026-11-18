@@ -7,7 +7,6 @@ import { addDays, format } from "date-fns";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
 import SchedulerService from "services/SchedulerService";
-import { CURRENT_YEAR } from "utils/convertDate";
 import { EmpScheduleRow } from "./EmpScheduleRow";
 
 const WeeklyCalendarView = ({
@@ -29,7 +28,10 @@ const WeeklyCalendarView = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const [sentResult, setSentResult] = useState(false);
 	const [sentEmailUsers, setSentEmailUsers] = useState(null);
-	const weekTitle = `${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d")}, ${CURRENT_YEAR}`;
+	// BUG-SCH-01: the year was always the current year, so in January the weeks of
+	// the previous December (and in December the weeks into January) showed and
+	// looked up their e-mail logs under the wrong year; it is the week's own year
+	const weekTitle = `${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d")}, ${format(weekEnd, "yyyy")}`;
 
 	useEffect(() => {
 		const fetchEmailLogs = async () => {

@@ -11,16 +11,25 @@ import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import PreviewReportsModal from "erp-modules/payroll/reports/PreviewReportsModal";
 import { EARNING_TABLE_COLS } from "erp-modules/payroll/workview/data";
 import WorkviewTable from "erp-modules/payroll/workview/paygroup-header-table/WorkviewTable";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useState } from "react";
 import PayrollService from "services/PayrollService";
 import { getPayNum, isExtraPay, sortRecordsByDate } from "utils";
 import { dayMonthYear, formatDateBar } from "utils/convertDate";
 import EmployeeTimeCard from "./EmployeeTimeCard";
 
+const PAY_STUB_SORT_KEYS = {
+	"Pay#": ({ payPeriodNum, payPeriod, isExtraRun }) =>
+		isExtraPay(payPeriodNum || payPeriod, isExtraRun),
+	"Pay Date": "payPeriodPayDate",
+	"Pay period": "payPeriodStartDate",
+};
+
 const LeftPane = ({ selectedUser, company, isMobile }) => {
 	const [empPayStub, setEmpPayStub] = useState(null);
 	const [showReport, setShowReport] = useState(false);
 	const [payStub, setPayStub] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(empPayStub);
 
 	useEffect(() => {
 		const fetchEmpPayStubs = async () => {
@@ -56,6 +65,9 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 					<TextTitle size={"sm"} title={"Earning Statement"} />
 					<TableLayout
 						cols={["Pay#", "Pay Date", "Pay period", "Action"]}
+						sortKeys={PAY_STUB_SORT_KEYS}
+						sortConfig={sortConfig}
+						onSort={requestSort}
 						isSmall
 						w="100%"
 						position="sticky"
@@ -69,7 +81,7 @@ const LeftPane = ({ selectedUser, company, isMobile }) => {
 							{(!empPayStub || empPayStub?.length === 0) && (
 								<EmptyRowRecord px={0} data={empPayStub} colSpan={4} />
 							)}
-							{empPayStub?.map(
+							{sortedItems?.map(
 								({
 									payPeriodNum,
 									_id,

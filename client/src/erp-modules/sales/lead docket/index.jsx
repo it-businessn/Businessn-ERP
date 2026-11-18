@@ -25,6 +25,7 @@ import {
 	PRODUCTS_SERVICES,
 	REGIONS,
 } from "erp-modules/project-management/workview/project/data";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -42,10 +43,24 @@ import Region from "./Region";
 import SearchFilter from "./SearchFilter";
 import { LEAD_DOCKET_COLUMNS } from "./data";
 
+// TABLE-SORT: sort by what each cell shows (a select shows the first value of an array)
+const shownSelectValue = (value) => (Array.isArray(value) ? value[0] : value);
+const LEAD_DOCKET_SORT_KEYS = {
+	"Opportunity name": "opportunityName",
+	"Company name": "name",
+	Region: ({ region }) => shownSelectValue(region),
+	Industry: ({ industry }) => shownSelectValue(industry),
+	"Product Service": ({ productService }) => shownSelectValue(productService),
+	Source: ({ source }) => shownSelectValue(source),
+	Address: ({ address }) => getFormattedAddress(address),
+	"Created On": "createdOn",
+};
+
 const LeadsDocket = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const { isMobile, isIpad } = useBreakpointValue();
 	const [leads, setLeads] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(leads);
 	const [allLeadIDs, setAllLeadIDs] = useState([]);
 	const toast = useToast();
 	const [data, setData] = useState([]);
@@ -58,6 +73,21 @@ const LeadsDocket = () => {
 	const [pageNum, setPageNum] = useState(1);
 	const [totalPage, setTotalPages] = useState(1);
 	const limit = 30;
+	// BUG-SEARCH-02: the "Search here" box did nothing; it now searches the whole
+	// list on the server (name, company, e-mail) after a short pause in typing
+	const [searchInput, setSearchInput] = useState("");
+	const [search, setSearch] = useState("");
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			const term = searchInput.trim();
+			if (term !== search) {
+				setSearch(term);
+				setPageNum(1); // a new search starts on the first page
+			}
+		}, 300);
+		return () => clearTimeout(timer);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchInput]);
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
@@ -77,6 +107,7 @@ const LeadsDocket = () => {
 			const { data } = await LeadsService.getNotDisbursedLeads(company, filter, {
 				page: pageNum,
 				limit,
+				...(search ? { search } : {}),
 			});
 			const { totalPages, page, items } = data;
 			setLeads(items);
@@ -90,19 +121,29 @@ const LeadsDocket = () => {
 
 	useEffect(() => {
 		fetchAllLeads();
-	}, [isRefresh, pageNum]);
+	}, [isRefresh, pageNum, search]);
 
 	useEffect(() => {
+		// BUG-LEAD-01: the response was also called `data`, so `newRecord: data` read
+		// it before it existed (ReferenceError) and every bulk import failed silently.
+		// After the import the current page is reloaded (the server answers with the
+		// whole unpaged list).
 		const addMultipleLeads = async () => {
 			try {
-				const { data } = await LeadsService.createMultipleOpportunity({
+				await LeadsService.createMultipleOpportunity({
 					newRecord: data,
 					companyName: company,
 				});
-				setLeads(data);
-				setAllLeadIDs(data.map((item) => item._id));
+				toast({ title: `${data.length} lead(s) imported.`, status: "success", duration: 3000, isClosable: true });
+				setIsRefresh((prev) => !prev);
 			} catch (error) {
-				console.error(error);
+				toast({
+					title: "Could not import the leads.",
+					description: error?.response?.data?.message || "Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 		if (data.length > 0) {
@@ -240,6 +281,9 @@ const LeadsDocket = () => {
 								placeholder="Search here"
 								pr="4.5rem"
 								py={"1.1em"}
+								value={searchInput}
+								onChange={(e) => setSearchInput(e.target.value)}
+								aria-label="Search by name, company or e-mail"
 							/>
 						</InputGroup>
 						<AddOpportunityForm />
@@ -254,12 +298,15 @@ const LeadsDocket = () => {
 				handleHeaderCheckboxChange={handleHeaderCheckboxChange}
 				height="calc(100vh - 238px)"
 				css={tabScrollCss}
+				sortKeys={LEAD_DOCKET_SORT_KEYS}
+				sortConfig={sortConfig}
+				onSort={requestSort}
 			>
 				<Tbody>
 					{(!leads || leads?.length === 0) && (
 						<EmptyRowRecord data={leads} colSpan={LEAD_DOCKET_COLUMNS?.length} />
 					)}
-					{leads?.map(
+					{sortedItems?.map(
 						({
 							_id,
 							address,

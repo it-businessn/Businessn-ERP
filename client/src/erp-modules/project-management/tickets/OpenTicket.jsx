@@ -1,4 +1,4 @@
-import { AttachmentIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import { AttachmentIcon } from "@chakra-ui/icons";
 import {
 	Badge,
 	Box,
@@ -9,7 +9,6 @@ import {
 	Table,
 	Tbody,
 	Td,
-	Th,
 	Thead,
 	Tooltip,
 	Tr,
@@ -17,11 +16,14 @@ import {
 } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import { MY_TICKETS_FILTER, SUPPORT_CATEGORY, ticketPersonName } from "constant";
+import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import useDepartment from "hooks/useDepartment";
+import useSortableData from "hooks/useSortableData";
 import { useEffect, useRef, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
@@ -31,21 +33,27 @@ import CategoryFilter from "./CategoryFilter";
 import NewTicket from "./NewTicket";
 import NoteDetails from "./NoteDetails";
 
+// TABLE-SORT: sort by what the cells show (originator falls back to the customer / lead)
+const sortByOriginator = (ticket) => ticketPersonName(ticket);
+
 const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees }) => {
 	const TICKET_TABLE_COLS = [
 		{ name: "Ticket Number", key: "ticketNumber" },
 		{ name: "Category", key: "category" },
 		{ name: "Priority", key: "priority" },
 		{ name: "Assignee", key: "assignee" },
-		{ name: "Originator", key: "originator" },
+		{ name: "Originator", key: sortByOriginator },
 		{ name: "Topic", key: "topic" },
 		{ name: "Description", key: "issue" },
 		{ name: "Ticket Opened", key: "createdOn" },
 		{ name: "Days Open", key: "ticketDaysOpened" },
 		{ name: "Status", key: "" },
+		// BUG-TKT-01: open tickets had no way to change their status (handleUpdate
+		// was never called); same status menu as the Closed tab
+		{ name: "Action", key: "" },
 	];
 	const [ticketData, setTicketData] = useState(null);
-	const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+	const { sortedItems, sortConfig, requestSort } = useSortableData(ticketData);
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const [rowData, setRowData] = useState(null);
@@ -93,15 +101,25 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 	const toast = useToast();
 
 	const handleUpdate = async (action, id) => {
-		const { data } = await TicketService.updateInfo({ status: action }, id);
-		if (data) {
+		try {
+			const { data } = await TicketService.updateInfo({ status: action }, id);
+			if (data) {
+				toast({
+					title: "Action updated successfully.",
+					status: "success",
+					duration: 1500,
+					isClosable: true,
+				});
+				setRefresh((prev) => !prev);
+			}
+		} catch (error) {
 			toast({
-				title: "Action updated successfully.",
-				status: "success",
-				duration: 1500,
+				title: "Could not update the ticket.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
 				isClosable: true,
 			});
-			setRefresh((prev) => !prev);
 		}
 	};
 
@@ -152,30 +170,6 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 		if (scrollRef.current) {
 			scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
 		}
-	};
-
-	const sortedData = [...(ticketData ?? [])].sort((a, b) => {
-		if (!sortConfig.key) return 0;
-		const aVal = a[sortConfig.key];
-		const bVal = b[sortConfig.key];
-
-		if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
-		if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
-		return 0;
-	});
-
-	const requestSort = (key) => {
-		let direction = "asc";
-		if (!key) return;
-		if (sortConfig.key === key && sortConfig.direction === "asc") {
-			direction = "desc";
-		}
-		setSortConfig({ key, direction });
-	};
-
-	const getSortIcon = (key) => {
-		if (sortConfig.key !== key) return null;
-		return sortConfig.direction === "asc" ? <TriangleUpIcon ml={2} /> : <TriangleDownIcon ml={2} />;
 	};
 
 	return (
@@ -251,20 +245,18 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 					<Thead position={"sticky"} zIndex={3} top={-1} bg="var(--primary_bg)">
 						<Tr>
 							{TICKET_TABLE_COLS?.map((col) => (
-								<Th
+								<SortableTh
+									sortKey={col.key}
+									sortConfig={sortConfig}
+									onSort={requestSort}
 									pl={["Category", "Topic", "Description"]?.includes(col.name) && 0}
 									key={col.name}
-									onClick={() => requestSort(col.key)}
-									cursor="pointer"
 									py={3}
 									borderBottom="2px solid"
 									borderColor="var(--filter_border_color)"
 								>
-									<HStack spacing={0}>
-										<TextTitle width="auto" title={col.name} />
-										{getSortIcon(col.key)}
-									</HStack>
-								</Th>
+									<TextTitle width="auto" title={col.name} />
+								</SortableTh>
 							))}
 						</Tr>
 					</Thead>
@@ -272,7 +264,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 						{(!ticketData || ticketData?.length === 0) && (
 							<EmptyRowRecord data={ticketData} colSpan={TICKET_TABLE_COLS.length} />
 						)}
-						{sortedData?.map(
+						{sortedItems?.map(
 							({
 								ticketNumber,
 								category,
@@ -397,6 +389,16 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 											>
 												{status}
 											</Badge>
+										</Td>
+										<Td py={3}>
+											<ActionAll
+												id={_id}
+												w="108px"
+												isRowAction
+												status={status}
+												handleButtonClick={(action) => handleUpdate(action, _id)}
+												actions={TICKET_ACTION_STATUS}
+											/>
 										</Td>
 									</Tr>
 								);

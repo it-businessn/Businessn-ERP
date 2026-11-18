@@ -1,5 +1,6 @@
 import { Box, Checkbox, Table, Th, Thead, Tr } from "@chakra-ui/react";
 import TextTitle from "../text/TextTitle";
+import SortableTh from "./SortableTh";
 
 const TableLayout = ({
 	hasMulti,
@@ -31,14 +32,27 @@ const TableLayout = ({
 	specifyPaddingCols,
 	css,
 	minH,
+	// TABLE-SORT: { [column title]: field | "path.to.field" | (row) => value },
+	// with sortConfig / onSort from hooks/useSortableData. Columns without a key
+	// are not sortable.
+	sortKeys,
+	sortConfig,
+	onSort,
+	// TABLE-HEADER: the header row stays visible while the table scrolls
+	stickyHeader = true,
 }) => {
+	const headerBg = colBg || (stickyHeader && !position ? bg : undefined);
 	return (
 		<Box overflow="auto" minH={minH} maxH={height} w={w} css={css}>
 			<Table variant={variant} bg={bg} size={tableSize}>
-				<Thead position={position} top={top} zIndex={zIndex}>
+				<Thead
+					position={position || (stickyHeader ? "sticky" : undefined)}
+					top={top ?? (stickyHeader && !position ? 0 : undefined)}
+					zIndex={zIndex ?? (stickyHeader && !position ? 1 : undefined)}
+				>
 					<Tr display={inVisible && "none"}>
 						{hasMulti && (
-							<Th>
+							<Th bg={headerBg}>
 								<Checkbox
 									checked={isAllChecked}
 									colorScheme="facebook"
@@ -47,8 +61,11 @@ const TableLayout = ({
 							</Th>
 						)}
 						{cols?.map((col, index) => (
-							<Th
-								bg={colBg}
+							<SortableTh
+								sortKey={sortKeys?.[col]}
+								sortConfig={sortConfig}
+								onSort={onSort}
+								bg={headerBg}
 								textAlign={index < 2 ? "left" : textAlign}
 								p={isSmall ? 1 : "auto"}
 								pl={
@@ -89,9 +106,9 @@ const TableLayout = ({
 											: "left"
 									}
 								/>
-							</Th>
+							</SortableTh>
 						))}
-						{hasMulti && <Th>Action</Th>}
+						{hasMulti && <Th bg={headerBg}>Action</Th>}
 					</Tr>
 				</Thead>
 				{children}

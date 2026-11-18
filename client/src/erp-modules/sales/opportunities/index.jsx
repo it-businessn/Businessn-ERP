@@ -23,6 +23,7 @@ import DeletePopUp from "components/ui/modal/DeletePopUp";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useManager from "hooks/useManager";
 import useSalesAgentData from "hooks/useSalesAgentData";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaSearch } from "react-icons/fa";
@@ -40,6 +41,18 @@ import { OPPORTUNITY_COLUMNS } from "../lead docket/data";
 import AddNewOpportunity from "./AddNewOpportunity";
 import { LEAD_STAGES } from "./data";
 
+// TABLE-SORT: column title -> what the cell shows ("L1 - Fresh Leads" sorts like its code "L1")
+const OPPORTUNITY_SORT_KEYS = {
+	"Opportunity name": "opportunityName",
+	"Company name": "name",
+	Email: "email",
+	Stage: "stage",
+	"Primary assignee": "primaryAssignee.0.name",
+	"Supervisor assignee": "supervisorAssignee.0.name",
+	"Created On": "createdOn",
+	"Disburse Status": ({ isDisbursedConfirmed }) => (isDisbursedConfirmed ? "Yes" : "No"),
+};
+
 const Opportunities = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -47,6 +60,7 @@ const Opportunities = () => {
 	const [isAdded, setIsAdded] = useState(false);
 
 	const [opportunities, setOpportunities] = useState(null);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(opportunities);
 	const assignees = useSalesAgentData(company, false, true);
 	const [refresh, setRefresh] = useState(false);
 	const managers = useManager(company);
@@ -55,6 +69,21 @@ const Opportunities = () => {
 	const [pageNum, setPageNum] = useState(1);
 	const [totalPage, setTotalPages] = useState(1);
 	const limit = 30;
+	// BUG-SEARCH-02: the "Search here" box did nothing; it now searches the whole
+	// list on the server (name, company, e-mail) after a short pause in typing
+	const [searchInput, setSearchInput] = useState("");
+	const [search, setSearch] = useState("");
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			const term = searchInput.trim();
+			if (term !== search) {
+				setSearch(term);
+				setPageNum(1); // a new search starts on the first page
+			}
+		}, 300);
+		return () => clearTimeout(timer);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchInput]);
 
 	useEffect(() => {
 		const fetchAllCompanies = async () => {
@@ -74,6 +103,7 @@ const Opportunities = () => {
 			const { data } = await LeadsService.getOpportunities(company, filter, {
 				page: pageNum,
 				limit,
+				...(search ? { search } : {}),
 			});
 			const { totalPages, page, items } = data;
 			const leadList = isNotEnrollerOrEmployee(loggedInUser?.role)
@@ -95,7 +125,7 @@ const Opportunities = () => {
 
 	useEffect(() => {
 		fetchAllOpportunities();
-	}, [isAdded, pageNum]);
+	}, [isAdded, pageNum, search]);
 
 	const [formData, setFormData] = useState({
 		id: null,
@@ -269,6 +299,9 @@ const Opportunities = () => {
 								placeholder="Search here"
 								pr="4.5rem"
 								py={"1.1em"}
+								value={searchInput}
+								onChange={(e) => setSearchInput(e.target.value)}
+								aria-label="Search by name, company or e-mail"
 							/>
 						</InputGroup>
 						{createOpportunity()}
@@ -281,12 +314,15 @@ const Opportunities = () => {
 				cols={OPPORTUNITY_COLUMNS}
 				height="calc(100vh - 240px)"
 				css={tabScrollCss}
+				sortKeys={OPPORTUNITY_SORT_KEYS}
+				sortConfig={sortConfig}
+				onSort={requestSort}
 			>
 				<Tbody>
 					{(!opportunities || opportunities?.length === 0) && (
 						<EmptyRowRecord data={opportunities} colSpan={OPPORTUNITY_COLUMNS?.length} />
 					)}
-					{opportunities?.map((_) => {
+					{sortedItems?.map((_) => {
 						return (
 							<Tr key={_._id}>
 								<Td py={"0.5em"}>

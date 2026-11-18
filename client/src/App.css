@@ -293,8 +293,11 @@ body {
 	font-weight: bold;
 	color: white;
 }
-button:active {
-	background: transparent !important;
+/* UI-03: was `button:active { background: transparent !important; }`, which made
+   every filled button lose its colour while pressed (white text vanished). A
+   pressed button now dims slightly instead. */
+button:active:not(:disabled) {
+	filter: brightness(0.92);
 }
 
 /* .active::before {

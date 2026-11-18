@@ -1,13 +1,17 @@
-import { Box, HStack, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
+import { Box, HStack, Table, Tbody, Td, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
 import LeftIconButton from "components/ui/button/LeftIconButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import useCrews from "hooks/useCrews";
+import useSortableData from "hooks/useSortableData";
 import { useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import EditCrew from "./EditCrew";
+
+const CREW_SORT_KEYS = { Name: "name", Admin: "createdBy" };
 
 const CrewList = ({ company, refresh, setRefresh, employees, managers, costCenters }) => {
 	const TABLE_COL_COLOR = {
@@ -17,6 +21,7 @@ const CrewList = ({ company, refresh, setRefresh, employees, managers, costCente
 		nameColor: useColorModeValue("blue.600", "blue.200"),
 	};
 	const { crews } = useCrews(company, refresh);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(crews);
 	const [editRecord, setEditRecord] = useState(null);
 
 	// const handleEdit = () => {
@@ -32,9 +37,14 @@ const CrewList = ({ company, refresh, setRefresh, employees, managers, costCente
 				<Thead position="sticky" top={-1} zIndex={1}>
 					<Tr>
 						{["Name", "Admin", ""]?.map((col, index) => (
-							<Th key={`${col}_${index}`}>
+							<SortableTh
+								sortKey={CREW_SORT_KEYS[col]}
+								sortConfig={sortConfig}
+								onSort={requestSort}
+								key={`${col}_${index}`}
+							>
 								<TextTitle size={"sm"} title={col} />
-							</Th>
+							</SortableTh>
 						))}
 					</Tr>
 				</Thead>
@@ -47,7 +57,7 @@ const CrewList = ({ company, refresh, setRefresh, employees, managers, costCente
 							description="Add crew to see them listed here"
 						/>
 					)}
-					{crews?.map((crew) => {
+					{sortedItems?.map((crew) => {
 						return (
 							<Tr
 								key={crew._id}

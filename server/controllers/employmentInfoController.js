@@ -9,6 +9,7 @@ const { addUserEmploymentInfo } = require("./empDataController");
 const { updateTADEmployee } = require("./timecardController");
 const { setInitialPermissions } = require("./permissionController");
 const { checkExtraRun } = require("../helpers/payrollHelper");
+const { clearMembershipCache } = require("../middleware/authorize");
 
 const getAllEmploymentInfo = async (req, res) => {
 	const { companyName, payDate, isExtraRun, groupId, deptName, selectedPayGroupOption } = req.body;
@@ -397,6 +398,10 @@ const updateEmployeeEmploymentInfo = async (req, res) => {
 				employmentCountry,
 				employmentRegion,
 			});
+			// ACCESS-01: the server caches roles for a minute; a new access level applies now
+			if (employmentRole && employmentRole !== existingEmploymentInfo?.employmentRole) {
+				clearMembershipCache(String(existingEmploymentInfo.empId));
+			}
 
 			if (positions?.length) {
 				try {

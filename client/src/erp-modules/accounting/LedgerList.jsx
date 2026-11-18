@@ -3,6 +3,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import useSortableData from "hooks/useSortableData";
 import { getAmount } from "utils/convertAmt";
 
 const LedgerList = ({ accounts, setShowAccDetail, setAccName }) => {
@@ -13,6 +14,8 @@ const LedgerList = ({ accounts, setShowAccDetail, setAccName }) => {
 		"Total Debit",
 		"Total Credit",
 	];
+
+	const { sortedItems, sortConfig, requestSort } = useSortableData(accounts);
 
 	const showAccount = (accountName) => {
 		setAccName(accountName);
@@ -27,12 +30,21 @@ const LedgerList = ({ accounts, setShowAccDetail, setAccName }) => {
 			top={-1}
 			zIndex={1}
 			textAlign="center"
+			sortKeys={{
+				"Account Code": "accCode",
+				"Account Name": "accountName",
+				"Total Journal Entries": "totalJournalEntries",
+				"Total Debit": "totalDebit",
+				"Total Credit": "totalCredit",
+			}}
+			sortConfig={sortConfig}
+			onSort={requestSort}
 		>
 			<Tbody>
 				{(!accounts || accounts?.length === 0) && (
 					<EmptyRowRecord data={accounts} colSpan={cols.length} />
 				)}
-				{accounts?.map(
+				{sortedItems?.map(
 					({ _id, accCode, accountName, totalDebit, totalCredit, totalJournalEntries }) => {
 						return (
 							<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>

@@ -13,8 +13,10 @@ import {
 import OutlineButton from "components/ui/button/OutlineButton";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
 import TextTitle from "components/ui/text/TextTitle";
 import useEmployeePayReport from "hooks/useEmployeePayReport";
+import useSortableData from "hooks/useSortableData";
 import { useState } from "react";
 import { MdCheckCircle, MdSettingsSuggest } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
@@ -44,6 +46,7 @@ const InputsReview = ({
 		selectedPayPeriod,
 		isInputsReviewOpen && currentStep === 1,
 	);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(inputsReviewData);
 
 	const COLS = [
 		{ title: "Employee name", value: "fullName" },
@@ -92,10 +95,15 @@ const InputsReview = ({
 				<Table>
 					<Thead position="sticky" top={-1} zIndex="docked">
 						<Tr>
-							{COLS.map(({ title }) => (
-								<Th key={title}>
+							{COLS.map(({ title, value }) => (
+								<SortableTh
+									key={title}
+									sortKey={title.includes("Employee") ? `empId.${value}` : value}
+									sortConfig={sortConfig}
+									onSort={requestSort}
+								>
 									<TextTitle size={"md"} title={title} />
-								</Th>
+								</SortableTh>
 							))}
 							<Th>
 								<Icon as={MdSettingsSuggest} boxSize="5" color="fg.muted" />
@@ -106,7 +114,7 @@ const InputsReview = ({
 						{(!inputsReviewData || inputsReviewData?.length === 0) && (
 							<EmptyRowRecord description="" data={inputsReviewData} colSpan={COLS?.length + 1} />
 						)}
-						{inputsReviewData?.map((data) => (
+						{sortedItems?.map((data) => (
 							<Tr key={data._id}>
 								{COLS.map(({ title, value, round, nearest }) => (
 									<Td key={title}>

@@ -18,10 +18,12 @@ import {
 	Tr,
 } from "@chakra-ui/react";
 import RightIconButton from "components/ui/button/RightIconButton";
+import SortableTh from "components/ui/table/SortableTh";
 import { callsMadeBarData } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import useSortableData from "hooks/useSortableData";
 import PageLayout from "layouts/PageLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Bar } from "components/ui/charts";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineFilterList } from "react-icons/md";
@@ -34,6 +36,9 @@ const SalesReport = () => {
 	const { isMobile, isIpad } = useBreakpointValue();
 
 	const [contacts, setContacts] = useState(null);
+	// TABLE-SORT: sorts the 20 rows shown; only the Deals column holds row data
+	const shownContacts = useMemo(() => contacts?.slice(0, 20), [contacts]);
+	const { sortedItems, sortConfig, requestSort } = useSortableData(shownContacts);
 	const fetchAllContacts = async () => {
 		try {
 			const { data } = await ContactService.getCompContacts(company);
@@ -331,14 +336,21 @@ const SalesReport = () => {
 									<Th fontWeight={"bolder"} p={0}>
 										Date
 									</Th>
-									<Th fontWeight={"bolder"}>Deals </Th>
+									<SortableTh
+										sortKey="companyName"
+										sortConfig={sortConfig}
+										onSort={requestSort}
+										fontWeight={"bolder"}
+									>
+										Deals{" "}
+									</SortableTh>
 									<Th fontWeight={"bolder"}>Amount</Th>
 									<Th fontWeight={"bolder"}>Top Product</Th>
 									<Th p={0}></Th>
 								</Tr>
 							</Thead>
 							<Tbody color={"var(--nav_color)"}>
-								{contacts?.slice(0, 20)?.map((contact) => (
+								{sortedItems?.map((contact) => (
 									<Tr key={contact._id}>
 										<Td fontSize={"xs"} p={0}>
 											04/02/2024

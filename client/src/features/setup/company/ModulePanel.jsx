@@ -1,14 +1,33 @@
-import { Switch, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Switch, Table, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
+import SortableTh from "components/ui/table/SortableTh";
+import useSortableData from "hooks/useSortableData";
+import { useState } from "react";
 import SettingService from "services/SettingService";
 
 const ModulePanel = ({ modules }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(modules);
+	const toast = useToast();
+	// BUG-SET-01: the switch changed the module object in place, so it did not move
+	// until something else re-rendered, and stayed changed when the save failed.
+	// The shown value is kept in state and undone on failure.
+	const [activeById, setActiveById] = useState({});
+	const isActive = (module) => activeById[module._id] ?? Boolean(module.isActive);
 	const handleToggle = async (menu) => {
+		const next = !isActive(menu);
+		setActiveById((prev) => ({ ...prev, [menu._id]: next }));
 		try {
-			menu.isActive = !menu.isActive;
-			await SettingService.updateModule(menu, menu._id);
+			await SettingService.updateModule({ ...menu, isActive: next }, menu._id);
+			menu.isActive = next;
 		} catch (error) {
-			console.log("An error occurred. Please try again.", error);
+			setActiveById((prev) => ({ ...prev, [menu._id]: !next }));
+			toast({
+				title: "Could not update the module.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 	return (
@@ -29,13 +48,15 @@ const ModulePanel = ({ modules }) => {
 			<Table variant="simple">
 				<Thead>
 					<Tr>
-						<Th>Name</Th>
+						<SortableTh sortKey="name" sortConfig={sortConfig} onSort={requestSort}>
+							Name
+						</SortableTh>
 						<Th>Active</Th>
 					</Tr>
 				</Thead>
 				<Tbody>
 					{(!modules || modules?.length === 0) && <EmptyRowRecord data={modules} colSpan={2} />}
-					{modules?.map((module) => (
+					{sortedItems?.map((module) => (
 						<Tr key={module._id}>
 							<Td>{module.name}</Td>
 							<Td>
@@ -44,7 +65,7 @@ const ModulePanel = ({ modules }) => {
 										e.preventDefault();
 										handleToggle(module);
 									}}
-									isChecked={module.isActive}
+									isChecked={isActive(module)}
 									colorScheme="facebook"
 								/>
 							</Td>

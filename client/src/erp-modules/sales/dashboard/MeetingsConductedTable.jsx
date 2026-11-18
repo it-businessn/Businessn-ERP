@@ -6,25 +6,43 @@ import {
 	Tbody,
 	Td,
 	Text,
-	Th,
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import SortableTh from "components/ui/table/SortableTh";
+import useSortableData from "hooks/useSortableData";
+
+// TABLE-SORT: sort by what each cell shows (stable function keys)
+const byMeetingDate = (meeting) => {
+	const time = Date.parse(meeting.meetingDate);
+	return Number.isNaN(time) ? meeting.meetingDate : time;
+};
+const byDuration = (meeting) => meeting.duration.hours * 60 + Number(meeting.duration.minutes);
+const byStatus = (meeting) => (meeting.status === "completed" ? "Completed" : "Scheduled");
 
 const MeetingsConductedTable = ({ meetingsData }) => {
+	const { sortedItems, sortConfig, requestSort } = useSortableData(meetingsData);
 	return (
 		<Table color={"var(--nav_color)"} bg={"var(--primary_bg)"} size={"small"}>
 			<Thead>
 				<Tr fontSize={"xs"}>
-					<Th p={0}>Customer Name</Th>
-					<Th>Meeting Date</Th>
-					<Th>Duration</Th>
-					<Th>Status</Th>
+					<SortableTh sortKey="customerName" sortConfig={sortConfig} onSort={requestSort} p={0}>
+						Customer Name
+					</SortableTh>
+					<SortableTh sortKey={byMeetingDate} sortConfig={sortConfig} onSort={requestSort}>
+						Meeting Date
+					</SortableTh>
+					<SortableTh sortKey={byDuration} sortConfig={sortConfig} onSort={requestSort}>
+						Duration
+					</SortableTh>
+					<SortableTh sortKey={byStatus} sortConfig={sortConfig} onSort={requestSort}>
+						Status
+					</SortableTh>
 				</Tr>
 			</Thead>
 			<Tbody border={"none"} color={"var(--nav_color)"}>
-				{meetingsData.map((meeting, index) => (
-					<Tr key={meeting}>
+				{sortedItems.map((meeting, index) => (
+					<Tr key={`${meeting.customerName}-${meeting.meetingDate}`}>
 						<Td p={0} fontSize={"xs"} py={0}>
 							<Flex align="center">
 								<Avatar
@@ -41,7 +59,7 @@ const MeetingsConductedTable = ({ meetingsData }) => {
 						<Td
 							fontSize={"xs"}
 							py={0}
-						>{`0${meeting.duration.hours}:${meeting.duration.minutes}h`}</Td>
+						>{`${String(meeting.duration.hours).padStart(2, "0")}:${String(meeting.duration.minutes).padStart(2, "0")}h`}</Td>
 						<Td py={1} fontSize={"xs"}>
 							<Button
 								bg={"#d8dce9"}

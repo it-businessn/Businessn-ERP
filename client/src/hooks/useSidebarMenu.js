@@ -34,6 +34,9 @@ const useSidebarMenu = (userId, company, isShadowAdmin) => {
 						});
 						return menuLink;
 					});
+					// ACCESS-01: publish the full list; when the role became Shadow Admin
+					// after load, the bar kept the previous (permission-based) list
+					setMenuList([...SIDEBAR_MENU]);
 					setActiveMenu(SIDEBAR_MENU.find((_) => _.permissions?.canAccessModule));
 				} else {
 					const newPermissions = [];
@@ -81,7 +84,9 @@ const useSidebarMenu = (userId, company, isShadowAdmin) => {
 		if (userId && company) {
 			fetchUserPermissions();
 		}
-	}, [company]);
+		// ACCESS-01: also rebuild the modules when the role changes (e.g. to Shadow Admin)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [company, isShadowAdmin]);
 
 	return { activeMenu, setActiveMenu, menuList };
 };

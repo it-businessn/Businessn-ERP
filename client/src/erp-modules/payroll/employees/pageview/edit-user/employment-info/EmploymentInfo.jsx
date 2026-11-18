@@ -36,6 +36,7 @@ import {
 	tabScrollCss,
 } from "erp-modules/payroll/onboard-user/customInfo";
 import { useEffect, useState } from "react";
+import LocalStorageService from "services/LocalStorageService";
 import PayrollService from "services/PayrollService";
 import { getDefaultDate } from "utils/convertDate";
 import NewPositionModal from "./NewPositionModal";
@@ -93,7 +94,9 @@ const EmploymentInfo = ({
 			const allRoles = getAccessibleRoles();
 			setRolesDropdown(allRoles);
 		}
-	}, [roles]);
+		// ACCESS-01: also when your own role changes (it is refreshed from the server)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [roles, userRole]);
 
 	useEffect(() => {
 		setEditedIndices({});
@@ -212,9 +215,11 @@ const EmploymentInfo = ({
 				employmentRegion,
 				positions,
 			};
-			const { data } = moreDetails?._id
-				? await PayrollService.updateEmployeeEmploymentInfo(employmentInfoData, moreDetails?._id)
-				: await PayrollService.addEmployeeEmploymentInfo(employmentInfoData);
+			if (moreDetails?._id) {
+				await PayrollService.updateEmployeeEmploymentInfo(employmentInfoData, moreDetails?._id);
+			} else {
+				await PayrollService.addEmployeeEmploymentInfo(employmentInfoData);
+			}
 			setShowModal(false);
 			setIsLoading(false);
 			toast({
@@ -223,6 +228,21 @@ const EmploymentInfo = ({
 				duration: 3000,
 				isClosable: true,
 			});
+			// ACCESS-01: your own System Access Level changed: reload so the modules and
+			// screens use it now (it used to apply only after signing in again)
+			const me = LocalStorageService.getItem("user");
+			const isOwnRecord =
+				String(employmentInfoData.empId) === String(me?._id) &&
+				company === LocalStorageService.getItem("selectedCompany");
+			if (isOwnRecord && employmentRole && employmentRole !== employmentInfo?.employmentRole) {
+				toast({
+					title: "Your access level changed.",
+					description: "Reloading to apply it.",
+					status: "info",
+					duration: 2000,
+				});
+				setTimeout(() => window.location.reload(), 1500);
+			}
 		} catch (error) {
 			setIsLoading(false);
 			toast({
@@ -310,6 +330,14 @@ const EmploymentInfo = ({
 											handleChange("employmentInfo", "employmentRole", e.target.value);
 									}}
 								>
+									{/* ACCESS-01: a current level you cannot assign showed as the first
+									    option, which then could not be picked */}
+									{formData.employmentInfo.employmentRole &&
+										!rolesDropdown.some((r) => r.name === formData.employmentInfo.employmentRole) && (
+											<option value={formData.employmentInfo.employmentRole} disabled>
+												{formData.employmentInfo.employmentRole}
+											</option>
+										)}
 									{rolesDropdown.map((role) => (
 										<option key={role._id} value={role.name}>
 											{role.name}
