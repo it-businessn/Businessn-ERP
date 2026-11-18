@@ -1,9 +1,10 @@
-import { HStack, Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
+import { Box, HStack, Tbody, Td, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import PrimaryButton from "components/ui/button/PrimaryButton";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TableLayout from "components/ui/table/TableLayout";
 import TextTitle from "components/ui/text/TextTitle";
+import { ticketPersonName } from "constant";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
 import ActionAll from "erp-modules/payroll/timesheets/ActionAll";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
@@ -20,6 +21,11 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const [rowData, setRowData] = useState(null);
+	// TICKET-DETAILS: the details window gets the whole ticket (it only got the description)
+	const openDetails = (id) => {
+		setRowData(ticketData?.find((ticket) => ticket._id === id) || null);
+		setOpenNote(true);
+	};
 	const depts = useDepartment(company);
 
 	useEffect(() => {
@@ -95,6 +101,9 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 							ticketDaysOpened,
 							createdOn,
 							originator,
+							clientFirstName,
+							clientLastName,
+							leadId,
 							_id,
 							bg,
 							file,
@@ -103,7 +112,16 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 							return (
 								<Tr key={_id} _hover={{ bg: "var(--phoneCall_bg_light)" }}>
 									<Td py={0}>
-										<TextTitle title={ticketNumber} />
+										<Box
+											as="button"
+											onClick={() => openDetails(_id)}
+											textAlign="left"
+											color="var(--banner_bg)"
+											_hover={{ textDecor: "underline" }}
+											title="Open ticket details"
+										>
+											<TextTitle title={ticketNumber} />
+										</Box>
 									</Td>
 									<Td py={0} px={1}>
 										<TextTitle title={category} />
@@ -115,7 +133,10 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 										<NormalTextTitle size="sm" title={assignee} />
 									</Td>
 									<Td py={0}>
-										<NormalTextTitle size="sm" title={originator} />
+										<NormalTextTitle
+											size="sm"
+											title={ticketPersonName({ originator, clientFirstName, clientLastName, leadId })}
+										/>
 									</Td>
 									<Td py={0} maxW="100px" px={1}>
 										<Tooltip label={topic}>
@@ -132,8 +153,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 													size="12px"
 													cursor="pointer"
 													onClick={() => {
-														setOpenNote(true);
-														setRowData({ issue, topic, ticketNumber, file, originalname });
+														openDetails(_id);
 													}}
 												/>
 											</HStack>

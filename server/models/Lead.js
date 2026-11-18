@@ -33,6 +33,14 @@ const leadSchema = new mongoose.Schema(
 		totalEmployees: String,
 		referrals: { type: Boolean, default: false },
 		marketingComms: { type: Boolean, default: false },
+		// LEAD-DETAILS: website lead / contact form fields (POST /ticket/leads)
+		message: String,
+		plan: String,
+		webinarTitle: String,
+		webinarTopic: String,
+		ticketType: String,
+		formName: String,
+		websiteSource: String, // the website's own `source`; `source` stays the CRM source
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );

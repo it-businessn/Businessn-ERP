@@ -10,9 +10,41 @@ const { sendTemplate, newLeadEmail, newSupportTicketEmail, ticketAssignedEmail }
 const { filePath, fileContentType } = require("../services/fileService");
 const { COMPANIES } = require("../constants/constant");
 const { SUPPORT_ADMIN_CONTACT } = require("../constants/permissions.constants");
-const { TICKET_STATUS } = require("../constants/ticket.constants");
+const {
+	TICKET_STATUS,
+	SUPPORT_CATEGORY,
+	MY_TICKETS_FILTER,
+	CUSTOMER_TICKET_PREFIX,
+	UNASSIGNED_ASSIGNEE,
+	LEAD_FIELDS,
+	LEAD_NUMBER_FIELDS,
+	LEAD_BOOLEAN_FIELDS,
+	LEAD_DEFAULT_TOPIC,
+	LEAD_DEFAULT_ISSUE,
+	LEAD_SOURCE_WEBSITE,
+	LEAD_STAGE_NEW,
+	LEAD_POPULATE_FIELDS,
+} = require("../constants/ticket.constants");
 const { companyScopeFilter } = require("../middleware/authorize");
 const { pickScalarFields } = require("../helpers/requestFields");
+const { getEffectiveRole, ROLE_GROUPS } = require("../middleware/rbac");
+
+// SUPPORT-QUEUE: tickets from the public support / contact forms are created in
+// BusinessN Corporate with category SUPPORT_CATEGORY and no originator, assigned to
+// SUPPORT_ADMIN_CONTACT. They were only listed for that one person (and for
+// nobody when that employee was not found). Every admin-level user of BusinessN
+// Corporate now sees all Support tickets there, assigned or not.
+const seesSupportQueue = async (req, companyName) => {
+	if (companyName !== COMPANIES.BUSINESSN_ORG || !req.user?.id) return false;
+	const role = await getEffectiveRole(String(req.user.id), companyName);
+	return ROLE_GROUPS.ADMIN_LEVEL.includes(role);
+};
+/** Tickets of `name` (originator or assignee), plus the support queue for its admins. */
+const visibleTicketsFilter = async (req, name, companyName) => {
+	const or = [{ originator: name }, { assignee: name }];
+	if (await seesSupportQueue(req, companyName)) or.push({ category: SUPPORT_CATEGORY });
+	return { $or: or };
+};
 // AUD-016: request data (incl. the public lead / support forms) is HTML-escaped in e-mail bodies.
 
 const getAllTickets = async (req, res) => {
@@ -37,7 +69,7 @@ const getAggregateTicketCount = async (req, res) => {
 			{
 				$match: {
 					companyName,
-					$or: [{ originator: id }, { assignee: id }],
+					...(await visibleTicketsFilter(req, id, companyName)),
 					status: { $in: [TICKET_STATUS.OPEN, TICKET_STATUS.PROGRESS, TICKET_STATUS.ON_HOLD] },
 				},
 			},
@@ -82,7 +114,7 @@ const getFilteredTickets = async (req, res) => {
 	const { id, companyName, category } = req.params;
 	try {
 		const filterCriteria =
-			category === "My"
+			category === MY_TICKETS_FILTER
 				? {
 						companyName,
 						$or: [{ originator: id }, { assignee: id }],
@@ -91,10 +123,12 @@ const getFilteredTickets = async (req, res) => {
 				: {
 						companyName,
 						category,
-						$or: [{ originator: id }, { assignee: id }],
+						...(await visibleTicketsFilter(req, id, companyName)),
 						status: { $ne: TICKET_STATUS.CLOSED },
 					};
-		const tickets = await SupportTicket.find(filterCriteria).sort({ priority: 1 });
+		const tickets = await SupportTicket.find(filterCriteria)
+			.sort({ priority: 1 })
+			.populate("leadId", LEAD_POPULATE_FIELDS);
 		tickets.map((task) => {
 			task.ticketDaysOpened = Math.round(
 				moment.duration(moment().diff(moment(task.createdOn))).asDays(),
@@ -113,9 +147,11 @@ const getOpenTickets = async (req, res) => {
 		const tickets = await SupportTicket.find({
 			// companyName: { $exists: false },
 			companyName,
-			status: { $ne: "Close" },
-			$or: [{ originator: id }, { assignee: id }],
-		}).sort({ priority: 1 });
+			status: { $ne: TICKET_STATUS.CLOSED },
+			...(await visibleTicketsFilter(req, id, companyName)),
+		})
+			.sort({ priority: 1 })
+			.populate("leadId", LEAD_POPULATE_FIELDS);
 		tickets.map((task) => {
 			task.ticketDaysOpened = Math.round(
 				moment.duration(moment().diff(moment(task.createdOn))).asDays(),
@@ -134,9 +170,9 @@ const getClosedTickets = async (req, res) => {
 		const name = id.replace("  ", " ");
 		const tickets = await SupportTicket.find({
 			companyName,
-			status: "Close",
-			$or: [{ originator: name }, { assignee: name }],
-		});
+			status: TICKET_STATUS.CLOSED,
+			...(await visibleTicketsFilter(req, name, companyName)),
+		}).populate("leadId", LEAD_POPULATE_FIELDS);
 		return res.status(200).json(tickets);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -187,86 +223,104 @@ const downloadResource = async (req, res) => {
 	}
 };
 
-const createNewFreshLead = async (lead) => {
+// LEAD-DETAILS: the CRM Lead is the one record of what the website form sent;
+// the ticket links to it with leadId (nothing is copied onto the ticket).
+const createNewFreshLead = async (lead, interests) => {
 	const newLeadOpportunity = {
-		name: `${lead?.firstName} ${lead?.lastName}`,
+		name: [lead?.firstName, lead?.lastName].filter(Boolean).join(" "),
 		companyName: COMPANIES.BUSINESSN_ORG,
 		email: lead?.email,
 		opportunityName: lead?.companyName,
 		phone: lead?.phone,
-		productService: lead?.interests?.map((interest) => {
-			return { name: interest };
-		}),
-		region: lead?.province,
-		source: "Website Inquiry",
-		stage: "L1",
+		productService: interests?.map((interest) => ({ name: interest })),
+		region: lead?.state,
+		source: LEAD_SOURCE_WEBSITE,
+		stage: LEAD_STAGE_NEW,
 		roleTitle: lead?.title,
 		country: lead?.country,
 		annualRevenue: lead?.annualRevenue,
-		totalEmployees: lead?.totalEmployees,
+		totalEmployees: lead?.totalEmployees != null ? String(lead.totalEmployees) : undefined,
 		referrals: lead?.referrals,
 		marketingComms: lead?.marketingComms,
+		message: lead?.message,
+		plan: lead?.plan,
+		webinarTitle: lead?.webinarTitle,
+		webinarTopic: lead?.webinarTopic,
+		ticketType: lead?.ticketType,
+		formName: lead?.formName,
+		websiteSource: lead?.source,
 	};
 	const newLead = await Lead.create(newLeadOpportunity);
 	return newLead;
 };
 
-// NEW-12: fields of the public website form (client CustomerInfo.jsx). The
-// public route used to pass the whole body to SupportTicket.create, so a caller
-// could set status, file, originator, etc.; operator objects reached Mongo.
-const LEAD_FORM_FIELDS = [
-	"firstName",
-	"lastName",
-	"title",
-	"email",
-	"phone",
-	"country",
-	"province",
-	"annualRevenue",
-	"totalEmployees",
-	"companyName",
-	"referrals",
-	"marketingComms",
-];
+const LEAD_TEXT_MAX = 500;
+const LEAD_MESSAGE_MAX = 5000;
+const toBoolean = (v) => {
+	if (typeof v === "boolean") return v;
+	const s = String(v).trim().toLowerCase();
+	if (["true", "yes", "on", "1"].includes(s)) return true;
+	if (["false", "no", "off", "0"].includes(s)) return false;
+	return undefined;
+};
+
+/**
+ * LEAD-DETAILS: the known lead fields of the request, for the CRM Lead. Only
+ * plain values are copied (an object such as { "$gt": "" } is rejected, NEW-12);
+ * text is trimmed and capped, numbers and yes/no values are converted, and a
+ * value that cannot be converted is left out instead of failing the save.
+ * The ERP's own form sends `province`; it is stored as `state`.
+ */
+const pickLeadDetails = (body) => {
+	const { data, invalid } = pickScalarFields(body, LEAD_FIELDS);
+	if (data.state == null && typeof body?.province === "string") data.state = body.province;
+	const lead = {};
+	for (const [key, value] of Object.entries(data)) {
+		if (value === null || value === "") continue;
+		if (LEAD_NUMBER_FIELDS.includes(key)) {
+			const n = Number(value);
+			if (Number.isFinite(n)) lead[key] = n;
+		} else if (LEAD_BOOLEAN_FIELDS.includes(key)) {
+			const b = toBoolean(value);
+			if (b !== undefined) lead[key] = b;
+		} else {
+			const text = String(value).trim();
+			if (text) lead[key] = text.slice(0, key === "message" ? LEAD_MESSAGE_MAX : LEAD_TEXT_MAX);
+		}
+	}
+	return { lead, invalid };
+};
+
+/** e.g. "New Lead: Sales enquiry from ABC Store" */
+const leadTopic = (lead) =>
+	`New Lead: ${lead.ticketType || LEAD_DEFAULT_TOPIC}${lead.companyName ? ` from ${lead.companyName}` : ""}`;
 
 const createLeadTicket = async (req, res) => {
 	try {
-		const { data, invalid } = pickScalarFields(req.body, LEAD_FORM_FIELDS);
+		const { lead: leadDetails, invalid } = pickLeadDetails(req.body);
 		const interests = req.body?.interests;
 		if (
 			invalid.length > 0 ||
-			(data.companyName != null && typeof data.companyName !== "string") ||
 			(interests !== undefined &&
 				interests !== null &&
 				(!Array.isArray(interests) || interests.some((i) => typeof i !== "string")))
 		) {
 			return res.status(400).json({ message: "Invalid lead form data" });
 		}
-		if (Array.isArray(interests)) data.interests = interests;
-		const lead = await createNewFreshLead(data);
+		const lead = await createNewFreshLead(leadDetails, Array.isArray(interests) ? interests : undefined);
 
-		data.category = "Support";
-		data.priority = 1;
-
-		const companyNamePrefix = data?.companyName?.split(" ")[0];
-		data.ticketNumber = generateTicketNumber(companyNamePrefix);
 		const assigneeEmail = await Employee.findOne({ email: SUPPORT_ADMIN_CONTACT });
-		data.assignee = assigneeEmail?.fullName;
-
-		const newInfo = data;
-		newInfo.companyName = COMPANIES.BUSINESSN_ORG;
-		newInfo.topic = "New Lead: Website Contact Form Submission";
-		newInfo.issue = "A new lead has been generated from the website contact form.";
 
 		// NEW-12: explicit document (the form fields are not ticket fields).
 		const ticket = await SupportTicket.create({
-			companyName: newInfo.companyName,
-			category: newInfo.category,
-			priority: newInfo.priority,
-			ticketNumber: newInfo.ticketNumber,
-			assignee: newInfo.assignee,
-			topic: newInfo.topic,
-			issue: newInfo.issue,
+			companyName: COMPANIES.BUSINESSN_ORG,
+			category: SUPPORT_CATEGORY,
+			priority: 1,
+			ticketNumber: generateTicketNumber(leadDetails.companyName?.split(" ")[0]),
+			assignee: assigneeEmail?.fullName,
+			topic: leadTopic(leadDetails),
+			issue: leadDetails.message || LEAD_DEFAULT_ISSUE,
+			leadId: lead?._id,
 		});
 
 		if (assigneeEmail?.email) {
@@ -275,10 +329,11 @@ const createLeadTicket = async (req, res) => {
 				newLeadEmail({
 					assigneeName: assigneeEmail?.fullName,
 					ticketNumber: ticket?.ticketNumber,
-					companyName: lead?.opportunityName || data?.companyName,
-					contactName: [data?.firstName, data?.lastName].filter(Boolean).join(" "),
-					email: data?.email,
-					phone: data?.phone,
+					companyName: leadDetails.companyName || lead?.opportunityName,
+					contactName: [leadDetails.firstName, leadDetails.lastName].filter(Boolean).join(" "),
+					email: leadDetails.email,
+					phone: leadDetails.phone,
+					lead: leadDetails,
 				}),
 			);
 		}
@@ -327,7 +382,7 @@ const createSupportTicket = async (req, res) => {
 		const companyNamePrefix = companyName.split(" ")[0];
 
 		const ticketNumber = generateTicketNumber(companyNamePrefix);
-		const category = "Support";
+		const category = SUPPORT_CATEGORY;
 		const assigneeEmail = await Employee.findOne({ email: SUPPORT_ADMIN_CONTACT });
 
 		const ticket = await SupportTicket.create({
@@ -410,10 +465,10 @@ const createTicket = async (req, res) => {
 				);
 			return res.status(201).json(newTask);
 		}
-		newTicket.ticketNumber = generateTicketNumber("CUST");
-		newTicket.category = "Support";
+		newTicket.ticketNumber = generateTicketNumber(CUSTOMER_TICKET_PREFIX);
+		newTicket.category = SUPPORT_CATEGORY;
 		newTicket.priority = 4;
-		newTicket.assignee = "NA";
+		newTicket.assignee = UNASSIGNED_ASSIGNEE;
 		const newTask = await SupportTicket.create(newTicket);
 		return res.status(201).json(newTask);
 	} catch (error) {
@@ -434,7 +489,7 @@ const updateTicket = async (req, res) => {
 		if (existingTicket && !existingTicket?.originator)
 			updatedTicket.originator = `${existingTicket.clientFirstName} ${existingTicket.clientLastName}`;
 
-		if (updatedTicket?.status === "Close") {
+		if (updatedTicket?.status === TICKET_STATUS.CLOSED) {
 			updatedTicket.ticketClosedDate = moment();
 		} else {
 			updatedTicket.ticketDaysOpened = Math.round(
@@ -443,6 +498,28 @@ const updateTicket = async (req, res) => {
 		}
 
 		const setup = await SupportTicket.findByIdAndUpdate(id, { $set: updatedTicket }, { new: true });
+		// SUPPORT-QUEUE: tell the new assignee when a ticket is reassigned
+		const newAssignee = updatedTicket?.assignee;
+		if (typeof newAssignee === "string" && newAssignee && newAssignee !== existingTicket?.assignee) {
+			try {
+				const assigneeEmail = await Employee.findOne({ fullName: newAssignee }).select(["email"]);
+				if (assigneeEmail?.email)
+					await sendTemplate(
+						assigneeEmail.email,
+						ticketAssignedEmail({
+							assigneeName: newAssignee,
+							ticketNumber: setup?.ticketNumber,
+							topic: setup?.topic || setup?.inquiryType,
+							issue: setup?.issue,
+							originator: setup?.originator,
+							category: setup?.category,
+							hasAttachment: Boolean(setup?.originalname),
+						}),
+					);
+			} catch (mailError) {
+				console.error("Ticket reassigned, e-mail not sent:", mailError.message);
+			}
+		}
 		return res.status(200).json(setup);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });

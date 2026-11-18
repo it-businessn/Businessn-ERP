@@ -5,6 +5,7 @@ import {
 	Flex,
 	HStack,
 	IconButton,
+	Select,
 	Table,
 	Tbody,
 	Td,
@@ -18,6 +19,7 @@ import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import NormalTextTitle from "components/ui/NormalTextTitle";
 import TextTitle from "components/ui/text/TextTitle";
 import { tabScrollCss } from "erp-modules/payroll/onboard-user/customInfo";
+import { MY_TICKETS_FILTER, SUPPORT_CATEGORY, ticketPersonName } from "constant";
 import { TICKET_ACTION_STATUS } from "erp-modules/payroll/timesheets/data";
 import useDepartment from "hooks/useDepartment";
 import { useEffect, useRef, useState } from "react";
@@ -47,6 +49,11 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 	const [refresh, setRefresh] = useState(false);
 	const [openNote, setOpenNote] = useState(false);
 	const [rowData, setRowData] = useState(null);
+	// TICKET-DETAILS: the details window gets the whole ticket (it only got the description)
+	const openDetails = (id) => {
+		setRowData(ticketData?.find((ticket) => ticket._id === id) || null);
+		setOpenNote(true);
+	};
 	const [ticketsCount, setTicketsCount] = useState(null);
 	const [presentTitle, setPresentTitle] = useState({
 		title: "Present",
@@ -95,6 +102,24 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 				isClosable: true,
 			});
 			setRefresh((prev) => !prev);
+		}
+	};
+
+	// SUPPORT-QUEUE: Support tickets (public support / contact forms) can be reassigned
+	const handleReassign = async (id, assignee) => {
+		if (!assignee) return;
+		try {
+			await TicketService.updateInfo({ assignee }, id);
+			toast({ title: `Ticket assigned to ${assignee}.`, status: "success", duration: 2000, isClosable: true });
+			setRefresh((prev) => !prev);
+		} catch (error) {
+			toast({
+				title: "Could not reassign the ticket.",
+				description: error?.response?.data?.message || "Please try again.",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
 		}
 	};
 
@@ -185,7 +210,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 					>
 						<CategoryFilter
 							index={0}
-							name="My"
+							name={MY_TICKETS_FILTER}
 							isMyChannel
 							data={ticketsCount?.myTicketsCount}
 							filterTicket={filterTicket}
@@ -263,7 +288,13 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 								originalname,
 								_id,
 								bg,
+								clientFirstName,
+								clientLastName,
+								leadId,
 							}) => {
+								const isSupport = category === SUPPORT_CATEGORY;
+								// support-form and lead tickets have no originator: show the customer / lead
+								const originatorName = ticketPersonName({ originator, clientFirstName, clientLastName, leadId });
 								return (
 									<Tr
 										key={_id}
@@ -272,7 +303,16 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 										borderColor="var(--filter_border_color)"
 									>
 										<Td py={3}>
-											<TextTitle title={ticketNumber} />
+											<Box
+												as="button"
+												onClick={() => openDetails(_id)}
+												textAlign="left"
+												color="var(--banner_bg)"
+												_hover={{ textDecor: "underline" }}
+												title="Open ticket details"
+											>
+												<TextTitle title={ticketNumber} />
+											</Box>
 										</Td>
 										<Td py={3} px={2}>
 											<TextTitle title={category} />
@@ -295,10 +335,30 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 											</Badge>
 										</Td>
 										<Td py={3}>
-											<NormalTextTitle size="sm" title={assignee} />
+											{isSupport && employees?.length ? (
+												<Select
+													size="sm"
+													minW="150px"
+													borderRadius="var(--radius)"
+													value={assignee || ""}
+													placeholder="Unassigned"
+													onChange={(e) => handleReassign(_id, e.target.value)}
+												>
+													{assignee && !employees.some((emp) => emp?.fullName === assignee) && (
+														<option value={assignee}>{assignee}</option>
+													)}
+													{employees.map((emp) => (
+														<option key={emp?._id || emp?.fullName} value={emp?.fullName}>
+															{emp?.fullName}
+														</option>
+													))}
+												</Select>
+											) : (
+												<NormalTextTitle size="sm" title={assignee || "Unassigned"} />
+											)}
 										</Td>
 										<Td py={3}>
-											<NormalTextTitle size="sm" title={originator} />
+											<NormalTextTitle size="sm" title={originatorName} />
 										</Td>
 										<Td py={3} px={2}>
 											<NormalTextTitle whiteSpace="nowrap" size="sm" title={topic} />
@@ -311,8 +371,7 @@ const OpenTicket = ({ company, setShowAddEntry, showAddEntry, userId, employees 
 														cursor="pointer"
 														gap={1}
 														onClick={() => {
-															setOpenNote(true);
-															setRowData({ issue, topic, ticketNumber, file, originalname });
+															openDetails(_id);
 														}}
 													>
 														<CgNotes size="12px" />

@@ -140,7 +140,10 @@ const weeklyScheduleEmail = ({ fullName, week, location, companyName, hasAttachm
 	});
 
 /** Website contact form: new lead for the support administrator. */
-const newLeadEmail = ({ assigneeName, ticketNumber, companyName, contactName, email, phone }) =>
+const yesNo = (v) => (typeof v === "boolean" ? (v ? "Yes" : "No") : v);
+
+/** LEAD-DETAILS: everything the website form sent (empty rows are dropped). */
+const newLeadEmail = ({ assigneeName, ticketNumber, companyName, contactName, email, phone, lead = {} }) =>
 	render(`New lead: ${clean(companyName) || "website enquiry"} (ticket ${clean(ticketNumber)})`, {
 		preheader: `New lead from the website contact form: ${clean(companyName)}.`,
 		eyebrow: "Sales",
@@ -155,6 +158,20 @@ const newLeadEmail = ({ assigneeName, ticketNumber, companyName, contactName, em
 			{ label: "Contact", value: contactName },
 			{ label: "E-mail", value: email },
 			{ label: "Phone", value: phone },
+			{ label: "Title", value: lead.title },
+			{ label: "Country", value: lead.country },
+			{ label: "Province / State", value: lead.state },
+			{ label: "Annual revenue", value: lead.annualRevenue },
+			{ label: "Employees", value: lead.totalEmployees },
+			{ label: "Enquiry type", value: lead.ticketType },
+			{ label: "Plan", value: lead.plan },
+			{ label: "Webinar", value: lead.webinarTitle },
+			{ label: "Webinar topic", value: lead.webinarTopic },
+			{ label: "Form", value: lead.formName },
+			{ label: "Source", value: lead.source },
+			{ label: "Referrals", value: yesNo(lead.referrals) },
+			{ label: "Marketing e-mails", value: yesNo(lead.marketingComms) },
+			{ label: "Message", value: lead.message },
 		],
 		button: ticketLink(),
 		closing: [],

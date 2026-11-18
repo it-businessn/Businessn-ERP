@@ -61,7 +61,13 @@ const TicketHistory = ({ userId, company, setCount, height = "calc(100vh - 528px
 									<LinkButton
 										onClick={() => {
 											setOpenNote(true);
-											ticketDetails.current = { issue, topic, ticketNumber, file, originalname };
+											ticketDetails.current = ticketData?.find((ticket) => ticket._id === _id) || {
+												issue,
+												topic,
+												ticketNumber,
+												file,
+												originalname,
+											}; // TICKET-DETAILS: whole ticket
 										}}
 										textDecor="underline"
 										fontSize="xs"

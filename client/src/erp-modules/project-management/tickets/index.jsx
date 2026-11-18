@@ -11,6 +11,9 @@ import { getDeptName } from "utils";
 import ClosedTicket from "./ClosedTicket";
 import OpenTicket from "./OpenTicket";
 
+// Tab labels of the Tickets page (not ticket statuses)
+const TICKET_TABS = { OPEN: "Open", CLOSED: "Closed" };
+
 const Tickets = () => {
 	const company = LocalStorageService.getItem("selectedCompany");
 	const loggedInUser = LocalStorageService.getItem("user");
@@ -23,7 +26,7 @@ const Tickets = () => {
 	const TABS = [
 		{
 			id: 0,
-			type: "Open",
+			type: TICKET_TABS.OPEN,
 			name: (
 				<OpenTicket
 					company={company}
@@ -36,7 +39,7 @@ const Tickets = () => {
 		},
 		{
 			id: 1,
-			type: "Closed",
+			type: TICKET_TABS.CLOSED,
 			name: (
 				<ClosedTicket
 					company={company}

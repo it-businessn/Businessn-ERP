@@ -27,6 +27,9 @@ const supportTicketSchema = new mongoose.Schema(
 		ticketClosedDate: Date,
 		ticketDaysOpened: { type: Number, default: 0 },
 		status: { type: String, default: TICKET_STATUS.OPEN },
+		// LEAD-DETAILS: the CRM Lead created from the website lead / contact form
+		// (POST /ticket/leads). The lead's details live on the Lead only.
+		leadId: { type: mongoose.Schema.Types.ObjectId, ref: "Lead" },
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );

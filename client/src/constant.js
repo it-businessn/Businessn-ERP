@@ -90,6 +90,45 @@ export const COLS = {
 	PAYRATE: "Payrate",
 };
 
+/** Category of tickets from the public support and website contact forms. */
+export const SUPPORT_CATEGORY = "Support";
+
+/**
+ * LEAD-DETAILS: fields of the CRM Lead linked to a ticket (ticket.leadId, server
+ * LEAD_POPULATE_FIELDS) and their labels, in display order.
+ */
+export const LEAD_FIELD_LABELS = [
+	{ key: "name", label: "Name" },
+	{ key: "opportunityName", label: "Company" },
+	{ key: "roleTitle", label: "Title" },
+	{ key: "email", label: "Email" },
+	{ key: "phone", label: "Phone" },
+	{ key: "country", label: "Country" },
+	{ key: "region", label: "Province / State" },
+	{ key: "annualRevenue", label: "Annual revenue" },
+	{ key: "totalEmployees", label: "Employees" },
+	{ key: "stage", label: "Stage" },
+	{ key: "plan", label: "Plan" },
+	{ key: "ticketType", label: "Enquiry type" },
+	{ key: "formName", label: "Form" },
+	{ key: "websiteSource", label: "Source" },
+	{ key: "webinarTitle", label: "Webinar" },
+	{ key: "webinarTopic", label: "Webinar topic" },
+	{ key: "referrals", label: "Referrals" },
+	{ key: "marketingComms", label: "Marketing e-mails" },
+	{ key: "message", label: "Message" },
+];
+
+/** Name of the person behind a ticket: originator, support-form customer or website lead. */
+export const ticketPersonName = (ticket) =>
+	ticket?.originator ||
+	[ticket?.clientFirstName, ticket?.clientLastName].filter(Boolean).join(" ") ||
+	ticket?.leadId?.name ||
+	"";
+
+/** Category filter name for "My tickets" (server MY_TICKETS_FILTER). */
+export const MY_TICKETS_FILTER = "My";
+
 export const CATEGORY_LIST = [
 	{ category: "Onboarding" },
 	{ category: "Development" },
@@ -99,7 +138,7 @@ export const CATEGORY_LIST = [
 	{ category: "IT Support" },
 	{ category: "Finance" },
 	{ category: "Testing" },
-	{ category: "Support" },
+	{ category: SUPPORT_CATEGORY },
 	{ category: "AI" },
 	{ category: "Payroll" },
 	{ category: "HR" },
