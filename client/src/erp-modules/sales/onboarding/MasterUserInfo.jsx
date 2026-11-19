@@ -34,7 +34,7 @@ const MasterUserInfo = ({ formData, setFormData }) => {
 				display={{ base: "none", md: "flex" }}
 				p={6}
 				borderRight="1px solid"
-				borderColor="gray.200"
+				borderColor="var(--border_soft)"
 				flex={0.2}
 				bg="gray.50"
 			>

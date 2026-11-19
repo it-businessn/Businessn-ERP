@@ -5,7 +5,7 @@ const SessionExpiredBanner = ({ onClose }) => (
 		status="warning"
 		variant="left-accent"
 		backgroundColor="yellow.100"
-		color="black"
+		color="var(--main_color_black)"
 		borderColor="yellow.400"
 		borderWidth="1px"
 		position="fixed"

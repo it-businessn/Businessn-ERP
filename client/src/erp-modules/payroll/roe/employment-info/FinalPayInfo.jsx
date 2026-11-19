@@ -73,7 +73,7 @@ export const FinalPayInfo = ({ isReadOnly, formData, handleFieldChange, payPerio
 							</option>
 						))}
 					</Select>
-					<Text fontSize="xs" color="gray.500" mt={1}>
+					<Text fontSize="xs" color="var(--text_soft)" mt={1}>
 						Filled in from the last day worked: the pay period that contains it.
 					</Text>
 				</FormControlMain>

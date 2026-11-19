@@ -30,7 +30,7 @@ import { longTimeFormat } from "utils/convertDate";
 const Detail = ({ label, value, color }) =>
 	value || value === 0 ? (
 		<Box>
-			<Text fontSize="xs" color="gray.500">
+			<Text fontSize="xs" color="var(--text_soft)">
 				{label}
 			</Text>
 			<Text fontSize="sm" fontWeight="medium" color={color} wordBreak="break-word">

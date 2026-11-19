@@ -78,7 +78,7 @@ const Communications = ({ isDashboard }) => {
 			>
 				<Box
 					display={isDashboard && "none"}
-					borderRight="2px solid #eee"
+					borderRight="2px solid var(--border_light)"
 					h={"calc(var(--comms))"}
 					maxW={{ md: "24vw", lg: "18vw", xl: "12vw" }}
 					p={"1em"}
@@ -134,7 +134,7 @@ const Communications = ({ isDashboard }) => {
 					<>
 						<Box
 							display={isDashboard && "none"}
-							borderRight="2px solid #eee"
+							borderRight="2px solid var(--border_light)"
 							h={`calc(var(--comms))`}
 							maxW={{ md: "24vw", lg: "18vw", xl: "15vw" }}
 							minW={{ md: "24vw", lg: "18vw", xl: "15vw" }}

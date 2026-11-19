@@ -8,6 +8,33 @@ const theme = extendTheme(
 		// UI-02: consistent controls. Explicit props on a screen still win.
 		components: {
 			Button: { baseStyle: { borderRadius: "var(--radius)" } },
+			// THEMES-01: overlays and tables use the app's themed colours (identical to
+			// Chakra's own in Light; in Dark they match the app instead of Chakra's greys)
+			Modal: { baseStyle: { dialog: { bg: "var(--surface)" } } },
+			Drawer: { baseStyle: { dialog: { bg: "var(--surface)" } } },
+			Popover: {
+				baseStyle: {
+					content: { "--popper-bg": "var(--surface)", bg: "var(--surface)" },
+				},
+			},
+			Menu: {
+				baseStyle: {
+					list: { "--menu-bg": "var(--surface)", bg: "var(--surface)" },
+					item: {
+						bg: "var(--surface)",
+						_hover: { bg: "gray.100" },
+						_focus: { bg: "gray.100" },
+					},
+				},
+			},
+			Table: {
+				variants: {
+					simple: {
+						th: { borderColor: "var(--table_border)" },
+						td: { borderColor: "var(--table_border)" },
+					},
+				},
+			},
 			Select: {
 				variants: {
 					outline: {

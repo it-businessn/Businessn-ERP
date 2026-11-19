@@ -14,7 +14,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 				path: payrollEmployeePath,
 			},
 			icon: FiUsers,
-			color: "#000",
+			color: "var(--main_color_black)",
 		},
 		{
 			title: "Currently Active",
@@ -24,7 +24,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 				path: timesheetPath,
 			},
 			icon: FiClock,
-			color: "#000",
+			color: "var(--main_color_black)",
 		},
 		{
 			title: "Currently On Leave",
@@ -34,7 +34,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 				path: leaveApprovalPath,
 			},
 			icon: FiCalendar,
-			color: "#000",
+			color: "var(--main_color_black)",
 		},
 		{
 			title: "Leave Requests Pending",
@@ -44,7 +44,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 				path: leaveApprovalPath,
 			},
 			icon: FiAlertCircle,
-			color: "#000",
+			color: "var(--main_color_black)",
 		},
 	];
 
@@ -52,7 +52,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 		<BoxCard
 			p={{ base: "0 1rem 1rem", md: "0 1.25rem 1.25rem" }}
 			overflowY="hidden"
-			bg={"white"}
+			bg="var(--surface)"
 			css={tabScrollCss}
 		>
 			<Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={{ base: 4, md: 5 }}>
@@ -76,7 +76,7 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 					>
 						<Flex mb={4} align="center">
 							<Icon as={item.icon} boxSize={5} color={item.color} mr={2} />
-							<Text fontSize="sm" color="#000" fontWeight="medium">
+							<Text fontSize="sm" color="var(--main_color_black)" fontWeight="medium">
 								{item.title}
 							</Text>
 						</Flex>
@@ -101,10 +101,10 @@ const PayPeriodDetails = ({ employees, activeUsers, handleClick }) => {
 							spacing={1}
 							onClick={() => handleClick(item?.linkTo?.path)}
 							cursor="pointer"
-							color="#000"
+							color="var(--main_color_black)"
 							fontWeight="medium"
 							fontSize="sm"
-							_hover={{ color: "#000" }}
+							_hover={{ color: "var(--main_color_black)" }}
 							display="inline-flex"
 							position="absolute"
 							bottom={3}

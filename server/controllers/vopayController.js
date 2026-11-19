@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const requireEnv = require("../helpers/requireEnv");
 const { COMPANIES } = require("../constants/constant");
 const { emitToCompany } = require("../helpers/socketAuth");
+const { applyVopayEventToOrder } = require("../services/orderService");
 
 const VOPAY_PARTNER_ACCOUNT_ID = requireEnv("VOPAY_PARTNER_ACCOUNT_ID");
 const VOPAY_API_KEY_PROD = requireEnv("VOPAY_API_KEY_PROD");
@@ -464,6 +465,12 @@ const receiveWebhook = (io) => (req, res) => {
 
 	const event = req.body;
 	console.log("Webhook Received:", event);
+
+	// ORDERS-01: a transaction status updates the order of that transfer. Runs in
+	// the background so VoPay always gets its 200 at once.
+	applyVopayEventToOrder(event).catch((error) =>
+		console.error("VoPay webhook: order not updated", { error: error.message }),
+	);
 
 	// NEW-15 / CHANGES.md API #16: was io.emit (every socket, unauthenticated). Now only
 	// sockets of the company the event belongs to receive it.

@@ -45,7 +45,7 @@ const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 				width="280px"
 				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
-				borderColor="gray.200"
+				borderColor="var(--border_soft)"
 				flexShrink={0}
 				bg="gray.50"
 			>
@@ -63,7 +63,7 @@ const PayInfo = ({ formData, handleChange, setIsDisabled }) => {
 								<StepTitle fontWeight={"bold"} mb={1}>
 									{step.title}
 								</StepTitle>
-								<StepDescription fontSize="sm" color="gray.600">
+								<StepDescription fontSize="sm" color="var(--text_muted)">
 									{step.description}
 								</StepDescription>
 							</Box>

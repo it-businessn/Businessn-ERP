@@ -53,7 +53,7 @@ export const ROEForm = ({ formData, employer, payPeriodType, isCopy }) => {
 	return (
 		<Box
 			position="relative"
-			bg="white"
+			bg="white" className="theme-paper"
 			fontFamily="Arial, sans-serif"
 			fontSize="10px"
 			p={6}
@@ -183,7 +183,7 @@ const ReviewInfo = ({
 					<Badge colorScheme={isSubmitted ? "green" : "orange"} fontSize="sm">
 						{isSubmitted ? "Submitted" : "Draft"}
 					</Badge>
-					{isSubmitted && submittedOn && <Text color="gray.600">on {formatPayDate(submittedOn)}</Text>}
+					{isSubmitted && submittedOn && <Text color="var(--text_muted)">on {formatPayDate(submittedOn)}</Text>}
 				</HStack>
 				<HStack>
 					<Button leftIcon={<FaPrint />} variant="outline" onClick={() => handlePrint()}>
@@ -222,7 +222,7 @@ const ReviewInfo = ({
 					/>
 				</Box>
 			)}
-			<Box border="1px solid" borderColor="gray.200" overflowX="auto">
+			<Box border="1px solid" borderColor="var(--border_soft)" overflowX="auto">
 				<Box ref={componentRef}>
 					<ROEForm
 						formData={formData}

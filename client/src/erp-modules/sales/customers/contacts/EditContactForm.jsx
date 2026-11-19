@@ -51,7 +51,7 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 					<HStack maxW="100%" justify="center">
 						<Stack flex={1}>
 							<VStack align="center" justify="center" mb="4">
-								<Avatar name=" " size="lg" bg="gray.300" position="relative">
+								<Avatar name=" " size="lg" bg="var(--fill_gray_300)" position="relative">
 									<FaBuilding className="header-logo" />
 								</Avatar>
 								<Box textAlign="center">
@@ -115,11 +115,11 @@ const EditContactForm = ({ selectedContact, onSave, onCancel }) => {
 							orientation="vertical"
 							height="600px"
 							borderWidth="1px"
-							borderColor="gray.300"
+							borderColor="var(--border_mid)"
 						/>
 						<Stack flex={1}>
 							<VStack align="center" justify="center" mb="4">
-								<Avatar name=" " size="lg" bg="gray.300" position="relative">
+								<Avatar name=" " size="lg" bg="var(--fill_gray_300)" position="relative">
 									<FaAddressCard className="header-logo" />
 								</Avatar>
 								<Box textAlign="center">

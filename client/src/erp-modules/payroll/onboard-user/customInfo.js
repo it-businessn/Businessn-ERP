@@ -285,7 +285,7 @@ export const tabStyleCss = {
 		flexDirection: "column",
 	},
 	".chakra-tabs__tablist": {
-		borderColor: "gray.200",
+		borderColor: "var(--border_soft)",
 		flexShrink: 0,
 	},
 	".chakra-tabs__tab[aria-selected=true]": {

@@ -147,7 +147,7 @@ const Invoice = () => {
 							<Button
 								bg="var(--primary_button_bg)"
 								size="xs"
-								color={"var(--primary_bg)"}
+								color={"var(--on_dark_text)"}
 								variant={"solid"}
 								_hover={{ color: "var(--main_color_black)" }}
 								borderRadius={"10px"}
@@ -230,7 +230,7 @@ const Invoice = () => {
 							<Button
 								bg="var(--primary_button_bg)"
 								size="xs"
-								color={"var(--primary_bg)"}
+								color={"var(--on_dark_text)"}
 								variant={"solid"}
 								_hover={{ color: "var(--main_color_black)" }}
 								borderRadius={"10px"}
@@ -305,7 +305,7 @@ const Invoice = () => {
 												rightIcon={
 													<ArrowForwardIcon
 														color="purple.500"
-														bg={"#dedaf4"}
+														bg={"var(--tint_lavender)"}
 														borderRadius="full"
 														w={"1.5em"}
 														h={"1.5em"}

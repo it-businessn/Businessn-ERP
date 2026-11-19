@@ -109,7 +109,7 @@ const AlertsViolation = ({
 									<Button
 										size={"sm"}
 										borderRadius={"10px"}
-										color={"var(--primary_bg)"}
+										color={"var(--on_dark_text)"}
 										bg={"var(--incorrect_ans)"}
 									>
 										Action required
@@ -118,7 +118,7 @@ const AlertsViolation = ({
 									<Button
 										size={"sm"}
 										borderRadius={"10px"}
-										color={"var(--primary_bg)"}
+										color={"var(--on_dark_text)"}
 										bg={"var(--pending)"}
 									>
 										Attention Needed

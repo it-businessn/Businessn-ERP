@@ -56,25 +56,25 @@ export const TenureInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 						<HStack
 							key={`${position?.title}_${index}`}
 							border="1px solid"
-							borderColor="gray.200"
+							borderColor="var(--border_soft)"
 							borderRadius="md"
 							p={2}
 							spacing={6}
 						>
 							<Box flex={1}>
-								<Text fontSize="xs" color="gray.500">
+								<Text fontSize="xs" color="var(--text_soft)">
 									Position
 								</Text>
 								<Text>{position?.title || "-"}</Text>
 							</Box>
 							<Box flex={1}>
-								<Text fontSize="xs" color="gray.500">
+								<Text fontSize="xs" color="var(--text_soft)">
 									Pay rate
 								</Text>
 								<Text>{position?.payRate ? getAmount(position.payRate) : "-"}</Text>
 							</Box>
 							<Box flex={1}>
-								<Text fontSize="xs" color="gray.500">
+								<Text fontSize="xs" color="var(--text_soft)">
 									Pay group
 								</Text>
 								<Text>{position?.employmentPayGroup || "-"}</Text>
@@ -82,7 +82,7 @@ export const TenureInfo = ({ isReadOnly, formData, handleFieldChange }) => {
 						</HStack>
 					))
 				) : (
-					<Text color="gray.500" fontSize="sm">
+					<Text color="var(--text_soft)" fontSize="sm">
 						No positions on file (add them in the employee's Employment info).
 					</Text>
 				)}

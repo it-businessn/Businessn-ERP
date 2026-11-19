@@ -69,7 +69,7 @@ const EmpPayStatement = ({ record, isOpen, onClose }) => {
         </DrawerHeader>
 
         <DrawerBody
-          className="print-root"
+          className="print-root theme-paper"
           ref={componentRef}
           bg={"var(--main_color)"}
           minH="100vh"

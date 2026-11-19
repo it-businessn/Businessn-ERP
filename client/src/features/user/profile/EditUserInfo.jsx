@@ -112,7 +112,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 	};
 
 	return (
-		<Stack flex={1} p={"1em"} color="var(--logo_bg)" height={"calc(100vh - 190px)"}>
+		<Stack flex={1} p={"1em"} color="var(--text_strong)" height={"calc(100vh - 190px)"}>
 			<form onSubmit={handleSaveClick}>
 				<VStack align="center" justify="center" mb="4">
 					<Box textAlign="center">
@@ -230,7 +230,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 										size={"sm"}
 										name="role"
 										value={userData?.role || ""}
-										bg="var(--main_color)"
+										bg="var(--surface)"
 										onChange={handleChange}
 										placeholder="Select role"
 									>
@@ -247,7 +247,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 									<FormLabel>Type of Department</FormLabel>
 									<Select
 										size={"sm"}
-										bg="var(--main_color)"
+										bg="var(--surface)"
 										name="department"
 										value={userData?.department || ""}
 										onChange={handleChange}
@@ -285,7 +285,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 						<FormControl mb={4}>
 							<FormLabel>Link Company</FormLabel>
 							<Select
-								bg="var(--main_color)"
+								bg="var(--surface)"
 								name="department"
 								value={userData?.department}
 								onChange={handleChange}
@@ -305,7 +305,7 @@ const EditUserInfo = ({ setEditMode, setError, error, company }) => {
 							<Select
 								name="employmentType"
 								value={userData?.employmentType}
-								bg="var(--main_color)"
+								bg="var(--surface)"
 								onChange={handleChange}
 								placeholder="Select employment type"
 							>

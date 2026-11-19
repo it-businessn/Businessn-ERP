@@ -1,4 +1,4 @@
-import { Box, Table, Tbody, Td, Thead, Tr, useToast } from "@chakra-ui/react";
+import { Badge, Box, Table, Tbody, Td, Text, Thead, Tooltip, Tr, useToast } from "@chakra-ui/react";
 import Loader from "components/Loader";
 import EmptyRowRecord from "components/ui/EmptyRowRecord";
 import SelectList from "components/ui/form/select/SelectList";
@@ -17,6 +17,9 @@ import { payrunType } from "utils/common";
 import { getAmount } from "utils/convertAmt";
 import CustomFilter from "./CustomFilter";
 
+// ORDERS-01: VoPay transfer status -> badge colour
+const VOPAY_BADGE = { sent: "blue", pending: "yellow", successful: "green", failed: "red", cancelled: "red", returned: "red" };
+
 const Orders = () => {
 	const ORDER_COLS = [
 		"Order",
@@ -33,6 +36,7 @@ const Orders = () => {
 		"CRA Sent Status",
 		"CRA Deposited Status",
 		"Fulfillment Status",
+		"VoPay",
 	];
 	const ORDER_SORT_KEYS = {
 		Order: "orderNumber",
@@ -49,6 +53,7 @@ const Orders = () => {
 		"CRA Sent Status": "craSentStatus",
 		"CRA Deposited Status": "craDepositedStatus",
 		"Fulfillment Status": "fulfillmentStatus",
+		VoPay: "vopayStatus",
 	};
 	const ORDER_STATUS = [{ name: "Settled" }, { name: "Unsettled" }];
 
@@ -223,6 +228,10 @@ const Orders = () => {
 										totalCRARemitted,
 										type,
 										fulfillmentStatus,
+										vopayStatus,
+										vopayTransactionId,
+										vopayFailureReason,
+										vopayStatusAt,
 									}) => (
 										<Tr key={_id}>
 											<Td p={0}>{`#${orderNumber}`}</Td>
@@ -237,7 +246,7 @@ const Orders = () => {
 											</Td>
 											<Td py={0}>{type}</Td>
 											{/* <Td py={0}>
-												<Progress colorScheme="blue" size="sm" bg={"#d5def5"} value={55} />
+												<Progress colorScheme="blue" size="sm" bg={"var(--tint_periwinkle)"} value={55} />
 												<NormalTextTitle size="xs" title={"Paid, preparing for shipment"} />
 											</Td> */}
 
@@ -321,6 +330,36 @@ const Orders = () => {
 													bg={!isSettled(fulfillmentStatus) && "var(--order_unsettled)"}
 													title={fulfillmentStatus}
 												/>
+											</Td>
+											{/* ORDERS-01: the VoPay employee transfer of this payroll run */}
+											<Td py={0}>
+												{vopayStatus ? (
+													<Tooltip
+														hasArrow
+														label={[
+															vopayTransactionId && `Transaction ${vopayTransactionId}`,
+															vopayFailureReason,
+															vopayStatusAt && `Updated ${moment(vopayStatusAt).format("YYYY-MM-DD hh:mm A")}`,
+														]
+															.filter(Boolean)
+															.join(" · ")}
+													>
+														<Box>
+															<Badge colorScheme={VOPAY_BADGE[vopayStatus] || "gray"} textTransform="capitalize">
+																{vopayStatus}
+															</Badge>
+															{vopayTransactionId && (
+																<Text fontSize="xs" color="var(--text_soft)">
+																	{vopayTransactionId}
+																</Text>
+															)}
+														</Box>
+													</Tooltip>
+												) : (
+													<Text fontSize="sm" color="var(--text_soft)">
+														-
+													</Text>
+												)}
 											</Td>
 										</Tr>
 									),

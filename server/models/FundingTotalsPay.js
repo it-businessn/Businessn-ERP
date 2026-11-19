@@ -35,6 +35,8 @@ const fundingTotalsPaySchema = new mongoose.Schema(
 		// "in_progress" | "sent" | "failed" | "skipped" (failed/skipped may retry).
 		fundTransferStatus: { type: String, default: null },
 		fundTransferAt: Date,
+		// ORDERS-02: VoPay's TransactionID of the transfer (to look it up or cancel it)
+		fundTransferTransactionId: String,
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );

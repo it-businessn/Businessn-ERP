@@ -99,7 +99,7 @@ const FilesOverView = ({
 							display={"flex"}
 							justifyContent={"start"}
 							alignItems={"start"}
-							bg={"var(--main_color)"}
+							bg="var(--surface)"
 						>
 							<FileActionCell
 								isDashboard={isDashboard}

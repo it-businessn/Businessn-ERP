@@ -75,9 +75,9 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
             as={MdOutlineChevronLeft}
             boxSize={{ base: "32px", md: "40px" }}
             flexShrink={0}
-            color="gray.600"
+            color="var(--text_muted)"
             cursor="pointer"
-            bg="white"
+            bg="var(--surface)"
             opacity="0.8"
             borderRadius="full"
             _hover={{ opacity: 1 }}
@@ -101,9 +101,9 @@ const VerticalCarousel = ({ slides, animationConfig, closestRecordIndex }) => {
             as={MdOutlineChevronRight}
             boxSize={{ base: "32px", md: "40px" }}
             flexShrink={0}
-            color="gray.600"
+            color="var(--text_muted)"
             cursor="pointer"
-            bg="white"
+            bg="var(--surface)"
             opacity="0.8"
             borderRadius="full"
             _hover={{ opacity: 1 }}

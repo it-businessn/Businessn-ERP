@@ -28,7 +28,7 @@ const WorkviewToolbar = () => {
 			gap={{ base: 0, lg: "1.5em" }}
 			flexDir={{ base: "column", lg: "row" }}
 		>
-			<Box mb={4} bg={"var(--main_color)"} borderRadius={"1em"} px="5px">
+			<Box mb={4} bg="var(--surface)" borderRadius={"1em"} px="5px">
 				<ButtonGroup variant="solid" p={0} m={0}>
 					{VIEW_MODE.map(({ name, id }) => (
 						<Button

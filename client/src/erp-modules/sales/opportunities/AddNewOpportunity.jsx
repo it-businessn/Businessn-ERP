@@ -204,7 +204,7 @@ const AddNewOpportunity = ({
 									value={formData?.name}
 									onChange={handleChange}
 								>
-									{companies?.map(({ _id, name }) => (
+									{companies?.filter(({ name }) => name?.trim()).map(({ _id, name }) => (
 										<option value={name} key={_id}>
 											{name}
 										</option>

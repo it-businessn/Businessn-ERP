@@ -1,7 +1,7 @@
 thead {
 	position: sticky;
 	top: -1px;
-	background-color: #f7f7ff;
+	background-color: var(--tint_ghost, #f7f7ff);
 	z-index: 1;
 }
 th {

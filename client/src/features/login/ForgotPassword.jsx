@@ -46,10 +46,10 @@ const ForgotPassword = () => {
 			<CenterBoxLayout>
 				<Stack spacing={3} textAlign="center">
 					<Heading size={{ base: "xs", md: "sm" }}>Check your e-mail</Heading>
-					<Text color="gray.600" fontSize="sm">
+					<Text color="var(--text_muted)" fontSize="sm">
 						{sentMessage}
 					</Text>
-					<Text color="gray.600" fontSize="sm">
+					<Text color="var(--text_muted)" fontSize="sm">
 						The link expires in 15 minutes. If you do not see the e-mail, check your spam folder.
 					</Text>
 				</Stack>
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
 		<CenterBoxLayout>
 			<Stack spacing={2} textAlign="center">
 				<Heading size={{ base: "xs", md: "sm" }}>Forgot your password?</Heading>
-				<Text color="gray.600" fontSize="sm">
+				<Text color="var(--text_muted)" fontSize="sm">
 					Enter the e-mail address for your account and we will send you a link to reset your
 					password.
 				</Text>

@@ -29,7 +29,7 @@ const StatusCol = ({
 			<PrimaryButton
 				minW={minW}
 				bg={actionBg}
-				color={"var(--primary_bg)"}
+				color={"var(--on_dark_text)"}
 				size="xs"
 				name={actionName}
 				px={0}
@@ -43,7 +43,7 @@ const StatusCol = ({
 				<MenuButton
 					as={IconButton}
 					height="auto"
-					icon={<FaCaretDown fontSize={"1.2em"} color="var(--logo_bg)" />}
+					icon={<FaCaretDown fontSize={"1.2em"} color="var(--text_strong)" />}
 					aria-label="Options"
 					minW="auto"
 				/>

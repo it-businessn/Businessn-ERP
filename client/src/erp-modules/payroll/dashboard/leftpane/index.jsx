@@ -92,7 +92,7 @@ const LeftPane = ({
         <BoxCard
           title={"Next Payroll"}
           width="100%"
-          bg="white"
+          bg="var(--surface)"
           p={0}
           boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
           _hover={{
@@ -113,7 +113,7 @@ const LeftPane = ({
         <BoxCard
           minH={"380px"}
           width="100%"
-          bg="white"
+          bg="var(--surface)"
           overflowY="auto"
           css={tabScrollCss}
           boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
@@ -140,7 +140,7 @@ const LeftPane = ({
 					h={"calc(100vh - 580px)"}
 					css={tabScrollCss}
 					width="100%"
-					bg="white"
+					bg="var(--surface)"
 					overflowY="hidden"
 					boxShadow="0px 4px 12px rgba(0, 0, 0, 0.1)"
 					_hover={{

@@ -86,7 +86,7 @@ const CrewMultiSelectDropdown = ({
 						</Box>
 					)}
 
-					<Box borderTop="1px solid #eee" pt={2} pos={isEmp && "relative"} top={isEmp && "4rem"}>
+					<Box borderTop="1px solid var(--border_light)" pt={2} pos={isEmp && "relative"} top={isEmp && "4rem"}>
 						{filteredData?.map((item) => (
 							<MenuItem key={item._id} closeOnSelect={false} onClick={(e) => e.stopPropagation()}>
 								<Checkbox
@@ -100,7 +100,7 @@ const CrewMultiSelectDropdown = ({
 						))}
 
 						{filteredData?.length === 0 && (
-							<Box px={3} py={2} color="gray.500">
+							<Box px={3} py={2} color="var(--text_soft)">
 								No results found
 							</Box>
 						)}

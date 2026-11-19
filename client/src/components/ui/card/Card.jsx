@@ -4,7 +4,7 @@ const Card = ({ children, minH = "3sx", ...props }) => (
 	<Box
 		borderWidth="1px"
 		minH={minH}
-		bg="var(--main_color)"
+		bg="var(--surface)"
 		boxShadow="sm"
 		borderRadius="lg"
 		{...props}

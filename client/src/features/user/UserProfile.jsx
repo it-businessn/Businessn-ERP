@@ -9,7 +9,6 @@ import {
 	PopoverBody,
 	PopoverContent,
 	PopoverTrigger,
-	useColorMode,
 	VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -22,7 +21,6 @@ const UserProfile = ({ user, handleLogout, consoleAccess }) => {
 	const navigate = useNavigate();
 	const [signUp, setSignUp] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
-	const { colorMode, toggleColorMode } = useColorMode();
 
 	// const toggleTheme = () => {
 	// 	toggleColorMode();
@@ -81,7 +79,7 @@ const UserProfile = ({ user, handleLogout, consoleAccess }) => {
 					<PopoverArrow />
 
 					<PopoverBody>
-						<VStack w="100%" alignItems="start" color="var(--logo_bg)">
+						<VStack w="100%" alignItems="start" color="var(--text_strong)">
 							{MENU_OPTIONS.map(
 								({ name, handleClick, hasAccess }) =>
 									hasAccess && (
@@ -111,6 +109,8 @@ const UserProfile = ({ user, handleLogout, consoleAccess }) => {
 				icon={<IoMdHelpCircle style={{ width: "25px", height: "25px" }} />}
 				onClick={() => navigate("/support")}
 				aria-label="Support"
+				// THEMES-01: white on the banner in every theme (dark mode turned it dark)
+				color="white"
 			/>
 		</HStack>
 	);

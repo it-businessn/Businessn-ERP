@@ -7,7 +7,7 @@ const InformationSection = ({ type, items, data }) => (
 	<Stack w={"100%"} mt={2}>
 		<TableLayout
 			textSize="xs"
-			bg="var(--main_color)"
+			bg="var(--main_color)" className="theme-paper"
 			tableSize="xs"
 			w={"100%"}
 			isInfo

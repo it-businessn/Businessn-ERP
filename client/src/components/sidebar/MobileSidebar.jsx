@@ -14,6 +14,7 @@ import {
 	WrapItem,
 } from "@chakra-ui/react";
 import TextTitle from "components/ui/text/TextTitle";
+import ThemePicker from "components/ui/theme/ThemePicker";
 import MenuItem from "../ui/menu/MenuItem";
 
 /**
@@ -93,6 +94,9 @@ const MobileSidebar = ({
 							)}
 						</Stack>
 					</Flex>
+					{/* THEMES-01 */}
+					<Divider my={3} />
+					<ThemePicker />
 				</DrawerBody>
 			</DrawerContent>
 		</Drawer>

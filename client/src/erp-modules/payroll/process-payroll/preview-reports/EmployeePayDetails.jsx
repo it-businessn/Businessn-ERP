@@ -13,7 +13,7 @@ import {
 
 const EmployeePayDetails = ({ data, isMobile }) => (
 	<Stack position="relative" flex={isMobile ? 1 : 0.7} w={isMobile && "100%"}>
-		<BoxCard bg={"var(--main_color)"} p={1}>
+		<BoxCard bg={"var(--main_color)"} className="theme-paper" p={1}>
 			<HeaderTable title1="Earnings" title2="Current" title3="Year to Date" />
 
 			<EarningsTable

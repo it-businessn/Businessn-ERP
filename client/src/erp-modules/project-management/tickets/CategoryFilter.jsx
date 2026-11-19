@@ -55,7 +55,7 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 			borderWidth="0"
 			borderRadius="1em"
 			minW="300px"
-			bg="white"
+			bg="var(--surface)"
 			transition="all 0.2s"
 			_hover={{
 				boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
@@ -72,13 +72,13 @@ const CategoryFilter = ({ name, data, isMyChannel, presentTitle, filterTicket, f
 					<TabList>
 						<Tab
 							_selected={{
-								color: "black",
+								color: "var(--main_color_black)",
 								borderBottom: "2px solid",
 								borderColor: "var(--nav_menu)",
 							}}
 						>
 							{isMyChannel ? `${name} Channel` : name}
-							<Text ml={2} fontSize="sm" color="gray.500">
+							<Text ml={2} fontSize="sm" color="var(--text_soft)">
 								({totalTickets})
 							</Text>
 						</Tab>

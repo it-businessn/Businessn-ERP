@@ -169,7 +169,7 @@ const CalendarView = ({ user, company }) => {
 				borderColor="gray.100"
 			>
 				<HStack spacing={1}>
-					<Button onClick={goToBack} size="sm" variant="ghost" color="gray.600">
+					<Button onClick={goToBack} size="sm" variant="ghost" color="var(--text_muted)">
 						<ChevronLeftIcon />
 					</Button>
 					<Button
@@ -182,7 +182,7 @@ const CalendarView = ({ user, company }) => {
 					>
 						Today
 					</Button>
-					<Button onClick={goToNext} size="sm" variant="ghost" color="gray.600">
+					<Button onClick={goToNext} size="sm" variant="ghost" color="var(--text_muted)">
 						<ChevronRightIcon />
 					</Button>
 				</HStack>
@@ -196,7 +196,7 @@ const CalendarView = ({ user, company }) => {
 						leftIcon={<SearchIcon />}
 						size="sm"
 						variant="outline"
-						color="gray.600"
+						color="var(--text_muted)"
 						fontSize="sm"
 						borderRadius="md"
 					>

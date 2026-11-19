@@ -20,7 +20,7 @@ const MobilePayStub = ({ reportData, isOpen, onClose, title }) => {
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} size="full">
 			<ModalContent>
-				<ModalHeader position="sticky" zIndex="1" top={0} bg={"var(--main_color)"}>
+				<ModalHeader position="sticky" zIndex="1" top={0} bg={"var(--main_color)"} className="theme-paper">
 					<PayStubHeader isMobile companyInfo={companyInfo} />
 					<TextTitle
 						align={"center"}

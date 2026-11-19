@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const { fulfillmentOf } = require("../services/orderService");
 
 const getCompanyOrders = async (req, res) => {
 	const { companyName } = req.params;
@@ -13,14 +14,13 @@ const getCompanyOrders = async (req, res) => {
 				"totalEmpPaymentRemitCost",
 				"totalGovtContr",
 			],
-		});
+		}).sort({ createdOn: -1 });
 		return res.status(200).json(orders);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
 	}
 };
 
-const isSettled = (status) => status === "Settled";
 
 const updateOrder = async (req, res) => {
 	const { id } = req.params;
@@ -34,22 +34,7 @@ const updateOrder = async (req, res) => {
 			},
 		);
 		if (order) {
-			const {
-				fundsReceivedStatus,
-				empEFTSentStatus,
-				empEFTDepositedStatus,
-				craSentStatus,
-				craDepositedStatus,
-			} = order;
-
-			order.fulfillmentStatus =
-				isSettled(fundsReceivedStatus) &&
-				isSettled(empEFTSentStatus) &&
-				isSettled(empEFTDepositedStatus) &&
-				isSettled(craSentStatus) &&
-				isSettled(craDepositedStatus)
-					? "Settled"
-					: "Unsettled";
+			order.fulfillmentStatus = fulfillmentOf(order); // ORDERS-01: same rule as VoPay updates
 			await order.save();
 			return res.status(201).json(order);
 		}

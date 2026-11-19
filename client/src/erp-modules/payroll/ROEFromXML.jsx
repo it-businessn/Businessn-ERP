@@ -74,7 +74,7 @@ export default function ROEFromXML() {
 				mx="auto"
 				borderWidth="1px"
 				borderColor="gray.800"
-				bg="white"
+				bg="white" className="theme-paper"
 				fontFamily="sans-serif"
 				fontSize="xs"
 				h={"100%"}
@@ -99,9 +99,9 @@ export default function ROEFromXML() {
 					position="relative"
 					zIndex={1}
 					p={4}
-					bg="white"
+					bg="white" className="theme-paper"
 					borderWidth="1px"
-					borderColor="gray.300"
+					borderColor="var(--border_mid)"
 					fontFamily="Arial, sans-serif"
 					fontSize="10px"
 				>

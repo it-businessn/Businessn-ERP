@@ -94,7 +94,7 @@ const ChatHistory = ({ currentConversation, userId, isRefresh, setIsRefresh, com
 				spacing={2}
 				alignItems={"center"}
 				borderRadius={"20px"}
-				border={"2px solid #eee"}
+				border={"2px solid var(--border_light)"}
 			>
 				<Input
 					placeholder="Type your message..."

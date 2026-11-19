@@ -51,9 +51,9 @@ const PayPeriodDetailCard = ({
           color={"var(--banner_bg)"}
           title={`${header} :`}
         />
-        <TextTitle width="auto" size="sm" color={"gray.700"} title={text1} />
+        <TextTitle width="auto" size="sm" color={"var(--text_body)"} title={text1} />
         {text2 && (
-          <TextTitle width="auto" color={"gray.700"} size="sm" title={text2} />
+          <TextTitle width="auto" color={"var(--text_body)"} size="sm" title={text2} />
         )}
       </Flex>
       <Spacer />

@@ -5,7 +5,7 @@ import RequiredLabel from "components/ui/form/RequiredLabel";
 
 const Field = ({ label, children }) => (
 	<Box>
-		<Text fontSize="xs" color="gray.500" textTransform="uppercase">
+		<Text fontSize="xs" color="var(--text_soft)" textTransform="uppercase">
 			{label}
 		</Text>
 		{children}

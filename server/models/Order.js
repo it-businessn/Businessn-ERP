@@ -13,9 +13,16 @@ const orderSchema = new mongoose.Schema(
 		craSentStatus: { type: String, default: "Unsettled" },
 		craDepositedStatus: { type: String, default: "Unsettled" },
 		fulfillmentStatus: { type: String, default: "Unsettled" },
+		// ORDERS-01: the VoPay employee transfer of this payroll run
+		vopayTransactionId: String,
+		vopayStatus: String,
+		vopayStatusAt: Date,
+		vopayFailureReason: String,
 	},
 	{ timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" } },
 );
+orderSchema.index({ fundingTotalsId: 1 });
+orderSchema.index({ vopayTransactionId: 1 }, { sparse: true });
 
 const Order = mongoose.model("Order", orderSchema);
 

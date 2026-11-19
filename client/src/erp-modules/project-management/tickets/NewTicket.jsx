@@ -134,7 +134,7 @@ const NewTicket = ({
 			onClose={handleClose}
 		>
 			<Box mb={4}>
-				<Text fontSize="sm" color="gray.600">
+				<Text fontSize="sm" color="var(--text_muted)">
 					Create a new support ticket to track issues, bugs, or feature requests.
 				</Text>
 			</Box>

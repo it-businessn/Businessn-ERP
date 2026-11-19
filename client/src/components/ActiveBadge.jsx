@@ -2,7 +2,7 @@ import { Badge } from "@chakra-ui/react";
 import TextTitle from "./ui/text/TextTitle";
 
 const ActiveBadge = ({ title, bg = "var(--correct_ans)" }) => (
-	<Badge bg={bg} color="var(--primary_bg)">
+	<Badge bg={bg} color="var(--on_dark_text)">
 		<TextTitle title={title} />
 	</Badge>
 );

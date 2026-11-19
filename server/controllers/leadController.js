@@ -179,7 +179,9 @@ const getLeadsNotDisbursed = async (req, res) => {
 const getLeadCompanies = async (req, res) => {
 	const { companyName } = req.params;
 	try {
-		const leadCompanies = await LeadCompany.find({ companyName }).select("name");
+		// BUG-LEAD-02: blank names (created by an opportunity saved without a company)
+		// showed as an empty line in the company dropdowns
+		const leadCompanies = await LeadCompany.find({ companyName, name: /\S/ }).select("name");
 		return res.status(200).json(leadCompanies);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error", error });
@@ -232,6 +234,9 @@ const updateLeadCompany = async (name, companyName) => {
 	// name was returned (and none was created for this tenant). Without a company
 	// the filter would match any tenant, so nothing is looked up or created.
 	if (typeof companyName !== "string" || !companyName.trim()) return null;
+	// BUG-LEAD-02: an opportunity without a company created a blank lead company
+	name = typeof name === "string" ? name.trim() : "";
+	if (!name) return null;
 	const existingRecord = await LeadCompany.findOne({
 		name,
 		companyName,
@@ -314,6 +319,9 @@ const createLeadCompany = async (req, res) => {
 	const { name, companyName } = req.body;
 	if (typeof companyName !== "string" || !companyName.trim()) {
 		return res.status(400).json({ message: "companyName is required" });
+	}
+	if (typeof name !== "string" || !name.trim()) {
+		return res.status(400).json({ message: "Company name is required" });
 	}
 
 	try {

@@ -200,7 +200,7 @@ const ResourceFile = ({
 										overflow="hidden"
 										p={4}
 										h={"120px"}
-										// color={"var(--primary_bg)"}
+										// color={"var(--on_dark_text)"}
 										bg={getBgColor()}
 									>
 										<TextTitle

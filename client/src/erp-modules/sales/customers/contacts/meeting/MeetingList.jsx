@@ -40,7 +40,7 @@ const MeetingList = ({ meetings }) => {
 										size="sm"
 										// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
 										title={moment(createdOn).format("MMM DD, YYYY hh:mm A")}
-										color="gray.500"
+										color="var(--text_soft)"
 										align="end"
 									/>
 								</Flex>

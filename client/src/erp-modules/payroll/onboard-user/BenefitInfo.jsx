@@ -30,7 +30,7 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 				width="280px"
 				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
-				borderColor="gray.200"
+				borderColor="var(--border_soft)"
 				flexShrink={0}
 				bg="gray.50"
 			>
@@ -48,7 +48,7 @@ const BenefitInfo = ({ benefitsSubStep, setBenefitsSubStep, formData, handleChan
 								<StepTitle fontWeight={benefitsSubStep === index ? "bold" : "normal"} mb={1}>
 									{step.title}
 								</StepTitle>
-								<StepDescription fontSize="sm" color="gray.600">
+								<StepDescription fontSize="sm" color="var(--text_muted)">
 									{step.description}
 								</StepDescription>
 							</Box>

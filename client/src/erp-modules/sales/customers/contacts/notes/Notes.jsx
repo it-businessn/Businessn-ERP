@@ -80,7 +80,7 @@ const Notes = ({ contactId, user, company, currentTab }) => {
 									size="sm"
 									// title={moment(createdOn).format("MMM DD, YYYY hh:mm A Z")}
 									title={longTimeFormat(createdOn)}
-									color="gray.500"
+									color="var(--text_soft)"
 									align="end"
 								/>
 							</Flex>

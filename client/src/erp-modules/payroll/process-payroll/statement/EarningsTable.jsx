@@ -10,7 +10,7 @@ const EarningsTable = ({ cols, rows, data, colBg, isNetSummary, isMobile }) => {
 			tableSize="xs"
 			cols={cols}
 			textSize="xs"
-			bg={"var(--main_color)"}
+			bg={"var(--main_color)"} className="theme-paper"
 			width1={isMobile ? "auto" : "9em"}
 			width2={isMobile ? "auto" : "80px"}
 			width3={isMobile ? "auto" : "46px"}

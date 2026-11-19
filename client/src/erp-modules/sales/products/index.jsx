@@ -258,7 +258,7 @@ const Products = () => {
 							<Text fontWeight="bold">Products</Text>
 							{/* <Button
 								bg="var(--primary_button_bg)"
-								color={"var(--primary_bg)"}
+								color={"var(--on_dark_text)"}
 								variant={"solid"}
 								size="xs"
 								_hover={{ color: "var(--main_color_black)" }}

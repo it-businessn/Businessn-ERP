@@ -64,7 +64,7 @@ const EmployeeInfo = ({ data, companyNum, isMobile }) => {
 						<BasicInfo title1={"Company#:"} title2={companyNum} />
 					</VStack>
 				</Box>
-				<Box w={"100%"} bg={"var(--main_color)"} p={1}>
+				<Box w={"100%"} bg={"var(--main_color)"} className="theme-paper" p={1}>
 					<VStack spacing={0}>
 						{ACCRUAL_TYPES.map(({ type, items }) => (
 							<React.Fragment key={type}>

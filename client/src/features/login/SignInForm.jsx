@@ -100,7 +100,7 @@ const SignInForm = ({ title, isMobile }) => {
 			mt={isMobile ? "8vh" : "12vh"}
 			mb={8}
 			width={isMobile ? "90vw" : "md"}
-			bg="var(--main_color)"
+			bg="var(--surface)"
 			boxShadow="xl"
 			justifyContent={"center"}
 			borderRadius={"20px"}

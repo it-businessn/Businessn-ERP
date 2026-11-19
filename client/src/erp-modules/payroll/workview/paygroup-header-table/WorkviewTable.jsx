@@ -130,7 +130,7 @@ const WorkviewTable = ({
 								size="sm"
 								isDisabled={isDisabledAction}
 								_hover={{ bg: "gray.100" }}
-								color="gray.600"
+								color="var(--text_muted)"
 							/>
 						</Tooltip>
 						<MenuList>

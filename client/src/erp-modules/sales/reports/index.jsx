@@ -226,7 +226,7 @@ const SalesReport = () => {
 								<Text fontWeight="bold">Sales Performance</Text>
 								<Button
 									bg="var(--primary_button_bg)"
-									color={"var(--primary_bg)"}
+									color={"var(--on_dark_text)"}
 									variant={"solid"}
 									size="xs"
 									_hover={{ color: "var(--main_color_black)" }}
@@ -317,7 +317,7 @@ const SalesReport = () => {
 								</InputGroup>
 								<Button
 									bg="var(--primary_button_bg)"
-									color={"var(--primary_bg)"}
+									color={"var(--on_dark_text)"}
 									variant={"solid"}
 									size={"xs"}
 									_hover={{ color: "var(--main_color_black)" }}

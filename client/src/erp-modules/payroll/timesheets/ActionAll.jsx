@@ -64,7 +64,7 @@ const ActionAll = ({
 				<MenuButton
 					as={IconButton}
 					height="auto"
-					icon={<FaCaretDown fontSize={isRowAction ? "1.2em" : "1.5em"} color="var(--logo_bg)" />}
+					icon={<FaCaretDown fontSize={isRowAction ? "1.2em" : "1.5em"} color="var(--text_strong)" />}
 					aria-label="Options"
 					minW="auto"
 				/>

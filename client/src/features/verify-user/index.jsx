@@ -7,7 +7,7 @@ const VerifyEmail = () => {
 		<CenterBoxLayout>
 			<Stack spacing={{ base: "6", md: "3" }} textAlign="center">
 				<Heading size={{ base: "xs", md: "sm" }}>Verify your e-mail</Heading>
-				<Center fontSize="sm" color="gray.600">
+				<Center fontSize="sm" color="var(--text_muted)">
 					We have sent a verification code to
 				</Center>
 				<VerifyPIN />

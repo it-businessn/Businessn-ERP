@@ -261,7 +261,7 @@ const AddQuestionForm = () => {
 								<Select
 									name="assessmentType"
 									value={assessmentType}
-									bg={"var(--main_color)"}
+									bg="var(--surface)"
 									onChange={(e) => {
 										if (e.target.value) setAssessmentType(e.target.value);
 									}}

@@ -5,14 +5,14 @@ import BoxCard from "./ui/card";
 export const ConfigTabLayout = ({ leftContent, tableData, tableTitle, tableContent }) => {
 	return (
 		<Grid templateColumns={{ base: "1fr", lg: "0.3fr 0.7fr" }} gap={6}>
-			<BoxCard bg="white">
+			<BoxCard bg="var(--surface)">
 				<VStack spacing={3} align="stretch">
 					{leftContent}
 				</VStack>
 			</BoxCard>
 
 			{tableData && (
-				<BoxCard bg="white">
+				<BoxCard bg="var(--surface)">
 					<Stack spacing={4}>
 						<TextTitle align={"center"} title={tableTitle} />
 						<Box overflowY={"auto"} h={"calc(100vh - 325px)"}>

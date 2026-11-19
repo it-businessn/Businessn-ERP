@@ -13,7 +13,7 @@ const EmptyRowRecord = ({
 	<Tr>
 		<Td px={px} colSpan={colSpan}>
 			{data?.length === 0 ? (
-				<Flex direction="column" align="center" justify="center" py={5} color="gray.500">
+				<Flex direction="column" align="center" justify="center" py={5} color="var(--text_soft)">
 					<Box fontSize="lg" mb={2}>
 						{title}
 					</Box>

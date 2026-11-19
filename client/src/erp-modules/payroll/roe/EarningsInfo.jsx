@@ -115,7 +115,7 @@ const EarningsInfo = ({ formData, isLoading, sections, toggleSection, done, onCo
 			>
 				<Stack spacing={4}>
 					{formData?.payPeriodTypeLabel && (
-						<Text color="gray.600" fontSize="sm">
+						<Text color="var(--text_muted)" fontSize="sm">
 							Pay period type (block 6): {formData.payPeriodTypeLabel}. ROE PP 1 is the final pay period
 							ending {formatPayDate(formData?.employmentInfo?.finalPayPeriodEndDate)}.
 						</Text>

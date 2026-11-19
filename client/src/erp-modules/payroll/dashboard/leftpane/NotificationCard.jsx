@@ -7,7 +7,7 @@ import scheduler from "../../../../assets/Scheduler.png";
 
 const NotificationCard = () => {
 	return (
-		<BoxCard bg={"white"}>
+		<BoxCard bg="var(--surface)">
 			<VStack spacing={4} alignItems={"start"} w={"100%"}>
 				<HStack spacing={4} justifyContent={"space-between"} w={"100%"} zIndex={2}>
 					<PrimaryButton
@@ -32,7 +32,7 @@ const NotificationCard = () => {
 					size="sm"
 					whiteSpace={"wrap"}
 					zIndex={2}
-					color="gray.600"
+					color="var(--text_muted)"
 				/>
 				<Image
 					objectFit="contain"

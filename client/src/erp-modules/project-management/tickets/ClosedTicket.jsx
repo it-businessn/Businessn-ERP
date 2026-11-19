@@ -190,7 +190,7 @@ const ClosedTicket = ({ company, setShowAddEntry, showAddEntry, userId, employee
 									<Td py={0}>
 										<PrimaryButton
 											cursor="text"
-											color="var(--primary_bg)"
+											color="var(--on_dark_text)"
 											bg={bg}
 											name="Closed"
 											size="sm"

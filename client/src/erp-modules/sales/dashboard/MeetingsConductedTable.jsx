@@ -62,7 +62,7 @@ const MeetingsConductedTable = ({ meetingsData }) => {
 						>{`${String(meeting.duration.hours).padStart(2, "0")}:${String(meeting.duration.minutes).padStart(2, "0")}h`}</Td>
 						<Td py={1} fontSize={"xs"}>
 							<Button
-								bg={"#d8dce9"}
+								bg={"var(--tint_slate)"}
 								color={meeting.status === "completed" ? "#8d8fb3" : "#8d8fb3"}
 								size="xs"
 								_hover={{ color: "var(--main_color_black)" }}

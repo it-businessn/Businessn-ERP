@@ -42,7 +42,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 				width="280px"
 				display={{ base: "none", md: "block" }}
 				borderRight="1px solid"
-				borderColor="gray.200"
+				borderColor="var(--border_soft)"
 				flexShrink={0}
 				bg="gray.50"
 			>
@@ -60,7 +60,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 								<StepTitle fontWeight={governmentSubStep === index ? "bold" : "normal"} mb={1}>
 									{step.title}
 								</StepTitle>
-								<StepDescription fontSize="sm" color="gray.600">
+								<StepDescription fontSize="sm" color="var(--text_muted)">
 									{step.description}
 								</StepDescription>
 							</Box>
@@ -84,7 +84,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 									CPP/QPP Exemption
 									<FaInfoCircle
 										size="0.8em"
-										color="gray.500"
+										color="var(--text_soft)"
 										style={{ display: "inline", marginBottom: "3px" }}
 									/>
 								</FormLabel>
@@ -117,7 +117,7 @@ const GovernmentInfo = ({ governmentSubStep, setGovernmentSubStep, formData, han
 									EI Exemption
 									<FaInfoCircle
 										size="0.8em"
-										color="gray.500"
+										color="var(--text_soft)"
 										style={{ display: "inline", marginBottom: "3px" }}
 									/>
 								</FormLabel>

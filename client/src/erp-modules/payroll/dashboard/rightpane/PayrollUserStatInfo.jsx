@@ -65,7 +65,7 @@ const PayrollUserStatInfo = ({
     <>
       {/* <VStack justify="center" align="center">
 				<TextTitle title={name} />
-				<NormalTextTitle size="sm" title={email} color="gray.500" />
+				<NormalTextTitle size="sm" title={email} color="var(--text_soft)" />
 			</VStack> */}
       {/* Grid instead of HStack: three fixed-content cards in a row overflowed
 			    and the last one was clipped whenever the pane was narrower than ~600px. */}
@@ -99,7 +99,7 @@ const PayrollUserStatInfo = ({
                     <NormalTextTitle
                       size="sm"
                       title={name}
-                      color="gray.700"
+                      color="var(--text_body)"
                       textAlign="center"
                       width="100%"
                       whiteSpace="normal"

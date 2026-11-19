@@ -105,7 +105,7 @@ const ModalLayout = ({
             position="sticky"
             zIndex="1"
             top={0}
-            bg={"var(--main_color)"}
+            bg="var(--surface)"
             textAlign={textAlign}
             fontSize={fontSize}
           >
@@ -139,7 +139,7 @@ const ModalLayout = ({
           zIndex="0"
           className="print-root"
           ref={componentRef}
-          bg={"#fff"}
+          bg={"var(--surface)"}
           // was height="100vh": even a two-line dialog filled the screen; now it
           // fits its content and scrolls when taller than the window
           maxH={"calc(100vh - 8rem)"}

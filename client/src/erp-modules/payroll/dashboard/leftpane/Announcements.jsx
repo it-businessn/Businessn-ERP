@@ -53,7 +53,7 @@ const Announcements = ({ company }) => {
             <Box
               borderRadius="lg"
               bg={"var(--receiver_msg_bg)"}
-              color={"black"}
+              color={"var(--main_color_black)"}
               px={3}
               py={1.5}
               justifyContent={"flex-start"}

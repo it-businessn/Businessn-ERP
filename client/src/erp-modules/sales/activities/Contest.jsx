@@ -37,7 +37,7 @@ const Contest = () => {
 									<Text mt={"2em"} fontSize={"xs"} display={"flex"} justifyContent={"end"}>
 										$500
 									</Text>
-									<Progress colorScheme="green" size="sm" bg={"var(--main_color)"} value={2} />
+									<Progress colorScheme="green" size="sm" bg="var(--surface)" value={2} />
 									<Flex mt={"2em"} borderTop="var(--highlight_border)">
 										<HighlightButton name={"More details"} onClick={() => setShowDetails(true)} />
 									</Flex>
@@ -68,7 +68,7 @@ const Contest = () => {
 							<Progress
 								colorScheme="green"
 								size="sm"
-								bg={"var(--main_color)"}
+								bg="var(--surface)"
 								value={50}
 							/>
 							<Flex mt={"2em"} borderTop="var(--highlight_border)">
@@ -105,7 +105,7 @@ const Contest = () => {
 							<Progress
 								colorScheme="green"
 								size="sm"
-								bg={"var(--main_color)"}
+								bg="var(--surface)"
 								value={50}
 							/>
 							<Flex mt={"2em"} borderTop="var(--highlight_border)">

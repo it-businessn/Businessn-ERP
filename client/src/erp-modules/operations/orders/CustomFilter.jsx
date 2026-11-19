@@ -9,7 +9,7 @@ const CustomFilter = ({ isMobile, handleInputChange }) => {
 				<Text fontWeight="bold">Orders</Text>
 				{/* <Button
                 bg="var(--primary_button_bg)"
-                color={"var(--primary_bg)"}
+                color={"var(--on_dark_text)"}
                 variant={"solid"}
                 size="xs"
                 _hover={{ color: "var(--main_color_black)" }}
@@ -93,7 +93,7 @@ const CustomFilter = ({ isMobile, handleInputChange }) => {
 			</InputGroup>
 			<Button
 				bg="var(--primary_button_bg)"
-				color={"var(--primary_bg)"}
+				color={"var(--on_dark_text)"}
 				variant={"solid"}
 				size={"xs"}
 				px={"1em"}

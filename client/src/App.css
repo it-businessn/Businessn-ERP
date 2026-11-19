@@ -95,6 +95,235 @@
 		rgb(136 107 217) 43%,
 		rgb(50 240 218) 100%
 	);
+	/* THEMES-01: themed surface (cards, panels, dialogs) and text colours */
+	--surface: #ffffff;
+	--on_dark_text: #f9f9fb; /* text on dark buttons / banners */
+	--text_strong: #01193d;
+	--accent_text: var(--banner_bg); /* links, hovered headers */
+	/* THEMES-02: fixed colours used on screens, as variables (Light = unchanged) */
+	--text_soft: #718096; /* was gray.500 */
+	--text_muted: #4a5568; /* was gray.600 */
+	--text_body: #2d3748; /* was gray.700 */
+	--text_body_strong: #1a202c; /* was gray.800 */
+	--fill_gray_200: #e2e8f0;
+	--fill_gray_300: #cbd5e0;
+	--tint_lavender: #dedaf4;
+	--tint_slate: #d8dce9;
+	--tint_periwinkle: #d5def5;
+	--tint_ghost: #f7f7ff;
+	--border_soft: #e2e8f0;
+	--border_mid: #cbd5e0;
+	--border_light: #eeeeee;
+	--table_border: #edf2f7;
+	--menu_link: var(--banner_bg); /* sidebar links */
+}
+
+/* THEMES-01/02: Dark - plum charcoal. Chakra switches to its dark colour mode too. */
+:root[data-app-theme="dark"] {
+	color-scheme: dark;
+	--surface: #241d28;
+	--primary_bg: #1a151d;
+	--primary_bg_1: #201a24;
+	--page_layout_bg: #2a222e;
+	--lead_cards_bg: #221b26;
+	--lead_cards_border: #3b3340;
+	--input_bg: #2e2633;
+	--filter_border_color: #4b4252;
+	--th_bg: #2a232e;
+	--payStub_bg: #2a232e;
+	--shift_row: #2b2534;
+	--bg_color_1: #2c2a45;
+	--break_row_bg: #2c3d4d;
+	--action_status_bg: #2a2228;
+	--order_unsettled: #4d4320;
+	--calendar_border: #4b4252;
+	--main_color_black: #ece7ee;
+	--nav_color: #c9c1cd;
+	--text_strong: #e8e2ea;
+	--accent_text: #e2c4e2;
+	--menu_link: #dcc8de;
+	--tas_item_color: #b3acb7;
+	--gray2_color: #a7a0aa;
+	--primary_button_bg: #9a919f;
+	--receiver_msg_bg: #2d3346;
+	--meeting_bg_light: #2b3350;
+	--event_bg_light: #1f3a44;
+	--phoneCall_bg_light: rgb(36, 58, 46);
+	--highlight_border: 2px solid #3b3340;
+	--nav_gradient: linear-gradient(180deg, #2b2530 0%, #1c171f 100%);
+	--nav_gradient_blue: linear-gradient(180deg, #2a2838 0%, #1c171f 100%);
+	--nav_gradient_orange: linear-gradient(180deg, #33291f 0%, #1c171f 100%);
+	--nav_gradient_green: linear-gradient(180deg, #213025 0%, #1c171f 100%);
+	--text_soft: #a99fae;
+	--text_muted: #c3bac8;
+	--text_body: #ddd5e1;
+	--text_body_strong: #f0eaf2;
+	--fill_gray_200: #3a3240;
+	--fill_gray_300: #463d4d;
+	--tint_lavender: #3a3354;
+	--tint_slate: #353844;
+	--tint_periwinkle: #2f3a55;
+	--tint_ghost: #221d2b;
+	--border_soft: #3b3340;
+	--border_mid: #4b4252;
+	--border_light: #332b38;
+	--table_border: #342c39;
+	/* Chakra light greys used as backgrounds (bg="gray.50" / "gray.100") */
+	--chakra-colors-gray-50: #241e28 !important;
+	--chakra-colors-gray-100: #2c2530 !important;
+	--chakra-colors-chakra-body-bg: #1a151d !important;
+	--chakra-colors-chakra-body-text: #ece7ee !important;
+	--chakra-colors-chakra-border-color: #3b3340 !important;
+	--chakra-colors-chakra-placeholder-color: #8f8695 !important;
+}
+
+/* THEMES-01/02: Warm - sand and clay. */
+:root[data-app-theme="warm"] {
+	--surface: #fffaf4;
+	--primary_bg: #f8f1e7;
+	--primary_bg_1: #f6eee2;
+	--page_layout_bg: #eadcca;
+	--lead_cards_bg: #fffaf4;
+	--lead_cards_border: #e6d6c2;
+	--input_bg: #f3e8da;
+	--filter_border_color: #d9c5ae;
+	--th_bg: #f4e8d9;
+	--payStub_bg: #f2e6d6;
+	--shift_row: #f5e9db;
+	--bg_color_1: #f3e3cf;
+	--break_row_bg: #e3cfb5;
+	--action_status_bg: #fbefe6;
+	--order_unsettled: #fbefc4;
+	--calendar_border: #d9c5ae;
+	--main_color_black: #2b1d14;
+	--nav_color: #5c4433;
+	--text_strong: #3a2417;
+	--accent_text: #8a4a2b;
+	--banner_bg: #6b3b25;
+	--primary_btn_hover: #844a2f;
+	--nav_menu: #8a5236;
+	--logo_bg: #3a2417;
+	--tas_item_color: #8a7464;
+	--gray2_color: #9a8473;
+	--receiver_msg_bg: #f3e4d1;
+	--meeting_bg_light: #f2e2cf;
+	--event_bg_light: #efe3cf;
+	--phoneCall_bg_light: #e8eed8;
+	--highlight_border: 2px solid #eadccb;
+	--nav_gradient: linear-gradient(180deg, rgb(160 124 98) 0%, rgb(250 242 231) 100%);
+	--nav_gradient_blue: linear-gradient(180deg, rgb(230 214 200) 0%, rgb(250 242 231) 100%);
+	--nav_gradient_orange: linear-gradient(180deg, rgb(238 212 182) 0%, rgb(250 242 231) 100%);
+	--nav_gradient_green: linear-gradient(180deg, rgb(214 222 192) 0%, rgb(250 242 231) 100%);
+	--text_soft: #8a7464;
+	--text_muted: #6b5444;
+	--text_body: #4a3628;
+	--text_body_strong: #2e1f15;
+	--fill_gray_200: #eadccb;
+	--fill_gray_300: #dccab4;
+	--tint_lavender: #efe0d2;
+	--tint_slate: #ebe1d6;
+	--tint_periwinkle: #ece0cf;
+	--tint_ghost: #fbf4ea;
+	--border_soft: #eadccb;
+	--border_mid: #dccab4;
+	--border_light: #efe4d6;
+	--table_border: #efe3d4;
+	--chakra-colors-gray-50: #faf3ea !important;
+	--chakra-colors-gray-100: #f1e6d8 !important;
+	--chakra-colors-chakra-body-bg: #f8f1e7 !important;
+	--chakra-colors-chakra-body-text: #3b2a20 !important;
+	--chakra-colors-chakra-border-color: #e6d6c2 !important;
+}
+
+/* THEMES-02: calendars and date pickers (their own light stylesheets) in Dark */
+:root[data-app-theme="dark"] .rbc-calendar,
+:root[data-app-theme="dark"] .rbc-toolbar button,
+:root[data-app-theme="dark"] .react-datepicker,
+:root[data-app-theme="dark"] .react-datepicker__header,
+:root[data-app-theme="dark"] .daterangepicker,
+:root[data-app-theme="dark"] .daterangepicker .calendar-table,
+:root[data-app-theme="dark"] .react-calendar-timeline .rct-header-root,
+:root[data-app-theme="dark"] .react-calendar-timeline .rct-dateHeader {
+	background-color: var(--surface);
+	color: var(--main_color_black);
+	border-color: var(--border_mid);
+}
+:root[data-app-theme="dark"] .rbc-header,
+:root[data-app-theme="dark"] .rbc-month-view,
+:root[data-app-theme="dark"] .rbc-month-row,
+:root[data-app-theme="dark"] .rbc-day-bg,
+:root[data-app-theme="dark"] .rbc-time-view,
+:root[data-app-theme="dark"] .rbc-time-header-content,
+:root[data-app-theme="dark"] .rbc-timeslot-group,
+:root[data-app-theme="dark"] .rbc-time-content,
+:root[data-app-theme="dark"] .rbc-day-slot .rbc-time-slot,
+:root[data-app-theme="dark"] .rbc-agenda-view table.rbc-agenda-table,
+:root[data-app-theme="dark"] .rbc-agenda-view table.rbc-agenda-table tbody > tr > td,
+:root[data-app-theme="dark"] .react-calendar-timeline .rct-horizontal-lines .rct-hl-even,
+:root[data-app-theme="dark"] .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd,
+:root[data-app-theme="dark"] .react-calendar-timeline .rct-vertical-lines .rct-vl {
+	border-color: var(--border_soft) !important;
+}
+:root[data-app-theme="dark"] .rbc-off-range-bg,
+:root[data-app-theme="dark"] .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
+	background: var(--primary_bg_1);
+}
+:root[data-app-theme="dark"] .rbc-today,
+:root[data-app-theme="dark"] .react-datepicker__day--keyboard-selected {
+	background-color: var(--tint_lavender);
+}
+:root[data-app-theme="dark"] .rbc-off-range,
+:root[data-app-theme="dark"] .react-datepicker__day--outside-month {
+	color: var(--text_soft);
+}
+:root[data-app-theme="dark"] .rbc-toolbar button:hover,
+:root[data-app-theme="dark"] .rbc-toolbar button.rbc-active,
+:root[data-app-theme="dark"] .react-datepicker__day:hover,
+:root[data-app-theme="dark"] .daterangepicker td.available:hover {
+	background-color: var(--fill_gray_300);
+	color: var(--main_color_black);
+}
+:root[data-app-theme="dark"] .react-datepicker__current-month,
+:root[data-app-theme="dark"] .react-datepicker__day-name,
+:root[data-app-theme="dark"] .react-datepicker__day,
+:root[data-app-theme="dark"] .react-datepicker-time__header {
+	color: var(--main_color_black);
+}
+:root[data-app-theme="dark"] .daterangepicker td.off,
+:root[data-app-theme="dark"] .daterangepicker td.off.in-range {
+	background-color: var(--surface);
+	color: var(--text_soft);
+}
+
+/* THEMES-01: printed documents (pay stub, ROE, pay statement) stay white paper
+   with dark text in every theme, and on print */
+.theme-paper {
+	--surface: #ffffff;
+	--primary_bg: #f9f9fb;
+	--lead_cards_bg: #fdfdfd;
+	--th_bg: #f7f7f7;
+	--payStub_bg: #efefef;
+	--input_bg: #eee;
+	--main_color_black: #000000;
+	--nav_color: #485763;
+	--text_strong: #01193d;
+	--filter_border_color: #d3d3d3;
+	--text_soft: #718096;
+	--text_muted: #4a5568;
+	--text_body: #2d3748;
+	--text_body_strong: #1a202c;
+	--fill_gray_200: #e2e8f0;
+	--fill_gray_300: #cbd5e0;
+	--border_soft: #e2e8f0;
+	--border_mid: #cbd5e0;
+	--border_light: #eeeeee;
+	--table_border: #edf2f7;
+	--chakra-colors-gray-50: #f7fafc;
+	--chakra-colors-gray-100: #edf2f7;
+	--chakra-colors-chakra-body-text: #1a202c;
+	--chakra-colors-chakra-border-color: #e2e8f0;
+	color: #1a202c;
+	color-scheme: light;
 }
 
 html {
@@ -271,7 +500,7 @@ body {
 }
 
 .sidebarMenu button {
-	color: var(--banner_bg);
+	color: var(--menu_link);
 }
 
 .active button {
@@ -426,4 +655,28 @@ button:active:not(:disabled) {
 }
 
 @media only screen and (min-width: 992px) {
+}
+
+/* THEMES-01: print on white paper whatever the theme */
+@media print {
+	:root[data-app-theme] {
+		--surface: #ffffff !important;
+		--primary_bg: #f9f9fb !important;
+		--lead_cards_bg: #fdfdfd !important;
+		--th_bg: #f7f7f7 !important;
+		--main_color_black: #000000 !important;
+		--nav_color: #485763 !important;
+		--text_strong: #01193d !important;
+		--text_soft: #718096 !important;
+		--text_muted: #4a5568 !important;
+		--text_body: #2d3748 !important;
+		--text_body_strong: #1a202c !important;
+		--border_soft: #e2e8f0 !important;
+		--border_mid: #cbd5e0 !important;
+		--table_border: #edf2f7 !important;
+		--chakra-colors-gray-50: #f7fafc !important;
+		--chakra-colors-gray-100: #edf2f7 !important;
+		--chakra-colors-chakra-body-bg: #ffffff !important;
+		--chakra-colors-chakra-body-text: #1a202c !important;
+	}
 }

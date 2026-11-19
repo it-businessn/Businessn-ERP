@@ -4,7 +4,7 @@ import { FaCheckCircle, FaChevronDown, FaChevronUp } from "react-icons/fa";
 // ROE-01: a collapsible step of the Issue ROE screens. A confirmed step folds
 // up (with a tick); click its title to open it again.
 const RoeSection = ({ title, isOpen, onToggle, isDone, summary, children }) => (
-	<Box border="1px solid" borderColor="gray.200" borderRadius="md" bg="white">
+	<Box border="1px solid" borderColor="var(--border_soft)" borderRadius="md" bg="white" className="theme-paper">
 		<HStack
 			as="button"
 			type="button"
@@ -21,12 +21,12 @@ const RoeSection = ({ title, isOpen, onToggle, isDone, summary, children }) => (
 					{title}
 				</Text>
 				{!isOpen && summary && (
-					<Text color="gray.500" fontSize="sm" noOfLines={1}>
+					<Text color="var(--text_soft)" fontSize="sm" noOfLines={1}>
 						{summary}
 					</Text>
 				)}
 			</HStack>
-			<Icon as={isOpen ? FaChevronUp : FaChevronDown} color="gray.500" />
+			<Icon as={isOpen ? FaChevronUp : FaChevronDown} color="var(--text_soft)" />
 		</HStack>
 		<Collapse in={isOpen} animateOpacity unmountOnExit>
 			<Box px={4} pb={4}>

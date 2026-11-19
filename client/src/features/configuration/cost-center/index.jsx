@@ -115,7 +115,7 @@ const CostCenterPanel = ({ companyName }) => {
 				/>
 			</Flex>
 			<VStack align="stretch" spacing={2}>
-				{!allCC?.length && <Text color="gray.500">No cost centers yet. Add one.</Text>}
+				{!allCC?.length && <Text color="var(--text_soft)">No cost centers yet. Add one.</Text>}
 
 				{allCC?.map((cc) => (
 					<BoxCard key={cc._id}>
@@ -159,9 +159,9 @@ const CostCenterPanel = ({ companyName }) => {
 						</HStack>
 
 						<Collapse in={!!expanded[cc._id]} animateOpacity>
-							<Box mt={3} pl={8} bg={"white"}>
+							<Box mt={3} pl={8} bg="var(--surface)">
 								{cc?.departments?.length === 0 && (
-									<Text color="gray.500">No departments yet. Add one.</Text>
+									<Text color="var(--text_soft)">No departments yet. Add one.</Text>
 								)}
 								<VStack align="stretch">
 									{cc?.departments?.map((d) => (

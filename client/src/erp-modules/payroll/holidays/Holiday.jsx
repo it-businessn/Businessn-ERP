@@ -110,7 +110,7 @@ const Holiday = ({ company }) => {
 		<PageLayout title={company ? "" : "Holiday Calendar"}>
 			{currentCompany && (
 				<Grid templateColumns={{ base: "1fr", lg: "0.3fr 0.7fr" }} gap={6}>
-					<BoxCard bg="white" p={6} boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)">
+					<BoxCard bg="var(--surface)" p={6} boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)">
 						<VStack spacing={4} align="stretch">
 							<Text fontSize="lg" fontWeight="bold">
 								{editingId ? "Edit Holiday" : "Add New Holiday"}
@@ -157,7 +157,7 @@ const Holiday = ({ company }) => {
 						</VStack>
 					</BoxCard>
 
-					<BoxCard bg="white" boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)">
+					<BoxCard bg="var(--surface)" boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)">
 						<StatHolidayTable
 							holidays={holidays}
 							setHolidays={setHolidays}

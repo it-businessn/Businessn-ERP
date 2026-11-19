@@ -2,7 +2,6 @@ const moment = require("moment");
 
 const EmployeePayStub = require("../models/EmployeePayStub");
 const FundingTotalsPay = require("../models/FundingTotalsPay");
-const Order = require("../models/Order");
 const JournalEntry = require("../models/JournalEntry");
 const EmployeeEmploymentInfo = require("../models/EmployeeEmploymentInfo");
 const { updatePayGroup } = require("./setUpController");
@@ -13,6 +12,7 @@ const { COMPANIES } = require("../constants/constant");
 const { PAYRUN_TYPE } = require("../constants/pay.constants");
 const { sortByEmpFullName } = require("../services/userService");
 const { safeNum } = require("../utils/time.util");
+const { recordPayrollOrder } = require("../services/orderService");
 const {
 	payDateYearWindow,
 	payDateDayWindow,
@@ -101,31 +101,6 @@ const buildFundingTotalsReport = async (
 		}
 	} catch (error) {
 		console.error("❌ buildFundingTotalsReport Error:", {
-			message: error.message,
-			stack: error.stack,
-		});
-		throw error;
-	}
-};
-
-const createNewOrder = async (fundingTotalsId, customer, totalRecipients) => {
-	try {
-		const length = await Order.countDocuments({ companyName: COMPANIES.BUSINESSN_ORG });
-		const orderNumber = `BE100${length + 1}`;
-		const newOrder = {
-			companyName: COMPANIES.BUSINESSN_ORG,
-			orderNumber,
-			fundingTotalsId,
-			totalRecipients,
-			customer,
-		};
-		const existingRecord = await Order.findOne(newOrder);
-		if (!existingRecord) {
-			await Order.create(newOrder);
-		}
-		return orderNumber;
-	} catch (error) {
-		console.error("❌ createNewOrder Error:", {
 			message: error.message,
 			stack: error.stack,
 		});
@@ -354,10 +329,39 @@ const updatePayrollProcess = async (req, res) => {
 				fundTransfer = await vopayFundTransfer(companyName, fundTotalsReport, employeesToReceivePayment);
 				await FundingTotalsPay.updateOne(
 					{ _id: fundTotalsReport._id },
-					{ $set: { fundTransferStatus: fundTransfer?.status || "failed", fundTransferAt: new Date() } },
+					{
+						$set: {
+							fundTransferStatus: fundTransfer?.status || "failed",
+							fundTransferAt: new Date(),
+							// ORDERS-02: kept with the run as well as on the order
+							...(fundTransfer?.transactionId
+								? { fundTransferTransactionId: String(fundTransfer.transactionId) }
+								: {}),
+						},
+					},
 				);
 			}
-			// createNewOrder(fundTotalsReport._id, companyName, employeesToReceivePayment?.length);
+		}
+		// ORDERS-01: BusinessN Corporate's order for this run (created once, then the
+		// transfer result recorded on it). Runs after the transfer; a failure here is
+		// logged and never changes the submit's answer or the transfer.
+		if (fundTotalsReport) {
+			try {
+				await recordPayrollOrder({
+					fundTotalsReport,
+					customer: companyName,
+					totalRecipients: employeesToReceivePayment?.length,
+					fundTransfer,
+				});
+			} catch (orderError) {
+				console.error("Payroll order not recorded", {
+					companyName,
+					payPeriod,
+					fundingTotalsId: String(fundTotalsReport._id),
+					transactionId: fundTransfer?.transactionId ?? null, // ORDERS-02
+					error: orderError.message,
+				});
+			}
 		}
 		if (fundTransfer?.status === "failed") {
 			console.error("Payroll submitted but VoPay fund transfer failed", {

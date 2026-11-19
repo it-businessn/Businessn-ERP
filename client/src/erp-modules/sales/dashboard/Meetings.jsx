@@ -166,7 +166,7 @@ const Meetings = () => {
 											borderRadius="full"
 											size={"xs"}
 											color="purple.500"
-											bg={"#dedaf4"}
+											bg={"var(--tint_lavender)"}
 											_hover={{ bg: "#8385d5", color: "var(--main_color)" }}
 										/>
 									</Td>

@@ -193,7 +193,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 					border={isModal ? "none" : "1px solid var(--lead_cards_border)"}
 					bg={isModal ? "" : "var(--bg_color_1)"}
 					p={isModal ? 0 : "1em"}
-					color={"var(--logo_bg)"}
+					color={"var(--text_strong)"}
 				>
 					{!isModal && (
 						<Stack align="center">
@@ -218,7 +218,7 @@ const SignUp = ({ isModal, setRefresh, onClose, hideCompany }) => {
 								<Select
 									name="company"
 									value={formData?.company}
-									bg={"var(--main_color)"}
+									bg="var(--surface)"
 									onChange={handleChange}
 									placeholder="Select Company"
 								>

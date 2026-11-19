@@ -17,7 +17,7 @@ const MultiSelectControl = ({ options }) =>
 							<Select
 								name={menu.param_key}
 								value={menu.param_value}
-								bg={"var(--main_color)"}
+								bg="var(--surface)"
 								onChange={menu.handleChange}
 								placeholder={menu.placeholder}
 							>

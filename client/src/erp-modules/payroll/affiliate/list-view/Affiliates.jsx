@@ -72,7 +72,7 @@ const Affiliates = ({ affiliates }) => {
 			);
 		}
 		return (
-			<Text {...props} bg="gray.100" color="gray.700">
+			<Text {...props} bg="gray.100" color="var(--text_body)">
 				{status || "-"}
 			</Text>
 		);
@@ -135,7 +135,7 @@ const Affiliates = ({ affiliates }) => {
 											<Text fontWeight="medium" fontSize="sm" color={nameColor}>
 												{fullName}
 											</Text>
-											<Text fontSize="xs" color="gray.500">
+											<Text fontSize="xs" color="var(--text_soft)">
 												{positions?.[0]?.employmentDepartment || ""}
 											</Text>
 										</Box>

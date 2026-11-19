@@ -12,7 +12,7 @@ export default function PageNotFound() {
 					404
 				</Heading>
 				<Heading size={{ base: "xs", md: "sm" }}>Page not found</Heading>
-				<Text color="gray.600" fontSize="sm">
+				<Text color="var(--text_muted)" fontSize="sm">
 					The page you are looking for does not exist or has moved.
 				</Text>
 				<Button {...primaryButtonProps} onClick={() => navigate("/login")}>

@@ -101,7 +101,7 @@ const ChangePassword = ({ setPasswordMode, setError, error }) => {
 		}
 	};
 	return (
-		<Stack flex={1} p={"1em"} color="var(--logo_bg)">
+		<Stack flex={1} p={"1em"} color="var(--text_strong)">
 			<form onSubmit={handleSubmit}>
 				<VStack align="center" justify="center" mb="4">
 					<Box textAlign="center">

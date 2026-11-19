@@ -168,7 +168,7 @@ const EmployeeListView = () => {
 						}}
 						px={4}
 					/>
-					<HStack spacing={6} divider={<Box w="1px" h="20px" bg="gray.200" />}>
+					<HStack spacing={6} divider={<Box w="1px" h="20px" bg="var(--fill_gray_200)" />}>
 						{/* <HStack spacing={4}>
 							<Checkbox
 								colorScheme={"facebook"}

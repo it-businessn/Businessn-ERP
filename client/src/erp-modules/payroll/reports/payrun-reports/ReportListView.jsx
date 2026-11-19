@@ -95,7 +95,7 @@ const ReportListView = () => {
 					</option>
 				))}
 			</Select>
-			<Box bg="white" p={4} borderRadius="md" boxShadow="sm">
+			<Box bg="var(--surface)" p={4} borderRadius="md" boxShadow="sm">
 				{filteredPayPeriods && (
 					<WorkviewTable
 						css={tabScrollCss}

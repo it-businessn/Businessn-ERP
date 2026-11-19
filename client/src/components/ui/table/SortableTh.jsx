@@ -29,8 +29,8 @@ const SortableTh = ({ sortKey, sortConfig, onSort, children, ...props }) => {
 					handle();
 				}
 			}}
-			_hover={{ color: "var(--banner_bg)" }}
-			_focusVisible={{ outline: "2px solid var(--banner_bg)", outlineOffset: "-2px" }}
+			_hover={{ color: "var(--accent_text)" }}
+			_focusVisible={{ outline: "2px solid var(--accent_text)", outlineOffset: "-2px" }}
 			title={active ? "Click to change the sort order" : "Click to sort"}
 		>
 			<HStack spacing={1} display="inline-flex" alignItems="center">

@@ -100,7 +100,7 @@ const MenuItem = ({
 										justifyContent={"space-between"}
 										p={0}
 										variant="ghost"
-										color="var(--banner_bg)"
+										color="var(--menu_link)"
 										textTransform={textTransform}
 										_hover={{
 											bg: "rgba(0, 0, 0, 0.04)",

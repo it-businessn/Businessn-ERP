@@ -136,7 +136,7 @@ export const EmpWeekScheduleModal = ({
 							<HStack justifyContent={"start"}>
 								<TextTitle width="auto" title={`Email: ${empWeeklyShifts?.email}`} />
 								<IconButton
-									color={"#000"}
+									color={"var(--main_color_black)"}
 									size={"xs"}
 									icon={<FaEdit />}
 									aria-label="Shift"
@@ -152,10 +152,10 @@ export const EmpWeekScheduleModal = ({
 							<Table variant="simple">
 								<Thead bg="gray.100">
 									<Tr>
-										<Th border="1px solid" borderColor="gray.300">
+										<Th border="1px solid" borderColor="var(--border_mid)">
 											Day
 										</Th>
-										<Th border="1px solid" borderColor="gray.300" textAlign="center">
+										<Th border="1px solid" borderColor="var(--border_mid)" textAlign="center">
 											Shift Time
 										</Th>
 									</Tr>
@@ -166,10 +166,10 @@ export const EmpWeekScheduleModal = ({
 										const noShift = currentShift === "Off";
 										return (
 											<Tr key={day}>
-												<Td border="1px solid" borderColor="gray.300" fontWeight="medium">
+												<Td border="1px solid" borderColor="var(--border_mid)" fontWeight="medium">
 													{format(day, "EEE dd")}
 												</Td>
-												<Td border="1px solid" borderColor="gray.300" textAlign="center">
+												<Td border="1px solid" borderColor="var(--border_mid)" textAlign="center">
 													<TextTitle
 														size={"sm"}
 														title={
